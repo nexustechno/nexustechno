@@ -1,0 +1,1559 @@
+@media only screen and (min-width: 1800px) and (max-width: 1999px) {
+
+    .mainbalance-section {
+        height: 73vh;
+        overflow: auto;
+    }
+    
+}
+
+@media only screen and (min-width: 1500px) and (max-width: 1799px) {
+
+    .mainbalance-section {
+        height: 73vh;
+        overflow: auto;
+    }
+    
+}
+
+@media only screen and (min-width: 1301px) and (max-width: 1365px) {
+
+    #cssmenu > ul > li > a {
+        padding: 0 5px;
+    }
+
+}
+
+@media only screen and (min-width: 1280px) and (max-width: 1365px) {
+
+    .custom-table .favor-set {
+        background-position: 90%;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .main-header .container {
+        padding: 0px;
+    }
+
+    .maintable-raju-block .container {
+        padding: 0px;
+    }
+
+    .previlage_items:nth-child(5n) {
+        margin-right: 5px;
+    }
+
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1300px) {
+
+    #cssmenu > ul > li > a {
+        padding: 0 3px;
+    }
+
+    .right-logout li {
+        padding: 0 6px;
+    }
+
+    .risk_matchodds_left .table > tbody > tr > td {
+        white-space: nowrap;
+        min-width: 55px;
+    }
+
+    .fancy-suspend-td .fancy-suspend-half {
+        position: absolute;
+        width: 31%;
+        right: 31.5%;
+    }
+
+    #cssmenu > ul > li.casino-menu > a {
+        padding: 0px 0px 0px 11px;
+    }
+
+}
+
+@media only screen and (max-width: 1279px) {
+
+    .myaccount-section .col-lg-3.acc-balance {
+        padding: 0 15px !important;
+    }
+
+    .maintable-raju-block .container {
+        padding: 0px;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .main-header .container {
+        padding: 0px;
+    }
+
+    .maintable-raju-block .container {
+        padding: 0px;
+    }
+
+    .previlage_items:nth-child(5n) {
+        margin-right: 5px;
+    }
+
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .custom-table .favor-set {
+        background-position: 90%;
+    }
+
+    body {
+        padding-bottom: 40px;
+    }
+
+    .pagination-wrap .pageinput {
+        width: 100px;
+    }
+
+    .myaccount-section {
+        padding-bottom: 30px;
+    }
+
+    .myaccount-section .col-lg-3 {
+        padding-left: 0px !important;
+        padding-right: 0px;
+    }
+
+    .timeblock-box,
+    .datebox,
+    .timeblock-box ul {
+        flex-flow: wrap;
+    }
+
+    .datediv1 {
+        margin-top: 5px;
+    }
+
+    .twodiv-ireland {
+        margin-top: 10px;
+    }
+
+    .mainbalance-section {
+        height: 100%;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .main-header .container {
+        padding: 0px;
+    }
+
+    .acc-balance h2 {
+        font-size: 14px;
+    }
+
+    .acc-balance p {
+        font-size: 24px;
+    }
+
+    #cssmenu {
+        width: 10%;
+        position: inherit;
+    }
+
+    .risk-accordion .panel-default .panel_row .col-md-3 .r_title {
+        max-width: 100%;
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .risk-accordion .panel-default .panel_row .col-md-3 .r_title + div {
+        max-width: 100%;
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .middle-wraper {
+        overflow-y: auto;
+        height: calc(100vh - 115px);
+        padding-bottom: 14%;
+    }
+
+    .casinotrap-table {
+        padding-bottom: 0px;
+    }
+
+    .casino-video .videotitle {
+        min-width: 160px;
+        line-height: 15px;
+    }
+
+    .casino-video .casino_name {
+        font-size: 15px;
+    }
+
+    .casino-video .casino_video_rid {
+        font-size: 10px;
+    }
+
+    .casino-video .casinocards {
+        height: 100px;
+        width: 125px;
+    }
+
+    .casino-video .casinocards-container span img {
+        margin-right: 8px;
+        width: 29px;
+    }
+
+    .casino-video .casino-icons ul li {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+    }
+
+    .casino-video .casinolast_results {
+        width: 55px;
+        top: 40px;
+        height: 125px;
+    }
+
+    .casino-video .casinolast_results a,
+    .casino-video .casinolast_results span {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+
+    .andarbahar_table .casino-video .casinocards {
+        width: 180px;
+        height: 100px;
+    }
+
+    .andarbahar_table .casino-video .casinocards span img {
+        height: auto;
+        width: 28px;
+        margin-right: 0px;
+    }
+
+    .casino_rb_box .casinorb_items .casinorb_content img {
+        height: auto;
+        margin-left: 5px;
+        width: 25px;
+    }
+
+    .playerblock .casino_title_box .casinobox-item span {
+        font-size: 11px;
+    }
+
+    .card32b_table .casino-video .casinocards {
+        height: 220px;
+        width: 180px;
+        top: 55%;
+    }
+
+    .card32b_table .casino-video .casinocards-container span img {
+        width: 24px;
+    }
+
+    .card32b_table .casino-video .casinocards-container > div > div {
+        font-size: 10px;
+        margin-bottom: 0 !important;
+    }
+
+    .risk_matchodds_left .table > tbody > tr > td {
+        white-space: nowrap;
+        min-width: 55px;
+    }
+
+    .fancy-suspend-td .fancy-suspend-half {
+        position: absolute;
+        width: 31%;
+        right: 31.5%;
+    }
+    
+
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    body {
+        padding-bottom: 50px;
+    }
+
+    #cssmenu {
+        width: 10%;
+        position: inherit;
+    }
+
+    .block-remain span {
+        font-size: 11px;
+    }
+
+    .block-remain h4 {
+        font-size: 14px;
+    }
+
+    .custom-table .status-active {
+        display: flex;
+        align-items: center;
+        width: 61px;
+    }
+
+    .custom-table .favor-set {
+        background-position: 90%;
+    }
+
+    .pagination-wrap .pageinput {
+        width: 100px;
+    }
+
+    .myaccount-section {
+        padding-bottom: 30px;
+    }
+
+    .acc-balance h2 {
+        font-size: 13px;
+    }
+
+    .acc-balance p {
+        font-size: 24px;
+    }
+
+    .myaccount-section .col-lg-3 {
+        padding-left: 0px !important;
+        padding-right: 0px;
+    }
+
+    .timeblock-box,
+    .datebox,
+    .timeblock-box ul {
+        flex-flow: wrap;
+    }
+
+    .datediv1 {
+        margin-top: 5px;
+    }
+
+    .twodiv-ireland {
+        margin-top: 10px;
+    }
+
+    .balance-table tr th:nth-child(1),
+    .balance-table tr td:nth-child(1) {
+        white-space: nowrap;
+    }
+
+    .header-raj {
+        right: 95px;
+    }
+
+    .balance-table.custom-table {
+        width: 100%;
+        display: block;
+        overflow: auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .mainbalance-section {
+        height: 100%;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .main-header .container {
+        padding: 0px;
+    }
+
+    .match_form .profile-main .headdetail {
+        width: 40%;
+        display: inline-block;
+    }
+
+    .risk_matchodds_left .table > tbody > tr > td {
+        white-space: nowrap;
+        min-width: 80px;
+    }
+
+    .risk-accordion .panel-default .panel_row .col-md-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .casino_list_items {
+        width: 32%;
+    }
+
+    .casino_list_items:nth-child(3n) {
+        margin-right: 0;
+    }
+
+    .casino_list_items:nth-child(5n) {
+        margin-right: 10px;
+    }
+
+    .casino_right_side {
+        right: 10px;
+    }
+
+    .middle-wraper {
+        overflow-y: auto;
+        height: auto;
+        padding-bottom: 0;
+    }
+
+    .casinotrap-table {
+        padding-bottom: 0px;
+    }
+
+    .casino-video .videotitle {
+        min-width: 160px;
+        line-height: 15px;
+    }
+
+    .casino-video .casino_name {
+        font-size: 15px;
+    }
+
+    .casino-video .casino_video_rid {
+        font-size: 10px;
+    }
+
+    .casino-video .casinocards {
+        height: 100px;
+        width: 125px;
+    }
+
+    .casino-video .casinocards-container span img {
+        margin-right: 8px;
+        width: 29px;
+    }
+
+    .casino-video .casino-icons ul li {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+    }
+
+    .casino-video .casinolast_results {
+        width: 55px;
+        top: 40px;
+        height: 125px;
+    }
+
+    .casino-video .casinolast_results a,
+    .casino-video .casinolast_results span {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+
+    .andarbahar_table .casino-video .casinocards {
+        width: 180px;
+        height: 100px;
+    }
+
+    .andarbahar_table .casino-video .casinocards span img {
+        height: auto;
+        width: 28px;
+        margin-right: 0px;
+    }
+
+    .left-menuga {
+        position: relative;
+        width: 100%;
+    }
+
+    .middle-section {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        overflow-y: scroll !important;
+    }
+
+    .casino_right_side {
+        width: 100%;
+        right: 0;
+        top: 0;
+        position: relative;
+        height: auto;
+    }
+
+    .fancy-suspend-td .fancy-suspend-half {
+        width: 33.4%;
+        right: 33.5%;
+    }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+    .logo {
+        width: 50%;
+        margin-left: 8px;
+        display: flex;
+        align-items: center;
+    }
+    .top_header{ height: auto; }
+
+}
+
+@media only screen and (min-width:576px) and (max-width:991px) {
+
+    .current_modal .modal-xl,
+    .current_modal_1 .modal-dialog {
+        max-width: 500px;
+    }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 767px) {
+
+    .login-block {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        top: 0px;
+        width: 100%;
+        left: 0;
+        border-radius: 0px;
+    }
+
+    .loginleft-block {
+        width: 100%;
+        border-radius: 0px;
+        margin-bottom: 2.9985vmax;
+        padding: 22px 0 14px;
+        height: auto;
+    }
+
+    .loginleft-block img {
+        height: auto;
+        width: 100px;
+        margin-left: 10px;
+        margin-top: 0px;
+    }
+
+    .loginright-block {
+        margin: 30px 0;
+        width: 47.22639vmax;
+    }
+
+    .loginright-block h3 {
+        display: none;
+    }
+
+    .loginright-block .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .login-btn {
+        width: 100%;
+        border-radius: .89955vmax;
+        font-size: 2.24888vmax;
+        height: 44px;
+        line-height: 44px;
+        margin: 0;
+    }
+
+    .loginright-block .form-control {
+        height: 42px;
+        border-radius: .89955vmax;
+        font-size: 2.24888vmax;
+        box-shadow: inset 0 .53333vw 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .validation-txt {
+        position: absolute;
+        right: 14px;
+        width: 44px;
+        top: 13px;
+        font-size: 22px;
+    }
+
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .login-social-block {
+        top: 20px;
+        position: relative;
+        width: 100%;
+        left: 0px;
+        margin-left: 0px;
+    }
+
+    .twodiv-ireland {
+        margin-top: 10px;
+    }
+
+    .search-wrap .search-input {
+        width: 240px;
+    }
+
+    .casino_list_items {
+        width: 32%;
+    }
+
+    .casino_list_items:nth-child(3n) {
+        margin-right: 0;
+    }
+
+    .casino_list_items:nth-child(5n) {
+        margin-right: 10px;
+    }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+
+}
+
+@media only screen and (max-width: 767px) {
+
+    .findmember-section {
+        margin: 13px 0 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: wrap;
+    }
+
+    .remaining-wrap {
+        flex-flow: wrap;
+    }
+
+    .custom-table {
+        width: 100%;
+        display: block;
+        overflow: auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .custom-table .favor-set {
+        background-position: 90%;
+    }
+
+    .custom-table .status-active {
+        display: flex;
+        align-items: center;
+        width: 61px;
+    }
+
+    body {
+        padding-bottom: 50px;
+    }
+
+    .footer_fixed ul {
+        padding: 5px 0 10px;
+        overflow: auto;
+        width: 100%;
+    }
+
+    .footer_fixed ul p {
+        width: 40%;
+        white-space: nowrap;
+    }
+
+    .status-button ul {
+        width: 100%;
+        flex-flow: wrap;
+    }
+
+    .status-button ul li {
+        margin: 5px;
+    }
+
+    .block-remain {
+        width: 33.33%;
+        padding: 0 10px;
+        border-bottom: 1px solid #d2d2d2;
+        border-right: 1px solid #d2d2d2;
+        margin-bottom: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .block-remain:nth-child(3),
+    .block-remain:nth-child(6) {
+        border-right: 0px;
+        border-bottom: 1px solid #d2d2d2;
+    }
+
+    #cssmenu {
+        width: 10%;
+        position: inherit;
+    }
+
+    .pagination-wrap .pageinput {
+        width: 80px;
+    }
+
+    .myaccount-section {
+        padding-bottom: 30px;
+    }
+
+    .myaccount-section .col-lg-3 {
+        padding-right: 0px;
+        padding-left: 0px !important;
+    }
+
+    .myaccount-section .col-lg-9 {
+        margin-bottom: 30px;
+    }
+
+    .left-menu {
+        margin-bottom: 30px;
+    }
+
+    .profile-wrap .col-md-6 {
+        padding: 0px !important;
+        margin-bottom: 15px;
+    }
+
+    .acc-statement .custom-table tr td,
+    .acc-statement .custom-table tr th {
+        width: 100%;
+        white-space: nowrap;
+    }
+
+    .profit-section {
+        padding-bottom: 40px;
+    }
+
+    .timeblock-box,
+    .datebox,
+    .timeblock-box ul {
+        flex-flow: wrap;
+    }
+
+    .datediv1,
+    .datediv2 {
+        margin-top: 5px;
+    }
+
+    .datediv {
+        margin: 0px 2px 0px 0px;
+    }
+
+    .timeblock-box ul li {
+        margin-bottom: 5px;
+    }
+
+    #market-table .custom-table tr td:first-child,
+    #market-table .custom-table tr th:first-child {
+        width: 300px;
+    }
+
+    #market-table .custom-table tr td:nth-child(2),
+    #market-table .custom-table tr th:nth-child(2) {
+        width: 100px;
+    }
+
+    #market-table .custom-table tr td:nth-child(3),
+    #market-table .custom-table tr th:nth-child(3) {
+        width: 100px;
+    }
+
+    .multiple-radiobtn {
+        padding: 10px 0;
+    }
+
+    .timeblock-box select.form-control.timezone-select {
+        width: auto;
+    }
+
+    .caption-highlight {
+        width: 100%;
+    }
+
+    .betlistlive-block .custom-table tr th {
+        width: 100px;
+    }
+
+    .table.risk-table {
+        width: 100%;
+        display: block;
+        overflow: auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .inner-title-2 h2 {
+        font-size: 14px;
+    }
+
+    .irland-right,
+    .irland-left {
+        display: none;
+    }
+
+    .irland-block {
+        width: 100%;
+        height: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
+    }
+
+    .balance-table tr th:nth-child(1),
+    .balance-table tr td:nth-child(1) {
+        white-space: nowrap;
+    }
+
+    .header-raj {
+        font-size: 12px;
+        position: absolute;
+        right: 95px;
+        top: 8px;
+        float: right;
+    }
+
+    .mainbalance-section {
+        height: 100%;
+    }
+
+    #downline-table .custom-table tr td:first-child {
+        width: 220px;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .main-header .container {
+        padding: 0px;
+    }
+
+    .myaccount-section .col-lg-9 {
+        padding: 0px;
+    }
+
+    .myaccount-section .col-lg-3.acc-balance {
+        padding: 0 15px !important;
+    }
+
+    .maintable-raju-block .container {
+        padding: 0px;
+    }
+
+    .custom-table tr th {
+        width: 150px;
+    }
+
+    table.dataTable {
+        display: block;
+        overflow: auto;
+    }
+
+    .card-body {
+        padding: .5rem
+    }
+
+    .profile-wrap .col-lg-12 {
+        padding: 0;
+    }
+
+    .match_form .profile-main .headdetail {
+        width: 40%;
+        display: inline-block;
+    }
+
+    .fir-col1 {
+        width: 100%;
+    }
+
+    .fir-col2 {
+        width: 28.33%;
+    }
+
+    .fir-col3 {
+        width: 10%;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .myaccount-section .col-md-12 {
+        padding-right: 0px;
+        padding-left: 0px !important;
+    }
+
+    .risk-table-1 {
+        display: block;
+        overflow: auto;
+    }
+
+    .risk_matchodds_left .table-responsive:first-child .table > tbody > tr > td:first-child {
+        padding: 5px 30px 5px 5px;
+    }
+
+    .risk_matchodds_left .table > tbody > tr > td {
+        white-space: nowrap;
+        min-width: 60px;
+    }
+
+    .chpassword-block .chpasscontent-block .login-btn {
+        width: 100%;
+        border-radius: 4px;
+        font-size: 15px;
+        height: 38px;
+        line-height: 36px;
+        margin: 8px 0 0;
+    }
+
+    .left-menuga {
+        position: relative;
+        width: 100%;
+    }
+
+    .middle-section {
+        margin: 0;
+        padding: 0;
+    }
+
+    .middle-wraper {
+        overflow: hidden;
+        height: auto;
+        padding-bottom: 5%;
+    }
+
+    .our_casino_list {
+        padding: 10px 0px 0 0px;
+    }
+
+    body {
+        overflow-y: scroll !important;
+    }
+
+    .casino_right_side {
+        width: 100%;
+        right: 0;
+        top: 0;
+        position: relative;
+        height: auto;
+    }
+
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .casino-video .videotitle {
+        left: 0px;
+        top: 0px;
+        padding: 6px;
+        min-width: 120px;
+        line-height: 12px;
+    }
+
+    .casino-video .casino_name {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .casino-video .casino_video_rid {
+        font-weight: 700;
+        font-size: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .casino-video .casinocards {
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 5px 10px 5px 5px;
+        height: 75px;
+        width: 95px;
+    }
+
+    .casino-video .casinocards_shuffle {
+        right: 3px;
+        top: 50%;
+        font-size: 20px;
+        transform: translateY(-50%);
+    }
+
+    .casino-video .casinocards-container span img {
+        margin-right: 8px;
+        width: 22px;
+    }
+
+    .casino-video .casino-icons ul li {
+        height: 25px;
+        width: 25px;
+        font-size: 14px;
+    }
+
+    .casino-video .casinolast_results {
+        top: 30px;
+        right: 5px;
+        width: 50px;
+        height: 146px;
+    }
+
+    .casino-video .casinolast_results a,
+    .casino-video .casinolast_results span {
+        width: 22px;
+        margin-left: 2px;
+        margin-top: 2px;
+        height: 22px;
+        line-height: 22px;
+    }
+
+    .playerblock .player_left,
+    .playerblock .player_right {
+        width: 100%;
+    }
+
+    .casino-video .casino-icons ul li.resicon {
+        display: none;
+    }
+
+    .baccarat_bets_block {
+        width: 100%;
+    }
+
+    .baccarat_bets_block .baccarat_odds .baccarat_odds_items {
+        margin-right: 5px;
+    }
+
+    .baccarat_bets .player_pair_box {
+        margin-right: 2px;
+        width: 15%;
+        height: 60px;
+    }
+
+    .baccarat_bets .player_pair_box .baccarat_bets_name {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .baccarat_bets .player_box,
+    .baccarat_bets .banker_box {
+        width: 35%;
+        height: 90px;
+    }
+
+    .baccarat_bets .baccarat_bets_name {
+        line-height: 14px;
+        font-size: 10px;
+    }
+
+    .baccarat_bets .player_box .baccarat_bets_name {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .baccarat_bets .banker_pair_box {
+        margin-left: 2px;
+        width: 15%;
+        height: 60px;
+    }
+
+    .baccarat_bets .banker_pair_box .baccarat_bets_name,
+    .baccarat_bets .banker_box .baccarat_bets_name {
+        border-radius: 0px 4px 4px 0px;
+    }
+
+    .baccarat_bets .tie_box {
+        width: 90px;
+        height: 90px;
+        top: 0;
+    }
+
+    .baccarat_bets .baccarat_bets_name img {
+        height: 20px;
+    }
+
+    .l_rotate img {
+        margin-right: 3px;
+    }
+
+    .r_rotate img {
+        margin-left: 3px;
+    }
+
+    .baccarat_bets .banker_box .baccarat_bets_name {
+        padding-right: 5px;
+    }
+
+    .baccarat_bets .player_pair_box .baccarat_bets_name.suspended-txt::after,
+    .baccarat_bets .player_box .baccarat_bets_name.suspended-txt::after {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .baccarat_bets .banker_pair_box .baccarat_bets_name.suspended-txt::after,
+    .baccarat_bets .banker_box .baccarat_bets_name.suspended-txt::after {
+        border-radius: 0 4px 4px 0;
+    }
+
+    .casino_dragontiger_block .dragon_box,
+    .casino_dragontiger_block .tiger_box {
+        width: 50%;
+    }
+
+    .casino_dragontiger_block .dragon_box {
+        padding-right: 35px;
+    }
+
+    .casino_dragontiger_block .tiger_box {
+        padding-left: 35px;
+    }
+
+    .casino_dragontiger_block .dragon_box .dflex_book b,
+    .casino_dragontiger_block .tiger_box .dflex_book b,
+    .dragon2_table .casino-videodetails,
+    .casino_dragontiger_block .tiger_box .dflex_odds b,
+    .casino_dragontiger_block .dragon_box .dflex_odds b {
+        font-size: 12px;
+    }
+
+    .casino_dragontiger_block .tie_box {
+        width: 70px;
+        height: 70px;
+        left: 50%;
+        top: 15px;
+    }
+
+    .casino_dragontiger_block .tie_box > b {
+        font-size: 18px;
+        margin-bottom: 3px;
+        line-height: 1;
+    }
+
+    .casino_dragontiger_block .tie_box .dflex_odds {
+        line-height: 1;
+    }
+
+    .casino_dragontiger_block .pair_box {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .dragon2_table .casino-video .casinocards {
+        width: 70px;
+        height: 40px;
+    }
+
+    .dragon2_table .casino-video .casinocards-container span img {
+        margin-right: 5px;
+        width: 22px;
+    }
+
+    .andarbahar_block .andar_card_box,
+    .andarbahar_block .bahar_card_box {
+        width: 100%;
+    }
+
+    .andarbahar_block .andar_card_box {
+        margin-bottom: 10px;
+    }
+
+    .andarbahar_table .casino-video .casinocards {
+        width: 110px;
+        height: 80px;
+        top: 50%;
+    }
+
+    .andarbahar_table .casino-video .casinocards span img {
+        height: auto;
+        width: 20px;
+        margin-right: 5px;
+    }
+
+    .card32b_table .casino-video .casinocards {
+        height: 140px;
+        width: 120px;
+        top: 60%;
+    }
+
+    .card32b_table .casino-video .casinocards-container span img {
+        width: 15px;
+    }
+
+    .card32b_table .casino-video .casinocards .casinocards-container .dealer_name {
+        margin-bottom: 2px !important;
+    }
+
+    .card32b_table .casino-video .casinocards-container .rowcards {
+        margin-bottom: 0;
+    }
+
+    .card32_extrabox.playerblock .casinobox-item {
+        width: calc(20% - 4px);
+    }
+
+    .card32_results .casino-result-cards-item {
+        margin-right: 0px;
+    }
+
+    .card32_results .casino-result-cards-item .winner_icon {
+        width: 50px;
+        height: auto;
+        position: absolute;
+        right: 0;
+        top: auto;
+        bottom: 0;
+    }
+
+    .card32b_table .casino-video .casinocards .casinocards-container .dealer_name {
+        font-size: 10px;
+        line-height: 10px;
+    }
+
+    .card32b_table .casino-video .casinocards-container > div {
+        margin-bottom: 0px;
+    }
+
+    .mobile_res_data .casinolast_results {
+        text-align: center;
+    }
+
+    .casinolast_results a,
+    .casinolast_results span {
+        width: 35px;
+        margin-top: 5px;
+        border-radius: 4px;
+        height: 35px;
+        text-align: center;
+        line-height: 35px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 13px;
+        background: #000;
+        margin-left: 8px;
+        display: inline-block;
+    }
+
+    .mobile_res_data .casinolay_bettitle {
+        padding: 8px;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .casinotrap-table {
+        padding-bottom: 0px;
+    }
+
+    .row1 > [class*=col-],
+    .row1 > [class*=col] {
+        padding: 0 5px;
+    }
+
+    .casino-result-cards-item {
+        margin-right: 3px;
+    }
+
+    .casino-video .video-block {
+        padding-bottom: 60%;
+    }
+
+    .fancy-suspend-td .fancy-suspend-half {
+        width: 31.5%;
+        right: 121px;
+    }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+    .logo {
+        width: 70%;
+        margin-left: 8px;
+        display: flex;
+        align-items: center;
+    }
+
+
+}
+
+@media only screen and (max-width: 576px) {
+
+    .login-block {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        top: 0px;
+        height: auto;
+        box-shadow: none;
+        width: 100%;
+        left: 0px;
+        border-radius: 0px;
+    }
+
+    .loginleft-block {
+        width: 100%;
+        position: relative;
+        height: 285px;
+        background-size: 100% 100%;
+        background-position: center;
+        border-radius: 0px;
+    }
+
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .login-social-block {
+        top: 20px;
+        position: relative;
+        width: 100%;
+        left: 0px;
+        margin-left: 0px;
+    }
+
+    .loginleft-block img {
+        height: auto;
+        width: 185px;
+        margin-left: 0px;
+        margin-top: 0;
+    }
+
+    .loginright-block {
+        width: 84vw;
+        margin: 12vw auto 12vw;
+    }
+
+    .loginright-block h3 {
+        display: none;
+    }
+
+    .loginright-block .form-group {
+        width: 100%;
+    }
+
+    .loginright-block .form-control {
+        height: 39px;
+        border-radius: 1.6vw;
+    }
+
+    .login-btn {
+        width: 100%;
+    }
+
+    .account-wrap {
+        display: flex;
+        align-items: flex-start;
+        flex-flow: column;
+        padding-right: 5px;
+    }
+
+    .logo {
+        width: 50%;
+        margin-left: 8px;
+        display: flex;
+        align-items: center;
+    }
+
+    #cssmenu {
+        width: 35px;
+        position: inherit;
+    }
+
+    .twodiv-ireland {
+        flex-flow: wrap;
+    }
+
+    .ireland-txt {
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .timeblockireland {
+        padding: 5px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .balance-block {
+        flex-flow: wrap;
+    }
+
+    .balance-block .search-wrap {
+        margin-left: 0;
+        margin-top: -6px;
+        margin-bottom: 10px;
+        width: 310px;
+    }
+
+    .balance-block .search-wrap div {
+        position: relative;
+        width: 280px;
+    }
+
+    .downlind-modal .modal-content .modal-header h4 {
+        font-size: 14px;
+    }
+
+    .clear-block {
+        flex-flow: wrap;
+    }
+
+    .clear-block .clearinput {
+        margin-left: 0;
+        text-align: center;
+        margin-top: 5px;
+        width: 100%;
+    }
+
+    .clear-block .clearinput .form-control {
+        margin-bottom: 5px;
+    }
+
+    .ireland-txt::after {
+        display: none;
+    }
+
+    .search-wrap {
+        margin-bottom: 10px;
+    }
+
+    .profile-detail .headlabel {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .match_form .profile-main .headdetail {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .downline-block {
+        flex-flow: column;
+    }
+
+    .chpassword-block {
+        width: 100%;
+        top: 0;
+        border-radius: 0;
+    }
+
+    .chpassword-block .chpasscontent-block > div {
+        width: 100%;
+    }
+
+    .chpassword-block .chpasscontent-block {
+        flex-flow: column-reverse;
+    }
+
+    .chpassword-block .chpasscontent-block ul {
+        padding-top: 25px;
+    }
+
+    .casino_list_items {
+        width: 31%;
+    }
+
+    .casino_list_items:nth-child(5n) {
+        margin-right: 10px;
+    }
+
+    .casino_list_items:nth-child(3n) {
+        margin-right: 0px;
+    }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+    .policy-link{ color: rgba(0,0,0,0.5); text-align: center; margin-bottom: 25px; }
+    .policy-link li{ display: inline-block; font-size: 3.46667vw; line-height: 1.3; }
+    .policy-link li:before {
+        margin: 0 0.4vw;
+        content: "|";
+    }
+    .policy-link li:first-child:before {
+        content: '';
+    }
+}
+
+@media only screen and (max-width: 480px) {
+
+    .block-remain {
+        width: 50%;
+        padding: 0 10px;
+        border-bottom: 1px solid #d2d2d2;
+        border-right: 1px solid #d2d2d2;
+        margin-bottom: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .block-remain:nth-child(even) {
+        border-right: 0px;
+        border-bottom: 1px solid #d2d2d2;
+    }
+
+    .datediv1 {
+        width: 75%;
+        flex-flow: wrap;
+    }
+
+    .block-remain:nth-child(3) {
+        border-right: 1px solid #d2d2d2;
+    }
+
+    .fir-col2 {
+        width: 33.33%;
+    }
+
+    .teenpatti20_results .casino-result-cards {
+        padding-top: 50px;
+    }
+
+    .teenpatti20_results .casino-result-cards-item .winner_icon {
+        position: absolute;
+        left: 30%;
+        top: 0;
+    }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+
+}
+
+@media only screen and (max-width: 480px) {
+    
+}
+
+@media only screen and (max-width: 458px) {
+
+    .search-wrap {
+        margin-bottom: 10px;
+    }
+
+    .timeblock-box select.form-control.timezone-select {
+        width: 68%;
+    }
+
+    .right-logout li {
+        padding: 0 5px;
+        font-size: 11px;
+    }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+
+}
+
+@media only screen and (max-width: 360px) {}
