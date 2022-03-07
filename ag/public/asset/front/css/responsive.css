@@ -1,0 +1,2162 @@
+@media only screen and (min-width: 1800px) {
+
+    .itemslider {
+        height: 100%;
+    }
+
+}
+
+@media only screen and (min-width: 1500px) and (max-width: 1799px) {
+
+    .itemslider {
+        height: 100%;
+    }
+
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1365px) {
+    .betslip_box .col-stake_list ul li {
+        width: 16.667%;
+        padding: 0 3px;
+    }
+
+    .betslip_box .col-stake_list ul li a {
+        padding: 0;
+        width: 100%;
+    }
+
+    .left-menuga ul li a:first-child {
+        width: 84%;
+    }
+    .new_casino .casino_list_items img{ height: 150px; }
+    .new_casino .casino_list_items:first-child img{ height: 150px; }
+    .lefthead-logo{ width: 60%; }
+}
+
+@media only screen and (max-width: 1279px) {  }
+
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+
+    .logo {
+        width: 140px;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .fir-col1,
+    .fir-col1-green {
+        width: 100% !important;
+    }
+
+    .fir-col2 {
+        width: 15%;
+    }
+
+    .foter-links {
+        width: 100%;
+    }
+
+    .middle-wraper {
+        padding-bottom: 20%;
+    }
+
+    .bet-stake-block ul {
+        width: 55%;
+        margin-left: 5%;
+    }
+
+    .bet-stake-block h4 {
+        font-size: 11px;
+    }
+
+    .betslip_head li.col-odd {
+        width: 27.706%;
+    }
+
+    .betslip_head li.col-stake {
+        width: 17.176%;
+    }
+
+    .betslip_head li.col-profit {
+        width: 19.118%;
+    }
+
+    .submit-btn {
+        width: 120px;
+    }
+
+    .betslip_box .col-odd {
+        width: 21.124%;
+    }
+
+    .betslip_box .col-stake {
+        width: 18.537%;
+    }
+
+    .betslip_box .col-profit {
+        width: 13.751%;
+    }
+
+    .minmax-txt {
+        left: 0px;
+        position: relative;
+    }
+
+    .left-menuga ul li a:first-child {
+        width: 80%;
+    }
+
+    .betslip_box .col-stake_list ul li {
+        width: 16.667%;
+        padding: 0 3px;
+    }
+
+    .betslip_box .col-stake_list ul li a {
+        padding: 0;
+        width: 100%;
+    }
+
+    .casino_right_side {
+        width: 26.0417%;
+    }
+
+    .playerblock .player_left,
+    .playerblock .player_right {
+        width: 100%;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table tr td:nth-child(n+2) {
+        width: 80px;
+        text-align: center;
+        padding: .3rem 1.5rem;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table tr td.zeroopa1 {
+        padding: .3rem 1.5rem .3rem .5rem;
+        width: 80px;
+    }
+
+    #inplay-tableblock-fancy.table tr:nth-child(n+3) td {
+        white-space: nowrap;
+        width: 100%;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table .modal .modal-body table.table tr td:last-child {
+        display: table-cell;
+        min-width: 100%;
+        padding: .75rem;
+        width: auto;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table .modal .modal-body table.table tr td {
+        padding: .75rem;
+        width: auto;
+    }
+
+    .casino-video .videotitle {
+        min-width: 170px;
+        line-height: 16px;
+    }
+
+    .casino-video .casino_name {
+        font-size: 16px;
+    }
+
+    .casino-video .casino_video_rid {
+        font-size: 11px;
+    }
+
+    .casino-video .casinocards {
+        width: 130px;
+        height: 100px;
+    }
+
+    .casino-video .casinocards-container span img {
+        margin-right: 5px;
+        width: 30px;
+    }
+
+    .casino-video .casino-icons ul li {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+    }
+
+    .casino-video .casinolast_results {
+        top: 40px;
+    }
+    
+    .card32b_table .casino-video .casinocards {
+        height: 220px;
+        width: 180px;
+        top: 55%;
+    }
+
+    .card32b_table .casino-video .casinocards-container span img {
+        width: 24px;
+    }
+
+    .card32b_table .casino-video .casinocards-container > div > div {
+        font-size: 10px;
+        margin-bottom: 0 !important;
+    }
+    .new_casino .casino_list_items img{ height: 120px; }
+    .new_casino .casino_list_items:first-child img{ height: 120px; }
+    .new_casino .casino_list_items .entrance-title dt{ font-size: 12px; }
+    .new_casino .casino_list_items .entrance-title dd{ width: 70px; font-size: 10px; } 
+
+}
+
+
+@media only screen and (max-width:991px) {
+
+    .toprisk-block {
+        background: none;
+    }
+
+    .match-track-block + .inplay-tableblock#inplay-tableblock {
+        border-top: 0px;
+        padding: 0;
+        background: #fff;
+    }
+
+    .summery-table .table tr th {
+        white-space: nowrap;
+        width: 20%;
+    }
+
+    .home-carousel.owl-carousel .owl-dots {
+        display: none;
+    }
+
+    .match-tracktop h4 {
+        white-space: nowrap;
+        overflow: hidden;
+        letter-spacing: .2px;
+        text-transform: uppercase;
+        width: auto;
+        word-spacing: -2px;
+    }
+
+    .match-tracktop h4 span {
+        display: none;
+    }
+
+    .match-tracktop .three-tag {
+        padding: 0 10px 5px;
+    }
+
+    .twodiv-ireland .timeblockireland,
+    .twodiv-ireland .minmax-txt {
+        display: none;
+    }
+
+    .ireland-txt {
+        text-align: center;
+        overflow: hidden;
+        border-radius: 20px;
+        padding: 0px 10px;
+        height: auto;
+        color: #1e1e1e;
+        background-image: linear-gradient(-180deg, #ffb80c 15%, #ffa00c 100%);
+        border: 1px solid rgba(51, 51, 51, 0.3);
+    }
+
+    .rightblock-games {
+        width: 100%;
+        position: relative;
+    }
+
+    .left-menuga {
+        display: none;
+    }
+
+    .middle-section {
+        margin: 0;
+        padding: 0px 0 70px;
+    }
+
+    .middle-wraper {
+        height: 100%;
+        padding-bottom: 0;
+    }
+
+    body {
+        overflow-y: auto !important;
+    }
+
+    table.table {
+        margin-bottom: 0px;
+        z-index: 1;
+    }
+
+    .betslip_box .betn {
+        position: relative;
+        width: 43.5% !important;
+        font-weight: 700;
+        padding-left: 5px;
+        display: inline-block;
+    }
+
+    .betslip_box .col-odd {
+        width: 14.12429% !important;
+        padding: 5px 0;
+        line-height: 22px;
+        display: inline-block;
+    }
+
+    .betslip_box .col-stake {
+        width: 15.53672% !important;
+        padding: 5px 0 5px 5px;
+        line-height: 22px;
+        display: inline-block;
+    }
+
+    .betslip_box .col-profit {
+        width: 23.751% !important;
+        padding: 5px;
+        display: inline-block;
+    }
+
+    .inplay-tableblock#inplay-tableblock .backall img,
+    .inplay-tableblock#inplay-tableblock .layall img {
+        /*display: none;*/
+    }
+
+    .inplay-tableblock#inplay-tableblock .backall span,
+    .inplay-tableblock#inplay-tableblock .layall span {
+       /* position: relative;*/
+        left: 0;
+        top: 0;
+    }
+
+    #inplay-tableblock .table.inplay-table tr:first-child td {
+        border: 0;
+    }
+
+    .twodiv-ireland {
+        padding: 10px 10px 5px;
+    }
+
+    .secondblock-cricket .fir-col1 div,
+    .secondblock-cricket .fir-col1-green div {
+        width: auto;
+        font-size: 11px;
+        margin-right: 5px;
+    }
+
+    .secondblock-cricket .fir-col1 a,
+    .secondblock-cricket .fir-col1-green a {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .secondblock-cricket .fir-col1,
+    .secondblock-cricket .fir-col1-green {
+        flex-wrap: wrap;
+        flex-wrap: wrap-reverse;
+    }
+
+    .secondblock-cricket .fir-col1 a span,
+    .secondblock-cricket .fir-col1-green a span {
+        font-size: 11px;
+        font-weight: 400;
+        font-family: 'Tahoma', Helvetica, sans-serif;
+    }
+
+    .firstblock-cricket {
+        display: none;
+    }
+
+    .maintabs ul.nav-tabs {
+       /* display: none;*/
+    }
+
+    .maintabs {
+        margin-top: 0;
+    }
+
+    .maintabs .highligths-txt {
+        background: linear-gradient(180deg, #2a3a43 27%, #1c282d 83%);
+        color: #fff !important;
+        text-align: center;
+    }
+
+    .secondblock-cricket .fir-col2 {
+        display: none;
+    }
+
+    .secondblock-cricket .fir-col1 .game-fancy,
+    .secondblock-cricket .fir-col1-green .game-fancy {
+        position: relative;
+        width: max-content;
+    }
+
+    .lefthead-logo,
+    .righthead-login2 ul li.dropdown {
+        display: none;
+    }
+
+    .righthead-login2 ul {
+        flex-flow: wrap;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 5px;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+
+    .top_header .righthead-login2 ul li.li-tv_bet {
+        width: 18%;
+        display: flex;
+    }
+
+    .top_header .righthead-login2 ul li.li-tv_bet a {
+        justify-content: center;
+    }
+
+    .top_header .righthead-login2 ul li a {
+        align-items: center;
+        width: auto;
+        padding: 5px 8px 5px 8px;
+        height: 36px;
+        line-height: normal;
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+        display: flex;
+        position: relative;
+        border-radius: 4px;
+        z-index: 99;
+        background: rgba(51, 51, 51, 0.4);
+        border: 1px solid #000;
+        color: #ffb80c;
+        flex: 1 1 100%;
+    }
+
+    .top_header .righthead-login2 ul li a:hover {
+        color: #ffb80c;
+    }
+
+    .top_header .righthead-login2 ul li a.a-open_tv {
+        border-color: #062a2e;
+        background-color: #0a7b89;
+        border-radius: 0px;
+        flex: 1 1 50px;
+        padding: 5px 5px;
+    }
+
+    .top_header .righthead-login2 ul li a.a-open_tv img {
+        margin-right: 0px;
+    }
+
+    .top_header .righthead-login2 ul li a:nth-child(2) {
+        border-radius: 0px 4px 4px 0px;
+        border-left: 0px;
+    }
+
+    .top_header .righthead-login2 ul li.mobile_balance {
+        width: 55%;
+    }
+
+    .top_header .righthead-login2 ul li.mobile_balance a {
+        padding: 5px 38px 5px 8px;
+        background: rgba(255, 255, 255, 0.15);
+        align-items: center;
+    }
+
+    .top_header .righthead-login2 ul li.li-tv_bet img {
+        margin-right: 8px;
+    }
+
+    .top_header .righthead-login2 ul li p:first-child {
+        margin-right: 8px;
+    }
+
+    .top_header .righthead-login2 ul li span:first-of-type {
+        opacity: 0.7;
+        font-weight: normal;
+        margin-right: 5px;
+    }
+
+    .top_header .righthead-login2 ul li .refimg:first-of-type {
+        width: 38px;
+        height: 34px;
+        line-height: 31px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        object-fit: contain;
+        border-left: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 0 4px 4px 0;
+        box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 50%);
+        opacity: 1;
+        text-align: center;
+        margin: 0px;
+    }
+
+    .top_header .righthead-login2 ul li {
+        box-shadow: 0 4px 5px rgb(0 0 0 / 50%);
+    }
+
+    .righthead-login2 ul li.mobile_balance .refimg img {
+        margin-top: 0;
+    }
+
+    .righthead-login2 {
+        width: 100%;
+    }
+
+    .top_header {
+        height: auto;
+    }
+
+    .mobilemenu nav {
+        display: block;
+    }
+
+    .mobile_logo.lefthead-logo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0 8px;
+    }
+
+    .mobile_logo.lefthead-logo .logo {
+        margin-left: 0;
+    }
+
+    .mobile_logo.lefthead-logo .loginbtn1 {
+        background-image: linear-gradient(-180deg, #f72424 0%, #bb1c00 100%);
+        border: 0.26667vw solid #710b0b;
+        border-radius: 1.06667vw;
+        margin-top: 0.26667vw;
+        cursor: pointer;
+        width: auto;
+        height: auto;
+        padding: 2px 20px;
+    }
+
+    .mobile_logo.lefthead-logo .loginbtn1 img {
+        width: 14px;
+        vertical-align: text-bottom;
+    }
+
+    .container-fluid {
+        padding: 0;
+    }
+
+    .foter-wraper {
+        margin: 20px 0;
+        padding-top: 0;
+        border-top: 0px;
+    }
+
+    .top_header {
+        background: linear-gradient(-180deg, #414141 0%, #000 100%);
+    }
+
+    .bottom-header {
+        display: none;
+    }
+
+    .rightblock-games {
+       display: none; 
+    }
+
+    .browser-wraper {
+        display: none;
+    }
+
+    .extrab_wrap {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100px;
+    }
+
+    .extrab_wrap .brand-wrap {
+        width: 100px;
+        margin: 0 10px 0px 0;
+    }
+
+    .extrab_wrap .brand-wrap h3 {
+        line-height: 12px;
+    }
+
+    .extrab_wrap .brand-wrap img {
+        width: 85px;
+    }
+
+    .foter-links {
+        width: 100%;
+        border-top: 0px;
+        padding-top: 0;
+    }
+
+    .foter-links ul li {
+        margin-bottom: 0;
+    }
+
+    .foter-links ul li:first-child::before,
+    .foter-links ul li::after {
+        margin: 0;
+        content: '|';
+    }
+
+    .news-addvertisment {
+        margin: 0px;
+    }
+
+    #inplay-tableblock table.table tr.betstr td:first-child {
+        opacity: 0;
+    }
+
+    #inplay-tableblock table.table tr.white-bg td:nth-child(2),
+    #inplay-tableblock table.table tr.white-bg td:nth-child(3),
+    #inplay-tableblock table.table tr.white-bg td:nth-child(6),
+    #inplay-tableblock table.table tr.white-bg td:nth-child(7),
+    #inplay-tableblock table.table tr.betstr td:nth-child(2),
+    #inplay-tableblock table.table tr.betstr td:last-child {
+        display: none;
+    }
+
+    #inplay-tableblock-bookmaker.table tr.white-bg:nth-child(n+4) td:nth-child(2),
+    #inplay-tableblock-bookmaker.table tr.white-bg:nth-child(n+4) td:nth-child(3),
+    #inplay-tableblock-bookmaker.table tr.white-bg:nth-child(n+4) td:nth-child(6),
+    #inplay-tableblock-bookmaker.table tr.white-bg:nth-child(n+4) td:nth-child(7),
+    #inplay-tableblock-bookmaker.table tr.bets-fancy td:last-child {
+        display: none;
+    }
+
+    #inplay-tableblock-fancy.table tr.white-bg td:last-child {
+        display: none;
+    }
+
+    .cricket-bg {
+        margin-bottom: 0px;
+    }
+
+    #inplay-tableblock .table tbody tr td:nth-child(1) {
+        width: 100%;
+    }
+
+    .pagetitle h1 {
+        padding: 6px 10px 0;
+    }
+
+    .dashboard-right-pannel {
+        padding-bottom: 65px;
+    }
+
+    .in_play_tabs {
+        padding: 0 10px;
+    }
+
+    .in_play_tabs-2 .nav-tabs {
+        flex-flow: row;
+        overflow-y: hidden;
+    }
+
+    #inplay-tableblock .inplay-table.table.w1-table tr.fancy-suspend-tr td {
+        padding: 0 !important;
+    }
+
+    #inplay-tableblock-bookmaker.table tr:nth-child(n+3) td {
+        width: 8.5%;
+    }
+
+    #inplay-tableblock-bookmaker.cricket-table1 tr td.padding3 {
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: .3rem !important;
+    }
+
+    #inplay-tableblock-fancy.table tr:nth-child(n+3) td:first-child {
+        white-space: nowrap;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 10px;
+    }
+
+    #inplay-tableblock-bookmaker.table tr td .back-gradient div,
+    #inplay-tableblock-bookmaker.table tr td .lay-gradient div {
+        width: 100%;
+        min-width: 70px;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table tr td:nth-child(n+2) {
+        width: 8.5%;
+        text-align: center;
+        padding: .3rem;
+        min-width: 70px;
+    }
+
+    .fancy_info {
+        display: none;
+    }
+
+    #inplay-tableblock-fancy.table {
+        margin-top: 20px;
+    }
+
+    #inplay-tableblock-bookmaker.table tr.bets-fancy td:nth-child(3) {
+        border-left: 0px;
+    }
+
+    #inplay-tableblock-bookmaker.table tr.bets-fancy td:nth-child(2) img,
+    #inplay-tableblock-bookmaker.table tr.bets-fancy td:nth-child(3) img {
+        /*display: none;*/
+    }
+
+    #inplay-tableblock-bookmaker.table tr.bets-fancy td:nth-child(2) span,
+    #inplay-tableblock-bookmaker.table tr.bets-fancy td:nth-child(3) span {
+       /* position: relative;*/
+        left: 0;
+        top: 0;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table .modal .modal-body table.table tr td:last-child {
+        display: table-cell;
+        min-width: 100%;
+        padding: .75rem;
+        width: auto;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table .modal .modal-body table.table tr td {
+        padding: .75rem;
+        width: auto;
+    }
+    
+    .mobile_res_data .casinolay_bettitle {
+        padding: 8px;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 13px;
+    }
+    .opacity-1{ opacity: 1 !important; }
+    .opacity-0{ opacity: 0 !important; }
+    .seldisplay{ display: none !important }
+    .minmax-txt{ text-align: left; }
+    .minmaxmobile{ display: block !important;  width: 60% !important; color: #000000; font-weight: bold; }
+    #betmobileModal.modal .modal-header{ padding: 0.1rem 0.5rem; }
+    #betmobileModal.modal .modal-header .modal-title{ font-size: 1rem; }
+    #betmobileModal.modal .modal-body{ padding: 1rem 0; }
+    #betmobileModal.modal .modal-body .btn-wrap li:nth-child(2) { text-align: right;  }
+    #betmobileModal .col-4{ padding: 5px 5px; }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+
+    #cssmenu {
+        width: 20px;
+        position: inherit;
+    }
+
+    .logo {
+        width: 77%;
+        margin-left: 8px;
+    }
+
+    .search-wrap .search-input {
+        width: 150px;
+    }
+
+    .righthead-login li .form-control {
+        width: 100px;
+        font-size: 11px;
+    }
+
+    .righthead-login li .validation-txt {
+        right: -3px;
+        font-size: 14px;
+    }
+
+    .highlight-red {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+    }
+
+    .barsicon a img {
+        margin-top: -3px;
+    }
+
+    .maintabs ul.nav-tabs .nav-link {
+        width: 100px;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .fir-col1,
+    .fir-col1-green {
+        width: 100% !important;
+    }
+
+    .fir-col2 {
+        width: 22%;
+    }
+
+    .fir-col3 {
+        width: 8%;
+    }
+
+    .social-block .tab-content .tab-pane {
+        text-align: center;
+    }
+
+    .foter-links {
+        width: 100%;
+    }
+
+    /*.middle-wraper {
+        padding-bottom: 25%;
+    }*/
+
+    .bet-stake-block {
+        left: 1.3%;
+        width: 97.5%;
+    }
+
+    .clickbet-block .modal-dialog {
+        margin: -6% auto 0;
+    }
+
+    .in_play_tabs {
+        margin-bottom: 40px;
+    }
+
+    .righthead-login {
+        height: 90%;
+    }
+
+    .righthead-login li:nth-child(3) .form-control {
+        width: 120px;
+    }
+
+    .left-menuga ul li a:first-child {
+        width: 75%;
+    }
+
+    .custom-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .inplay-tableblock table.table tr td {
+        padding: .5rem .75rem !important;
+    }
+
+    .inplay-table.table .betstr td {
+        width: 100px;
+        padding: 0 !important;
+    }
+
+    .minmax-txt {
+        left: 0px;
+        position: relative;
+    }
+
+    .timeblockireland {
+        font-size: 10px;
+    }
+
+    .btn-wrap {
+       /* flex-flow: column; */
+    }
+
+    .betslip_box > div {
+        display: block;
+        vertical-align: middle;
+        width: 100% !important;
+        padding: 5px !important;
+    }
+
+    .betslip_box .col-stake_list ul li {
+        width: 15%;
+        text-align: center;
+    }
+
+    .casino_list_items {
+        width: 32%;
+    }
+
+    .casino_list_items:nth-child(5n) {
+        margin-right: 10px;
+    }
+
+    .casino_list_items:nth-child(3n) {
+        margin-right: 0px;
+    }
+
+    .betslip_box .col-stake_list ul {
+        flex-flow: wrap;
+    }
+
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) {
+        padding: 0 !important;
+    }
+
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) a {
+        padding: .5rem 1rem !important;
+        min-width: 70px;
+    }
+
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) a.backall,
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) a.layall {
+        padding: 0 !important;
+    }
+
+    .casino_right_side {
+        width: 26.0417%;
+    }
+
+    .casino-video .videotitle {
+        left: 5px;
+        top: 5px;
+        padding: 6px;
+        min-width: 180px;
+        line-height: 18px;
+    }
+
+    .casino-video .casino_name {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 16px;
+    }
+
+    .casino-video .casino_video_rid {
+        font-weight: 700;
+        font-size: 11px;
+    }
+
+    .casino-video .casinocards {
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 5px 20px 5px 5px;
+        height: 100px;
+        width: 130px;
+    }
+
+    .casino-video .casinocards_shuffle {
+        right: 4px;
+        top: 50%;
+        font-size: 25px;
+    }
+
+    .casino-video .casinocards-container span img {
+        margin-right: 8px;
+        width: 30px;
+    }
+
+    .casino-video .casino-icons ul li {
+        height: 30px;
+        width: 30px;
+        font-size: 20px;
+    }
+
+    .casino-video .casinolast_results {
+        top: 40px;
+    }
+
+    .back-gradient div,
+    .lay-gradient div {
+        width: 60px;
+    }
+
+    #inplay-tableblock .table tbody tr td:nth-child(1) {
+        white-space: nowrap;
+        padding: .3rem 2rem .3rem .7rem !important;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table tr td.zeroopa1 {
+        padding: .3rem 1.5rem .3rem .5rem;
+        width: 80px;
+    }
+
+    .summery-table .table tr th {
+        width: 20%;
+    }
+    .new_casino .casino_list_items img{ height: 150px; }
+    .new_casino .casino_list_items:first-child img{ height: 150px; }
+    .new_casino .casino_list_items .entrance-title dt{ font-size: 12px; }
+    .new_casino .casino_list_items .entrance-title dd{ width: 70px; font-size: 10px;  }
+    
+    .blink_me {
+        animation: blinker 1s linear infinite;
+        }
+
+    @keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+    
+    .casino-wrap .col{ display: none; }
+    .casino-wrap .col-9{ padding: 0px; max-width: 100%; }   .casino-wrap .col-12{ padding: 0px; }
+    .new_casino .our_casino_list{ padding-right: 0px; margin-right: 0px; width: 100%; }
+    .middle-wraper1 .home-carousel{ padding-left: 0px !important; padding-right: 0px !important; }
+    .new_casino .col-6{ padding-right: 5px; }
+    .our_casino_list{ padding:5px 10px 0 5px; margin-top: 0px; }
+    .our_casino_list .col-xl-6{ padding-right: 5px; }
+    .new_casino .casino_list_items{ margin-bottom: 5px; }
+    .programe-setcricket .fir-col1-green,.programe-setcricket .fir-col1{ width: 92% !important; }
+    .programe-setcricket .fir-col3 { display: inline-block; width: 8% !important; text-align: right; }
+    .programe-setcricket .bmclass{ padding-right: 0; width: 15px; }
+    .programe-setcricket .fir-col1-green .bmclass { left: 55px; }
+    .secondblock-cricket .fir-col1 a, .secondblock-cricket .fir-col1-green a{ font-size: 11px; }
+    .programe-setcricket .fir-col1 .bmclass{ left:5px; }
+    .programe-setcricket .fir-col1 .mobileDate{ padding-left: 10px; }
+    .loginmodal .modal-content{ height: 100vh; width: 100vw; max-width: 100%; display: flow-root; }
+    .loginmodal .modal-dialog{ height: 100vh; width: 100vw; max-width: 100%; }
+    .loginmodal .login-block{ height: 100vh; width: 100vw; left:0; max-width: 100%; flex-flow: column; }
+    .loginmodal .loginright-block { margin: 50px 25px; }
+    .loginmodal .loginright-block .form-group{ width: 100%; }
+    .loginmodal .loginright-block .form-control{ height: 40px; }
+    .loginmodal .modal-dialog{ margin: 0rem; }
+    .loginmodal .loginleft-block {
+        width: 100%;
+        position: relative;
+        height: 300px;
+        /*background-image: url(../img/login-headerbg.png);*/
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        border-radius: 0px;
+    }
+    .loginmodal .loginright-block h3 { display: none; }
+    .loginmodal .social-block .tab-content .tab-pane a{ color: #ffffff; }
+    .loginmodal .loginright-block .form-group{ margin-bottom: 15px; }
+    .loginmodal .loginright-block .login-btn{ width: 100%; }
+    .loginmodal .social-block .nav-pills::before, .loginmodal .social-block .nav-pills a::after, .loginmodal .social-block .nav-pills::after
+    { background-color: rgba(255, 255, 255, .3); }
+    .loginmodal .social-block .nav-pills a.nav-link.active:after { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAAAbCAYAAADF5+vVAAAAAXNSR0IArs4c6QAAA4hJREFUeAHtnP2LDWEUx413kpfokog2bUKSto0iWiHsn+stifYHRUlRFGmRlyKyXvIWrs93zdTZ2ZnbzDXP3OeuM3XunHOeZ55z7vc533tnnjtzk263O7bIt14IfKRxOkmSn706xdjG3HbIaxuyOMb8YslpKYkcjCWZiPPYQ0FdggjfI85xTmrkux/HoTlONwoR8E+IQljmOfWJOklhrZrXEqGDPPXB5gSoODcJgPnpUDlYK2jaa5pn0M/zjfDF+KJSmc9xEjpgknqN/tLYruYQSHK2mzkEKKpRXMeQDCtdI1yACJ9yXQdqkqfyO4zsM4m8QL8yjNcz5j0EV7OJDR5omANQYCPkP4Fkp4+f0UWEDzG8r5QAR8llt8nnGfpVcvxlfK4WIOAkKAClyEWh7cB/EsmIoFMiEeF9Uf+2fOSlfI4ju0zMafRr5Pbb+FwtQcBJUAJMkZuC03LjKUSratq+IRcptrezVssv5LOEkCeQnSb0I/Qpcuoan6s9EHAS9ACnqInC24L/DLIsbf/BXsunugBtbSMPEVHfTNtN0AfoN5wABpEKqpOgAkj5LhRgB5+IoNUjbfoh7TLF92rWCvxCfBHwNLLVhLpH/JvGdrUiAk6CikDlu1GIG/GdQ1ambboA1UrM89QOsiPucgYWATebAHeIe9vYrtZAwElQA6x8VwpyPb5JZHXapgtRrcg8Te1Gd8QT4c4im8zAt4h319iu1kTASVATsHx3CnMtPhFhTdqmC9LrFObj1G5kRxwRTd88G8yAOv+/b2xX+0DASdAHaPlDKFARQAW6zrRNUaAPjd23Gnr8vhNbIAc6CRqayFCf1IzbyjdNQzAM5TBOgganjYJt9Jyd8Vq95mgQiqEayknQ8HRRuI2s3jDOQFafGoZjKIZzEgSYJgr4n9bxOX6gv0MEgCTqIZ0EgaaHQu7rF12OK/pFWrdmvAmU6n8/rJMgYAlQ0LXu7aF/VPcmBYQmqqGdBIGng8KudJcn/aK8SzUwPFEM7yRoYRoocOFcer8/7SO0TyAijLaonlf4m9LCfXUStDS3KRGKnvx6QgpHkGwu9OSaHuEUEXxrAYEM+BZCeQghABnG2dlngC0wMxhRP8Nsk10oupNgADMJEfRvEGO50O+wtQr0Ned3MzACToLAAJcNDxHs/wJp+XOo/teo7H253xGohQBE6CCjSPa4Zq3jvXMzCPwBDLUVBfhpbxkAAAAASUVORK5CYII=);}
+    
+    .policy-link{ color: rgba(0,0,0,0.5); text-align: center; margin-bottom: 25px; width: 100%; }
+    .policy-link li{ display: inline-block; font-size: 3.46667vw; line-height: 1.3; }
+    .policy-link li:before {
+        margin: 0 0.4vw;
+        content: "|";
+    }
+    .policy-link li:first-child:before {
+        content: '';
+    }
+    .logincontentmodal .modal-content{ min-height: 500px; }
+    .logincontentmodal .modal-header{ background-color: #222; text-align: center; color: #ffb80c; text-transform: uppercase; font-size: 4.3vw; display: block !important; padding: 2rem; border-top-left-radius:0px; border-top-right-radius:0px; }
+    .logincontentmodal .modal-body h3{ font-size: 4.53333vw; margin-bottom: 3.2vw; color: rgba(30, 30, 30, 0.9); line-height: 1.2; background: transparent; }
+    .logincontentmodal .modal-body p{ font-size: 4vw; line-height: 1.5; }
+    .logincontentmodal .modal-footer{ justify-content: center; }
+    .logincontentmodal .modal-body{ height: 700px; overflow-y: scroll; }
+    
+    .logincontentmodal .modal-dialog{ width: 97%; max-width:97%; }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+    .match-innerbg-detail.cricketbg{ width:100%; overflow:hidden; }
+    .middle-section .middle-wraper .soccerbg, .middle-section .middle-wraper .tennisbg, .middle-section .middle-wraper .cricketbg{ height:70px; }
+}
+
+@media only screen and (min-width:576px) and (max-width:991px) {
+
+    .current_modal .modal-xl,
+    .current_modal_1 .modal-dialog {
+        max-width: 500px;
+    }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 767px) {
+
+    .login-block {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        top: 0px;
+        width: 100%;
+        left: 0;
+        border-radius: 0px;
+    }
+
+    .loginleft-block {
+        width: 100%;
+        border-radius: 0px;
+        margin-bottom: 2.9985vmax;
+        padding: 22px 0 14px;
+        height: auto;
+    }
+
+    .loginleft-block img {
+        height: auto;
+        width: 100px;
+        margin-left: 10px;
+        margin-top: 0px;
+    }
+
+    .loginright-block {
+        margin: 30px 0;
+        width: 47.22639vmax;
+    }
+
+    .loginright-block h3 {
+        display: none;
+    }
+
+    .loginright-block .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .login-btn {
+        width: 100%;
+        border-radius: .89955vmax;
+        font-size: 2.24888vmax;
+        height: 44px;
+        line-height: 44px;
+        margin: 0;
+    }
+
+    .loginright-block .form-control {
+        height: 42px;
+        border-radius: .89955vmax;
+        font-size: 2.24888vmax;
+        box-shadow: inset 0 .53333vw 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .validation-txt {
+        position: absolute;
+        right: 14px;
+        width: 44px;
+        top: 13px;
+        font-size: 22px;
+    }
+
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .acc-balance {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+
+    .acc-balance2 {
+        -ms-flex: 0 0 66.666667%;
+        flex: 0 0 66.666667%;
+        max-width: 66.666667%;
+    }
+    .new_casino .casino_list_items img{ height: 100px; }
+    .new_casino .casino_list_items:first-child img{ height: 100px; }
+    .account_wrap .acmenu_list { margin-bottom: 0px !important; } 
+    .loginmodal .modal-content{ height: 100vh; }
+    .loginmodal .modal-dialog{ height: 100vh; }
+    .loginmodal .login-block{ height: 100vh; }
+    .loginmodal .modal-dialog{ margin: 0rem; }
+    .loginmodal .social-block .tab-content .tab-pane a{ color: #ffffff; }
+    .loginmodal .social-block .nav-pills::before, .loginmodal .social-block .nav-pills a::after, .loginmodal .social-block .nav-pills::after
+    { background-color: rgba(255, 255, 255, .3); }
+    .loginmodal .social-block .nav-pills a.nav-link.active:after { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAAAbCAYAAADF5+vVAAAAAXNSR0IArs4c6QAAA4hJREFUeAHtnP2LDWEUx413kpfokog2bUKSto0iWiHsn+stifYHRUlRFGmRlyKyXvIWrs93zdTZ2ZnbzDXP3OeuM3XunHOeZ55z7vc533tnnjtzk263O7bIt14IfKRxOkmSn706xdjG3HbIaxuyOMb8YslpKYkcjCWZiPPYQ0FdggjfI85xTmrkux/HoTlONwoR8E+IQljmOfWJOklhrZrXEqGDPPXB5gSoODcJgPnpUDlYK2jaa5pn0M/zjfDF+KJSmc9xEjpgknqN/tLYruYQSHK2mzkEKKpRXMeQDCtdI1yACJ9yXQdqkqfyO4zsM4m8QL8yjNcz5j0EV7OJDR5omANQYCPkP4Fkp4+f0UWEDzG8r5QAR8llt8nnGfpVcvxlfK4WIOAkKAClyEWh7cB/EsmIoFMiEeF9Uf+2fOSlfI4ju0zMafRr5Pbb+FwtQcBJUAJMkZuC03LjKUSratq+IRcptrezVssv5LOEkCeQnSb0I/Qpcuoan6s9EHAS9ACnqInC24L/DLIsbf/BXsunugBtbSMPEVHfTNtN0AfoN5wABpEKqpOgAkj5LhRgB5+IoNUjbfoh7TLF92rWCvxCfBHwNLLVhLpH/JvGdrUiAk6CikDlu1GIG/GdQ1ambboA1UrM89QOsiPucgYWATebAHeIe9vYrtZAwElQA6x8VwpyPb5JZHXapgtRrcg8Te1Gd8QT4c4im8zAt4h319iu1kTASVATsHx3CnMtPhFhTdqmC9LrFObj1G5kRxwRTd88G8yAOv+/b2xX+0DASdAHaPlDKFARQAW6zrRNUaAPjd23Gnr8vhNbIAc6CRqayFCf1IzbyjdNQzAM5TBOgganjYJt9Jyd8Vq95mgQiqEayknQ8HRRuI2s3jDOQFafGoZjKIZzEgSYJgr4n9bxOX6gv0MEgCTqIZ0EgaaHQu7rF12OK/pFWrdmvAmU6n8/rJMgYAlQ0LXu7aF/VPcmBYQmqqGdBIGng8KudJcn/aK8SzUwPFEM7yRoYRoocOFcer8/7SO0TyAijLaonlf4m9LCfXUStDS3KRGKnvx6QgpHkGwu9OSaHuEUEXxrAYEM+BZCeQghABnG2dlngC0wMxhRP8Nsk10oupNgADMJEfRvEGO50O+wtQr0Ned3MzACToLAAJcNDxHs/wJp+XOo/teo7H253xGohQBE6CCjSPa4Zq3jvXMzCPwBDLUVBfhpbxkAAAAASUVORK5CYII=);}
+    
+    .policy-link{ color: rgba(0,0,0,0.5); text-align: center; margin-bottom: 25px; }
+    .policy-link li{ display: inline-block; font-size: 3.46667vw; line-height: 1.3; }
+    .policy-link li:before {
+        margin: 0 0.4vw;
+        content: "|";
+    }
+    .policy-link li:first-child:before {
+        content: '';
+    }
+    .logincontentmodal .modal-content{ min-height: 500px; }
+    .logincontentmodal .modal-header{ background-color: #222; text-align: center; color: #ffb80c; text-transform: uppercase; font-size: 4.3vw; display: inline-flex !important; padding: 1.4rem; border-top-left-radius:0px; border-top-right-radius:0px; }
+    .logincontentmodal .modal-body h3{ font-size: 4.53333vw; margin-bottom: 3.2vw; color: rgba(30, 30, 30, 0.9); line-height: 1.2; background: transparent; }
+    .logincontentmodal .modal-body p{ font-size: 4vw; line-height: 1.5; }
+    .logincontentmodal .modal-footer{ justify-content: center; }
+    .logincontentmodal .modal-body{ height: 500px; overflow-y: scroll; }
+    .match-innerbg-detail .match-banner.cricket{ min-height: 100px; }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+    .match-innerbg-detail.cricketbg{ width:100%; overflow:hidden; }
+    .middle-section .middle-wraper .soccerbg, .middle-section .middle-wraper .tennisbg, .middle-section .middle-wraper .cricketbg{ height:80px; }
+}
+
+@media only screen and (max-width: 767px) {
+
+    #cssmenu {
+        width: 20px;
+        position: inherit;
+    }
+
+    .barsicon a img {
+        margin-top: -3px;
+    }
+
+    .social-block .tab-content .tab-pane {
+        text-align: center;
+    }
+
+    .foter-links {
+        width: 100%;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .fir-col1,
+    .fir-col1-green {
+        width: 100% !important;
+    }
+
+    .fir-col2 {
+        width: 28.33%;
+    }
+
+    .fir-col3 {
+        width: 10%;
+    }
+
+    .top_header {
+        height: auto;
+    }
+
+    .highlight-red {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+    }
+
+    .loginmodal button.close {
+        width: 25px;
+        line-height: 25px;
+        height: 25px;
+        color: #ffffff;
+        font-weight: normal;
+        font-size: 14px;
+        background: #000000;
+        border-radius: 50%;
+    }
+
+    .righthead-login2 {
+        width: 100%;
+    }
+
+    .bet-stake-block {
+        width: 100%;
+        left: 0px;
+    }
+
+    .bet-stake-block ul {
+        width: 300px;
+        background-size: 100% 100%;
+    }
+
+    .clickbet-block .modal-dialog {
+        margin: -9% auto 0;
+    }
+
+    .minmax-txt {
+        position: relative;
+        left: 20px;
+    }
+
+    .custom-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    #inplay-tableblock .inplay-table.table.w1-table td:first-child {
+        width: 40%;
+        white-space: nowrap;
+        /*padding: .3rem !important;*/
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /*white-space: nowrap;*/
+    }
+    #inplay-tableblock-bookmaker
+    {
+        padding-top:10px;
+    }
+    .inplay-table.table .bets-fancy td:nth-child(3),
+    .inplay-table.table .bets-fancy td:nth-child(4) {
+        width: 100%;
+    }
+
+    .left-menuga .leftul {
+        overflow: auto;
+        min-height: 150px;
+    }
+
+    .inplay-tableblock table.table tr td {
+        padding: .5rem .75rem !important;
+    }
+
+    .inplay-table.table .betstr td {
+        width: 100px;
+        padding: 0 !important;
+    }
+
+    .casino_list_items {
+        width: 32%;
+    }
+
+    .casino_list_items:nth-child(5n) {
+        margin-right: 10px;
+    }
+
+    .casino_list_items:nth-child(3n) {
+        margin-right: 0px;
+    }
+
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) {
+        padding: 0 !important;
+        width: 15%;
+    }
+
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) a {
+        padding: .5rem 0rem !important;
+        width: 100%;
+        display: inline-block;
+    }
+
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) a.backall,
+    #inplay-tableblock .table.inplay-table tr td:nth-child(n+2) a.layall {
+        padding: 0 !important;
+    }
+
+    .back-gradient div,
+    .lay-gradient div {
+        width: 60px;
+    }
+
+    .casino_right_side {
+        width: 100%;
+        padding: 0px;
+        height: 100%;
+        overflow-x: hidden;
+        position: relative;
+        right: 0;
+        top: 0;
+    }
+
+    .casino-video .videotitle {
+        left: 0px;
+        top: 0px;
+        padding: 6px;
+        min-width: 120px;
+        line-height: 12px;
+    }
+
+    .casino-video .casino_name {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-family: 'Tahoma', Helvetica, sans-serif;
+    }
+
+    .casino-video .casino_video_rid {
+        font-weight: 700;
+        font-size: 10px;
+        font-family: 'Tahoma', Helvetica, sans-serif;
+    }
+
+    .casino-video .casinocards {
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 5px 10px 5px 5px;
+        height: 75px;
+        width: 95px;
+    }
+
+    .casino-video .casinocards_shuffle {
+        right: 3px;
+        top: 50%;
+        font-size: 20px;
+        transform: translateY(-50%);
+    }
+
+    .casino-video .casinocards-container span img {
+        margin-right: 8px;
+        width: 22px;
+    }
+
+    .casino-video .casino-icons ul li {
+        height: 25px;
+        width: 25px;
+        font-size: 14px;
+    }
+
+    .casino-video .casinolast_results {
+        top: 30px;
+        right: 5px;
+        width: 50px;
+        height: 146px;
+    }
+
+    .casino-video .casinolast_results a,
+    .casino-video .casinolast_results span {
+        width: 22px;
+        margin-left: 2px;
+        margin-top: 2px;
+        height: 22px;
+        line-height: 22px;
+    }
+
+    .playerblock .player_left,
+    .playerblock .player_right {
+        width: 100%;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table tr td.zeroopa1 {
+        padding: .3rem 1.5rem .3rem .5rem;
+        width: 80px;
+    }
+
+    .dash-menu {
+        width: 100%;
+    }
+
+    .dashboard-right-pannel {
+        width: 100%;
+        padding-left: 0;
+    }
+
+    .profile-wrap .col-sm-12.pr-0 {
+        padding-left: 0px;
+    }
+
+    .credit-modal .form-modal {
+        padding: 15px 15px 0;
+    }
+
+    .credit-modal .form-modal div span:first-child {
+        width: 30%;
+        line-height: normal;
+    }
+
+    .credit-modal .form-modal div .form-control {
+        width: 90%;
+    }
+
+    .logo img {
+        height: 100%;
+        width: 95px;
+    }
+
+    .foter-links ul li {
+        font-size: 11px;
+    }
+
+    .social-block .tab-content .tab-pane a {
+        height: 25px;
+        text-decoration: underline;
+        margin-right: 0;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .social-block .tab-content .tab-pane a:nth-child(2n) {
+        padding: 0;
+        border-left: 0px solid rgba(0, 0, 0, 0.2);
+        border-right: 0px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .fancy-suspend-td .fancy-suspend span {
+        font-size: 11px;
+    }
+
+    #inplay-tableblock-bookmaker.cricket-table1 tr td.padding3 {
+        width: 40%;
+    }
+
+    #inplay-tableblock-fancy.table tr:nth-child(n+3) td:first-child {
+        width: 50%;
+    }
+
+    #inplay-tableblock-bookmaker.table tr td .back-gradient div,
+    #inplay-tableblock-bookmaker.table tr td .lay-gradient div {
+        min-width: 66px;
+    }
+
+    #inplay-tableblock-fancy.table.inplay-table tr td:nth-child(n+2) {
+        min-width: 66px;
+    }
+
+    .casino-video .casino-icons ul li.resicon {
+        display: none;
+    }
+
+    .baccarat_bets_block {
+        width: 100%;
+    }
+
+    .baccarat_bets_block .baccarat_odds .baccarat_odds_items {
+        margin-right: 5px;
+    }
+
+    .baccarat_bets .player_pair_box {
+        margin-right: 2px;
+        width: 15%;
+        height: 60px;
+    }
+
+    .baccarat_bets .player_pair_box .baccarat_bets_name {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .baccarat_bets .player_box,
+    .baccarat_bets .banker_box {
+        width: 35%;
+        height: 90px;
+    }
+
+    .baccarat_bets .baccarat_bets_name {
+        line-height: 14px;
+        font-size: 10px;
+    }
+
+    .baccarat_bets .player_box .baccarat_bets_name {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .baccarat_bets .banker_pair_box {
+        margin-left: 2px;
+        width: 15%;
+        height: 60px;
+    }
+
+    .baccarat_bets .banker_pair_box .baccarat_bets_name,
+    .baccarat_bets .banker_box .baccarat_bets_name {
+        border-radius: 0px 4px 4px 0px;
+    }
+
+    .baccarat_bets .tie_box {
+        width: 90px;
+        height: 90px;
+        top: 0;
+    }
+
+    .baccarat_bets .baccarat_bets_name img {
+        height: 20px;
+    }
+
+    .l_rotate img {
+        margin-right: 3px;
+    }
+
+    .r_rotate img {
+        margin-left: 3px;
+    }
+
+    .baccarat_bets .banker_box .baccarat_bets_name {
+        padding-right: 5px;
+    }
+
+    .baccarat_bets .player_pair_box .baccarat_bets_name.suspended-txt::after,
+    .baccarat_bets .player_box .baccarat_bets_name.suspended-txt::after {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .baccarat_bets .banker_pair_box .baccarat_bets_name.suspended-txt::after,
+    .baccarat_bets .banker_box .baccarat_bets_name.suspended-txt::after {
+        border-radius: 0 4px 4px 0;
+    }
+
+    .casino_dragontiger_block .dragon_box,
+    .casino_dragontiger_block .tiger_box {
+        width: 50%;
+    }
+
+    .casino_dragontiger_block .dragon_box {
+        padding-right: 35px;
+    }
+
+    .casino_dragontiger_block .tiger_box {
+        padding-left: 35px;
+    }
+
+    .casino_dragontiger_block .dragon_box .dflex_book b,
+    .casino_dragontiger_block .tiger_box .dflex_book b,
+    .dragon2_table .casino-videodetails,
+    .casino_dragontiger_block .tiger_box .dflex_odds b,
+    .casino_dragontiger_block .dragon_box .dflex_odds b {
+        font-size: 12px;
+    }
+
+    .casino_dragontiger_block .tie_box {
+        width: 70px;
+        height: 70px;
+        left: 50%;
+        top: 15px;
+    }
+
+    .casino_dragontiger_block .tie_box > b {
+        font-size: 18px;
+        margin-bottom: 3px;
+        line-height: 1;
+    }
+
+    .casino_dragontiger_block .tie_box .dflex_odds {
+        line-height: 1;
+    }
+
+    .casino_dragontiger_block .pair_box {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    #inplay-cricket-collapse .fir-col3 img {
+    width: 100% !important;
+}
+
+    .dragon2_table .casino-video .casinocards {
+        width: 70px;
+        height: 40px;
+    }
+
+    .dragon2_table .casino-video .casinocards-container span img {
+        margin-right: 5px;
+        width: 22px;
+    }
+
+    .andarbahar_block .andar_card_box,
+    .andarbahar_block .bahar_card_box {
+        width: 100%;
+    }
+
+    .andarbahar_block .andar_card_box {
+        margin-bottom: 10px;
+    }
+
+    .andarbahar_table .casino-video .casinocards {
+        width: 110px;
+        height: 80px;
+        top: 50%;
+    }
+
+    .andarbahar_table .casino-video .casinocards span img {
+        height: auto;
+        width: 20px;
+        margin-right: 5px;
+    }
+
+    .card32b_table .casino-video .casinocards {
+        height: 140px;
+        width: 120px;
+        top: 60%;
+    }
+
+    .card32b_table .casino-video .casinocards-container span img {
+        width: 15px;
+    }
+
+    .card32b_table .casino-video .casinocards .casinocards-container .dealer_name {
+        margin-bottom: 2px !important;
+    }
+
+    .card32b_table .casino-video .casinocards-container .rowcards {
+        margin-bottom: 0;
+    }
+
+    .card32_extrabox.playerblock .casinobox-item {
+        width: calc(20% - 4px);
+    }
+
+    .card32_results .casino-result-cards-item {
+        margin-right: 0px;
+    }
+
+    .card32_results .casino-result-cards-item .winner_icon {
+        width: 50px;
+        height: auto;
+        position: absolute;
+        right: 0;
+        top: auto;
+        bottom: 0;
+    }
+
+    .card32b_table .casino-video .casinocards .casinocards-container .dealer_name {
+        font-size: 10px;
+        line-height: 10px;
+    }
+
+    .card32b_table .casino-video .casinocards-container > div {
+        margin-bottom: 0px;
+    }
+
+    .mobile_res_data .casinolast_results {
+        text-align: center;
+    }
+
+    .casinolast_results a,
+    .casinolast_results span {
+        width: 35px;
+        margin-top: 5px;
+        border-radius: 4px;
+        height: 35px;
+        text-align: center;
+        line-height: 35px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 13px;
+        background: #000;
+        margin-left: 8px;
+        display: inline-block;
+    }
+
+    .row1 > [class*=col-],
+    .row1 > [class*=col] {
+        padding: 0 5px;
+    }
+    
+    .casino-result-cards-item {
+        margin-right: 3px;
+    }
+    #betmobileModal.modal .modal-header{ padding: 0.1rem 0.5rem; }
+    #betmobileModal.modal .modal-header .modal-title{ font-size: 1rem; }
+    #betmobileModal.modal .modal-body{ padding: 1rem 0; }
+    #betmobileModal.modal .modal-body .btn-wrap li:nth-child(2) { text-align: right;  }
+    #betmobileModal .col-4{ padding: 5px 5px; }
+    .casino-wrap .col{ display: none; }
+    .casino-wrap .col-9{ padding: 0px; max-width: 100%; }   .casino-wrap .col-12{ padding: 0px; }
+    .new_casino .our_casino_list{ padding-right: 0px; margin-right: 0px; width: 100%; }
+    .middle-wraper1 .home-carousel{ padding-left: 0px !important; padding-right: 0px !important; }
+    .new_casino .col-6{ padding-right: 5px; }
+    .our_casino_list{ padding:5px 10px 0 5px; margin-top: 0px; }
+    .our_casino_list .col-xl-6{ padding-right: 5px; }
+    .new_casino .casino_list_items{ margin-bottom: 5px; }
+    
+    .programe-setcricket .fir-col1-green,.programe-setcricket .fir-col1{ width: 89% !important; }
+    .programe-setcricket .fir-col3 { display: inline-block; width: 10% !important; text-align: right; position: absolute;right: 3%; }
+    .programe-setcricket .fir-col3 img{ width: 40px; max-width: 85%; }
+    .programe-setcricket .bmclass{ padding-right: 0; width: 15px;  position: relative; }
+    .programe-setcricket .fir-col1-green .bmclass { left: 55px; padding-right:0px;  }
+    .secondblock-cricket .fir-col1 a, .secondblock-cricket .fir-col1-green a{ font-size: 4vw; letter-spacing: 0px; font-family: 'Tahoma', Helvetica, sans-serif;}
+    
+    .programe-setcricket .fir-col1 .bmclass{ left:5px; }
+    .programe-setcricket .fir-col1 .mobileDate{ padding-left: 0px; }
+    
+    .secondblock-cricket .fir-col1-green a span { position: absolute; margin-top: -13px; }
+    .mblinplay { display: block; width: 100%; padding-top: 5px; padding-left: 10px; }
+    .mblinplay .game-fancy{ display: inline-flex; width: 7%; position: inherit; margin-left: 5px; vertical-align: bottom; }
+    .mblinplay .mplay{ margin-left: 5px; }
+    .mplay{ margin-left: 5px; }
+    .desk .bmclass{ display: none; }
+    .desk .game-fancy.in-play, .desk .game-fancy{ display: none !important; }
+    .desk .deskinplay{ display: none !important; }
+    .account_wrap .acmenu_list li a{ padding: 10px 10px; font-size: 16px; }
+    
+    .blink_me {
+        /* animation: blinker 1s linear infinite; */
+         animation: blinkingBackground 2s infinite;
+    }
+
+    @keyframes blinkingBackground{
+        0%      { color: #ffff00; }
+        50%     { color: #ff1329; }
+        75%     { color: #1f06fe; }
+        100%    { color: #ffff00; }
+    }
+    .ball-runs{ height: 20px; line-height: 20px; width: 20px; font-size: 12px; }
+    .scorecard-row .row .text-lg-right{ text-align: right; }
+    #inplay-tableblock-fancy.table.inplay-table tr td.zeroopa1{ width:18%; }
+    #inplay-tableblock-fancy.table.inplay-table tr td:nth-child(n+2){width: 17%;}
+    .account_wrap .acmenu_list { margin-bottom: 0px !important; }
+    
+    .loginmodal .modal-content{ height: 100vh; }
+    .loginmodal .modal-dialog{ height: 100vh; }
+    .loginmodal .login-block{ height: 100vh; }
+    .loginmodal .modal-dialog{ margin: 0rem; }
+    .loginmodal .social-block .tab-content .tab-pane a{ color: #ffffff; }
+    .loginmodal .social-block .nav-pills::before, .loginmodal .social-block .nav-pills a::after, .loginmodal .social-block .nav-pills::after
+    { background-color: rgba(255, 255, 255, .3); }
+    .loginmodal .social-block .nav-pills a.nav-link.active:after { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMEAAAAbCAYAAADF5+vVAAAAAXNSR0IArs4c6QAAA4hJREFUeAHtnP2LDWEUx413kpfokog2bUKSto0iWiHsn+stifYHRUlRFGmRlyKyXvIWrs93zdTZ2ZnbzDXP3OeuM3XunHOeZ55z7vc533tnnjtzk263O7bIt14IfKRxOkmSn706xdjG3HbIaxuyOMb8YslpKYkcjCWZiPPYQ0FdggjfI85xTmrkux/HoTlONwoR8E+IQljmOfWJOklhrZrXEqGDPPXB5gSoODcJgPnpUDlYK2jaa5pn0M/zjfDF+KJSmc9xEjpgknqN/tLYruYQSHK2mzkEKKpRXMeQDCtdI1yACJ9yXQdqkqfyO4zsM4m8QL8yjNcz5j0EV7OJDR5omANQYCPkP4Fkp4+f0UWEDzG8r5QAR8llt8nnGfpVcvxlfK4WIOAkKAClyEWh7cB/EsmIoFMiEeF9Uf+2fOSlfI4ju0zMafRr5Pbb+FwtQcBJUAJMkZuC03LjKUSratq+IRcptrezVssv5LOEkCeQnSb0I/Qpcuoan6s9EHAS9ACnqInC24L/DLIsbf/BXsunugBtbSMPEVHfTNtN0AfoN5wABpEKqpOgAkj5LhRgB5+IoNUjbfoh7TLF92rWCvxCfBHwNLLVhLpH/JvGdrUiAk6CikDlu1GIG/GdQ1ambboA1UrM89QOsiPucgYWATebAHeIe9vYrtZAwElQA6x8VwpyPb5JZHXapgtRrcg8Te1Gd8QT4c4im8zAt4h319iu1kTASVATsHx3CnMtPhFhTdqmC9LrFObj1G5kRxwRTd88G8yAOv+/b2xX+0DASdAHaPlDKFARQAW6zrRNUaAPjd23Gnr8vhNbIAc6CRqayFCf1IzbyjdNQzAM5TBOgganjYJt9Jyd8Vq95mgQiqEayknQ8HRRuI2s3jDOQFafGoZjKIZzEgSYJgr4n9bxOX6gv0MEgCTqIZ0EgaaHQu7rF12OK/pFWrdmvAmU6n8/rJMgYAlQ0LXu7aF/VPcmBYQmqqGdBIGng8KudJcn/aK8SzUwPFEM7yRoYRoocOFcer8/7SO0TyAijLaonlf4m9LCfXUStDS3KRGKnvx6QgpHkGwu9OSaHuEUEXxrAYEM+BZCeQghABnG2dlngC0wMxhRP8Nsk10oupNgADMJEfRvEGO50O+wtQr0Ned3MzACToLAAJcNDxHs/wJp+XOo/teo7H253xGohQBE6CCjSPa4Zq3jvXMzCPwBDLUVBfhpbxkAAAAASUVORK5CYII=);}
+    
+    .policy-link{ color: rgba(0,0,0,0.5); text-align: center; margin-bottom: 25px; }
+    .policy-link li{ display: inline-block; font-size: 3.46667vw; line-height: 1.3; }
+    .policy-link li:before {
+        margin: 0 0.4vw;
+        content: "|";
+    }
+    .policy-link li:first-child:before {
+        content: '';
+    }
+    .logincontentmodal .modal-content{ min-height: 500px; }
+    .logincontentmodal .modal-header{ background-color: #222; text-align: center; color: #ffb80c; text-transform: uppercase; font-size: 4.3vw; display: inline-flex !important; padding: 1.4rem; border-top-left-radius:0px; border-top-right-radius:0px; }
+    .logincontentmodal .modal-body h3{ font-size: 4.53333vw; margin-bottom: 3.2vw; color: rgba(30, 30, 30, 0.9); line-height: 1.2; background: transparent; }
+    .logincontentmodal .modal-body p{ font-size: 4vw; line-height: 1.5; }
+    .logincontentmodal .modal-footer{ justify-content: center; }
+    .logincontentmodal .modal-body{ height: 500px; overflow-y: scroll; }
+    .match-innerbg-detail .match-banner.cricket{ min-height: 100px; }
+    .match-innerbg-detail .match-banner .scorecard .scorecard-row{ padding: 5px 5px; }
+    .mobile-display{ display: block; }
+    .mobile-none{ display: none; }
+    
+    .tennis-header-container .tennis_left_side_team
+    {
+        width: 60%;display: inline-block;
+    }
+    .tennis-header-container .tennis-star-wraper{padding-right:15px}
+    .tennis-header-container .tennis_right_side_score
+    {
+        width: 40%;display: inline-block;
+    }
+    .tennis-header-container .scores .cell{ width: 20px; font-size: 16px; }
+    .tennis-header-container .tennis-points{ width: 40px; }
+    .tennis-header-container .tennis-runners .tennis-runner-name{ max-width: 100%; }
+    .tennis-header-container .tennis-runners{ width: 90%; padding-left: 5px; }
+    .match-innerbg-detail.cricketbg{ width:100%; overflow:hidden; }
+    .middle-section .middle-wraper .soccerbg, 
+    .middle-section .middle-wraper .tennisbg, 
+    .middle-section .middle-wraper .cricketbg{ 
+        /*height:80px; */
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .today_content .todaytitle {
+        font-weight: bold;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .login-block {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        top: 0px;
+        height: 100vh;
+        box-shadow: none;
+        width: 100%;
+        left: 0px;
+        border-radius: 0px;
+    }
+
+    .loginleft-block {
+        width: 100%;
+        position: relative;
+        height: 250px;
+        /*background-image: url(../img/login-headerbg.png);*/
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: center;
+        border-radius: 0px;
+    }
+    
+
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .loginleft-block img {
+        height: auto;
+        width: 185px;
+        margin-left: 0px;
+        margin-top: 0;
+    }
+
+    .loginright-block {
+        width: 84vw;
+        margin: 12vw auto 8vw;
+    }
+
+    .loginright-block h3 {
+        display: none;
+    }
+
+    .loginright-block .form-group {
+        width: 100%;
+    }
+
+    .loginright-block .form-control {
+        height: 39px;
+        border-radius: 1.6vw;
+    }
+
+    .login-btn {
+        width: 100%;
+    }
+
+    .logo {
+        width: 35%;
+    }
+
+    #cssmenu {
+        width: 20px;
+        position: inherit;
+    }
+
+    .lefthead-logo .search-wrap {
+        margin-right: 0px;
+        width: 66%;
+    }
+
+    .search-wrap .search-input {
+        width: 100%;
+    }
+
+    .righthead-login {
+        display: flex;
+        align-items: center;
+        padding-right: 0px;
+        flex-flow: wrap;
+        padding-left: 20px;
+    }
+
+    .righthead-login li:first-child img {
+        margin-right: 8px;
+        position: absolute;
+        left: -22px;
+    }
+
+    .righthead-login li {
+        margin-bottom: 5px;
+    }
+
+    .bet-stake-block {
+        width: 100%;
+        height: auto;
+        left: 0;
+        padding: 0 0 8px;
+        text-align: center;
+    }
+
+    .bet-stake-block ul {
+        width: 100%;
+        margin-left: 0px;
+        background-position: center;
+        background-size: contain;
+    }
+
+    .bet-stake-block .edit-btn {
+        float: none;
+    }
+
+    .clickbet-block .modal-dialog {
+        margin: -34% auto 0;
+    }
+
+    .submit-btn {
+        float: none;
+    }
+
+    .today_content .todayline {
+        display: flex;
+    }
+
+    .match-tracktop .three-tag {}
+
+    .match-tracktop h4 {
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 15px;
+        text-align: center !important;
+    }
+
+    .matchul li {
+        font-size: 11px;
+    }
+
+    .matchul li {
+        flex-flow: column;
+    }
+
+    .today_content .linktoday {
+        display: flex;
+        align-items: center;
+        width: 66%;
+    }
+
+    .today_content .linktoday a {
+        padding-left: 3px;
+    }
+
+    .backall,
+    .layall {
+        font-size: 11px;
+    }
+
+    .casino_list_items {
+        width: 31%;
+    }
+
+    .casino_list_items:nth-child(5n) {
+        margin-right: 10px;
+    }
+
+    .casino_list_items:nth-child(3n) {
+        margin-right: 0px;
+    }
+
+    #inplay-tableblock-bookmaker.table tr td:nth-child(2),
+    #inplay-tableblock-bookmaker.table tr td:nth-child(3) {
+        width: 200px;
+    }
+
+    .acc-balance {
+        border-right: 0px;
+    }
+
+    .top_header .righthead-login2 ul li a {
+        width: auto;
+        padding: 5px 8px 5px 8px;
+        height: 36px;
+        line-height: normal;
+    }
+
+    .top_header .righthead-login2 ul li.mobile_balance a {
+        flex-flow: column;
+        padding: 5px 30px 5px 8px;
+        align-items: flex-start;
+    }
+
+    .top_header .righthead-login2 ul li p {
+        font-size: 11px;
+    }
+
+    .top_header .righthead-login2 ul li .refimg:first-of-type {
+        width: 30px;
+        height: 34px;
+        line-height: 30px;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .top_header .righthead-login2 ul li p:first-child {
+        margin-right: 0px;
+    }
+
+    .top_header .righthead-login2 ul li.li-tv_bet {
+        width: 30%;
+    }
+
+    .top_header .righthead-login2 ul li.mobile_balance {
+        width: 55%;
+    }
+
+    .logo img {
+        height: 100%;
+        width: 100%;
+    }
+
+    .mslide_nav ul {
+        width: 160%;
+    }
+    .new_casino .casino_list_items img{ height: 140px; }
+    .new_casino .casino_list_items:first-child img{ height: 140px; }
+    .new_casino .casino_list_items .entrance-title dt{ font-size: 12px; }
+    .new_casino .casino_list_items .on_live dd span{ min-width: 12px; height: 12px; }
+    .new_casino .casino_list_items .on_live dd{ font-size: 10px; line-height: 10px; margin-bottom: 0px; }
+    .account_wrap .acmenu_list { margin-bottom: 0px !important; }
+}
+
+@media only screen and (max-width: 480px) {
+
+
+    .fir-col2 {
+        width: 33.33%;
+    }
+
+    .fir-col3 {
+        width: 10%;
+    }
+
+    .timeblockireland {
+        width: auto;
+        text-align: center;
+        padding: 0px 5px;
+    }
+
+    .minmax-txt {
+        position: relative;
+        width: 100% !important;
+        left: 0;
+        left: 0;
+        /*text-align: center;*/
+        justify-content: center;
+    }
+
+    .casino_list_items img {
+        width: 100%;
+    }
+    
+    .teenpatti20_results .casino-result-cards {
+        padding-top: 50px;
+    }
+    
+    .teenpatti20_results .casino-result-cards-item .winner_icon {
+        position: absolute;
+        left: 30%;
+        top: 0;
+    }
+    
+}
+
+@media only screen and (min-width: 319px) and (max-width: 479px) {}
+
+@media only screen and (max-width: 458px) {
+    .maintabs ul.nav-tabs .nav-link {
+        width: 85px;
+    }
+
+    .righthead-login2 {
+        width: 100%;
+    }
+
+    .righthead-login2 ul li.dropdown {
+        margin-top: 10px;
+    }
+
+    .in_play_tabs .nav-tabs {
+        min-width: 100%;
+    }
+
+    .betslip_box .col-odd {
+        width: 16.124%;
+        padding: 5px 0;
+        line-height: 22px;
+    }
+
+    .betslip_box .col-profit {
+        text-align: right;
+        width: 22.751%;
+        padding: 5px;
+    }
+
+}
+
+@media only screen and (max-width: 405px) {
+    .right-logout li {
+        font-size: 11px;
+    }
+
+    .right-logout li:first-child {
+        width: 80px;
+        line-height: 15px;
+    }
+
+    .righthead-login2 ul li.dropdown .dropdown-menu {
+        right: -40%;
+    }
+
+    .betslip_box .col-stake_list ul li a {
+        padding: 0 13.2px;
+    }
+
+}

@@ -1,0 +1,592 @@
+@media only screen and (min-width: 1800px) {
+
+    .itemslider {
+        height: 100%;
+    }
+
+}
+
+@media only screen and (min-width: 1500px) and (max-width: 1799px) {
+
+    .itemslider {
+        height: 100%;
+    }
+
+}
+
+@media only screen and (min-width: 1280px) and (max-width: 1365px) {}
+
+@media only screen and (max-width: 1279px) {}
+
+@media only screen and (min-width: 993px) and (max-width: 1199px) {
+
+    .logo {
+        width: 140px;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .fir-col1 {
+        width: 100%;
+    }
+
+    .fir-col2 {
+        width: 15%;
+    }
+
+    .foter-links {
+        width: 100%;
+    }
+
+    .middle-wraper {
+        padding-bottom: 20%;
+    }
+
+    .bet-stake-block ul {
+        width: 55%;
+        margin-left: 5%;
+    }
+
+    .bet-stake-block h4 {
+        font-size: 11px;
+    }
+
+}
+
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+
+    #cssmenu {
+        width: 20px;
+        position: inherit;
+    }
+
+    .logo {
+        width: 130px;
+        margin-left: 8px;
+    }
+
+    .search-wrap .search-input {
+        width: 150px;
+    }
+
+    .righthead-login li .form-control {
+        width: 100px;
+    }
+
+    .righthead-login li .validation-txt {
+        right: -3px;
+        font-size: 14px;
+    }
+
+    .highlight-red {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+    }
+
+    .barsicon a img {
+        margin-top: -3px;
+    }
+
+    .itemslider {
+        height: 140px;
+    }
+
+    .maintabs ul.nav-tabs .nav-link {
+        width: 100px;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .fir-col1 {
+        width: 100%;
+    }
+
+    .fir-col2 {
+        width: 22%;
+    }
+
+    .fir-col3 {
+        width: 8%;
+    }
+
+    .social-block .tab-content .tab-pane {
+        text-align: center;
+    }
+
+    .foter-links {
+        width: 100%;
+    }
+
+    .middle-wraper {
+        padding-bottom: 25%;
+    }
+
+    .bet-stake-block {
+        left: 1.3%;
+        width: 97.5%;
+    }
+
+    .clickbet-block .modal-dialog {
+        margin: -6% auto 0;
+    }
+
+    .in_play_tabs {
+        margin-bottom: 40px;
+    }
+
+}
+
+@media only screen and (min-width: 577px) and (max-width: 767px) {
+
+    .login-block {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        top: 0px;
+        width: 100%;
+        left: 0;
+        border-radius: 0px;
+    }
+
+    .loginleft-block {
+        width: 100%;
+        border-radius: 0px;
+        margin-bottom: 2.9985vmax;
+        padding: 22px 0 14px;
+        height: auto;
+    }
+
+    .loginleft-block img {
+        height: auto;
+        width: 100px;
+        margin-left: 10px;
+        margin-top: 0px;
+    }
+
+    .loginright-block {
+        margin: 30px 0;
+        width: 47.22639vmax;
+    }
+
+    .loginright-block h3 {
+        display: none;
+    }
+
+    .loginright-block .form-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .login-btn {
+        width: 100%;
+        border-radius: .89955vmax;
+        font-size: 2.24888vmax;
+        height: 44px;
+        line-height: 44px;
+        margin: 0;
+    }
+
+    .loginright-block .form-control {
+        height: 42px;
+        border-radius: .89955vmax;
+        font-size: 2.24888vmax;
+        box-shadow: inset 0 .53333vw 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .validation-txt {
+        position: absolute;
+        right: 14px;
+        width: 44px;
+        top: 13px;
+        font-size: 22px;
+    }
+
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+}
+
+@media only screen and (max-width: 767px) {
+
+    #cssmenu {
+        width: 20px;
+        position: inherit;
+    }
+
+    .left-menuga,
+    .rightblock-games {
+        width: 100%;
+        position: relative;
+    }
+
+    .middle-section {
+        margin: 0;
+        padding: 0px;
+    }
+
+    .middle-wraper {
+        height: 100%;
+        padding-bottom: 0;
+    }
+
+    body {
+        overflow-y: auto !important;
+    }
+
+    .barsicon a img {
+        margin-top: -3px;
+    }
+
+    .social-block .tab-content .tab-pane {
+        text-align: center;
+    }
+
+    .foter-links {
+        width: 100%;
+    }
+
+    .secondblock-cricket {
+        flex-flow: wrap;
+    }
+
+    .fir-col1 {
+        width: 100%;
+    }
+
+    .fir-col2 {
+        width: 28.33%;
+    }
+
+    .fir-col3 {
+        width: 10%;
+    }
+
+    .top_header {
+        height: auto;
+    }
+
+    .highlight-red {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+    }
+
+    .loginmodal button.close {
+        background: #fff;
+        width: 25px;
+        line-height: 12px;
+        height: 25px;
+    }
+
+    .righthead-login2 {
+        width: 100%;
+    }
+
+    .righthead-login2 ul {
+        justify-content: center;
+        margin-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .bet-stake-block {
+        width: 100%;
+        left: 0px;
+    }
+
+    .bet-stake-block ul {
+        width: 300px;
+        background-size: 100% 100%;
+    }
+
+    .clickbet-block .modal-dialog {
+        margin: -9% auto 0;
+    }
+
+    .minmax-txt {
+        position: relative;
+        left: 20px;
+    }
+
+    .custom-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .inplay-table.table.w1-table td:first-child {
+        width: 50%;        
+    }
+    
+    .inplay-table.table .bets-fancy td:nth-child(3), .inplay-table.table .bets-fancy td:nth-child(4) {
+        width: 100%;
+    }
+
+}
+
+@media only screen and (max-width: 576px) {
+
+    .login-block {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        top: 0px;
+        height: auto;
+        box-shadow: none;
+        width: 100%;
+        left: 0px;
+        border-radius: 0px;
+    }
+
+    .loginleft-block {
+        width: 100%;
+        position: relative;
+        height: 150px;
+        background-size: 100% 100%;
+        background-position: center;
+        border-radius: 0px;
+    }
+
+    .login_wrapper {
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100%;
+    }
+
+    .loginleft-block img {
+        height: auto;
+        width: 185px;
+        margin-left: 0px;
+        margin-top: 0;
+    }
+
+    .loginright-block {
+        width: 84vw;
+        margin: 12vw auto 12vw;
+    }
+
+    .loginright-block h3 {
+        display: none;
+    }
+
+    .loginright-block .form-group {
+        width: 100%;
+    }
+
+    .loginright-block .form-control {
+        height: 39px;
+        border-radius: 1.6vw;
+    }
+
+    .login-btn {
+        width: 100%;
+    }
+
+    .logo {
+        width: 130px;
+    }
+
+    #cssmenu {
+        width: 20px;
+        position: inherit;
+    }
+
+    .lefthead-logo .search-wrap {
+        margin-right: 0px;
+        width: 66%;
+    }
+
+    .lefthead-logo {
+        width: 100%;
+    }
+
+    .search-wrap .search-input {
+        width: 100%;
+    }
+
+    .righthead-login {
+        display: flex;
+        align-items: center;
+        padding-right: 0px;
+        flex-flow: wrap;
+        padding-left: 20px;
+    }
+
+    .righthead-login li:first-child img {
+        margin-right: 8px;
+        position: absolute;
+        left: -22px;
+    }
+
+    .righthead-login li {
+        margin-bottom: 5px;
+    }
+
+    .bet-stake-block {
+        width: 100%;
+        height: auto;
+        left: 0;
+        padding: 0 0 8px;
+        text-align: center;
+    }
+
+    .bet-stake-block ul {
+        width: 100%;
+        margin-left: 0px;
+        background-position: center;
+        background-size: contain;
+    }
+
+    .bet-stake-block .edit-btn {
+        float: none;
+    }
+
+    .clickbet-block .modal-dialog {
+        margin: -34% auto 0;
+    }
+
+    .submit-btn {
+        float: none;
+    }
+
+    .today_content .todayline {
+        display: flex;
+    }
+
+    .match-tracktop .three-tag {
+        flex-flow: wrap;
+        justify-content: center;
+    }
+
+    .match-tracktop h4 {
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 15px;
+        width: 100%;
+        text-align: center !important;
+    }
+
+    .matchul li {
+        font-size: 11px;
+    }
+
+    .matchul li {
+        flex-flow: column;
+    }
+    
+    .today_content .linktoday{
+        display: flex;
+        align-items: center;
+        width: 66%;
+    }
+    
+    .today_content .linktoday a {
+        padding-left: 3px;
+    }
+    
+    .backall, .layall {
+        font-size: 11px;
+    }
+
+}
+
+@media only screen and (max-width: 480px) {
+    .itemslider {
+        height: 125px;
+    }
+
+    .fir-col2 {
+        width: 33.33%;
+    }
+
+    .fir-col3 {
+        width: 10%;
+    }
+
+    .twodiv-ireland {
+        display: flex;
+        align-items: center;
+        position: relative;
+        flex-flow: wrap;
+        justify-content: center;
+    }
+
+    .twodiv-ireland * {
+        margin: 5px 0;
+    }
+
+    .ireland-txt {
+        width: 100%;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .timeblockireland {
+        width: auto;
+        text-align: center;
+        padding: 0px 5px;
+    }
+
+    .minmax-txt {
+        position: relative;
+        width: 100%;
+        left: 0;
+        left: 0;
+        text-align: center;
+    }
+}
+
+@media only screen and (min-width: 319px) and (max-width: 479px) {}
+
+@media only screen and (max-width: 458px) {
+    .maintabs ul.nav-tabs .nav-link {
+        width: 85px;
+    }
+
+    .righthead-login2 {
+        width: 100%;
+    }
+
+    .righthead-login2 ul {
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5px;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+
+    .righthead-login2 ul li.dropdown {
+        margin-top: 10px;
+    }
+
+    .in_play_tabs .nav-tabs {
+        min-width: 100%;
+    }
+
+}
+
+@media only screen and (max-width: 405px) {
+    .right-logout li {
+        font-size: 11px;
+    }
+
+    .right-logout li:first-child {
+        width: 80px;
+        line-height: 15px;
+    }
+
+    .righthead-login2 ul li.dropdown .dropdown-menu {
+        right: -40%;
+    }
+
+}
