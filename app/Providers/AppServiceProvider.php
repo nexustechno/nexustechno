@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Sharing is caring
         View::share('website', $this->website);
-        View::share('vue_app_version', 1);
+        View::share('vue_app_version', 2);
         View::share('matchesToBeDisplay', $matchesToBeDisplay->toArray());
     }
 }

@@ -269,11 +269,11 @@
 
                     var playerA = this.data.t2[0];
                     playerA.nation = "Player A";
-                    playerA.rate = playerA.b1;
+                    playerA.rate = 2;
 
                     var playerB = this.data.t2[3];
                     playerB.nation = "Player B";
-                    playerB.rate = playerB.b1;
+                    playerB.rate = 2;
 
                     this.teams.push(playerA);
                     this.teams.push(playerB);

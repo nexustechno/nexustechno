@@ -4,7 +4,7 @@
         height: 73vh;
         overflow: auto;
     }
-    
+
 }
 
 @media only screen and (min-width: 1500px) and (max-width: 1799px) {
@@ -13,7 +13,7 @@
         height: 73vh;
         overflow: auto;
     }
-    
+
 }
 
 @media only screen and (min-width: 1301px) and (max-width: 1365px) {
@@ -284,7 +284,7 @@
         width: 31%;
         right: 31.5%;
     }
-    
+
 
 }
 
@@ -940,10 +940,6 @@
         padding-bottom: 5%;
     }
 
-    .our_casino_list {
-        padding: 10px 0px 0 0px;
-    }
-
     body {
         overflow-y: scroll !important;
     }
@@ -1534,7 +1530,7 @@
 }
 
 @media only screen and (max-width: 480px) {
-    
+
 }
 
 @media only screen and (max-width: 458px) {

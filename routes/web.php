@@ -130,6 +130,7 @@ Route::group(['middleware' => ['nexusapi','prevent-back-history']], function () 
     Route::post('casino_bet', 'CasinoCalculationController@casino_bet')->name('casino_bet');
     Route::post('declare/casino_bet/winner', 'CasinoCalculationController@declareCasinoBetWinner')->name('declare.casino_bet.winner');
     Route::get('casino/winner/{roundid}/cards/{casino_name}', 'CasinoCalculationController@getWinnerCards')->name('get.casino_bet.winner.cards');
+    Route::post('fancy/calculation', 'FrontController@fancyUserCalculation')->name('fancy.user.calculation');
 });
 
 //backpanel

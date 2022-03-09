@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Casino;
 use App\CreditReference;
 use App\setting;
+use App\UsersAccount;
 use Illuminate\Http\Request;
 use App\User;
 use App\CasinoBet;
@@ -144,11 +145,14 @@ class CasinoCalculationController extends Controller
         }else{
             $bets = CasinoBet::where("user_id",$getUser->id)->whereIn('roundid',array_keys($resultArray))->where('casino_name',$casino->casino_name)->whereNull('winner')->get();
         }
+        $masterAdmin = User::where("agent_level","COM")->first();
+        $settings = setting::latest('id')->first();
+        $adm_balance = $settings->balance;
 
         foreach ($bets as $bet){
             if($resultArray[$bet->roundid] == $bet->team_sid){
                 $winner = $bet->team_name;
-                $profit = $bet->casino_profit+$bet->stake_value;
+                $profit = $bet->casino_profit;
                 $exposer = $bet->stake_value;
             }else{
                 if($bet->casino_name == 'teen20') {
@@ -177,14 +181,68 @@ class CasinoCalculationController extends Controller
             }
 
             $upd = CreditReference::where('player_id', $bet->user_id)->first();
+
+            $available_balance = $upd->available_balance_for_D_W;
+
             $upd->exposure = $upd->exposure - $exposer;
-            $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit));
+            $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposer));
             $update_ = $upd->update();
 
-            if($exposer > 0){
-                $admin_profit+=$exposer;
-            }else{
+            if($winner == $bet->team_name){
+                UsersAccount::create([
+                    'user_id' => $bet->user_id,
+                    'from_user_id' => $bet->user_id,
+                    'to_user_id' => $bet->user_id,
+                    'credit_amount' => $profit,
+                    'balance' => $available_balance,
+                    'closing_balance' => $available_balance + $profit,
+                    'remark' => "",
+                    'bet_user_id' => $bet->user_id,
+                    'casino_id' => $casino->id,
+                    'user_exposure_log_id' => $bet->id
+                ]);
+
+                UsersAccount::create([
+                    'user_id' => $masterAdmin->id,
+                    'from_user_id' => $bet->user_id,
+                    'to_user_id' => $masterAdmin->id,
+                    'debit_amount' => $profit,
+                    'balance' => $adm_balance,
+                    'closing_balance' => $adm_balance - $profit,
+                    'remark' => "",
+                    'bet_user_id' => $bet->user_id,
+                    'casino_id' => $casino->id,
+                    'user_exposure_log_id' => $bet->id
+                ]);
+
                 $admin_loss+=$profit;
+            }else{
+                UsersAccount::create([
+                    'user_id' => $bet->user_id,
+                    'from_user_id' => $bet->user_id,
+                    'to_user_id' => $bet->user_id,
+                    'debit_amount' => $exposer,
+                    'balance' => $available_balance,
+                    'closing_balance' => $available_balance - $exposer,
+                    'remark' => "",
+                    'bet_user_id' => $bet->user_id,
+                    'casino_id' => $casino->id,
+                    'user_exposure_log_id' => $bet->id
+                ]);
+                UsersAccount::create([
+                    'user_id' => $masterAdmin->id,
+                    'from_user_id' => $bet->user_id,
+                    'to_user_id' => $masterAdmin->id,
+                    'credit_amount' => $exposer,
+                    'balance' => $adm_balance,
+                    'closing_balance' => $adm_balance + $exposer,
+                    'remark' => "",
+                    'bet_user_id' => $bet->user_id,
+                    'casino_id' => $casino->id,
+                    'user_exposure_log_id' => $bet->id
+                ]);
+
+                $admin_profit+=$exposer;
             }
 
             if ($update_) {

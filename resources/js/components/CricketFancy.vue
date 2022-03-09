@@ -91,7 +91,7 @@
                 <td></td>
             </tr>
             <template v-for="(fancy, index) in match.t3" >
-                <tr :key="index" v-if="fancy.gstatus=='Ball Running' || fancy.gstatus=='SUSPENDED'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
+                <tr :key="fancy.sid" v-if="fancy.gstatus=='Ball Running' || fancy.gstatus=='SUSPENDED'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
                     <td colspan="3"></td>
                     <td colspan="2" class="fancy-suspend-td-1">
                         <div class="fancy-suspend-1 black-bg-5 text-color-white">
@@ -99,10 +99,10 @@
                         </div>
                     </td>
                 </tr>
-                <tr class="white-bg desktop-ui-tr" :class="'tr_fancy_'+index" :key="fancy.sid">
+                <tr class="white-bg desktop-ui-tr" :class="'tr_fancy_'+index">
                     <td colspan="3"><b>{{ fancy.nat }}</b>
                         <div>
-                            <a class="openfancymodel_dynamic" data-toggle="modal" :data-target="'#runPosition'+index">
+                            <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.nat" :data-target="'#runPosition'+index">
                                 <span :class="'fancy_total'+index">
                                     <span class="fancy-total-amount tolose text-color-red" :id="'Fancy_Total_'+index" :class="'Fancy_Total_'+index">{{ getFancyBetValue(fancy.sid) }}</span>
                                     <span class="new-fancy-total collapse" :id="'New_Fancy_Total_'+index">0</span>
@@ -121,7 +121,7 @@
                 <tr class="white-bg light-bg-tr-fancy mobile-ui-tr collapse light-bg-tr-fancy" :class="'tr_fancy_'+index">
                     <td colspan="3"><b>{{ fancy.nat }}</b>
                         <div>
-                            <a class="openfancymodel_dynamic" data-toggle="modal" :data-target="'#runPosition'+index">
+                            <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.nat" :data-target="'#runPosition'+index">
                                  <span :class="'fancy_total'+index">
                                     <span class="fancy-total-amount tolose text-color-red" :id="'Fancy_Total_'+index" :class="'Fancy_Total_'+index">{{ getFancyBetValue(fancy.sid) }}</span>
                                     <span class="new-fancy-total collapse" :id="'New_Fancy_Total_'+index">0</span>
@@ -166,15 +166,15 @@
             </tbody>
         </table>
     </div>
-    <div class="fancy-section w-100" v-else-if="loading">
-        <table width="100%" class="table custom-table inplay-table-1 w1-table cricket-table1" id="inplay-tableblock-bookmaker">
-            <tr>
-                <td colspan="7">
-                    <p class="text-center font-weight-bold">Loading Fancy Data...</p>
-                </td>
-            </tr>
-        </table>
-    </div>
+<!--    <div class="fancy-section w-100" v-else-if="loading">-->
+<!--        <table width="100%" class="table custom-table inplay-table-1 w1-table cricket-table1" id="inplay-tableblock-bookmaker">-->
+<!--            <tr>-->
+<!--                <td colspan="7">-->
+<!--                    <p class="text-center font-weight-bold">Loading Fancy Data...</p>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--    </div>-->
 </template>
 
 <script>

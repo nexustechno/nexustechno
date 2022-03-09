@@ -3204,6 +3204,7 @@ class PlayerController extends Controller
         $exposureAmt_session = SELF::getExAmountForSession($userId, $requestData['team_name'], $requestData['match_id']); /// nnnn 21-10-2021
         $deduct_expo_amt = 0;
         $sessionBetTotalExposer = 0;
+        $currentSessionBetTotalExposer = 0;
         if ($requestData['bet_type'] == 'SESSION') {
 
             if ($requestData['bet_side'] == 'lay') {
@@ -3218,7 +3219,9 @@ class PlayerController extends Controller
             //echo $headerUserBalance.' <'. $exposureAmt.'+'.$exposureAmt_session.'+'.$exposureAmt_SESSION;
             //exit;
             //if($headerUserBalance < ($exposureAmt+$deduct_expo_amt))
-            $sessionBetTotalExposer = $exposureAmt + $exposureAmt_session + $exposureAmt_SESSION;
+            $currentSessionBetTotalExposer =  $exposureAmt_SESSION;
+
+            $sessionBetTotalExposer = $exposureAmt + $exposureAmt_session + $currentSessionBetTotalExposer;
             // dd($deduct_expo_amt, $headerUserBalance, $exposureAmt, $exposureAmt_session, $exposureAmt_SESSION);
             if ($headerUserBalance < $sessionBetTotalExposer) {
                 $responce['status'] = 'false';
@@ -3435,6 +3438,7 @@ class PlayerController extends Controller
                     $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt);
                     $responce['status'] = 'true';
                     $responce['msg'] = 'Bet Added Successfully';
+                    $responce['sessionBetTotalExposer'] = $sessionBetTotalExposer;
                     return json_encode($responce);
                     exit;
                 }
@@ -3593,6 +3597,7 @@ class PlayerController extends Controller
                     $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt,$betModel->bet_type,$sessionBetTotalExposer);
                     $responce['status'] = 'true';
                     $responce['msg'] = 'Bet Added Successfully.';
+                    $responce['currentSessionBetTotalExposer'] = $currentSessionBetTotalExposer;
                     return json_encode($responce);
                     exit;
                 }

@@ -887,7 +887,27 @@
 <?php /* end for mobile alert message*/ ?>
 
 <div  id="all_fancy_model">
-{!!$all_bet_model!!}
+    <div class="modal credit-modal" id="runPosition">
+        <div class="modal-dialog">
+            <div class="modal-content light-grey-bg-1">
+                <div class="modal-header">
+                    <h4 class="modal-title text-color-blue-1">Run Position</h4>
+                    <button type="button" class="close modelclose" data-dismiss="modal"><img src="{{ asset('asset/front/img/close-icon.png') }}" alt=""></button>
+                </div>
+                <div class="modal-body white-bg p-3">
+                    <table class="table table-bordered w-100 fonts-1 mb-0">
+                        <thead>
+                        <tr>
+                            <th width="50%" class="text-center">Run</th>
+                            <th width="50%" class="text-right">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody class="position"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <input type="hidden" id="opened_fancy_model_id" value="" />
 <input type="hidden" name="_token" id="_token" value="{!! csrf_token() !!}">
@@ -1726,6 +1746,37 @@
                     });
                 }
             });
+
+            $("body").on('click','.fancy-calculation-exposer',function () {
+                if(getUser==undefined && getUser==null && getUser=='') {
+                    $("#myLoginModal").modal('show');
+                }else{
+
+                    $("#all_fancy_model #runPosition tbody.position").html('');
+
+                    var target = $(this).attr('data-target');
+                    var fancyName = $(this).attr('data-fancy-name');
+                    var event_id = '{{$match->event_id}}';
+
+                    var _token = '{{csrf_token()}}';
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/fancy/calculation',
+                        data: {_token:_token, event_id:event_id,fancy_name:fancyName},
+                        beforeSend:function(){},
+                        complete: function(){},
+                        success: function(data){
+                            if(data.action == 'login'){
+                                $("#myLoginModal").modal('show');
+                            }else{
+                                $("#all_fancy_model #runPosition tbody.position").html(data.html);
+                                $("#all_fancy_model #runPosition").modal("show");
+                            }
+                        }
+                    });
+                }
+            });
         });
 
         $(document).ready(function() {
@@ -1737,6 +1788,13 @@
                 setInterval(function () {
                     matchDeclareRedirect();
                     //ScoreBoard();
+
+                    var match_sel = $('#select_bet_on_match').val();
+                    if (match_sel == "") {
+                        match_sel = '{{$match->event_id}}~~' + 'All';
+                    }
+                    call_display_bet_list(match_sel);
+
                 }, 10000);
 
                 // setInterval(function () {
@@ -6592,21 +6650,13 @@
                                     }
 
 
-                                    console.log("finalValue: ",finalValue);
+                                    var currentSessionBetTotalExposer = data.currentSessionBetTotalExposer;
+
+                                    console.log("currentSessionBetTotalExposer: ",currentSessionBetTotalExposer);
                                     if (width < 990) {
-                                        var old_value = $('.mobile-ui-tr .Fancy_Total_' + bet_position).text();
-                                        if (old_value != '') {
-                                            finalValue = parseFloat(old_value) + parseFloat(finalValue);
-                                        }
-                                        console.log("finalValue: ", finalValue);
-                                        $('.mobile-ui-tr .Fancy_Total_' + bet_position).html(finalValue.toFixed(2));
+                                        $('.mobile-ui-tr .Fancy_Total_' + bet_position).html(currentSessionBetTotalExposer.toFixed(2));
                                     }else{
-                                        var old_value = $('.desktop-ui-tr .Fancy_Total_' + bet_position).text();
-                                        if (old_value != '') {
-                                            finalValue = parseFloat(old_value) + parseFloat(finalValue);
-                                        }
-                                        console.log("finalValue: ", finalValue);
-                                        $('.desktop-ui-tr .Fancy_Total_' + bet_position).html(finalValue.toFixed(2));
+                                        $('.desktop-ui-tr .Fancy_Total_' + bet_position).html(currentSessionBetTotalExposer.toFixed(2));
                                     }
 
                                     $('#odds_val').val(' ');

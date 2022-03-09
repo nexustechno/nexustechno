@@ -58,10 +58,13 @@ $balance=$settings['available_balance_for_D_W'];
     table.dataTable, table.dataTable th, table.dataTable td {
         box-sizing: border-box !important;
     }
+    table.dataTable thead > tr > th{
+        text-align: left;
+    }
 </style>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">--}}
+{{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>--}}
 
 {{--<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>--}}
 
@@ -98,7 +101,7 @@ $balance=$settings['available_balance_for_D_W'];
                                     </div>
 
                                     <div class="col-md-1" >
-                                        <input id="acntbtn" type="button" value="Submit" name="acntbtn" class="submit-btn text-color-yellow addrecord" onclick="getaccountreport()">
+                                        <input id="acntbtn" type="button" value="Submit" name="acntbtn" class="submit-btn text-color-yellow addrecord" onclick="loadData()">
                                     </div>
                                 </div>
                             </div>
@@ -110,11 +113,11 @@ $balance=$settings['available_balance_for_D_W'];
                             <table id="example123" class="table table-striped table-bordered datatable dataTable no-footer" role="grid" aria-describedby="example_info">
                                 <thead>
                                     <tr role="row">
-                                        <th class="sorting_asc" rowspan="1" colspan="1" aria-label="Date" style="width: 150px;">Date</th>
                                         <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Credit" style="width: 50px;">Sr no</th>
-                                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Credit" style="width: 130px;">Credit</th>
-                                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Debit" style="width: 130px;">Debit</th>
-                                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Closing" style="width: 130px;">Balance</th>
+                                        <th class="sorting_asc" rowspan="1" colspan="1" aria-label="Date" style="width: 150px;">Date</th>
+                                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Credit" style="width: 130px;text-align: right;">Credit</th>
+                                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Debit" style="width: 130px;text-align: right;">Debit</th>
+                                        <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Closing" style="width: 130px;text-align: right;">Balance</th>
                                         <th class="sorting_disabled text-left" rowspan="1" colspan="1" aria-label="Fromto">Remark</th>
                                     </tr>
                                 </thead>
@@ -125,6 +128,8 @@ $balance=$settings['available_balance_for_D_W'];
 {{--                        </div>--}}
 
                     </div>
+
+                    <p class="text-left">Total {{$records}} records</p>
                 </div>
             </div>
 
@@ -181,9 +186,6 @@ $balance=$settings['available_balance_for_D_W'];
     </div>
 </div>
 
-
-<script src = "https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js" defer ></script>
-
 <script>
     $(function() {
         var start = moment().subtract(29, 'days');
@@ -224,64 +226,36 @@ $balance=$settings['available_balance_for_D_W'];
 <script type="text/javascript">
 var _token = $("input[name='_token']").val();
 
-// $('#site_bet_loading1').show();
 setTimeout(()=>{
-    getaccountreport()
-}, 800);
+    loadData();
+},500);
 
-function getaccountreport()
-{
+function loadData(){
     var date_from = $('#fromdate').val();
     var date_to = $('#todate').val();
     var drp_value = $('#drpval').val();
-    var mytable = $('#example123').DataTable({
-        paging:   false,
-        destroy: true,
-        processing: true,
-        serverSide: true,
-        ajax: {
-            type: "post",
-            url:"{{route('accountstmtdata')}}",
-            beforeSend:function(){
-                $('#site_bet_loading1').show();
-            },
-            complete: function(){
-                $('#site_bet_loading1').hide();
-            },
-            data:{
-                "_token": "{{ csrf_token() }}",
-                datefrom:date_from,
-                dateto:date_to,
-                drpval:drp_value
-            }
-        },
-        columns:
-            [
-                { data: 'date' },
-                { data: 'srno' },
-                { data: 'credit' },
-                { data: 'debit' },
-                { data: 'balance' },
-                { data: 'remark' },
-            ]
 
-    });
-
-
-    /*$.ajax({
+    $.ajax({
         type: "post",
-        url: "{{route('accountstmtdata')}}",
+        url: '{{route("accountstmtdata")}}',
         data: {
             "_token": "{{ csrf_token() }}",
-            "datefrom":date_from,
-            "dateto":date_to,
-            "drpval":drp_value
+            datefrom:date_from,
+            dateto:date_to,
+            drpval:drp_value
         },
-        success: function(data){
+        beforeSend: function () {
+            $('#site_bet_loading1').show();
+        },
+        complete: function () {
+            $('#site_bet_loading1').hide();
+        },
+        success: function (data) {
             $('#tblData').html(data);
         }
-    });*/
+    });
 }
+
 function openMatchReport(val)
 {
 

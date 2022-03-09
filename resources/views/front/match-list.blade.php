@@ -38,13 +38,13 @@ $settings =setting::first();
                         <a class="res_search black-gradient-bg4"><img src="{{ URL::to('asset/front/img/search.svg') }}" alt=""></a>
                         <div class="mslide_nav">
                             <ul>
-                                <li class="menu_casino">
+                                <li class="menu_casino {{ (request()->is('casino' )) ? 'active' : '' }}">
                                     <span class="tagnew">New</span>
                                     <a href="{{route('casino')}}" class="text-color-white purple-blue-gradient-bg">
                                         <img src="{{ URL::to('asset/front/img/mslide_menu/mslide-icon-casino.svg') }}" alt=""> Casino
                                     </a>
                                 </li>
-                                <li class="active">
+                                <li class="{{ (request()->is('cricket' )) ? 'active' : '' }}">
                                     <span class="highlight-red grey-gradient-bg"> <span class="text-color-white red-gradient-bg cricketCount"></span> </span>
                                     <a href="{{route('cricket')}}" class="text-color-black1">
                                         <img src="{{ URL::to('asset/front/img/mslide_menu/mslide-icon-cricket-black.svg') }}" alt="" class="dactimg">
@@ -52,7 +52,7 @@ $settings =setting::first();
                                         Cricket
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ (request()->is('soccer' )) ? 'active' : '' }}">
                                     <span class="highlight-red grey-gradient-bg"> <span class="text-color-white red-gradient-bg soccerCount"></span> </span>
                                     <a href="{{route('soccer')}}" class="text-color-black1">
                                         <img src="{{ URL::to('asset/front/img/mslide_menu/mslide-icon-soccer-black.svg') }}" alt="" class="dactimg">
@@ -60,7 +60,7 @@ $settings =setting::first();
                                         Soccer
                                     </a>
                                 </li>
-                                <li>
+                                <li class="{{ (request()->is('tennis' )) ? 'active' : '' }}">
                                     <span class="highlight-red grey-gradient-bg"> <span class="text-color-white red-gradient-bg tennisCount"></span> </span>
                                     <a href="{{route('tennis')}}" class="text-color-black1">
                                         <img src="{{ URL::to('asset/front/img/mslide_menu/mslide-icon-tennis-black.svg') }}" alt="" class="dactimg">

@@ -170,12 +170,13 @@
 
     .casino-video .casinocards {
         width: 130px;
-        height: 100px;
+        /*height: 100px;*/
     }
 
     .casino-video .casinocards-container span img {
         margin-right: 5px;
         width: 30px;
+        max-width: 30px;
     }
 
     .casino-video .casino-icons ul li {
@@ -196,6 +197,7 @@
 
     .card32b_table .casino-video .casinocards-container span img {
         width: 24px;
+        max-width: 24px;
     }
 
     .card32b_table .casino-video .casinocards-container > div > div {
@@ -772,7 +774,7 @@
     }
 
     .casino-video .video-block iframe{
-        height: 150px;
+        height: 230px;
         max-height: 350px;
     }
 }
@@ -969,7 +971,7 @@
         top: 50%;
         transform: translateY(-50%);
         padding: 5px 20px 5px 5px;
-        height: 125px;
+        /*height: 125px;*/
         width: 150px;
     }
 
@@ -982,6 +984,7 @@
     .casino-video .casinocards-container span img {
         margin-right: 8px;
         width: 30px;
+        max-width: 30px;
     }
 
     .casino-video .casino-icons ul li {
@@ -1029,11 +1032,10 @@
 
     .casino-wrap .col{ display: none; }
     .casino-wrap .col-9{ padding: 0px; max-width: 100%; }   .casino-wrap .col-12{ padding: 0px; }
-    .new_casino .our_casino_list{ padding-right: 0px; margin-right: 0px; width: 100%; }
+
     .middle-wraper1 .home-carousel{ padding-left: 0px !important; padding-right: 0px !important; }
     .new_casino .col-6{ padding-right: 5px; }
-    .our_casino_list{ padding:5px 10px 0 5px; margin-top: 0px; }
-    .our_casino_list .col-xl-6{ padding-right: 5px; }
+
     .new_casino .casino_list_items{ margin-bottom: 5px; }
     .programe-setcricket .fir-col1-green,.programe-setcricket .fir-col1{ width: 92% !important; }
     .programe-setcricket .fir-col3 { display: inline-block; width: 8% !important; text-align: right; }
@@ -1422,8 +1424,9 @@
         top: 50%;
         transform: translateY(-50%);
         padding: 5px 10px 5px 5px;
-        height: 120px;
-        width: 95px;
+        /*height: 150px;*/
+        width: 105px;
+        overflow-y: auto;
     }
 
     .casino-video .casinocards_shuffle {
@@ -1436,6 +1439,7 @@
     .casino-video .casinocards-container span img {
         margin-right: 8px;
         width: 22px;
+        max-width: 22px;
     }
 
     .casino-video .casino-icons ul li {
@@ -1677,6 +1681,7 @@
     .dragon2_table .casino-video .casinocards-container span img {
         margin-right: 5px;
         width: 22px;
+        max-width: 22px;
     }
 
     .andarbahar_block .andar_card_box,
@@ -1708,6 +1713,7 @@
 
     .card32b_table .casino-video .casinocards-container span img {
         width: 15px;
+        max-width: 15px;
     }
 
     .card32b_table .casino-video .casinocards .casinocards-container .dealer_name {
@@ -1779,11 +1785,9 @@
     #betmobileModal .col-4{ padding: 5px 5px; }
     .casino-wrap .col{ display: none; }
     .casino-wrap .col-9{ padding: 0px; max-width: 100%; }   .casino-wrap .col-12{ padding: 0px; }
-    .new_casino .our_casino_list{ padding-right: 0px; margin-right: 0px; width: 100%; }
+
     .middle-wraper1 .home-carousel{ padding-left: 0px !important; padding-right: 0px !important; }
-    .new_casino .col-6{ padding-right: 5px; }
-    .our_casino_list{ padding:5px 10px 0 5px; margin-top: 0px; }
-    .our_casino_list .col-xl-6{ padding-right: 5px; }
+
     .new_casino .casino_list_items{ margin-bottom: 5px; }
 
     .programe-setcricket .fir-col1-green,.programe-setcricket .fir-col1{ width: 89% !important; }

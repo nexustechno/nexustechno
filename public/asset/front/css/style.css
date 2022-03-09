@@ -3325,7 +3325,7 @@ iframe html {
     background-color: rgba(0, 0, 0, .6);
     padding: 5px 20px 5px 5px;
     display: inline-block;
-    height: 135px;
+    /*height: 135px;*/
     overflow: hidden;
     transition: 1s;
     width: 172px;
@@ -3353,11 +3353,13 @@ iframe html {
     width: 100%;
     height: 100%;
     margin-bottom: 5px;
+    overflow-y: auto;
 }
 
 .casino-video .casinocards-container span img {
     margin-right: 2px;
     width: 35px;
+    max-width: 35px;
 }
 
 .casino-video .casinocards_shuffle {
@@ -4597,7 +4599,7 @@ table.dataTable.display tbody tr {
 /****** 8 - 6 - 21 *******/
 
 .our_casino_list {
-    padding: 10px 10px 0 10px;
+    padding-top: 10px;
     display: flex;
     display: -webkit-flex;
     flex-wrap: wrap;

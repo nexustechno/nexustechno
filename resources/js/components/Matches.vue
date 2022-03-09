@@ -177,100 +177,100 @@
                     }
                 }
 
-                if((index+1) == this.matches.length && valReturn == false)
-                {
-                    // console.log("matches-section1", this.matches.length," == ",index);
-
-                    if(this.filtertype!=undefined){
-                        if(this.filtertype=='inplay') {
-                            if(this.matchtype == 4) {
-                                setTimeout(()=>{
-                                    if ($("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No cricket data found</p></div>')
-                                    } else {
-                                        $("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }else if(this.matchtype == 2){
-                                setTimeout(()=> {
-                                    if ($("#inplay #inplay-tennis-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#inplay #inplay-tennis-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No tennis data found</p></div>')
-                                    } else {
-                                        $("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }else if(this.matchtype == 1){
-                                setTimeout(()=> {
-                                    if ($("#inplay #inplay-soccer-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#inplay #inplay-soccer-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No soccer data found</p></div>')
-                                    } else {
-                                        $("#inplay #inplay-soccer-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }
-                        }else if(this.filtertype=='today') {
-                            if(this.matchtype == 4) {
-                                setTimeout(()=>{
-                                    if ($("#today #today-cricket-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#today #today-cricket-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No cricket data found</p></div>')
-                                    } else {
-                                        $("#today #today-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }else if(this.matchtype == 2){
-                                setTimeout(()=> {
-                                    if ($("#today #today-tennis-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#today #today-tennis-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No tennis data found</p></div>')
-                                    } else {
-                                        $("#today #today-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }else if(this.matchtype == 1){
-                                setTimeout(()=> {
-                                    if ($("#today #today-soccer-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#today #today-soccer-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No soccer data found</p></div>')
-                                    } else {
-                                        $("#today #today-soccer-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }
-                        }else if(this.filtertype=='tomorrow') {
-                            if(this.matchtype == 4) {
-                                setTimeout(()=>{
-                                    if ($("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No cricket data found</p></div>')
-                                    } else {
-                                        $("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }else if(this.matchtype == 2){
-                                setTimeout(()=> {
-                                    if ($("#tomorrow #tmr-tennis-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#tomorrow #tmr-tennis-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No tennis data found</p></div>')
-                                    } else {
-                                        $("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }else if(this.matchtype == 1){
-                                setTimeout(()=> {
-                                    if ($("#tomorrow #tmr-soccer-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
-                                        $("#tomorrow #tmr-soccer-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No soccer data found</p></div>')
-                                    } else {
-                                        $("#tomorrow #tmr-soccer-collapse .programe-setcricket .matches-section .no-data-found").remove();
-                                    }
-                                },100)
-                            }
-                        }
-                    }else {
-                        setTimeout(()=> {
-                            if ($(".matches-section .secondblock-cricket.white-bg").length == 0) {
-                                $(".matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No data found</p></div>')
-                            } else {
-                                $(".matches-section .no-data-found").remove();
-                            }
-                        },100);
-                    }
-                }
+                // if((index+1) == this.matches.length && valReturn == false)
+                // {
+                //     // console.log("matches-section1", this.matches.length," == ",index);
+                //
+                //     if(this.filtertype!=undefined){
+                //         if(this.filtertype=='inplay') {
+                //             if(this.matchtype == 4) {
+                //                 setTimeout(()=>{
+                //                     if ($("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No cricket data found</p></div>')
+                //                     } else {
+                //                         $("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }else if(this.matchtype == 2){
+                //                 setTimeout(()=> {
+                //                     if ($("#inplay #inplay-tennis-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#inplay #inplay-tennis-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No tennis data found</p></div>')
+                //                     } else {
+                //                         $("#inplay #inplay-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }else if(this.matchtype == 1){
+                //                 setTimeout(()=> {
+                //                     if ($("#inplay #inplay-soccer-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#inplay #inplay-soccer-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No soccer data found</p></div>')
+                //                     } else {
+                //                         $("#inplay #inplay-soccer-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }
+                //         }else if(this.filtertype=='today') {
+                //             if(this.matchtype == 4) {
+                //                 setTimeout(()=>{
+                //                     if ($("#today #today-cricket-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#today #today-cricket-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No cricket data found</p></div>')
+                //                     } else {
+                //                         $("#today #today-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }else if(this.matchtype == 2){
+                //                 setTimeout(()=> {
+                //                     if ($("#today #today-tennis-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#today #today-tennis-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No tennis data found</p></div>')
+                //                     } else {
+                //                         $("#today #today-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }else if(this.matchtype == 1){
+                //                 setTimeout(()=> {
+                //                     if ($("#today #today-soccer-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#today #today-soccer-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No soccer data found</p></div>')
+                //                     } else {
+                //                         $("#today #today-soccer-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }
+                //         }else if(this.filtertype=='tomorrow') {
+                //             if(this.matchtype == 4) {
+                //                 setTimeout(()=>{
+                //                     if ($("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No cricket data found</p></div>')
+                //                     } else {
+                //                         $("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }else if(this.matchtype == 2){
+                //                 setTimeout(()=> {
+                //                     if ($("#tomorrow #tmr-tennis-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#tomorrow #tmr-tennis-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No tennis data found</p></div>')
+                //                     } else {
+                //                         $("#tomorrow #tmr-cricket-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }else if(this.matchtype == 1){
+                //                 setTimeout(()=> {
+                //                     if ($("#tomorrow #tmr-soccer-collapse .programe-setcricket .matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                         $("#tomorrow #tmr-soccer-collapse .programe-setcricket .matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No soccer data found</p></div>')
+                //                     } else {
+                //                         $("#tomorrow #tmr-soccer-collapse .programe-setcricket .matches-section .no-data-found").remove();
+                //                     }
+                //                 },100)
+                //             }
+                //         }
+                //     }else {
+                //         setTimeout(()=> {
+                //             if ($(".matches-section .secondblock-cricket.white-bg").length == 0) {
+                //                 $(".matches-section").html('<div class="no-data-found text-center p-5"><p class="m-0">No data found</p></div>')
+                //             } else {
+                //                 $(".matches-section .no-data-found").remove();
+                //             }
+                //         },100);
+                //     }
+                // }
 
                 return valReturn;
             },

@@ -7005,7 +7005,7 @@ input.dt-button:focus:not(.disabled) {
 
 .our_casino_list {
 
-    padding: 10px 10px 0 10px;
+    padding-top: 10px;
 
     display: flex;
 
@@ -10767,7 +10767,7 @@ table.dataTable.display tbody tr {
 
     padding: 3px 7px;
 
-    border-radius: 4px;    
+    border-radius: 4px;
 
 }
 
@@ -10787,7 +10787,7 @@ table.dataTable.display tbody tr {
 
     display: flex;
 
-    flex-flow: wrap;    
+    flex-flow: wrap;
 
 }
 
@@ -10857,7 +10857,7 @@ table.dataTable.display tbody tr {
 
     border: 1px solid #5a7384;
 
-    margin-right: 5px;    
+    margin-right: 5px;
 
 }
 
@@ -11161,7 +11161,7 @@ select.acc-filter{ height: 25px !important; }
 
     color: #ffffff;
 
-} 
+}
 
 
 
@@ -11327,7 +11327,7 @@ select.acc-filter{ height: 25px !important; }
 }
 
 /*--.black-yello --*/
-.black-yello .black-bg, .black-yello .login-btn, 
+.black-yello .black-bg, .black-yello .login-btn,
 .black-yello .top_header,
 .black-yello .black-gradient-bg1,
 .black-yello .darkblue-bg,
@@ -11340,7 +11340,7 @@ select.acc-filter{ height: 25px !important; }
 .black-yello .black-bg2
 {background: #000000!important; color: #ffbb12 !important;}
 
-.black-yello .left-menuga .casino_leftpanel ul li a:hover, 
+.black-yello .left-menuga .casino_leftpanel ul li a:hover,
 .black-yello .left-menuga .casino_leftpanel ul li.active a,
 .black-yello .yellow-gradient-bg,
 .black-yello .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11365,8 +11365,8 @@ select.acc-filter{ height: 25px !important; }
 
 
 /*--.maruti- light green and heavy green --*/
-.light-green-and-heavy-green .black-bg, 
-.light-green-and-heavy-green .login-btn, 
+.light-green-and-heavy-green .black-bg,
+.light-green-and-heavy-green .login-btn,
 .light-green-and-heavy-green .top_header,
 .light-green-and-heavy-green .black-gradient-bg1,
 .light-green-and-heavy-green .darkblue-bg,
@@ -11379,7 +11379,7 @@ select.acc-filter{ height: 25px !important; }
 .light-green-and-heavy-green .black-bg2
 {background: #30663a!important; color: #ffd541 !important;}
 
-.light-green-and-heavy-green .left-menuga .casino_leftpanel ul li a:hover, 
+.light-green-and-heavy-green .left-menuga .casino_leftpanel ul li a:hover,
 .light-green-and-heavy-green .left-menuga .casino_leftpanel ul li.active a,
 .light-green-and-heavy-green .yellow-gradient-bg,
 .light-green-and-heavy-green .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11404,8 +11404,8 @@ select.acc-filter{ height: 25px !important; }
 
 
 /*--.black+parrot--*/
-.black_sky .black-bg, 
-.black_sky .login-btn, 
+.black_sky .black-bg,
+.black_sky .login-btn,
 .black_sky .top_header,
 .black_sky .black-gradient-bg1,
 .black_sky .darkblue-bg,
@@ -11418,7 +11418,7 @@ select.acc-filter{ height: 25px !important; }
 .black_sky .black-bg2
 {background: #000!important; color: #07c8ee !important;}
 
-.black_sky .left-menuga .casino_leftpanel ul li a:hover, 
+.black_sky .left-menuga .casino_leftpanel ul li a:hover,
 .black_sky .left-menuga .casino_leftpanel ul li.active a,
 .black_sky .yellow-gradient-bg,
 .black_sky .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11442,8 +11442,8 @@ select.acc-filter{ height: 25px !important; }
 .black_sky .login-block.yellow-bg{background: #07c8ee ;color: #000;}
 
 /*--.orangeexch--*/
-.orangeexch .black-bg, 
-.orangeexch .login-btn, 
+.orangeexch .black-bg,
+.orangeexch .login-btn,
 .orangeexch .top_header,
 .orangeexch .black-gradient-bg1,
 .orangeexch .darkblue-bg,
@@ -11456,7 +11456,7 @@ select.acc-filter{ height: 25px !important; }
 .orangeexch .black-bg2
 {background: #f18222!important; color: #000 !important;}
 
-.orangeexch .left-menuga .casino_leftpanel ul li a:hover, 
+.orangeexch .left-menuga .casino_leftpanel ul li a:hover,
 .orangeexch .left-menuga .casino_leftpanel ul li.active a,
 .orangeexch .yellow-gradient-bg,
 .orangeexch .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11481,8 +11481,8 @@ select.acc-filter{ height: 25px !important; }
 
 
 /*--blue_green--*/
-.blue_green .black-bg, 
-.blue_green .login-btn, 
+.blue_green .black-bg,
+.blue_green .login-btn,
 .blue_green .top_header,
 .blue_green .black-gradient-bg1,
 .blue_green .darkblue-bg,
@@ -11495,7 +11495,7 @@ select.acc-filter{ height: 25px !important; }
 .blue_green .black-bg2
 {background: #14213d!important; color: #8bb842 !important;}
 
-.blue_green .left-menuga .casino_leftpanel ul li a:hover, 
+.blue_green .left-menuga .casino_leftpanel ul li a:hover,
 .blue_green .left-menuga .casino_leftpanel ul li.active a,
 .blue_green .yellow-gradient-bg,
 .blue_green .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11521,8 +11521,8 @@ select.acc-filter{ height: 25px !important; }
 
 
 /*--.black_light_black--*/
-.black_light_black .black-bg, 
-.black_light_black .login-btn, 
+.black_light_black .black-bg,
+.black_light_black .login-btn,
 .black_light_black .top_header,
 .black_light_black .black-gradient-bg1,
 .black_light_black .darkblue-bg,
@@ -11535,7 +11535,7 @@ select.acc-filter{ height: 25px !important; }
 .black_light_black .black-bg2
 {background: #000!important; color: #585858 !important;}
 
-.black_light_black .left-menuga .casino_leftpanel ul li a:hover, 
+.black_light_black .left-menuga .casino_leftpanel ul li a:hover,
 .black_light_black .left-menuga .casino_leftpanel ul li.active a,
 .black_light_black .yellow-gradient-bg,
 .black_light_black .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11559,8 +11559,8 @@ select.acc-filter{ height: 25px !important; }
 .black_light_black .login-block.yellow-bg{background: #585858;color: #fff;}
 
 /*--black_green--*/
-.black_green .black-bg, 
-.black_green .login-btn, 
+.black_green .black-bg,
+.black_green .login-btn,
 .black_green .top_header,
 .black_green .black-gradient-bg1,
 .black_green .darkblue-bg,
@@ -11573,7 +11573,7 @@ select.acc-filter{ height: 25px !important; }
 .black_green .black-bg2
 {background: #000!important; color: #00852f !important;}
 
-.black_green .left-menuga .casino_leftpanel ul li a:hover, 
+.black_green .left-menuga .casino_leftpanel ul li a:hover,
 .black_green .left-menuga .casino_leftpanel ul li.active a,
 .black_green .yellow-gradient-bg,
 .black_green .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11598,8 +11598,8 @@ select.acc-filter{ height: 25px !important; }
 
 
 /*--black_parrot--*/
-.black_parrot .black-bg, 
-.black_parrot .login-btn, 
+.black_parrot .black-bg,
+.black_parrot .login-btn,
 .black_parrot .top_header,
 .black_parrot .black-gradient-bg1,
 .black_parrot .darkblue-bg,
@@ -11612,7 +11612,7 @@ select.acc-filter{ height: 25px !important; }
 .black_parrot .black-bg2
 {background: #000!important; color: #0eff08 !important;}
 
-.black_parrot .left-menuga .casino_leftpanel ul li a:hover, 
+.black_parrot .left-menuga .casino_leftpanel ul li a:hover,
 .black_parrot .left-menuga .casino_leftpanel ul li.active a,
 .black_parrot .yellow-gradient-bg,
 .black_parrot .in_play_tabs-2 .nav-tabs .nav-link.active
@@ -11637,8 +11637,8 @@ select.acc-filter{ height: 25px !important; }
 
 
 /*--green_black--*/
-.green_black .black-bg, 
-.green_black .login-btn, 
+.green_black .black-bg,
+.green_black .login-btn,
 .green_black .top_header,
 .green_black .black-gradient-bg1,
 .green_black .darkblue-bg,
@@ -11651,7 +11651,7 @@ select.acc-filter{ height: 25px !important; }
 .green_black .black-bg2
 {background: #00852f!important; color: #000 !important;}
 
-.green_black .left-menuga .casino_leftpanel ul li a:hover, 
+.green_black .left-menuga .casino_leftpanel ul li a:hover,
 .green_black .left-menuga .casino_leftpanel ul li.active a,
 .green_black .yellow-gradient-bg,
 .green_black .in_play_tabs-2 .nav-tabs .nav-link.active

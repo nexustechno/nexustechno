@@ -212,13 +212,13 @@
         </tbody>
     </table>
 
-    <table class="table custom-table inplay-table-1 w1-table cricket-table1" id="inplay-tableblock-bookmaker" v-else-if="loading">
-        <tr>
-            <td colspan="7">
-                <p class="text-center font-weight-bold">Loading Bookmark Data...</p>
-            </td>
-        </tr>
-    </table>
+<!--    <table class="table custom-table inplay-table-1 w1-table cricket-table1" id="inplay-tableblock-bookmaker" v-else-if="loading">-->
+<!--        <tr>-->
+<!--            <td colspan="7">-->
+<!--                <p class="text-center font-weight-bold">Loading Bookmark Data...</p>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
 </template>
 
 <script>

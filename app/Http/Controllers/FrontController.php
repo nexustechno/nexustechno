@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\CasinoBet;
+use App\UsersAccount;
 use App\UsersFavMatch;
 use Illuminate\Http\Request;
 use App\Sport;
@@ -659,6 +660,10 @@ class FrontController extends Controller
                         $max_val = $input;
                 }
 
+
+//                $exposureAmt_session = SELF::getExAmountForSession($userId,  @$nat[$sid[$i]], $eventId); /// nnnn 21-10-2021
+
+
                 if ($match_f == '0') {
                     $getUserCheck = Session::get('playerUser');
                     if (!empty($getUserCheck)) {
@@ -714,15 +719,15 @@ class FrontController extends Controller
                                 $bet_deduct_amt = 0;
                                 $placed_bet_type = '';
                                 foreach ($my_placed_bets as $bet) {
-//                                    if ($bet->bet_side == 'back') {
-//                                        if ($bet->bet_odds == $run_arr[$kk]) {
-//                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                        } else if ($bet->bet_odds < $run_arr[$kk]) {
-//                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                        } else if ($bet->bet_odds > $run_arr[$kk]) {
-//                                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
-//                                        }
-//                                    } else if ($bet->bet_side == 'lay')
+                                    if ($bet->bet_side == 'back') {
+                                        if ($bet->bet_odds == $run_arr[$kk]) {
+                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+                                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                        }
+                                    } else if ($bet->bet_side == 'lay')
                                     {
                                         if ($bet->bet_odds == $run_arr[$kk]) {
                                             $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
@@ -850,18 +855,18 @@ class FrontController extends Controller
                                         $bet_deduct_amt = 0;
                                         $placed_bet_type = '';
                                         foreach ($my_placed_bets as $bet) {
-//                                            if ($bet->bet_side == 'back') {
-//                                                if ($bet->bet_odds == $run_arr[$kk]) {
-//
-//                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                                } else if ($bet->bet_odds < $run_arr[$kk]) {
-//
-//                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                                } else if ($bet->bet_odds > $run_arr[$kk]) {
-//
-//                                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
-//                                                }
-//                                            } else if ($bet->bet_side == 'lay')
+                                            if ($bet->bet_side == 'back') {
+                                                if ($bet->bet_odds == $run_arr[$kk]) {
+
+                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                                } else if ($bet->bet_odds < $run_arr[$kk]) {
+
+                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                                } else if ($bet->bet_odds > $run_arr[$kk]) {
+
+                                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                                }
+                                            } else if ($bet->bet_side == 'lay')
                                             {
                                                 if ($bet->bet_odds == $run_arr[$kk]) {
 
@@ -980,18 +985,18 @@ class FrontController extends Controller
                                         $bet_deduct_amt = 0;
                                         $placed_bet_type = '';
                                         foreach ($my_placed_bets as $bet) {
-//                                            if ($bet->bet_side == 'back') {
-//                                                if ($bet->bet_odds == $run_arr[$kk]) {
-//
-//                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                                } else if ($bet->bet_odds < $run_arr[$kk]) {
-//
-//                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                                } else if ($bet->bet_odds > $run_arr[$kk]) {
-//
-//                                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
-//                                                }
-//                                            } else if ($bet->bet_side == 'lay')
+                                            if ($bet->bet_side == 'back') {
+                                                if ($bet->bet_odds == $run_arr[$kk]) {
+
+                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                                } else if ($bet->bet_odds < $run_arr[$kk]) {
+
+                                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                                } else if ($bet->bet_odds > $run_arr[$kk]) {
+
+                                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                                }
+                                            } else if ($bet->bet_side == 'lay')
                                             {
                                                 if ($bet->bet_odds == $run_arr[$kk]) {
                                                     $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
@@ -1109,15 +1114,15 @@ class FrontController extends Controller
                                     $bet_deduct_amt = 0;
                                     $placed_bet_type = '';
                                     foreach ($my_placed_bets_session as $bet) {
-//                                        if ($bet->bet_side == 'back') {
-//                                            if ($bet->bet_odds == $run_arr[$kk]) {
-//                                                $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                            } else if ($bet->bet_odds < $run_arr[$kk]) {
-//                                                $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-//                                            } else if ($bet->bet_odds > $run_arr[$kk]) {
-//                                                $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
-//                                            }
-//                                        } else if ($bet->bet_side == 'lay')
+                                        if ($bet->bet_side == 'back') {
+                                            if ($bet->bet_odds == $run_arr[$kk]) {
+                                                $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                            } else if ($bet->bet_odds < $run_arr[$kk]) {
+                                                $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                            } else if ($bet->bet_odds > $run_arr[$kk]) {
+                                                $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                            }
+                                        } else if ($bet->bet_side == 'lay')
                                         {
                                             if ($bet->bet_odds == $run_arr[$kk]) {
                                                 $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
@@ -1189,6 +1194,237 @@ class FrontController extends Controller
             'match_updated_date', 'stkval', 'all_bet_model', 'placed_bet_match_list','logindata','max_bet_odds_limit','min_bet_odds_limit','Selections','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','team',
             'bet_total','oddsLimit'
         ));
+
+    }
+
+    public function fancyUserCalculation(Request $request){
+
+        $loginUser = Session::get('playerUser');
+        if (empty($loginUser)) {
+            return response()->json(array('status'=> false,'action'=>'login'));
+        }
+
+        $my_placed_bets = MyBets::where('user_id', $loginUser->id)->where('match_id', $request->event_id)->where('team_name', $request->fancy_name)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+
+        $final_exposer = 0;
+        $bet_chk = '';
+        $bet_model = '';
+        $position = '';
+        if (!empty($my_placed_bets) && $my_placed_bets->count() > 0) {
+            $run_arr = array();
+            foreach ($my_placed_bets as $bet) {
+                $down_position = $bet->bet_odds - 1;
+                if (!in_array($down_position, $run_arr)) {
+                    $run_arr[] = $down_position;
+                }
+                $level_position = $bet->bet_odds;
+                if (!in_array($level_position, $run_arr)) {
+                    $run_arr[] = $level_position;
+                }
+                $up_position = $bet->bet_odds + 1;
+                if (!in_array($up_position, $run_arr)) {
+                    $run_arr[] = $up_position;
+                }
+            }
+            array_unique($run_arr);
+            sort($run_arr);
+
+            $min_val = min($run_arr);
+            $max_val = max($run_arr);
+
+            $newArr = array();
+
+            for ($z = $min_val; $z <= $max_val; ++$z) {
+                $new = $z;
+                $newArr[] = $new;
+            }
+
+            $run_arr = array();
+            $run_arr = $newArr;
+
+
+            for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
+                $bet_deduct_amt = 0;
+                $placed_bet_type = '';
+                foreach ($my_placed_bets as $bet) {
+                    if ($bet->bet_side == 'back') {
+                        if ($bet->bet_odds == $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                        }
+                    } else if ($bet->bet_side == 'lay')
+                    {
+                        if ($bet->bet_odds == $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_amount;
+                        }
+                    }
+                }
+                if ($final_exposer == "")
+                    $final_exposer = $bet_deduct_amt;
+                else {
+                    if ($final_exposer > $bet_deduct_amt)
+                        $final_exposer = $bet_deduct_amt;
+                }
+
+                if ($bet_deduct_amt > 0) {
+                    $position .= '<tr>
+										<td class="text-center cyan-bg">' . $run_arr[$kk] . '</td>
+										<td class="text-right cyan-bg">' . $bet_deduct_amt . '</td>
+										</tr>';
+                } else {
+                    $position .= '<tr>
+										<td class="text-center pink-bg">' . $run_arr[$kk] . '</td>
+										<td class="text-right pink-bg">' . $bet_deduct_amt . '</td>
+										</tr>';
+                }
+            }
+        }
+
+        return response()->json(array('status'=> true,'action'=>'success','html'=>$position));
+    }
+
+    public function getExAmountForSession($uid, $fancyName = '', $eventid)
+    {
+        $calculated_expo = 0;
+
+        $my_placed_bets_one = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')->where('user_id', $uid)->where('match_id', '!=', $eventid)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
+
+        if ($fancyName != '') {
+
+            $abc_check = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')->where('user_id', $uid)->where('match_id', $eventid)
+                ->where('team_name', '!=', @$fancyName)->where('bet_type', 'SESSION')->groupby('team_name', 'match_id')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+
+            if (sizeof($my_placed_bets_one) > 0) {
+                $my_placed_bets_one = $my_placed_bets_one->merge($abc_check);
+            } else {
+                $my_placed_bets_one = $abc_check;
+            }
+        } else {
+            $abc_check = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')->where('user_id', $uid)->where('match_id', $eventid)
+                ->where('bet_type', 'SESSION')->groupby('team_name', 'match_id')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+
+            if (sizeof($my_placed_bets_one) > 0 && sizeof($abc_check) > 0) {
+                $my_placed_bets_one = $my_placed_bets_one->merge($abc_check);
+            } else {
+                if (sizeof($abc_check) > 0)
+                    $my_placed_bets_one = $abc_check;
+                else if (sizeof($my_placed_bets_one) > 0)
+                    $my_placed_bets_one = $my_placed_bets_one;
+            }
+        }
+        if (sizeof($my_placed_bets_one) > 0) {
+            foreach ($my_placed_bets_one as $one) {
+                $fancyName = $one->team_name;
+                $eventid = $one->match_id;
+
+
+                $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')->where('user_id', $uid)->where('match_id', $eventid)->where('bet_type', 'SESSION')->where('team_name', @$fancyName)->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+
+
+                $abc = sizeof($my_placed_bets);
+                $return_final_exposure = '';
+                $profit_loss = "";
+                $return_exposure = 0;
+                $expo_array = array();
+
+                $new_obj = array();
+                $i = 0;
+                foreach ($my_placed_bets as $bet) {
+                    $new_obj[$i]['user_id'] = $bet->user_id;
+                    $new_obj[$i]['match_id'] = $bet->match_id;
+                    $new_obj[$i]['bet_type'] = $bet->bet_type;
+                    $new_obj[$i]['bet_side'] = $bet->bet_side;
+                    $new_obj[$i]['bet_odds'] = $bet->bet_odds;
+                    $new_obj[$i]['bet_oddsk'] = $bet->bet_oddsk;
+                    $new_obj[$i]['bet_amount'] = $bet->bet_amount;
+                    $new_obj[$i]['bet_profit'] = $bet->bet_profit;
+                    $new_obj[$i]['team_name'] = $bet->team_name;
+                    $new_obj[$i]['exposureAmt'] = $bet->exposureAmt;
+                    $i++;
+                }
+
+                if (sizeof($new_obj) > 0) {
+                    $run_arr = array();
+
+                    for ($i = 0; $i < count($new_obj); $i++) {
+                        $down_position = $new_obj[$i]['bet_odds'] - 1;
+                        if (!in_array($down_position, $run_arr)) {
+                            $run_arr[] = $down_position;
+                        }
+                        $level_position = $new_obj[$i]['bet_odds'];
+                        if (!in_array($level_position, $run_arr)) {
+                            $run_arr[] = $level_position;
+                        }
+                        $up_position = $new_obj[$i]['bet_odds'] + 1;
+                        if (!in_array($up_position, $run_arr)) {
+                            $run_arr[] = $up_position;
+                        }
+                    }
+                    array_unique($run_arr);
+                    sort($run_arr);
+
+                    $min_val = min($run_arr);
+                    $max_val = max($run_arr);
+
+                    $newArr = array();
+
+                    for ($i = 0; $i <= $max_val + 1000; ++$i) {
+                        $new = $i;
+                        $newArr[] = $new;
+                    }
+
+                    $run_arr = array();
+                    $run_arr = $newArr;
+
+                    $bet_chk = '';
+                    $bet_model = '';
+                    $final_exposer = '';
+
+                    for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
+                        $bet_deduct_amt = 0;
+                        $placed_bet_type = '';
+                        //foreach($my_placed_bets as $bet)
+                        for ($i = 0; $i < count($new_obj); $i++) {
+                            if ($new_obj[$i]['bet_side'] == 'back') {
+                                if ($new_obj[$i]['bet_odds'] == $run_arr[$kk]) {
+                                    $bet_deduct_amt = $bet_deduct_amt + $new_obj[$i]['bet_profit'];
+                                } else if ($new_obj[$i]['bet_odds'] < $run_arr[$kk]) {
+                                    $bet_deduct_amt = $bet_deduct_amt + $new_obj[$i]['bet_profit'];
+                                } else if ($new_obj[$i]['bet_odds'] > $run_arr[$kk]) {
+                                    $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
+                                }
+                            } else if ($new_obj[$i]['bet_side'] == 'lay')
+                            {
+                                if ($new_obj[$i]['bet_odds'] == $run_arr[$kk]) {
+                                    $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
+                                } else if ($new_obj[$i]['bet_odds'] < $run_arr[$kk]) {
+                                    $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
+                                } else if ($new_obj[$i]['bet_odds'] > $run_arr[$kk]) {
+                                    $bet_deduct_amt = $bet_deduct_amt + $new_obj[$i]['bet_amount'];
+                                }
+                            }
+                        }
+                        if ($final_exposer == "")
+                            $final_exposer = $bet_deduct_amt;
+                        else {
+                            if ($final_exposer > $bet_deduct_amt)
+                                $final_exposer = $bet_deduct_amt;
+                        }
+
+                    }
+                    $calculated_expo = $calculated_expo + abs($final_exposer);
+                }
+            }
+        }
+
+        return abs($calculated_expo);
 
     }
 
@@ -9029,32 +9265,150 @@ class FrontController extends Controller
 
     public function accountstatement()
     {
-        $getUserCheck = Session::get('playerUser');
-        if (!empty($getUserCheck)) {
-            $loginuser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
+        $loginuser = Session::get('playerUser');
+        if (empty($loginuser)) {
+            return redirect('/');
         }
+
         $credit = UserDeposit::where(['child_id' => $loginuser->id, 'parent_id' => $loginuser->parentid])->latest()->get();
+
+        $records = UsersAccount::where("user_id", $loginuser->id)->count();
 
         $player_balance = CreditReference::where('player_id', $loginuser->id)->first();
         $player_balance = $player_balance['remain_bal'];
-        return view('front.account-statement', compact('loginuser', 'credit', 'player_balance'));
+        return view('front.account-statement', compact('loginuser', 'credit', 'player_balance','records'));
     }
 
-    /*public function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+    public function accountstmtdata(Request $request)
+    {
+        $loginuser = Session::get('playerUser');
 
-		//echo "fjkgbv";
-        $sort_col = array();
-
-       //echo"<pre>";print_r($arr);
-        foreach ($arr as $key=> $row) {
-            $sort_col[$key] = $row[$col];
+        if(!empty($request->user) && $request->user!=null) {
+            $id = $request->user;
+        }else{
+            $id = $loginuser->id;
         }
 
-        //echo"<pre>";print_r($sort_col);
+        if ($request->datefrom) {
+//            $fromdate = date('Y-m-d', strtotime($request->datefrom));
+            $fromdate = date('Y-m-d', strtotime($request->datefrom . "-1 day"));
+        }
+        if ($request->dateto) {
+//            $todate = date('Y-m-d', strtotime($request->dateto));
+            $todate = date('Y-m-d', strtotime($request->dateto . "+1 day"));
+        }
 
-       array_multisort($sort_col, $dir, $arr);
-    }*/
-    public function accountstmtdata(Request $request)
+        $openingBalance = 0;
+//        if ($request->datefrom == $request->dateto) {
+//            $fromdate = date('Y-m-d', strtotime($request->datefrom));
+//            $todate = date('Y-m-d', strtotime($request->dateto . "+1 day"));
+//        }
+
+        $record = UsersAccount::where("user_id", $id)->where('created_at', "<",$fromdate)->orderBy('created_at', 'ASC')->first();
+        $openingBalanceDate = '';
+        if(!empty($record)){
+            $openingBalance = $record->closing_balance;
+            $openingBalanceDate = date('d-m-y H:i', strtotime($record->created_at));
+        }
+
+        $drpval = intval($request->drpval);
+        if($drpval > 0){
+            if($drpval == 1){
+                $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id',0)->orderBy('created_at', 'ASC')->get();
+            }else {
+                $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id','!=',0)->orderBy('created_at', 'ASC')->get();
+            }
+        }else {
+            $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->orderBy('created_at', 'ASC')->get();
+        }
+
+
+        $i =1;
+        $html = '';
+        $html.='<tr>
+                        <td style="width: 110px"> '.$i.' </td>
+                        <td style="width: 110px"> '.$openingBalanceDate.' </td>
+                        <td style="width: 110px;text-align: right;" class="text-color-green">0</td>
+                        <td style="width: 110px;text-align: right;" class="text-color-red">0</td>
+                        <td style="text-align: right;">'.$openingBalance.'</td>
+                        <td>Opening Balance</td>
+			        </tr>';
+
+        foreach($records as $key => $data)
+        {
+            $username = '';
+            if($data->from_user_id > 0) {
+                $fromUser = User::select('id', 'user_name')->where('id', $data->from_user_id)->first();
+                $toUser = User::select('id', 'user_name')->where('id', $data->to_user_id)->first();
+                if(empty($toUser) || empty($fromUser)){
+                    continue;
+                }
+                $username = $fromUser->user_name.' <i class="fas fa-caret-right text-color-grey"></i> '.$toUser->user_name;
+            }
+
+            $remark = $data->remark;
+            if($data->match_id > 0){
+
+                $match = Match::where("id",$data->match_id)->first();
+
+                $sprtnm = Sport::where('sId', $match->sports_id)->first();
+
+                $log = UserExposureLog::where("id",$data->user_exposure_log_id)->first();
+
+                if($log->bet_type != 'SESSION') {
+                    $bet = MyBets::where('user_id', $data->bet_user_id)
+                        ->where('result_declare', 1)
+                        ->where('isDeleted', 0)
+                        ->where('match_id', $match->event_id)
+                        ->whereBetween('created_at', [$fromdate, $todate])
+                        ->groupBy('bet_type')
+                        ->where('bet_type',$log->bet_type)
+                        ->orderBy('created_at')
+                        ->first();
+
+                    $remark = '<span><a data-betuserid="'.$data->bet_user_id.'" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
+                }else{
+                    $bet = MyBets::where('user_id', $data->bet_user_id)
+                        ->where('result_declare', 1)
+                        ->where('isDeleted', 0)
+                        ->where('bet_type', 'SESSION')
+                        ->groupBy('team_name')
+                        ->where('match_id', $match->event_id)
+                        ->whereBetween('created_at', [$fromdate, $todate])
+                        ->orderBy('created_at')
+                        ->first();
+
+                    $fnc_rslt = FancyResult::where('eventid', $match->event_id)->where('fancy_name', $bet->team_name)->first();
+
+                    $f_result = 0;
+                    if (!empty($fnc_rslt)) {
+                        $f_result = $fnc_rslt->result;
+                    }
+
+                    $remark = '<span><a data-betuserid="'.$data->bet_user_id.'" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
+                }
+            }
+            elseif($data->casino_id > 0){
+                $casino = Casino::find($data->casino_id);
+                $casinoBet = CasinoBet::where("id",$data->user_exposure_log_id)->first();
+
+                $remark = '<span><a class="text-dark" >CASINO / ' .$casino->casino_title." / ". $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+            }
+            $html.='<tr>
+                        <td style="width: 110px"> '.($i).' </td>
+                        <td style="width: 110px"> '.date('d-m-y H:i', strtotime($data->created_at)).' </td>
+                        <td style="width: 110px;text-align: right;" class="text-color-green">'.$data->credit_amount.'</td>
+                        <td style="width: 110px;text-align: right;" class="text-color-red">'.$data->debit_amount.'</td>
+                        <td style="text-align: right;">'.$data->closing_balance.'</td>
+                        <td>'.$remark.' </td>
+			        </tr>';
+
+            $i++;
+        }
+        return $html;
+    }
+
+    public function accountstmtdata1(Request $request)
     {
         $getUserCheck = Session::get('playerUser');
         if (!empty($getUserCheck)) {
@@ -10266,8 +10620,9 @@ class FrontController extends Controller
             $loginUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
         }
         $getresult = MyBets::where('user_id', $loginUser->id)->where('result_declare', 0)->where('isDeleted', 0)->latest()->get();
+        $casinoBets = CasinoBet::where('user_id', $loginUser->id)->whereNull('winner')->latest()->get();
         //echo "<pre>";print_r($getresult);echo "<pre>";exit;
-        return view('front.my-bets', compact('loginUser', 'getresult'));
+        return view('front.my-bets', compact('loginUser', 'getresult','casinoBets'));
     }
 
     public function betHistory(Request $request)
@@ -10288,13 +10643,10 @@ class FrontController extends Controller
             $loginUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
         }
 
-        $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])
-            ->whereBetween('created_at', [$fromdate, $todate])
-            ->whereBetween('created_at', [$past_date, $todate])
-            ->latest()->get();
+        $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])->whereBetween('created_at', [$fromdate, $todate])->whereBetween('created_at', [$past_date, $todate])->latest()->get();
+        $casinoBets = CasinoBet::where(['user_id' => $loginUser->id])->whereNotNull('winner')->whereBetween('created_at',[$fromdate,$todate])->whereBetween('created_at', [$past_date, $todate])->latest()->get();
 
         $html = '';
-        $html .= '';
 
         foreach ($getresult as $data) {
             $sports = Sport::where('sId', $data->sportID)->first();
@@ -10371,6 +10723,52 @@ class FrontController extends Controller
 
             $html .= '</tr>
             ';
+        }
+
+        foreach ($casinoBets as $bet){
+
+            $casino = Casino::where('casino_name',$bet->casino_name)->first();
+            if(!empty($casino)) {
+                $html .= '
+                <tr class="white-bg">
+                    <td class="white-bg"><img src="">
+                        <a class="text-color-blue-light">' . $bet->id . '</a>
+                    </td>
+                    <td>' . $loginUser->user_name . '</td>
+                    <td>CASINO<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $casino->casino_title . ' </b> <i class="fas fa-caret-right text-color-grey"></i> ODDS </td>
+                    <td class="text-right">' . $bet->team_name . ' </td>';
+
+                if ($bet->bet_side == 'lay') {
+                    $html .= '<td class="text-right" style="color: #e33a5e !important;text-transform: uppercase;">'.$bet->bet_side.'</td>';
+                } else {
+                    $html .= '<td class="text-right" style="color: #1f72ac !important;text-transform: uppercase;">'.$bet->bet_side.'</td>';
+                }
+                $html.='
+                    <td class="text-right"> <span class="smtxt"> '.$bet->created_at.'</span> </td>
+                    <td class="text-right">'.$bet->stake_value.'</td>
+                    <td class="text-right">'.$bet->odds_value.'</td>';
+
+
+                if($bet->winner == $bet->team_name && $bet->bet_side=='back')
+                {
+                    $html.='<td class="text-color-green text-right">('.$bet->casino_profit.')</td>';
+                }
+                else if($bet->winner != $bet->team_name && $bet->bet_side=='back')
+                {
+                    $html.='<td class="text-color-red text-right">('.$bet->exposureAmt.')</td>';
+                }
+                else if($bet->winner == $bet->team_name && $bet->bet_side=='lay')
+                {
+                    $html.='<td class="text-color-red text-right">('.$bet->exposureAmt.')</td>';
+                }
+                else if($bet->winner != $bet->team_name && $bet->bet_side=='lay')
+                {
+                    $html.='<td class="text-color-green text-right">('.$bet->casino_profit.')</td>';
+                }
+
+
+                $html.="</tr>";
+            }
         }
 
         return $html;

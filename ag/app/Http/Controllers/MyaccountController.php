@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+use App\Casino;
+use App\CasinoBet;
 use App\UsersAccount;
 use Illuminate\Http\Request;
 use Auth;
@@ -137,6 +139,13 @@ class MyaccountController extends Controller
 
                     $remark = '<span><a data-betuserid="'.$data->bet_user_id.'" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
                 }
+            }
+            elseif($data->casino_id > 0){
+                $casino = Casino::find($data->casino_id);
+                $casinoBet = CasinoBet::where("id",$data->user_exposure_log_id)->first();
+
+                $remark = '<span><a class="text-dark" >CASINO / ' .$casino->casino_title." / ". $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+                $username = '';
             }
 			$html.='<tr>
                         <td style="width: 110px"> '.date('d-m-y H:i', strtotime($data->created_at)).' </td>
@@ -2656,24 +2665,13 @@ class MyaccountController extends Controller
 
         //echo $date_from; echo"/"; echo $date_to; exit;
 
-        if($date_from != '' && $date_to != '')
-        {
-
-            $getresult = MyBets::where(['user_id' => $pid, 'result_declare'=>1])
-            ->whereBetween('created_at',[$date_from,$date_to])
-            ->latest()->get();
-
-
-
-        }else{
-
-            $fromdate = date("Y-m-d", strtotime("-30 day"));
-            $todate = date("Y-m-d");
-            $getresult = MyBets::where(['user_id' => $pid, 'result_declare'=>1])
-            ->whereBetween('created_at',[$fromdate,$todate])
-            ->latest()->get();
+        if($date_from != '' && $date_to != ''){}else{
+            $date_from = date("Y-m-d", strtotime("-30 day"));
+            $date_to = date("Y-m-d");
         }
 
+        $getresult = MyBets::where(['user_id' => $pid, 'result_declare'=>1])->whereBetween('created_at',[$date_from,$date_to])->latest()->get();
+        $casinoBets = CasinoBet::where(['user_id' => $pid])->whereNotNull('winner')->whereBetween('created_at',[$date_from,$date_to])->latest()->get();
 
 
         $html='';
@@ -2688,13 +2686,19 @@ class MyaccountController extends Controller
                     </td>
                     <td>'.$loginUser->user_name.'</td>
                     <td>'.$sports->sport_name.'<i class="fas fa-caret-right text-color-grey"></i> <b> '.$matchdata->match_name.' </b> <i class="fas fa-caret-right text-color-grey"></i> '.$data->bet_type.'</td>
-                    <td class="text-right">'.$data->team_name.' </td>
-                    ';
-                    if($data->bet_side == 'lay'){
-                        $html.='<td class="text-right" style="color: #e33a5e !important;text-transform: uppercase;">No</td>';
-                    }
-                    else{
-                        $html.='<td class="text-right" style="color: #1f72ac !important;text-transform: uppercase;">Yes</td>';
+                    <td class="text-right">'.$data->team_name.' </td>';
+                    if($data->bet_type == 'SESSION') {
+                        if ($data->bet_side == 'lay') {
+                            $html .= '<td class="text-right" style="color: #e33a5e !important;text-transform: uppercase;">No</td>';
+                        } else {
+                            $html .= '<td class="text-right" style="color: #1f72ac !important;text-transform: uppercase;">Yes</td>';
+                        }
+                    }else{
+                        if ($data->bet_side == 'lay') {
+                            $html .= '<td class="text-right" style="color: #e33a5e !important;text-transform: uppercase;">'.$data->bet_side.'</td>';
+                        } else {
+                            $html .= '<td class="text-right" style="color: #1f72ac !important;text-transform: uppercase;">'.$data->bet_side.'</td>';
+                        }
                     }
 
                     $html.='
@@ -2766,9 +2770,55 @@ class MyaccountController extends Controller
                         }
                     }
 
-                $html.='</tr>
-            ';
+                $html.='</tr>';
         }
+
+        foreach ($casinoBets as $bet){
+
+            $casino = Casino::where('casino_name',$bet->casino_name)->first();
+            if(!empty($casino)) {
+                $html .= '
+                <tr class="white-bg">
+                    <td class="white-bg"><img src="">
+                        <a class="text-color-blue-light">' . $bet->id . '</a>
+                    </td>
+                    <td>' . $loginUser->user_name . '</td>
+                    <td>CASINO<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $casino->casino_title . ' </b> <i class="fas fa-caret-right text-color-grey"></i> ODDS </td>
+                    <td class="text-right">' . $bet->team_name . ' </td>';
+
+                if ($bet->bet_side == 'lay') {
+                    $html .= '<td class="text-right" style="color: #e33a5e !important;text-transform: uppercase;">'.$bet->bet_side.'</td>';
+                } else {
+                    $html .= '<td class="text-right" style="color: #1f72ac !important;text-transform: uppercase;">'.$bet->bet_side.'</td>';
+                }
+                $html.='
+                    <td class="text-right"> <span class="smtxt"> '.$bet->created_at.'</span> </td>
+                    <td class="text-right">'.$bet->stake_value.'</td>
+                    <td class="text-right">'.$bet->odds_value.'</td>';
+
+
+                if($bet->winner == $bet->team_name && $bet->bet_side=='back')
+                {
+                    $html.='<td class="text-color-green text-right">('.$bet->casino_profit.')</td>';
+                }
+                else if($bet->winner != $bet->team_name && $bet->bet_side=='back')
+                {
+                    $html.='<td class="text-color-red text-right">('.$bet->exposureAmt.')</td>';
+                }
+                else if($bet->winner == $bet->team_name && $bet->bet_side=='lay')
+                {
+                    $html.='<td class="text-color-red text-right">('.$bet->exposureAmt.')</td>';
+                }
+                else if($bet->winner != $bet->team_name && $bet->bet_side=='lay')
+                {
+                    $html.='<td class="text-color-green text-right">('.$bet->casino_profit.')</td>';
+                }
+
+
+                $html.="</tr>";
+            }
+        }
+
         return $html;
     }
     public function betHistoryPLBack($id)

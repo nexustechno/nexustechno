@@ -10,7 +10,7 @@ class UsersAccount extends Model
     protected $table = 'users_account';
 
     protected $fillable = [
-        'user_id', 'user_exposure_log_id', 'from_user_id','to_user_id', 'credit_amount','debit_amount','balance','closing_balance','match_id','bet_user_id','remark','created_at','updated_at'
+        'user_id', 'user_exposure_log_id', 'casino_id','from_user_id','to_user_id', 'credit_amount','debit_amount','balance','closing_balance','match_id','bet_user_id','remark','created_at','updated_at'
     ];
 
     protected $casts = [

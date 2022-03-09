@@ -82,7 +82,7 @@
                     <div>
                         <input class="search-input" type="text" name="userId" id="userSearch"
                                placeholder="Find member...">
-                        <button class="search-but yellow-bg1" id="searchUserId">Search</button>
+                        <button class="search-but yellow-bg1" type="button" id="searchUserId">Search</button>
                     </div>
                 </div>
 
@@ -516,9 +516,6 @@
                         <th class="light-grey-bg">Ref. P/L</th>
                         <th class="light-grey-bg">Cumulative P/L</th>
                         <th class="light-grey-bg">Status</th>
-                        @if($website->enable_partnership == 1)
-                            <th class="light-grey-bg">Partnership</th>
-                        @endif
                         <th class="light-grey-bg">Action</th>
                     </tr>
                     </thead>
@@ -764,11 +761,15 @@
         });
 
         var $rows = $('.search-result tr');
-        $('#userSearch').keyup(function () {
-            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+        // $('#userSearch').keyup(function () {
+        //     var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+        // });
 
-            backpagedata(agent_id,1,val);
-            subpagedata(agent_id,1,val);
+        $("body").on('click','#searchUserId',function () {
+            var search = $("#userSearch").val();
+
+            // backpagedata(agent_id,1,search);
+            subpagedata(agent_id,1,search);
         });
 
         $('.refreshbtn').click(function () {
@@ -1224,6 +1225,7 @@
                 return false;
             }
         });
+
 
         $("body").on('click','.openCreditpopup',function () {
 

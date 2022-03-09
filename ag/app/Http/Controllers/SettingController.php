@@ -603,11 +603,111 @@ class SettingController extends Controller
 
     }
 
+    public function getFancyBetPositionForMatchDeclare2($fancyName, $mid, $eventid, $uid, $fancy_result)
+    {
+        $my_placed_bets = MyBets::where('user_id', $uid)->where('match_id', $eventid)->where('team_name', @$fancyName)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 1)->orderBy('created_at', 'asc')->get();
+        $abc = sizeof($my_placed_bets);
+        $return_final_exposure = '';
+        $profit_loss = "";
+        $final_exposer_deduct = '';
+        $final_exposer = '';
+        $expo_array = array();
+        if (sizeof($my_placed_bets) > 0) {
+            $run_arr = array();
+            foreach ($my_placed_bets as $bet) {
+                $down_position = $bet->bet_odds - 1;
+                if (!in_array($down_position, $run_arr)) {
+                    $run_arr[] = $down_position;
+                }
+                $level_position = $bet->bet_odds;
+                if (!in_array($level_position, $run_arr)) {
+                    $run_arr[] = $level_position;
+                }
+                $up_position = $bet->bet_odds + 1;
+                if (!in_array($up_position, $run_arr)) {
+                    $run_arr[] = $up_position;
+                }
+            }
+            array_unique($run_arr);
+            sort($run_arr);
+
+            $min_val = min($run_arr);
+            $max_val = max($run_arr);
+
+            $newArr = array();
+
+            for ($i = 0; $i <= $max_val + 1000; ++$i) {
+                $new = $i;
+                $newArr[] = $new;
+            }
+
+            $run_arr = array();
+            $run_arr = $newArr;
+
+            $bet_chk = '';
+            $bet_model = '';
+
+            for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
+                $bet_deduct_amt = 0;
+                $placed_bet_type = '';
+                foreach ($my_placed_bets as $bet) {
+                    if ($bet->bet_side == 'back') {
+                        if ($bet->bet_odds == $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                        }
+                    } else if ($bet->bet_side == 'lay') {
+                        if ($bet->bet_odds == $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_amount;
+                        }
+                    }
+                }
+                if ($final_exposer == "")
+                    $final_exposer = $bet_deduct_amt;
+                else {
+                    if ($final_exposer > $bet_deduct_amt)
+                        $final_exposer = $bet_deduct_amt;
+                }
+                //echo $final_exposer;
+                $expo_array[] = $final_exposer;
+                if ($bet_deduct_amt > 0) {
+                    if ($fancy_result == $run_arr[$kk]) {
+                        //echo $run_arr[$kk];
+                        $return_final_exposure = $bet_deduct_amt;
+                        $profit_loss = "Profit";
+                        $final_exposer_deduct = $final_exposer;
+                    }
+                } else {
+                    if ($fancy_result == $run_arr[$kk]) {
+                        //echo $run_arr[$kk];
+                        $return_final_exposure = abs($bet_deduct_amt);
+                        $profit_loss = "Loss";
+                        $final_exposer_deduct = $final_exposer;
+                    }
+
+                }
+
+            }
+        }
+        //print_r($expo_array);
+
+        $final_exposer_deduct = min($expo_array);
+        //exit;
+        return $return_final_exposure . "~~" . $profit_loss . "~~" . $final_exposer_deduct;
+
+    }
+
     public function getFancyBetResult($fancyname, $matchid, $eventid, $id, $result)
     {
 
-        $website = UsersAccount::getWebsite();
-
+        $masterAdmin = User::where("agent_level",'COM')->first();
         $mytotal = 0;
         $total_expo_amount = 0;
         $my_placed_bets = MyBets::where('match_id', $eventid)->where('user_id', $id)
@@ -660,11 +760,26 @@ class SettingController extends Controller
                 $betModel->win_type = 'Loss';
             $betModel->fancy_name = $fancyname;
             $check = $betModel->save();
+
             if ($check) {
                 if ($is_won == 1) {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'credit_amount' => $mytotal,
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance + $mytotal,
+                        'remark' => "",
+                        "match_id" => $matchid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
 
                     $remain_balance = $creditref->remain_bal + $mytotal;
 
@@ -691,11 +806,26 @@ class SettingController extends Controller
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($total_expo_amount);
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'debit_amount' => abs($total_expo_amount),
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance - abs($total_expo_amount),
+                        'remark' => "",
+                        "match_id" => $matchid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
 
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
@@ -723,24 +853,56 @@ class SettingController extends Controller
                 }
 
 
-                    //calculating admin balance
-                    $admin_tran = UserExposureLog::where('match_id', $matchid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $id)->get();
-                    $admin_profit = 0;
-                    $admin_loss = 0;
-                    foreach ($admin_tran as $trans) {
-                        if ($trans->profit != '') {
-                            $admin_loss += $trans->profit;
-                        } else if ($trans->loss != '') {
-                            $admin_profit += abs($trans->loss);
-                        }
-                    }
-                    $settings = setting::latest('id')->first();
-                    $adm_balance = $settings->balance;
-                    $new_balance = $adm_balance + $admin_profit - $admin_loss;
+                //calculating admin balance
+                $admin_tran = UserExposureLog::where('match_id', $matchid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $id)->get();
+                $admin_profit = 0;
+                $admin_loss = 0;
 
-                    $adminData = setting::find($settings->id);
-                    $adminData->balance = $new_balance;
-                    $adminData->update();
+                $settings = setting::latest('id')->first();
+                $adm_balance = $settings->balance;
+                $available_balance = $settings->balance;
+                foreach ($admin_tran as $trans) {
+                    if ($trans->profit != '') {
+                        $admin_loss += $trans->profit;
+
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'debit_amount' => $trans->profit,
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance - $trans->profit,
+                            'remark' => "",
+                            'match_id' => $matchid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $trans->id
+                        ]);
+                        $available_balance = $available_balance - $trans->profit;
+
+                    } else if ($trans->loss != '') {
+                        $admin_profit += abs($trans->loss);
+
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'credit_amount' => $trans->profit,
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance + $trans->profit,
+                            'remark' => "",
+                            'match_id' => $matchid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $trans->id
+                        ]);
+                        $available_balance = $available_balance + $trans->profit;
+                    }
+                }
+
+                $new_balance = $adm_balance + $admin_profit - $admin_loss;
+
+                $adminData = setting::find($settings->id);
+                $adminData->balance = $new_balance;
+                $adminData->update();
 
             }
         }
@@ -767,9 +929,24 @@ class SettingController extends Controller
                     //$remain_balance=$creditref->remain_bal-abs($total_expo_amount);   ///nnn 20-10-2021
                     $remain_balance = $creditref->remain_bal - abs($expamt);
 
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'debit_amount' => abs($expamt),
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance - abs($expamt),
+                        'remark' => "",
+                        'match_id' => $matchid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
                     $upd->available_balance_for_D_W = $balance;
+
                     $upd->remain_bal = $remain_balance;
                     $update_ = $upd->update();
                     $update_ = 1;
@@ -792,11 +969,27 @@ class SettingController extends Controller
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
                     $remain_balance = $creditref->remain_bal + $mytotal;
+
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'credit_amount' => $mytotal,
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance + $mytotal,
+                        'remark' => "",
+                        'match_id' => $matchid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
 
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
@@ -829,15 +1022,48 @@ class SettingController extends Controller
                     $admin_tran = UserExposureLog::where('match_id', $matchid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $id)->get();
                     $admin_profit = 0;
                     $admin_loss = 0;
-                    foreach ($admin_tran as $trans) {
-                        if ($trans->profit != '' && $trans->win_type == 'Profit') {
-                            $admin_loss += $trans->profit;
-                        } else if ($trans->loss != '' && $trans->win_type == 'Loss') {
-                            $admin_profit += abs($trans->loss);
-                        }
-                    }
+
                     $settings = setting::latest('id')->first();
                     $adm_balance = $settings->balance;
+                    $available_balance = $settings->balance;
+                    foreach ($admin_tran as $trans) {
+                        if ($trans->profit != '') {
+                            $admin_loss += $trans->profit;
+
+                            UsersAccount::create([
+                                'user_id' => $masterAdmin->id,
+                                'from_user_id' => $id,
+                                'to_user_id' => $masterAdmin->id,
+                                'debit_amount' => $trans->profit,
+                                'balance' => $available_balance,
+                                'closing_balance' => $available_balance - $trans->profit,
+                                'remark' => "",
+                                'match_id' => $matchid,
+                                'bet_user_id' => $id,
+                                'user_exposure_log_id' => $trans->id
+                            ]);
+                            $available_balance = $available_balance - $trans->profit;
+
+                        } else if ($trans->loss != '') {
+                            $admin_profit += abs($trans->loss);
+
+                            UsersAccount::create([
+                                'user_id' => $masterAdmin->id,
+                                'from_user_id' => $id,
+                                'to_user_id' => $masterAdmin->id,
+                                'credit_amount' => abs($trans->loss),
+                                'balance' => $available_balance,
+                                'closing_balance' => $available_balance + abs($trans->loss),
+                                'remark' => "",
+                                'match_id' => $matchid,
+                                'bet_user_id' => $id,
+                                'user_exposure_log_id' => $trans->id
+                            ]);
+                            $available_balance = $available_balance + abs($trans->loss);
+                        }
+                    }
+
+
                     $new_balance = $adm_balance + $admin_profit - $admin_loss;
                     $adminData = setting::find($settings->id);
                     $adminData->balance = $new_balance;
@@ -869,6 +1095,20 @@ class SettingController extends Controller
 
                 $remain_balance = $creditref->remain_bal + $mytotal;
 
+                $available_balance = $creditref->available_balance_for_D_W;
+                UsersAccount::create([
+                    'user_id' => $id,
+                    'from_user_id' => $id,
+                    'to_user_id' => $id,
+                    'credit_amount' => $mytotal,
+                    'balance' => $available_balance,
+                    'closing_balance' => $available_balance + $mytotal,
+                    'remark' => "",
+                    'match_id' => $matchid,
+                    'bet_user_id' => $id,
+                    'user_exposure_log_id' => $betModel->id
+                ]);
+
                 $upd = CreditReference::find($creditref['id']);
                 $upd->exposure = $exposer;
                 $upd->available_balance_for_D_W = $balance;
@@ -897,259 +1137,7 @@ class SettingController extends Controller
         }
 
     }
-    // ss comment 24-09-2021
-    /*public function getFancyBetResult($fancyname,$matchid,$eventid,$id,$result)
-	{
-		$mytotal=0; $total_expo_amount=0;
-		$my_placed_bets = MyBets::where('match_id',$eventid)->where('user_id',$id)->where('team_name',$fancyname)->where('isDeleted',0)->where('result_declare',1)->get();
-		if(sizeof($my_placed_bets)>0)
-		{
-			foreach($my_placed_bets as $bet)
-			{
-				if($bet->bet_side=='back')
-				{
-					if($bet->bet_odds<=$result)
-					{
-						$mytotal=$mytotal+$bet->bet_profit;
-					}
-					else if($bet->bet_odds>$result)
-					{
-						$mytotal=$mytotal-$bet->bet_amount;
-					}
-				}
-				else if($bet->bet_side=='lay')
-				{
-					if($bet->bet_odds>$result)
-					{
-						$mytotal=$mytotal+$bet->bet_amount;
-					}
-					else if($bet->bet_odds<=$result)
-					{
-						$mytotal=$mytotal-$bet->exposureAmt;
-					}
-				}
-				$total_expo_amount=$total_expo_amount+$bet->exposureAmt;
-			}
-		}
-		if($mytotal>0)
-		{
-			$is_won=1;
-			$betModel = new UserExposureLog();
-			$betModel->match_id = $matchid;
-			$betModel->user_id = $id;
-			$betModel->bet_type = 'SESSION';
-			$betModel->profit = $mytotal;
-			if($is_won==1)
-				$betModel->win_type = 'Profit';
-			else
-				$betModel->win_type = 'Loss';
-			$betModel->fancy_name=$fancyname;
-			$check=$betModel->save();
-			if($check)
-			{
-				if($is_won==1)
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W+abs($total_expo_amount)+$mytotal;
-					$remain_balance=$creditref->remain_bal+$mytotal;
 
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->first();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal+$mytotal;
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W;
-					$remain_balance=$creditref->remain_bal-abs($total_expo_amount);
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->get();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal-abs($total_expo_amount);
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-
-				//calculating admin balance
-				$admin_tran=UserExposureLog::where('match_id',$matchid)->where('bet_type','SESSION')->where('fancy_name',$fancyname)->where('user_id',$id)->get();
-				$admin_profit=0;
-				$admin_loss=0;
-				foreach($admin_tran as $trans)
-				{
-					if($trans->profit!='')
-					{
-						$admin_loss+=$trans->profit;
-					}
-					else if($trans->loss!='')
-					{
-						$admin_profit+=abs($trans->loss);
-					}
-				}
-				$settings = setting::latest('id')->first();
-				$adm_balance=$settings->balance;
-				$new_balance=$adm_balance+$admin_profit-$admin_loss;
-
-				$adminData = setting::find($settings->id);
-				$adminData->balance=$new_balance;
-				$adminData->update();
-			}
-		}
-		else
-		{
-			$is_won=0;
-			$betModel = new UserExposureLog();
-			$betModel->match_id = $matchid;
-			$betModel->user_id = $id;
-			$betModel->bet_type = 'SESSION';
-			$betModel->loss = abs($mytotal);
-			$betModel->fancy_name=$fancyname;
-			if($is_won==1)
-				$betModel->win_type = 'Profit';
-			else
-				$betModel->win_type = 'Loss';
-			$check=$betModel->save();
-			if($check)
-			{
-				if($is_won==0)
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W;
-					$remain_balance=$creditref->remain_bal-abs($total_expo_amount);
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->first();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal-abs($total_expo_amount);
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W+abs($total_expo_amount)+$mytotal;
-					$remain_balance=$creditref->remain_bal+$mytotal;
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->first();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal+$mytotal;
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-
-				//calculating admin balance
-				$admin_tran=UserExposureLog::where('match_id',$matchid)->where('bet_type','SESSION')->where('fancy_name',$fancyname)->where('user_id',$id)->get();
-				$admin_profit=0;
-				$admin_loss=0;
-				foreach($admin_tran as $trans)
-				{
-					if($trans->profit!='' && $trans->win_type=='Profit')
-					{
-						$admin_loss+=$trans->profit;
-					}
-					else if($trans->loss!='' && $trans->win_type=='Loss')
-					{
-						$admin_profit+=abs($trans->loss);
-					}
-				}
-				$settings = setting::latest('id')->first();
-				$adm_balance=$settings->balance;
-				$new_balance=$adm_balance+$admin_profit-$admin_loss;
-				$adminData = setting::find($settings->id);
-				$adminData->balance=$new_balance;
-				$adminData->update();
-			}
-		}
-	}*/
     public function resultDeclare(Request $request)
     {
 
@@ -1358,8 +1346,6 @@ class SettingController extends Controller
     {
         $loginUser = Auth::user();
         $all_child = $this->GetChildofAgent($loginUser->id);
-
-        $website = UsersAccount::getWebsite();
 
         $sports = Sport::all();
         $html = [];
@@ -6944,7 +6930,6 @@ class SettingController extends Controller
             $balance = $settings['available_balance_for_D_W'];
         }
 
-        $website = UsersAccount::getWebsite();
 
         $adm_password = $getuser->password;
         $admin_balance = $balance;
@@ -7205,8 +7190,6 @@ class SettingController extends Controller
 
     public function addAgentBanking(Request $request)
     {
-
-        $website = UsersAccount::getWebsite();
 
         $apass = $request->adminpassword;
         $settings = "";
@@ -7537,8 +7520,6 @@ class SettingController extends Controller
     {
         //fancy rollback
 
-        $website = UsersAccount::getWebsite();
-
         $get = FancyResult::where('id', $id)->first();
         /*echo $get;
 		exit;*/
@@ -7566,13 +7547,19 @@ class SettingController extends Controller
             $expamt = abs($check_value[2]);
 
             $exposer_tran_log = UserExposureLog::where('match_id', $mid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $userData->user_id)->first();
-            $fancy_win_type = $exposer_tran_log['win_type'];
-            $fancy_profit = $exposer_tran_log->profit;
-            $fancy_loss = $exposer_tran_log->loss;
+            if(!empty($exposer_tran_log)) {
+                $fancy_win_type = $exposer_tran_log['win_type'];
+                $fancy_profit = $exposer_tran_log->profit;
+                $fancy_loss = $exposer_tran_log->loss;
+            }else {
+
+                $fancy_profit = $profit_and_loss_amount;
+                $fancy_loss = $proift_or_loss;
+            }
+
             if($fancy_loss <= 0 && $fancy_profit > 0){
                 $expamt = 0;
             }
-
 
             $getc = CreditReference::where('player_id', $userData->user_id)->first();
             $creid = $getc['id'];
@@ -7617,6 +7604,7 @@ class SettingController extends Controller
                         $admin_profit = 0;
                         $admin_loss = 0;
                         foreach ($admin_tran as $trans) {
+
                             if ($trans->profit != '' && $trans->win_type == 'Profit') {
                                 $settings = setting::latest('id')->first();
                                 $adm_balance = $settings->balance;
@@ -7625,6 +7613,8 @@ class SettingController extends Controller
                                 $adminData = setting::find($settings->id);
                                 $adminData->balance = $new_balance;
                                 $adminData->update();
+
+
 
                                 //calculating parent balance
                                 $parentid = self::GetAllParentofPlayer($uid);
@@ -7643,7 +7633,8 @@ class SettingController extends Controller
                                     }
                                 }
                                 //end for calculating parent balance
-                            } else if ($trans->loss != '' && $trans->win_type == 'Loss') {
+                            }
+                            else if ($trans->loss != '' && $trans->win_type == 'Loss') {
 
                                 $settings = setting::latest('id')->first();
                                 $adm_balance = $settings->balance;
@@ -7671,6 +7662,10 @@ class SettingController extends Controller
                                 }
                                 //end for calculating parent balance
                             }
+
+                            // removing account statment entries from account table         :: JEET DUMS
+
+                            UsersAccount::where("user_exposure_log_id",$trans->id)->delete();
                         }
                     }
                     //end for calculating admin balance
@@ -7679,7 +7674,7 @@ class SettingController extends Controller
             }
         }
 
-        $del_exp = UserExposureLog::where('match_id', $mid)->where('fancy_name', $fancyname)->where('bet_type', 'SESSION')->delete();
+        UserExposureLog::where('match_id', $mid)->where('fancy_name', $fancyname)->where('bet_type', 'SESSION')->delete();
         FancyResult::find($id)->delete();
 
         return response()->json(array('success' => 'success'));
@@ -7876,7 +7871,7 @@ class SettingController extends Controller
             <td class="text-center">' . $count . '</td>
             <td class="text-left">' . $value1->team_name . '</td>
             <td class="text-center"><input type="text" class="fancy_result" name="fancy_result" id="fancy_result' . $i . '" onkeypress="return isNumberKey(event)" required></td>
-            <td class="text-center"> <a href="javascript:void(0);" class="green-bg text-color-white suUsersAccount::b_res" data-fancyre="' . $i . '" data-betId="' . $value1->id . '" data-eventid="' . $match->event_id . '"  data-match="' . $match->id . '" data-fancy=\'' . $value1->team_name . '\'onclick="resultDeclare(this);">SUBMIT</a> | <a href="javascript:void(0);" class="red-bg text-color-white " data-betId="' . $value1->id . '"  data-eventid="' . $match->event_id . '"  data-match="' . $match->id . '" data-fancy=\'' . $value1->team_name . '\' onclick="resultDeclarecancel(this);">CANCEL</a> </td>
+            <td class="text-center"> <a href="javascript:void(0);" class="green-bg text-color-white sub_res" data-fancyre="' . $i . '" data-betId="' . $value1->id . '" data-eventid="' . $match->event_id . '"  data-match="' . $match->id . '" data-fancy=\'' . $value1->team_name . '\'onclick="resultDeclare(this);">SUBMIT</a> | <a href="javascript:void(0);" class="red-bg text-color-white " data-betId="' . $value1->id . '"  data-eventid="' . $match->event_id . '"  data-match="' . $match->id . '" data-fancy=\'' . $value1->team_name . '\' onclick="resultDeclarecancel(this);">CANCEL</a> </td>
 	        </tr>';
             $count++;
             $i++;
@@ -7900,8 +7895,6 @@ class SettingController extends Controller
         $match->winner = Null;
         $upd = $match->update();
 
-        $website = UsersAccount::getWebsite();
-
         //$upd=1;
         if ($upd == 1) {
 
@@ -7909,9 +7902,10 @@ class SettingController extends Controller
             foreach ($bet as $b) {
                 $userid = $b->user_id;
                 $match_data = Match::where(['event_id' => $b->match_id])->first();
-                $user_expo = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', '!=', 'SESSION')->get();
 
-//                dd("resultRollbackMatch",$user_expo);
+                $expoLogIds = [];
+
+                $user_expo = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', '!=', 'SESSION')->get();
 
                 $odds_profit = 0;
                 $odds_loss = 0;
@@ -7921,6 +7915,7 @@ class SettingController extends Controller
                 $bm_win_type = '';
                 if (count($user_expo) > 0) {
                     foreach ($user_expo as $expo) {
+                        $expoLogIds[] = $expo->id;
                         if ($expo->bet_type == 'ODDS') {
                             $odds_profit = $expo->profit;
                             $odds_loss = $expo->loss;
@@ -7931,7 +7926,8 @@ class SettingController extends Controller
                             $bm_win_type = $expo->win_type;
                         }
                     }
-                } else {
+                }
+                else {
                     $odds_win_type = 'Cancel';
                     $userData = MyBets::where("match_id", $match->event_id)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
                     //$betnew=MyBets::where('match_id',$match->event_id)->where('bet_type','!=','SESSION')->where('result_declare',0)->where("user_id", $userid)->groupby('user_id')->get();
@@ -8010,7 +8006,8 @@ class SettingController extends Controller
                         //delete exposer log
                         $del_exp = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', 'ODDS')->delete();
                     }
-                } else if ($odds_win_type == 'Loss') {
+                }
+                else if ($odds_win_type == 'Loss') {
 
                     $getc = CreditReference::where('player_id', $userid)->first();
                     $creid = $getc['id'];
@@ -8085,6 +8082,10 @@ class SettingController extends Controller
                         $userData = MyBets::where("match_id", $match->event_id)->where("user_id", $userid)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
                         $del_exp = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', 'BOOKMAKER')->delete();
                     }
+                }
+
+                if(count($expoLogIds) > 0) {
+                    UsersAccount::whereIn("user_exposure_log_id", $expoLogIds)->delete();
                 }
             }
 
@@ -8514,7 +8515,9 @@ class SettingController extends Controller
     public static function getExAmount($sportID = '', $id = '', $winner, $mid, $matchname, $bettype)
     {
 
-        $website = UsersAccount::getWebsite();
+        $masterAdmin = User::where("agent_level","COM")->first();
+        $settings = setting::latest('id')->first();
+        $adm_balance = $settings->balance;
         $team1_bet_total = '';
         $team1_bet_class = '';
         $team2_bet_total = '';
@@ -8666,6 +8669,68 @@ class SettingController extends Controller
                     $balance = $creditref->available_balance_for_D_W + abs($loss) + $profit - $calculated_commission;
                     $remain_balance = $creditref->remain_bal + $profit - $calculated_commission;
 
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'credit_amount' => $profit,
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance + $profit,
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $available_balance = $available_balance + $profit;
+
+                    UsersAccount::create([
+                        'user_id' => $masterAdmin->id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $masterAdmin->id,
+                        'debit_amount' => $profit,
+                        'balance' => $adm_balance,
+                        'closing_balance' => $adm_balance - $profit,
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $adm_balance = $adm_balance - $profit;
+
+                    if($calculated_commission > 0) {
+                        UsersAccount::create([
+                            'user_id' => $id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $id,
+                            'debit_amount' => $calculated_commission,
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance - $calculated_commission,
+                            'remark' => "Commission",
+                            'match_id' => $mid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $betModel->id
+                        ]);
+
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'credit_amount' => $calculated_commission,
+                            'balance' => $adm_balance,
+                            'closing_balance' => $adm_balance + $calculated_commission,
+                            'remark' => "Commission",
+                            'match_id' => $mid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $betModel->id
+                        ]);
+
+                        $adm_balance = $adm_balance + $calculated_commission;
+                    }
+
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
                     $upd->available_balance_for_D_W = $balance;
@@ -8713,11 +8778,43 @@ class SettingController extends Controller
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($loss);
+
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'debit_amount' => abs($loss),
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance - abs($loss),
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    UsersAccount::create([
+                        'user_id' => $masterAdmin->id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $masterAdmin->id,
+                        'credit_amount' => abs($loss),
+                        'balance' => $adm_balance,
+                        'closing_balance' => $adm_balance + abs($loss),
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $adm_balance = $adm_balance + abs($loss);
+
 
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
@@ -8793,6 +8890,68 @@ class SettingController extends Controller
                     $balance = $creditref->available_balance_for_D_W + abs($loss) + $profit - $calculated_commission;
                     $remain_balance = $creditref->remain_bal + $profit - $calculated_commission;
 
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'credit_amount' => $profit,
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance + $profit,
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $available_balance = $available_balance + $profit;
+
+                    UsersAccount::create([
+                        'user_id' => $masterAdmin->id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $masterAdmin->id,
+                        'debit_amount' => $profit,
+                        'balance' => $adm_balance,
+                        'closing_balance' => $adm_balance - $profit,
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $adm_balance = $adm_balance - $profit;
+
+                    if($calculated_commission > 0) {
+                        UsersAccount::create([
+                            'user_id' => $id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $id,
+                            'debit_amount' => $calculated_commission,
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance - $calculated_commission,
+                            'remark' => "Commission",
+                            'match_id' => $mid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $betModel->id
+                        ]);
+
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'credit_amount' => $calculated_commission,
+                            'balance' => $adm_balance,
+                            'closing_balance' => $adm_balance + $calculated_commission,
+                            'remark' => "Commission",
+                            'match_id' => $mid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $betModel->id
+                        ]);
+
+                        $adm_balance = $adm_balance + $calculated_commission;
+                    }
+
+
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
                     $upd->available_balance_for_D_W = $balance;
@@ -8839,11 +8998,39 @@ class SettingController extends Controller
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($loss);
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'debit_amount' => abs($loss),
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance - abs($loss),
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    UsersAccount::create([
+                        'user_id' => $masterAdmin->id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $masterAdmin->id,
+                        'credit_amount' => abs($loss),
+                        'balance' => $adm_balance,
+                        'closing_balance' => $adm_balance + abs($loss),
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
 
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
@@ -8919,6 +9106,67 @@ class SettingController extends Controller
                     $balance = $creditref->available_balance_for_D_W + abs($loss) + $profit - $calculated_commission;
                     $remain_balance = $creditref->remain_bal + $profit - $calculated_commission;
 
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'credit_amount' => $profit,
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance + $profit,
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $available_balance = $available_balance + $profit;
+
+                    UsersAccount::create([
+                        'user_id' => $masterAdmin->id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $masterAdmin->id,
+                        'debit_amount' => $profit,
+                        'balance' => $adm_balance,
+                        'closing_balance' => $adm_balance - $profit,
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $adm_balance = $adm_balance - $profit;
+
+                    if($calculated_commission > 0) {
+                        UsersAccount::create([
+                            'user_id' => $id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $id,
+                            'debit_amount' => $calculated_commission,
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance - $calculated_commission,
+                            'remark' => "Commission",
+                            'match_id' => $mid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $betModel->id
+                        ]);
+
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'credit_amount' => $calculated_commission,
+                            'balance' => $adm_balance,
+                            'closing_balance' => $adm_balance + $calculated_commission,
+                            'remark' => "Commission",
+                            'match_id' => $mid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $betModel->id
+                        ]);
+
+                        $adm_balance = $adm_balance + $calculated_commission;
+                    }
+
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
                     $upd->available_balance_for_D_W = $balance;
@@ -8970,6 +9218,35 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($loss);
+
+                    $available_balance = $creditref->available_balance_for_D_W;
+                    UsersAccount::create([
+                        'user_id' => $id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $id,
+                        'debit_amount' => abs($loss),
+                        'balance' => $available_balance,
+                        'closing_balance' => $available_balance - abs($loss),
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    UsersAccount::create([
+                        'user_id' => $masterAdmin->id,
+                        'from_user_id' => $id,
+                        'to_user_id' => $masterAdmin->id,
+                        'credit_amount' => abs($loss),
+                        'balance' => $adm_balance,
+                        'closing_balance' => $adm_balance + abs($loss),
+                        'remark' => "",
+                        'match_id' => $mid,
+                        'bet_user_id' => $id,
+                        'user_exposure_log_id' => $betModel->id
+                    ]);
+
+                    $adm_balance = $adm_balance + abs($loss);
 
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
@@ -9385,8 +9662,6 @@ class SettingController extends Controller
     {
         $match = Match::where('id', $mid)->first();
 
-        $website = UsersAccount::getWebsite();
-
         if ($win == 'TIE') {
             $settingData = Match::find($mid);
             $settingData->winner = ucfirst($win);
@@ -9429,7 +9704,6 @@ class SettingController extends Controller
                     $exposer = SELF::getExAmount($match->event_id, $b->user_id, ucfirst($win), $match->id, $match->match_name, 'BOOKMAKER');
                 }
 
-
                     //calculating admin balance
                     $admin_tran = UserExposureLog::where('match_id', $match->id)->get();
                     $admin_profit = 0;
@@ -9437,6 +9711,7 @@ class SettingController extends Controller
                     foreach ($admin_tran as $trans) {
                         if ($trans->profit != '' && $trans->win_type == 'Profit') {
                             $admin_loss += abs($trans->profit);
+
                         } else if ($trans->loss != '' && $trans->win_type == 'Loss') {
                             $admin_profit += abs($trans->loss);
                         }
@@ -9469,6 +9744,7 @@ class SettingController extends Controller
 
     public function risk_management_matchCallForFancyNBM($match_data_res, $matchId, $event_id, $loginUser, $website, $all_child, $match_f, $match_b, $team1_name, $team2_name, $sport)
     {
+        $html_two = '';
         $html_two = '';
         $html = '';
         $team2_bet_total = 0;

@@ -162,6 +162,29 @@ use App\MyBets;
                                             </tr>
 
                                     @endforeach
+
+                                    @foreach($casinoBets as $data)
+
+                                            <?php
+                                            $sports = Sport::where('sId', $data->sportID)->first();
+                                            $matchdata = \App\Casino::where('casino_name', $data->casino_name)->first();
+                                            ?>
+                                            <tr class="white-bg">
+                                                <td width="9%"><img src="{{ URL::to('asset/front/img/plus-icon.png') }}"> <a class="text-color-blue-light">{{$data->id}}</a></td>
+                                                <td width="9%">{{$loginUser->user_name}}</td>
+                                                <td>CASINO<i class="fas fa-caret-right text-color-grey"></i> <strong>{{$matchdata->casino_title}}</strong> <i class="fas fa-caret-right text-color-grey"></i>{{strtoupper($data->bet_side)}}</td>
+                                                <td width="12%" class="text-right">{{$data->team_name}}</td>
+                                                @if($data->bet_side == 'lay')
+                                                    <td width="4%" class="text-right bet_type_uppercase" style="color: #e33a5e !important;">{{$data->bet_side}}</td>
+                                                @else
+                                                    <td width="4%" class="text-right bet_type_uppercase" style="color: #1f72ac !important;">{{$data->bet_side}}</td>
+                                                @endif
+                                                <td width="8%" class="text-right">{{$data->created_at}}</td>
+                                                <td width="8%" class="text-right">{{$data->stake_value}}</td>
+                                                <td width="8%" class="text-right">{{$data->odds_value}}</td>
+                                            </tr>
+
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

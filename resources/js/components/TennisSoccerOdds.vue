@@ -73,8 +73,15 @@
     <div class="inplay-tableblock" id="inplay-tableblock" v-else>
         <table class="table custom-table inplay-table w1-table" >
             <tr>
-                <td colspan="7">
-                    <p class="text-center">Loading ODDS Data...</p>
+                <td colspan="7" class="text-center pt-3">
+                    <div id="site_bet_loading1" class="betloaderimage1 loader-style1">
+                        <ul class="loading1">
+                            <li>
+                                <img src="/asset/front/img/loaderajaxbet.gif">
+                            </li>
+                            <li>Loading...</li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -125,7 +132,7 @@
                         }
                     }
                 }
-                
+
                 this.match = newRecords;
 
                 this.selections = this.match[0].runners.length;
@@ -156,3 +163,39 @@
         }
     }
 </script>
+
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    .fir-col3.pinimg img {
+        width: 100%;
+    }
+
+    .betloaderimage1 {
+        top: 50%;
+        height: 135px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgb(0 0 0 / 50%);
+        padding-top: 30px;
+        z-index: 50;
+        position: absolute;
+        left: 50%;
+        width: 190px;
+        margin-left: -95px;
+    }
+
+    .loading1 img {
+        background-position: -42px -365px;
+        height: 51px;
+        width: 51px;
+    }
+
+    .loading1 li {
+        list-style: none;
+        text-align: center;
+        font-size: 11px;
+    }
+</style>

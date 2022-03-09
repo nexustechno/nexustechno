@@ -93,10 +93,10 @@ else{
                                 <div class="row justify-content-md-center">
                                 	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 pl-0">
                                     	<div class="casino_list_items">
-                                            <a href="javascript:void(0);">
-                                            <img src="{{ URL::to('asset/front/img/home-screen/banner_casino.png') }}" alt="">
-                                            <dl class="entrance-title"><dt>Live Casino</dt><dd> <span class="blink_me"> Play Now </span> </dd></dl>
-                                        </a>
+                                            <a href="{{route('casino')}}">
+                                                <img src="{{ URL::to('asset/front/img/home-screen/banner_casino.png') }}" alt="">
+                                                <dl class="entrance-title"><dt>Live Casino</dt><dd> <span class="blink_me"> Play Now </span> </dd></dl>
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
