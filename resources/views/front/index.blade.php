@@ -72,7 +72,7 @@ else{
                             </div>
                             <div class="our_casino_list">
                             	<div class="row justify-content-md-center">
-                                	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 pl-0">
+                                	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                     	<div class="casino_list_items">
                                             <a href="{{route('cricket')}}">
                                             <dl id="onLiveBoard" class="on_live"><dt><p class="live_icon"><span></span> LIVE</p></dt><dd id="onLiveCount_CRICKET"><p>Cricket</p><span class="cricketCount" id=""></span></dd><dd id="onLiveCount_SOCCER"><p>Soccer</p><span class="soccerCount" id=""></span></dd><dd id="onLiveCount_TENNIS"><p>Tennis</p><span class="tennisCount" id=""></span></dd></dl>
@@ -81,7 +81,7 @@ else{
                                         </a>
                                         </div>
                                     </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 pl-0">
+                                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                     	<div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_SabaSport.png') }} " alt="">
@@ -91,7 +91,7 @@ else{
                                     </div>
                                 </div>
                                 <div class="row justify-content-md-center">
-                                	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 pl-0">
+                                	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                                     	<div class="casino_list_items">
                                             <a href="{{route('casino')}}">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_casino.png') }}" alt="">
@@ -99,7 +99,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_betgames-half.png') }}" alt="img">
@@ -107,7 +107,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_andarBahar-half.png') }}" alt="img">
@@ -117,7 +117,7 @@ else{
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_sicbo-half.png') }}" alt="img">
@@ -125,7 +125,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_sevenUpDown-half.png') }}" alt="img">
@@ -133,7 +133,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_CoinToss-half.png') }}" alt="img">
@@ -141,7 +141,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_teenPatti-half.png') }}" alt="img">
@@ -149,7 +149,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_cardMatka-half.png') }}" alt="img">
@@ -157,7 +157,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_numberMatka-half.png') }}" alt="img">
@@ -165,7 +165,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_binary-half.png') }}" alt="img">
@@ -173,7 +173,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_virtualsports-half.png') }}" alt="img">
@@ -181,7 +181,7 @@ else{
                                             </a>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">
+                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">
                                         <div class="casino_list_items">
                                             <a href="javascript:void(0);">
                                                 <img src="{{ URL::to('asset/front/img/home-screen/banner_bpoker-half.png') }}" alt="img">
@@ -199,7 +199,7 @@ else{
 {{--                                        $class="";--}}
 {{--                                    }--}}
 {{--                                    ?>--}}
-{{--                                    <div class="col-lg-3 col-md-6 col-sm-6 pl-0 col-6">--}}
+{{--                                    <div class="col-lg-3 col-md-6 col-sm-6  col-6">--}}
 {{--                                        <div class="casino_list_items">--}}
 {{--                                            @if (!empty($getUser))--}}
 {{--                                            <a class="{{$class}}" href="{{route($casinos->casino_name,$casinos->id)}}">--}}
