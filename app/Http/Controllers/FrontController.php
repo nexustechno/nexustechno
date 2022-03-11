@@ -9399,7 +9399,7 @@ class FrontController extends Controller
             }
 
             if($data->remark=='Commission'){
-                $remark.="("$data->remark.")";
+                $remark.="(".$data->remark.")";
             }
 
             if($data->credit_amount > 0){
