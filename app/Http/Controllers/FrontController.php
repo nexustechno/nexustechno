@@ -9372,6 +9372,7 @@ class FrontController extends Controller
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
                         ->where('bet_type', 'SESSION')
+                        ->where('team_name',$log->fancy_name)
                         ->groupBy('team_name')
                         ->where('match_id', $match->event_id)
                         ->whereBetween('created_at', [$fromdate, $todate])

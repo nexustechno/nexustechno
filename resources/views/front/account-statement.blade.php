@@ -79,7 +79,7 @@ $balance=$settings['available_balance_for_D_W'];
                             <div class="m-t-20">
                                 <div class="row datediv1">
 
-                                    <div class="col-md-2 datediv">
+                                    <div class="col-12 col-md-2 datediv mb-1">
                                         <input type="text" class="form-control" name="reportrange" value="" />
                                         <img src="{{ URL::to('asset/img/calendar-icon.png') }}" class="calendar-icon_2" style="top:5px;">
 {{--                                    </div>--}}
@@ -92,7 +92,7 @@ $balance=$settings['available_balance_for_D_W'];
 {{--                                        <img src="{{ URL::to('asset/img/calendar-icon.png') }}" class="calendar-icon_2" style="top:5px;">--}}
                                     </div>
 
-                                    <div class="col-md-2" >
+                                    <div class="col-12 col-md-2 mb-1" >
                                         <select name="drpval" id="drpval" class="form-control acc-filter">
                                             <option value="0"> All </option>
                                             <option value="1"> Deposit/Withdraw Report </option>

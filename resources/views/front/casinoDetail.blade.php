@@ -1,5 +1,6 @@
 @extends('layouts.front_layout')
 @push('page_css')
+    <link href="{{ asset('asset/front/css/countDown.min.css') }}" rel="stylesheet">
     <style>
         body {
             overflow: hidden;
@@ -14,7 +15,7 @@
             <div id="app">
                 <div class="middle-section">
                     <div class="middle-wraper">
-                        <casino :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
+                        <casino today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
                     </div>
                 </div>
             </div>
@@ -22,7 +23,7 @@
                 <!-- Bet Slip-->
                 <div class="betslip-block betform-section">
                     <a class="collape-link text-color-white blue-gradient-bg1" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                        Bet Slip <img src="http://richexchange.test/asset/front/img/minus-icon.png ">
+                        Bet Slip <img src="{{ asset('asset/front/img/minus-icon.png') }}">
                     </a>
                     <div id="site_bet_loading" class="betloaderimage" style="display: none;"></div>
                     <div class="collapse show" id="collapseExample">
@@ -43,6 +44,7 @@
                                         <div class="bet_player"><span id="team_name" class="team_name">PLAYER A</span></div>
                                         <div class="odds_box">
                                             <input type="hidden" id="team_sid" value="" disabled="disabled" class="team_sid">
+                                            <input type="hidden" id="bet_side" value="" disabled="disabled" class="bet_side">
                                             <input type="text" id="odds_val" value="" disabled="disabled" class="odds_val form-control">
                                             <img src="https://sitethemedata.com/v3/static/front/img/arrow-down.svg" class="arrow-up">
                                             <img src="https://sitethemedata.com/v3/static/front/img/arrow-down.svg" class="arrow-down">
@@ -70,7 +72,7 @@
 
                 <div class="betslip-block mt-10" id="bet_display_table">
                     <a class="collape-link text-color-white blue-gradient-bg1" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">
-                        <img src="http://richexchange.test/asset/front/img/refresh-white.png" class="slip_refresh" alt=""> Open Bets <img src="http://richexchange.test/asset/front/img/minus-icon.png">
+                        <img src="{{ asset('asset/front/img/refresh-white.png')  }}" class="slip_refresh" alt=""> Open Bets <img src="{{ asset('asset/front/img/minus-icon.png') }}">
                     </a>
                     <div class="collapse show" id="collapseExample1"><div class="collapse show" id="collapseExample1">
                             <div class="card card-body">
@@ -144,6 +146,7 @@
 </div>
 @endsection
 @push('third_party_scripts')
+    <script src="{{ asset('asset/front/js/countDown.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 
     <script>
@@ -168,10 +171,10 @@
 
         function opnForm(vl) {
             var value = $(vl).attr("data-val");
-            console.log("value: ",value);
             var teamName = $(vl).attr("data-team");
 
             var teamSID = $(vl).attr('data-team-sid');
+            var bet_side = $(vl).attr('data-bet-side');
 
             if ($(window).width() < 990) {
                 $(".mobile-casino-bet-tr .casino_right_side form").remove();
@@ -181,12 +184,14 @@
                 $('.casinoplay-box .odds_box').css('display', 'block');
                 $('.casinoplay-box .team_name').html(teamName);
                 $('.casinoplay-box .team_sid').val(teamSID);
+                $('.casinoplay-box .bet_side').val(bet_side);
             }else{
                 $(".showForm").show();
                 $(".casinoplay-box .odds_val").val(value);
                 $('.casinoplay-box .odds_box').css('display', 'block');
                 $('.casinoplay-box .team_name').html(teamName);
                 $('.casinoplay-box .team_sid').val(teamSID);
+                $('.casinoplay-box .bet_side').val(bet_side);
             }
         }
 
@@ -207,6 +212,7 @@
                 var stake_value = $('#stake_val').val();
                 var team_name = $('#team_name').html();
                 var team_sid = $('#team_sid').val();
+                var bet_side = $('#bet_side').val();
                 var casino_name = '{{ $casino->casino_name }}';
                 $.ajax({
                     type: "POST",
@@ -219,7 +225,7 @@
                         team_sid: team_sid,
                         roundid: roundid,
                         casino_name: casino_name,
-                        bet_side: 'back'
+                        bet_side: bet_side
                     },
                     beforeSend: function () {
                         $('#site_bet_loading1').show();

@@ -172,8 +172,10 @@ class CasinoCalculationController extends Controller
                 }else if($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b') {
                     if ($resultArray[$bet->roundid] == 1){
                         $winner = 'LOW Card';
-                    }else{
+                    }else if($resultArray[$bet->roundid] == 2){
                         $winner = 'HIGH Card';
+                    }else if($resultArray[$bet->roundid] == 0){
+                        $winner = 'Tie';
                     }
                 }
                 $profit = 0;
@@ -217,6 +219,11 @@ class CasinoCalculationController extends Controller
 
                 $admin_loss+=$profit;
             }else{
+
+                if($winner == 'Tie' && ($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b')){
+
+                }
+
                 UsersAccount::create([
                     'user_id' => $bet->user_id,
                     'from_user_id' => $bet->user_id,

@@ -155,7 +155,7 @@ class PlayerController extends Controller
 
         if (!empty($getUserCheck)) {
             $getuser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-        }else{
+        } else {
             return Redirect::back()->with('error', 'Oppes! You have entered invalid credentials!');
         }
 
@@ -462,7 +462,7 @@ class PlayerController extends Controller
                         if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
                             $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
                         } else {
-                                $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                            $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
                         }
                         if (isset($extra['teamname1']) && !empty($extra['teamname1'])) {
                             if (!isset($response['ODDS'][$extra['teamname1']]['ODDS_profitLost'])) {
@@ -492,8 +492,7 @@ class PlayerController extends Controller
                                 $response['ODDS'][$extra['teamname4']]['ODDS_profitLost'] += $bet['bet_amount'];
                             }
                         }
-                    }
-                    else {
+                    } else {
                         $profitAmt = $bet['bet_profit']; ////nnn
                         $bet_amt = ($bet['bet_amount'] * (-1));
                         if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
@@ -722,12 +721,12 @@ class PlayerController extends Controller
                     $matchid = $matchVal->event_id;
                     $exAmtArr = self::getExAmountCricketAndTennis('', $matchid, $id);
                 }
-                if(isset($exAmtArr['SESSION'])) // nnn 21-10-2021
-				{
-          			foreach($exAmtArr['SESSION']['exposure'] as $key=>$sesVal){
-						$exAmtTot += abs($sesVal['SESSION_profitLost']);
-          			}
-        		}
+                if (isset($exAmtArr['SESSION'])) // nnn 21-10-2021
+                {
+                    foreach ($exAmtArr['SESSION']['exposure'] as $key => $sesVal) {
+                        $exAmtTot += abs($sesVal['SESSION_profitLost']);
+                    }
+                }
             }
 
         }
@@ -747,29 +746,29 @@ class PlayerController extends Controller
         $getUserCheck = Session::get('playerUser');
         if (!empty($getUserCheck)) {
             $sessionData = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-        }else{
-            return response()->json(array('result'=> 'multiAccount'));
+        } else {
+            return response()->json(array('result' => 'multiAccount'));
         }
 
         $depTot = CreditReference::where('player_id', $sessionData->id)->first();
         $totBalance = $depTot['available_balance_for_D_W'];
         $totExposer = $depTot['exposure'];
 
-    	$checkstatus=User::where('id',$sessionData->id)->first();
-  		if($checkstatus->status == 'suspend'){
-     		$request->session()->forget(['playerUser']);
-     		return response()->json(array('result'=> 'suspendsuccess'));
-   	    }
+        $checkstatus = User::where('id', $sessionData->id)->first();
+        if ($checkstatus->status == 'suspend') {
+            $request->session()->forget(['playerUser']);
+            return response()->json(array('result' => 'suspendsuccess'));
+        }
 
-     	if($checkstatus->check_updpass!=$getUserCheck->check_updpass){
-       	    $request->session()->forget(['playerUser']);
-       	    return response()->json(array('result'=> 'changePass'));
-     	}
+        if ($checkstatus->check_updpass != $getUserCheck->check_updpass) {
+            $request->session()->forget(['playerUser']);
+            return response()->json(array('result' => 'changePass'));
+        }
 
-     	if($checkstatus->token_val!=$getUserCheck->token_val){
-       	    $request->session()->forget(['playerUser']);
-            return response()->json(array('result'=> 'multiAccount'));
-     	}
+        if ($checkstatus->token_val != $getUserCheck->token_val) {
+            $request->session()->forget(['playerUser']);
+            return response()->json(array('result' => 'multiAccount'));
+        }
         return number_format(($totBalance), 2) . '~~' . number_format($totExposer, 2) . '~~' . $multi;
     }
 
@@ -802,7 +801,7 @@ class PlayerController extends Controller
         return $results;
     }
 
-    public function SaveBalance($stack,$betType='',$sessionBetTotalExposer=0)
+    public function SaveBalance($stack, $betType = '', $sessionBetTotalExposer = 0)
     {
         $getUserCheck = Session::get('playerUser');
         if (!empty($getUserCheck)) {
@@ -812,33 +811,32 @@ class PlayerController extends Controller
         $userId = $getUser->id;
         $creditref = CreditReference::where(['player_id' => $userId])->first();
 
-        Log::info(str_repeat("~=~",30));
+        Log::info(str_repeat("~=~", 30));
         $balance = SELF::getBlanceAmount();
         $exposer = 0;
         $total_fancy_expo = 0;
-        if($betType == 'SESSION'){
-            $total_fancy_expo = $sessionBetTotalExposer;
-        }else{
+//        if ($betType == 'SESSION') {
+//            $total_fancy_expo = $sessionBetTotalExposer;
+//        } else
+        {
             $exposer = SELF::getExAmount();
 
-            Log::info("balance: ".$balance);
-            Log::info("exposer: ".$exposer);
+            Log::info("balance: " . $balance);
+            Log::info("exposer: " . $exposer);
 
 
-            // $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
-            //     ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
+            $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
+                ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
 
-            // $total_fancy_expo = 0;
-
-            // $total_fancy_expo = SELF::getExAmountForSession2('', $userId);
-        //    foreach ($my_placed_bets as $bet) {
-        //        $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
-        //        $total_fancy_expo = $total_fancy_expo + $sessionexposer;
-        //    }
+            $total_fancy_expo = 0;
+            foreach ($my_placed_bets as $bet) {
+                $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
+                $total_fancy_expo = $total_fancy_expo + $sessionexposer;
+            }
         }
 
 
-        Log::info("total_fancy_expo: ".$total_fancy_expo."\n");
+        Log::info("total_fancy_expo: " . $total_fancy_expo . "\n");
 
         $exposer = $exposer + $total_fancy_expo;
         $upd = CreditReference::find($creditref['id']);
@@ -1153,8 +1151,7 @@ class PlayerController extends Controller
                                 }
                             }
                         }
-                    }
-                    else if (@$match_data['t2'][0]['bm1']['1']['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['1']['nat']) == strtolower($teamname)) {
+                    } else if (@$match_data['t2'][0]['bm1']['1']['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['1']['nat']) == strtolower($teamname)) {
                         if ($betside == 'lay') {
                             if ($position == 0) {
                                 if (round($match_data['t2'][0]['bm1']['1']['l1']) != $odds) {
@@ -1184,8 +1181,7 @@ class PlayerController extends Controller
                                 }
                             }
                         }
-                    }
-                    else if (@$match_data['t2'][0]['bm1']['2']['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['2']['nat']) == strtolower($teamname)) {
+                    } else if (@$match_data['t2'][0]['bm1']['2']['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['2']['nat']) == strtolower($teamname)) {
                         if ($betside == 'lay') {
                             if ($position == 0) {
                                 if (round($match_data['t2'][0]['bm1']['2']['l1']) != $odds) {
@@ -1689,8 +1685,7 @@ class PlayerController extends Controller
                                 } else if ($new_obj[$i]['bet_odds'] > $run_arr[$kk]) {
                                     $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
                                 }
-                            } else if ($new_obj[$i]['bet_side'] == 'lay')
-                            {
+                            } else if ($new_obj[$i]['bet_side'] == 'lay') {
                                 if ($new_obj[$i]['bet_odds'] == $run_arr[$kk]) {
                                     $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
                                 } else if ($new_obj[$i]['bet_odds'] < $run_arr[$kk]) {
@@ -1797,7 +1792,7 @@ class PlayerController extends Controller
         $getUserCheck = Session::get('playerUser');
         if (!empty($getUserCheck)) {
             $getUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-        }else{
+        } else {
             $responce['status'] = 'false';
             $responce['msg'] = 'Session Logout, please login again';
             return json_encode($responce);
@@ -1828,7 +1823,7 @@ class PlayerController extends Controller
         $other_bet_placed_amount = SELF::CheckForOtherMatchBetAmount($requestData['match_id']);
         $other_bet_session = SELF::getExAmountForSession($userId, '', $requestData['match_id']); /// nnnn 21-10-2021
 
-    //    dd($other_bet_placed, $other_bet_placed_amount, $other_bet_session);
+//        dd($other_bet_placed, $other_bet_placed_amount, $other_bet_session);
 
         $min_bet_odds_limit = $sportsModel->min_bet_odds_limit;
         $max_bet_odds_limit = $sportsModel->max_bet_odds_limit;
@@ -1921,15 +1916,17 @@ class PlayerController extends Controller
 
         $finalExposerWithCurrentMatchSession = $exposureAmt + $deduct_expo_amt + $exposureAmt_session;
 
+//        dd($finalExposerWithCurrentMatchSession,$exposureAmt_session);
+
 //        dd($headerUserBalance, $deduct_expo_amt, $exposureAmt_session, $finalExposerWithCurrentMatchSession,$exposureAmt);
 
 //        echo $headerUserBalance .'<'. $exposureAmt.'+'.$deduct_expo_amt.'+'.$exposureAmt_session;
 //        exit;
 
-    // dd($headerUserBalance, $finalExposerWithCurrentMatchSession,$exposureAmt, $exposureAmt_session);
+        // dd($headerUserBalance, $finalExposerWithCurrentMatchSession,$exposureAmt, $exposureAmt_session);
 
         if ($headerUserBalance < $finalExposerWithCurrentMatchSession) {
-            if ($headerUserBalance < ($exposureAmt + $deduct_expo_amt + $exposureAmt_session) && $exposureAmt <= 0 && $exposureAmt_session<=0) {
+            if ($headerUserBalance < ($exposureAmt + $deduct_expo_amt + $exposureAmt_session) && $exposureAmt <= 0 && $exposureAmt_session <= 0) {
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Insufficient Balance!333';
                 return json_encode($responce);
@@ -2008,8 +2005,7 @@ class PlayerController extends Controller
                     $finalValue = ((($betodds - 1) * $stack));
                 else
                     $finalValue = ((($requestData['bet_odds'] - 1) * $stack));
-            }
-            else if ($requestData['bet_type'] === 'BOOKMAKER') {
+            } else if ($requestData['bet_type'] === 'BOOKMAKER') {
                 $finalValue = (($requestData['bet_odds']) * $stack) / 100;
             } else if ($requestData['bet_type'] === 'SESSION') {
                 $finalValue = (($requestData['odds_volume']) * $stack) / 100;
@@ -2834,8 +2830,7 @@ class PlayerController extends Controller
 				}*/
                 $exposureAmt_session = SELF::getExAmountForSession($userId, $requestData['team_name'], $requestData['match_id']); /// nnnn 21-10-2021
                 $arr5 = [];
-                if ($requestData['fancy_total'] != 0)
-                {
+                if ($requestData['fancy_total'] != 0) {
                     $exposureAmt_SESSION = SELF::getExAmount_Session($requestData['team_name'], $requestData['match_id'], $userId, $deduct_expo_amt, $requestData['bet_odds'], $requestData['bet_side']);
                     $arr5[] = $exposureAmt_SESSION;
                     $fancy_exposer = $exposureAmt_session + $exposureAmt_SESSION;
@@ -2864,8 +2859,7 @@ class PlayerController extends Controller
                     exit;
                 }
             }
-        }
-        else {
+        } else {
             $exAmtArr = self::getExAmountCricketAndTennis($requestData['match_id'], $userId);
             if (isset($exAmtArr[$requestData['bet_type']][$requestData['team_name']][$requestData['bet_type'] . "_profitLost"])) {
                 $exArrs = array();
@@ -3078,8 +3072,7 @@ class PlayerController extends Controller
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_type'] == 'BOOKMAKER') {
                         $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) / 100);
@@ -3203,7 +3196,7 @@ class PlayerController extends Controller
         $exposureAmt = SELF::getExAmount(); //for odds and bookmaker
         $exposureAmt_session = SELF::getExAmountForSession($userId, $requestData['team_name'], $requestData['match_id']); /// nnnn 21-10-2021
         $deduct_expo_amt = 0;
-        $sessionBetTotalExposer = 0;
+        $sessionBetTotalExposer = $exposureAmt_session;
         $currentSessionBetTotalExposer = 0;
         if ($requestData['bet_type'] == 'SESSION') {
 
@@ -3219,7 +3212,7 @@ class PlayerController extends Controller
             //echo $headerUserBalance.' <'. $exposureAmt.'+'.$exposureAmt_session.'+'.$exposureAmt_SESSION;
             //exit;
             //if($headerUserBalance < ($exposureAmt+$deduct_expo_amt))
-            $currentSessionBetTotalExposer =  $exposureAmt_SESSION;
+            $currentSessionBetTotalExposer = $exposureAmt_SESSION;
 
             $sessionBetTotalExposer = $exposureAmt + $exposureAmt_session + $currentSessionBetTotalExposer;
             // dd($deduct_expo_amt, $headerUserBalance, $exposureAmt, $exposureAmt_session, $exposureAmt_SESSION);
@@ -3229,7 +3222,6 @@ class PlayerController extends Controller
                 return json_encode($responce);
                 exit;
             }
-
         }
         //exit;
         if ($requestData['bet_type'] === 'BOOKMAKER') {
@@ -3300,7 +3292,7 @@ class PlayerController extends Controller
             $getUserCheck = Session::get('playerUser');
             if (!empty($getUserCheck)) {
                 $getUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-            }else{
+            } else {
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Session Logout, please login again';
                 return json_encode($responce);
@@ -3339,8 +3331,7 @@ class PlayerController extends Controller
                             exit;
                         }
                     }
-                }
-                else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
+                } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
                     if ($requestData['bet_side'] == 'lay') {
                         if ($requestData['bet_odds'] >= $team2_main_odds)
                             $betodds = $team2_main_odds;
@@ -3360,8 +3351,7 @@ class PlayerController extends Controller
                             exit;
                         }
                     }
-                }
-                else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
+                } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
                     if ($requestData['bet_side'] == 'lay') {
                         if ($requestData['bet_odds'] >= $team3_main_odds)
                             $betodds = $team3_main_odds;
@@ -3401,7 +3391,7 @@ class PlayerController extends Controller
                     } else {
                         if ($requestData['bet_side'] === 'lay') {
                             $deduct_expo_amt = $requestData['bet_cal_amt'];
-                        }else{
+                        } else {
                             $deduct_expo_amt = $stack;
                         }
 
@@ -3435,15 +3425,14 @@ class PlayerController extends Controller
                 $betModel->created_at = $timezone;
                 $betModel->updated_at = $timezone;
                 if ($betModel->save()) {
-                    $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt);
+                    $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
                     $responce['status'] = 'true';
                     $responce['msg'] = 'Bet Added Successfully';
                     $responce['sessionBetTotalExposer'] = $sessionBetTotalExposer;
                     return json_encode($responce);
                     exit;
                 }
-            }
-            else {
+            } else {
                 $betodds = '';
                 if ($betModel->bet_type == 'ODDS') {
                     if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
@@ -3466,8 +3455,7 @@ class PlayerController extends Controller
                                 exit;
                             }
                         }
-                    }
-                    else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
+                    } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
                         if ($requestData['bet_side'] == 'lay') {
                             if ($requestData['bet_odds'] >= $team2_main_odds)
                                 $betodds = $team2_main_odds;
@@ -3487,8 +3475,7 @@ class PlayerController extends Controller
                                 exit;
                             }
                         }
-                    }
-                    else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
+                    } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
                         if ($requestData['bet_side'] == 'lay') {
                             if ($requestData['bet_odds'] >= $team3_main_odds)
                                 $betodds = $team3_main_odds;
@@ -3531,14 +3518,13 @@ class PlayerController extends Controller
                     } else {
                         if ($requestData['bet_side'] === 'lay') {
                             $deduct_expo_amt = $requestData['bet_cal_amt'];
-                        }else{
+                        } else {
                             $deduct_expo_amt = $stack;
                         }
                         $betModel->bet_profit = round($deduct_expo_amt, 2);
                     }
 
-                }
-                else if ($requestData['bet_type'] == 'SESSION') {
+                } else if ($requestData['bet_type'] == 'SESSION') {
                     if ($requestData['bet_side'] === 'lay') {
                         $betModel->bet_profit = round($stack, 2);
                     } else {
@@ -3594,7 +3580,7 @@ class PlayerController extends Controller
                 $betModel->created_at = $timezone;
                 $betModel->updated_at = $timezone;
                 if ($betModel->save()) {
-                    $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt,$betModel->bet_type,$sessionBetTotalExposer);
+                    $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
                     $responce['status'] = 'true';
                     $responce['msg'] = 'Bet Added Successfully.';
                     $responce['currentSessionBetTotalExposer'] = $currentSessionBetTotalExposer;
@@ -3687,7 +3673,7 @@ class PlayerController extends Controller
                     }
                     $bet_profit = "";
 //                    if ($bet->bet_type == 'ODDS' || $bet->bet_type == 'BOOKMAKER')
-                        $bet_profit = $bet->exposureAmt;
+                    $bet_profit = $bet->exposureAmt;
 //                    if ($bet->bet_type == 'SESSION')
 //                        $bet_profit = $bet->bet_profit;
 

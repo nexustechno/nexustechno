@@ -121,4 +121,11 @@ $settings =setting::first();
 
 @push('page_scripts')
     @include('front.common-script-for-list')
+
+    <script>
+        setInterval(function() {
+            $(".backbtn").removeClass("spark");
+            $(".laybtn").removeClass("sparkLay");
+        }, 500);
+    </script>
 @endpush

@@ -73,26 +73,8 @@
                     </div>
                 </div>
             </div>
-            <div class="casino_time">
-                <div id="timer">
-                    <div class="base-timer">
-                        <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <g class="base-timer__circle">
-                                <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
-                                <path id="base-timer-path-remaining"
-                                      stroke-dasharray="283"
-                                      class="base-timer__path-remaining text-color-green-1"
-                                      d="
-                          M 50, 50
-                          m -45, 0
-                          a 45,45 0 1,0 90,0
-                          a 45,45 0 1,0 -90,0
-                        "
-                                ></path>
-                            </g>
-                        </svg>
-                        <span id="base-timer-label" class="base-timer__label text-color-green-1">0</span></div>
-                </div>
+            <div class="casino_time" v-if="autotime!==null">
+                <flip-countdown :deadline="autotime" :showDays="false" :showHours="false" :showMinutes="false"></flip-countdown>
             </div>
         </div>
         <div class="casino-videodetails" id="appendData">
@@ -107,7 +89,7 @@
                     <tr :key="team.sid" class="fancy-suspend-tr team1_bm_fancy">
                         <td style="width: 60%"></td>
                         <td style="width: 20%" class="fancy-suspend-td" colspan="2">
-                            <div v-if="team.gstatus == 0" class="fancy-suspend black-bg-5 text-color-white">
+                            <div v-if="team.gstatus == 0 || team.gstatus == 'SUSPENDED'" class="fancy-suspend black-bg-5 text-color-white">
                                 <span> <i class="fa fa-lock" aria-hidden="true"></i></span>
                             </div>
                         </td>
@@ -123,10 +105,13 @@
                             <span :id="team.sid+'-profit'" class="towin text-color-green" v-else>0</span>
                         </th>
                         <td style="width: 20%" id="back_1" colspan="2" class="back-1 suspended">
-                            <a onclick="opnForm(this)" :data-val="team.rate" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.rate}}<span class="black">0</span></a>
-                            <a onclick="opnForm(this)" :data-val="team.rate" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.rate}}<span class="black">0</span></a>
+                            <a onclick="opnForm(this)" data-bet-side="back" :data-val="team.b1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>
+                            <a onclick="opnForm(this)" data-bet-side="back" :data-val="team.b1" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>
                         </td>
-                        <td style="width: 20%" id="back_1" colspan="2" class="back-1 suspended"><a>0.00<span class="black">0</span></a></td>
+                        <td style="width: 20%" id="back_1" colspan="2" class="back-1 suspended">
+                            <a onclick="opnForm(this)" data-bet-side="lay" :data-val="team.l1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.l1}}<span class="black" v-if="team.ls1!=undefined">{{team.ls1}}</span></a>
+                            <a onclick="opnForm(this)" data-bet-side="lay" :data-val="team.l1" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.l1}}<span class="black" v-if="team.ls1!=undefined">{{team.ls1}}</span></a>
+                        </td>
                     </tr>
                     <tr class="collapse mobile-casino-bet-tr" :id="'mobile-casino-bet-tr-'+team.sid">
                         <td colspan="5" class="casino_right_side" :id="'mobile-casino-bet-td-'+team.sid"></td>
@@ -160,6 +145,7 @@
                     <template v-for="(result,index) in results">
                         <span style="cursor: pointer;" v-if="result.result== 2" @click="getResult(result.mid)" class="ball-runs last-result playerb">H</span>
                         <span style="cursor: pointer;" v-if="result.result== 1" @click="getResult(result.mid)" class="ball-runs last-result playera">L</span>
+                        <span style="cursor: pointer;" v-if="result.result== 0" @click="getResult(result.mid)" class="ball-runs last-result playera">T</span>
                     </template>
                 </p>
                 <p id="last-result" class="text-right" v-if="casino.casino_name  == '20poker'">
@@ -175,51 +161,16 @@
                     </template>
                 </p>
             </div>
-
-            <div class="casino_rules_table mt-2">
-                <div class="casinolay_bettitle black-bg-2 text-color-white">
-                    <span>Rules</span>
-                </div>
-                <div class="table-responsive">
-
-                    <table class="table table-bordered rules-table"
-                           style="background-color: white;">
-                        <tbody>
-                        <tr class="text-center">
-                            <th colspan="2">Pair Plus</th>
-                        </tr>
-                        <tr>
-                            <td width="60%">Pair (Double)</td>
-                            <td>1 To 1</td>
-                        </tr>
-                        <tr>
-                            <td width="60%">Flush (Color)</td>
-                            <td>1 To 4</td>
-                        </tr>
-                        <tr>
-                            <td width="60%">Straight (Rown)</td>
-                            <td>1 To 6</td>
-                        </tr>
-                        <tr>
-                            <td width="60%">Trio (Teen)</td>
-                            <td>1 To 35</td>
-                        </tr>
-                        <tr>
-                            <td width="60%">Straight Flush (Pakki Rown)</td>
-                            <td>1 To 45</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+    import FlipCountdown from 'vue2-flip-countdown'
 
     export default {
+        components: { FlipCountdown },
         data() {
             return {
                 data: {},
@@ -227,11 +178,13 @@
                 roundId: 0,
                 fullRoundId: 0,
                 cards: [],
-                teams: []
+                teams: [],
+                autotime:null
             }
         },
-        props: ['casino', 'basepath', 'playerprofit'],
+        props: ['casino', 'basepath', 'playerprofit','today'],
         mounted() {
+            this.autotime = this.today;
             window.Echo.channel('casino-detail').listen('.' + this.casino.casino_name, (data) => {
 
                 this.teams = [];
@@ -246,22 +199,76 @@
                 this.roundId = explode[1];
 
                 if (this.casino.casino_name == 'teen20') {
-                    this.teams.push(this.data.t2[0]);
-                    this.teams.push(this.data.t2[2]);
+
+                    var playerA = this.data.t2[0];
+                    playerA.b1 = playerA.rate;
+                    playerA.bs1 = 0;
+                    playerA.l1 = 0;
+                    playerA.ls1 = 0;
+
+                    var playerB = this.data.t2[2];
+                    playerB.b1 = playerB.rate;
+                    playerB.bs1 = 0;
+                    playerB.l1 = 0;
+                    playerB.ls1 = 0;
+
+                    this.teams.push(playerA);
+                    this.teams.push(playerB);
+
                 }else if (this.casino.casino_name == '20dt' || this.casino.casino_name == 'dt202'){
-                    this.teams.push(this.data.t2[0]);
-                    this.teams.push(this.data.t2[1]);
-                    this.teams.push(this.data.t2[2]);
+
+                    var playerA = this.data.t2[0];
+                    playerA.b1 = playerA.rate;
+                    playerA.bs1 = 0;
+                    playerA.l1 = 0;
+                    playerA.ls1 = 0;
+
+                    var playerB = this.data.t2[1];
+                    playerB.b1 = playerB.rate;
+                    playerB.bs1 = 0;
+                    playerB.l1 = 0;
+                    playerB.ls1 = 0;
+
+                    var playerC = this.data.t2[2];
+                    playerC.b1 = playerC.rate;
+                    playerC.bs1 = 0;
+                    playerC.l1 = 0;
+                    playerC.ls1 = 0;
+
+                    this.teams.push(playerA);
+                    this.teams.push(playerB);
+                    this.teams.push(playerC);
                 }else if (this.casino.casino_name == 'l7a' || this.casino.casino_name == 'l7b'){
-                    this.teams.push(this.data.t2[0]);
-                    this.teams.push(this.data.t2[1]);
+
+                    var playerA = this.data.t2[0];
+                    playerA.b1 = playerA.rate;
+                    playerA.bs1 = 0;
+                    playerA.l1 = 0;
+                    playerA.ls1 = 0;
+
+                    var playerB = this.data.t2[1];
+                    playerB.b1 = playerB.rate;
+                    playerB.bs1 = 0;
+                    playerB.l1 = 0;
+                    playerB.ls1 = 0;
+
+                    this.teams.push(playerA);
+                    this.teams.push(playerB);
                 }else if (this.casino.casino_name == '20poker'){
 
                     var playerA = this.data.t2[0];
                     playerA.nation = "Player A";
+                    playerA.b1 = playerA.rate;
+                    playerA.bs1 = 0;
+                    playerA.l1 = 0;
+                    playerA.ls1 = 0;
 
                     var playerB = this.data.t2[1];
                     playerB.nation = "Player B";
+                    playerB.b1 = playerB.rate;
+                    playerB.bs1 = 0;
+                    playerB.l1 = 0;
+                    playerB.ls1 = 0;
 
                     this.teams.push(playerA);
                     this.teams.push(playerB);
@@ -269,14 +276,27 @@
 
                     var playerA = this.data.t2[0];
                     playerA.nation = "Player A";
-                    playerA.rate = 2;
+                    playerA.b1 = 2;
+                    playerA.bs1 = 0;
+                    playerA.l1 = 2;
+                    playerA.ls1 = 0;
 
                     var playerB = this.data.t2[3];
                     playerB.nation = "Player B";
-                    playerB.rate = 2;
+                    playerB.b1 = 2;
+                    playerB.bs1 = 0;
+                    playerB.l1 = 2;
+                    playerB.ls1 = 0;
 
                     this.teams.push(playerA);
                     this.teams.push(playerB);
+                }else if (this.casino.casino_name == 'odtp'){
+                    this.teams.push(this.data.bf[0]);
+                    this.teams.push(this.data.bf[1]);
+                }else if (this.casino.casino_name == 'aaa'){
+                    this.teams.push(this.data.t2[0]);
+                    this.teams.push(this.data.t2[1]);
+                    this.teams.push(this.data.t2[2]);
                 }
 
 
@@ -372,98 +392,32 @@
                     //Perform action in always
                 });
             },
+            formatTime(time) {
+                // const minutes = Math.floor(time / 60);
+                let seconds = time % 60;
+                if (seconds < 0) {
+                    seconds = `0`;
+                }
+                return `${seconds}`;
+            },
             timerteen20(val) {
-                const FULL_DASH_ARRAY = 283;
-                const WARNING_THRESHOLD = 10;
-                const ALERT_THRESHOLD = 5;
-                const COLOR_CODES = {
-                    info: {
-                        color: "green"
-                    },
-                    warning: {
-                        color: "orange",
-                        threshold: WARNING_THRESHOLD
-                    },
-                    alert: {
-                        color: "red",
-                        threshold: ALERT_THRESHOLD
-                    }
-                };
-                const TIME_LIMIT = val;
-                let timePassed = 0;
-                let timeLeft = TIME_LIMIT;
-                let timerInterval = null;
-                let remainingPathColor = COLOR_CODES.info.color;
-                var innerHTML = ``;
+                var date = new Date();
 
-                $("#timer #base-timer-label").html(formatTime(timeLeft));
-                $("#timer .base-timer__path-remaining").addClass(remainingPathColor);
+                console.log("autotime ",this.formatTime(val))
 
-                // startTimer();
+                date.setSeconds( date.getSeconds() + this.formatTime(val) );
 
-                // function onTimesUp() {
-                //     clearInterval(timerInterval);
-                // }
-                //
-                // function startTimer() {
-                //     timerInterval = setInterval(() => {
-                //         timePassed = timePassed += 1;
-                //         timeLeft = TIME_LIMIT - timePassed;
-                //         $("#base-timer-label").html(formatTime(timeLeft));
-                //         setCircleDasharray();
-                //         setRemainingPathColor(timeLeft);
-                //
-                //         if (timeLeft === 0) {
-                //             onTimesUp();
-                //         }
-                //     }, 1000);
-                // }
+                var ye2 = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+                var mo2 = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
+                var da2 = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+                var h = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(date);
+                var m = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(date);
+                var s = new Intl.DateTimeFormat('en', { second: 'numeric' }).format(date);
+                var dateime = `${ye2}-${mo2}-${da2} ${h}:${m}:${s}`;
 
-                function formatTime(time) {
-                    const minutes = Math.floor(time / 60);
-                    let seconds = time % 60;
-                    if (seconds < 0) {
-                        seconds = `0`;
-                    }
-                    return `${seconds}`;
-                }
+                console.log("dateime: ",dateime)
 
-                function setRemainingPathColor(timeLeft) {
-                    const {
-                        alert,
-                        warning,
-                        info
-                    } = COLOR_CODES;
-                    if (timeLeft <= alert.threshold) {
-                        document
-                            .getElementById("base-timer-path-remaining")
-                            .classList.remove(warning.color);
-                        document
-                            .getElementById("base-timer-path-remaining")
-                            .classList.add(alert.color);
-                    } else if (timeLeft <= warning.threshold) {
-                        document
-                            .getElementById("base-timer-path-remaining")
-                            .classList.remove(info.color);
-                        document
-                            .getElementById("base-timer-path-remaining")
-                            .classList.add(warning.color);
-                    }
-                }
-
-                function calculateTimeFraction() {
-                    const rawTimeFraction = timeLeft / TIME_LIMIT;
-                    return rawTimeFraction - (1 / TIME_LIMIT) * (1 - rawTimeFraction);
-                }
-
-                function setCircleDasharray() {
-                    const circleDasharray = `${(
-                        calculateTimeFraction() * FULL_DASH_ARRAY
-                    ).toFixed(0)} 283`;
-                    document
-                        .getElementById("base-timer-path-remaining")
-                        .setAttribute("stroke-dasharray", circleDasharray);
-                }
+                // this.autotime = dateime;
             }
         }
     }

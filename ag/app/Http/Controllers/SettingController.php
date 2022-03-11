@@ -731,10 +731,10 @@ class SettingController extends Controller
 
             // added code for back and lay on same fancy exposer get minuse :: Jeet -   07-03-2022
             $total_expo_amount = (int)$check_value[2];
-            if($mytotal > 0){
-                $total_expo_amount = 0;
-                $mytotal = abs($mytotal-$total_expo_amount);
-            }
+//            if($mytotal > 0){
+//                $total_expo_amount = 0;
+//                $mytotal = abs($mytotal-$total_expo_amount);
+//            }
 
 
 //            dd($total_expo_amount,$mytotal);

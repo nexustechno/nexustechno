@@ -16,19 +16,19 @@
                 <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy in-play blue-bg-3 text-color-white">F</span>
                 <span v-if="matchtype == 4 && match.m1 == 'True'" style="color:green;margin-right: 40px;" class="game-fancy in-play blue-bg-3 text-color-white">B</span>
             </span>
-            <span class="fir-col2">
+            <span class="fir-col2" :class="'col1-back-lay'+match.gameId">
                 <a class="backbtn lightblue-bg2" v-if="match.back1 > 0">{{ match.back1 }}</a>
                 <a class="backbtn lightblue-bg2" v-else>--</a>
                 <a class="laybtn lightpink-bg1" v-if="match.lay1 > 0">{{ match.lay1 }}</a>
                 <a class="laybtn lightpink-bg1" v-else>--</a>
             </span>
-            <span class="fir-col2">
+            <span class="fir-col2" :class="'col2-back-lay'+match.gameId">
                  <a class="backbtn lightblue-bg2" v-if="match.back12 > 0">{{ match.back12 }}</a>
                 <a class="backbtn lightblue-bg2" v-else>--</a>
                 <a class="laybtn lightpink-bg1" v-if="match.lay12 > 0">{{ match.lay12 }}</a>
                 <a class="laybtn lightpink-bg1" v-else>--</a>
             </span>
-            <span class="fir-col2">
+            <span class="fir-col2" :class="'col3-back-lay'+match.gameId">
                  <a class="backbtn lightblue-bg2" v-if="match.back11 > 0">{{ match.back11 }}</a>
                 <a class="backbtn lightblue-bg2" v-else>--</a>
                 <a class="laybtn lightpink-bg1" v-if="match.lay11 > 0">{{ match.lay11 }}</a>
@@ -83,24 +83,58 @@
             if(this.matchtype == 4){
                 this.broadcastEvent = "cricket"
                 window.Echo.channel('matches').listen('.cricket', (data) => {
-                    this.matches = data.records;
+
+                    this.setRecords(data.records);
+
+                    // this.matches = data.records;
                     this.loading = false;
                 });
             }else if(this.matchtype == 2){
                 this.broadcastEvent = "tennis";
                 window.Echo.channel('matches').listen('.tennis', (data) => {
-                    this.matches = data.records;
+                    // this.matches = data.records;
+                    this.setRecords(data.records);
                     this.loading = false;
                 });
             }else if(this.matchtype == 1){
                 this.broadcastEvent = "soccer";
                 window.Echo.channel('matches').listen('.soccer', (data) => {
-                    this.matches = data.records;
+                    // this.matches = data.records;
+                    this.setRecords(data.records);
                     this.loading = false;
                 });
             }
         },
         methods:{
+            setRecords(records){
+                for(var i=0;i<records.length;i++){
+                    if(this.isVisible(records[i].gameId,records[i].eventName,records[i].inPlay,i)){
+                        if(this.matches[i]!=undefined) {
+                            if (this.matches[i].back1 != records[i].back1) {
+                                $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                            }
+                            if (this.matches[i].lay1 != records[i].lay1) {
+                                $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                            }
+
+                            if (this.matches[i].back12 != records[i].back12) {
+                                $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                            }
+                            if (this.matches[i].lay12 != records[i].lay12) {
+                                $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                            }
+
+                            if (this.matches[i].back11 != records[i].back11) {
+                                $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                            }
+                            if (this.matches[i].lay11 != records[i].lay11) {
+                                $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                            }
+                        }
+                    }
+                }
+                this.matches = records;
+            },
             makeFav(matchId){
                 var form = {
                     id:matchId

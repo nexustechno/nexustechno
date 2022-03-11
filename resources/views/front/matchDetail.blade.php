@@ -323,7 +323,7 @@
                             $match_time = "<span>".date('h:i A',strtotime($match['match_date']))."</span>";
                         }
                         ?>
-                        @if(!empty($logindata))
+                        @if(!empty($logindata) && $inplay == 'True')
                             <div class="match-innerbg-detail soccerbg live_score_card_{{ $match->sports_id }}">
                                 @if($match->sports_id == 4)
                                     <iframe id="LiveScoreCard" src="https://richexchange.live/nexus/scorboard.php?date=<?php echo date('d-m-Y',strtotime($match['match_date'])) ?>&time=<?php echo date('H:i:s',strtotime($match['match_date'])) ?>&event_id=<?php echo $match->event_id;?>&match_type=cricket" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -360,7 +360,6 @@
                                 </h4>
                                 <h4 class="text-right d-lg-none"> {{substr($split[1],0,3)}}</h4>
 
-
                                 <div class="timeblockireland"> <img src="{{ URL::to('asset/front/img/clock-icon.png') }} "> {!! $match_time !!} </div>
                             </div>
                             {{--<div class="arrowup-icon"> <i class="fas fa-chevron-up text-fill-yellow"></i> </div>--}}
@@ -390,10 +389,9 @@
                                                     <span class="float-right pr-2"><i class="fas fa-tv"></i></span>
                                                 </div>
                                             </a>
-                                             <?php
+                                            <?php
                                                 $eventid= $match->event_id;
                                                 $sprtid= $match->sports_id;
-
                                             ?>
                                             <div class="collapse show" id="live_tv">
                                                 <div class="card card-body tv_tabs_block">

@@ -464,15 +464,15 @@
 }
 
 .bets td a {
-    /*position: relative;*/
-    /*height: 35px;*/
-    /*color: #1e1e1e;*/
-    /*padding: 3px 0 2px;*/
-    /*cursor: pointer;*/
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: center;*/
-    /*flex-flow: column;*/
+    position: relative;
+    height: 35px;
+    color: #1e1e1e;
+    padding: 3px 0 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
 }
 
 .bets .back-1 {
