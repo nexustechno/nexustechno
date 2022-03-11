@@ -9349,54 +9349,57 @@ class FrontController extends Controller
             }
 
             $remark = $data->remark;
-            if($remark!='Commission') {
-                if ($data->match_id > 0) {
 
-                    $match = Match::where("id", $data->match_id)->first();
+            if ($data->match_id > 0) {
 
-                    $sprtnm = Sport::where('sId', $match->sports_id)->first();
+                $match = Match::where("id", $data->match_id)->first();
 
-                    $log = UserExposureLog::where("id", $data->user_exposure_log_id)->first();
+                $sprtnm = Sport::where('sId', $match->sports_id)->first();
 
-                    if ($log->bet_type != 'SESSION') {
-                        $bet = MyBets::where('user_id', $data->bet_user_id)
-                            ->where('result_declare', 1)
-                            ->where('isDeleted', 0)
-                            ->where('match_id', $match->event_id)
-                            ->whereBetween('created_at', [$fromdate, $todate])
-                            ->groupBy('bet_type')
-                            ->where('bet_type', $log->bet_type)
-                            ->orderBy('created_at')
-                            ->first();
+                $log = UserExposureLog::where("id", $data->user_exposure_log_id)->first();
 
-                        $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
-                    } else {
-                        $bet = MyBets::where('user_id', $data->bet_user_id)
-                            ->where('result_declare', 1)
-                            ->where('isDeleted', 0)
-                            ->where('bet_type', 'SESSION')
-                            ->where('team_name', $log->fancy_name)
-                            ->groupBy('team_name')
-                            ->where('match_id', $match->event_id)
-                            ->whereBetween('created_at', [$fromdate, $todate])
-                            ->orderBy('created_at')
-                            ->first();
+                if ($log->bet_type != 'SESSION') {
+                    $bet = MyBets::where('user_id', $data->bet_user_id)
+                        ->where('result_declare', 1)
+                        ->where('isDeleted', 0)
+                        ->where('match_id', $match->event_id)
+                        ->whereBetween('created_at', [$fromdate, $todate])
+                        ->groupBy('bet_type')
+                        ->where('bet_type', $log->bet_type)
+                        ->orderBy('created_at')
+                        ->first();
 
-                        $fnc_rslt = FancyResult::where('eventid', $match->event_id)->where('fancy_name', $bet->team_name)->first();
+                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
+                } else {
+                    $bet = MyBets::where('user_id', $data->bet_user_id)
+                        ->where('result_declare', 1)
+                        ->where('isDeleted', 0)
+                        ->where('bet_type', 'SESSION')
+                        ->where('team_name', $log->fancy_name)
+                        ->groupBy('team_name')
+                        ->where('match_id', $match->event_id)
+                        ->whereBetween('created_at', [$fromdate, $todate])
+                        ->orderBy('created_at')
+                        ->first();
 
-                        $f_result = 0;
-                        if (!empty($fnc_rslt)) {
-                            $f_result = $fnc_rslt->result;
-                        }
+                    $fnc_rslt = FancyResult::where('eventid', $match->event_id)->where('fancy_name', $bet->team_name)->first();
 
-                        $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
+                    $f_result = 0;
+                    if (!empty($fnc_rslt)) {
+                        $f_result = $fnc_rslt->result;
                     }
-                } elseif ($data->casino_id > 0) {
-                    $casino = Casino::find($data->casino_id);
-                    $casinoBet = CasinoBet::where("id", $data->user_exposure_log_id)->first();
 
-                    $remark = '<span><a class="text-dark" >CASINO / ' . $casino->casino_title . " / " . $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
                 }
+            } elseif ($data->casino_id > 0) {
+                $casino = Casino::find($data->casino_id);
+                $casinoBet = CasinoBet::where("id", $data->user_exposure_log_id)->first();
+
+                $remark = '<span><a class="text-dark" >CASINO / ' . $casino->casino_title . " / " . $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+            }
+
+            if($data->remark=='Commission'){
+                $remark.="("$data->remark.")";
             }
 
             if($data->credit_amount > 0){
