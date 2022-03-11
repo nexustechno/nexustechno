@@ -52,7 +52,16 @@
             <p class="m-0">No data found</p>
         </div>
     </div>
-    <div class="matches-section p-5" v-else v-loading="loading"></div>
+    <div class="matches-section p-5" v-else>
+        <div id="site_bet_loading1" class="betloaderimage1 loader-style1">
+            <ul class="loading1">
+                <li>
+                    <img src="/asset/front/img/loaderajaxbet.gif">
+                </li>
+                <li>Loading...</li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -342,3 +351,39 @@
         }
     };
 </script>
+
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    .fir-col3.pinimg img {
+        width: 100%;
+    }
+
+    .betloaderimage1 {
+        top: 50%;
+        height: 135px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgb(0 0 0 / 50%);
+        padding-top: 30px;
+        z-index: 50;
+        position: relative !important;
+        left: 50%;
+        width: 190px;
+        margin-left: -95px;
+    }
+
+    .loading1 img {
+        background-position: -42px -365px;
+        height: 51px;
+        width: 51px;
+    }
+
+    .loading1 li {
+        list-style: none;
+        text-align: center;
+        font-size: 11px;
+    }
+</style>
