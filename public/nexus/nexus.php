@@ -22,6 +22,8 @@ curl_close($process);
 
 $match_data = json_decode($return, true);
 
+echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);die();
+
 if(isset($match_data['result']) && count($match_data['result']) > 0) {
     $tvdata1 = $match_data['result'][0];
 }else{

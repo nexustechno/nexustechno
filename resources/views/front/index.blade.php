@@ -47,15 +47,15 @@ else{
                 <div class="{{$coldiv}}">
                     <div class="casino_result_section new_casino">
                         @if(!empty($getUser))
-                    @if(!empty($settings->user_msg))
-                        <div class="news-addvertisment black-gradient-bg text-color-white">
-                            <h4>News</h4>
-                            <marquee>
-                                <a href="#" class="text-color-blue">{{$settings->user_msg}}</a>
-                            </marquee>
-                        </div>
-                    @endif
-                @endif
+                            @if(!empty($settings->user_msg))
+                                <div class="news-addvertisment black-gradient-bg text-color-white">
+                                    <h4>News</h4>
+                                    <marquee>
+                                        <a href="#" class="text-color-blue">{{$settings->user_msg}}</a>
+                                    </marquee>
+                                </div>
+                            @endif
+                        @endif
                         <div class="middle-wraper1">
                             <div class="home-carousel owl-reponsive owl-carousel owl-theme">
                                 @foreach($banner as $banners)
@@ -70,7 +70,7 @@ else{
                                     <img src="{{ URL::to('asset/front/img/slider/slider-3.jpg') }}" alt="Image">
                                 </div> -->
                             </div>
-                            <div class="our_casino_list1">
+                            <div class="our_casino_list1 mt-1">
                             	<div class="row justify-content-md-center">
                                 	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 p-1">
                                     	<div class="casino_list_items">
