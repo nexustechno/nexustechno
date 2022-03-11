@@ -9334,6 +9334,8 @@ class FrontController extends Controller
                         <td>Opening Balance</td>
 			        </tr>';
 
+        $closing_balance = $openingBalance;
+
         foreach($records as $key => $data)
         {
             $username = '';
@@ -9395,12 +9397,19 @@ class FrontController extends Controller
 
                 $remark = '<span><a class="text-dark" >CASINO / ' .$casino->casino_title." / ". $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
             }
+
+            if($data->credit_amount > 0){
+                $closing_balance+= $data->credit_amount;
+            }else{
+                $closing_balance-= $data->debit_amount;
+            }
+
             $html.='<tr>
                         <td style="width: 110px"> '.($i).' </td>
                         <td style="width: 110px"> '.date('d-m-y H:i', strtotime($data->created_at)).' </td>
                         <td style="width: 110px;text-align: right;" class="text-color-green">'.$data->credit_amount.'</td>
                         <td style="width: 110px;text-align: right;" class="text-color-red">'.$data->debit_amount.'</td>
-                        <td style="text-align: right;">'.$data->closing_balance.'</td>
+                        <td style="text-align: right;">'.$closing_balance.'</td>
                         <td>'.$remark.' </td>
 			        </tr>';
 
@@ -10462,15 +10471,15 @@ class FrontController extends Controller
                 ->where('match_id', $mid)
                 ->where('bet_type', $btyp)
                 ->where('team_name', $tnm)
-                //->groupBy('team_name',$tnm)
-                ->whereBetween('created_at', [$fromdate, $todate])
+//                ->groupBy('team_name',$tnm)
+//                ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
         } else {
             $gmdata = MyBets::where('user_id', $loginuser->id)
                 ->where('result_declare', 1)
                 ->where('match_id', $mid)
                 ->where('bet_type', $btyp)
-                ->whereBetween('created_at', [$fromdate, $todate])
+//                ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
         }
 

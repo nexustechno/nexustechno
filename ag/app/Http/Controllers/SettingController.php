@@ -767,7 +767,7 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
 
-                    $available_balance = $creditref->available_balance_for_D_W;
+                    $available_balance = $creditref->available_balance_for_D_W + abs($total_expo_amount);
                     UsersAccount::create([
                         'user_id' => $id,
                         'from_user_id' => $id,
