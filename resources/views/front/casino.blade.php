@@ -16,6 +16,11 @@
                     <div class="casino_result_section new_casino">
                     <div class="our_casino_list casino">
                         <div class="row">
+                            <div class="col-sm-12">
+                                <h4 class="sport-list-title">Our Live Casinos</h4>
+                            </div>
+                        </div>
+                        <div class="row">
                         @foreach($casino as $casinos)
                             <?php
                             $class="disabled-link";

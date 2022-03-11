@@ -187,10 +187,12 @@ class CasinoCalculationController extends Controller
             $available_balance = $upd->available_balance_for_D_W;
 
             $upd->exposure = $upd->exposure - $exposer;
-            $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposer));
-            $update_ = $upd->update();
 
             if($winner == $bet->team_name){
+
+                $upd->remain_bal  =  $upd->remain_bal + $profit;
+                $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposer));
+
                 UsersAccount::create([
                     'user_id' => $bet->user_id,
                     'from_user_id' => $bet->user_id,
@@ -219,7 +221,7 @@ class CasinoCalculationController extends Controller
 
                 $admin_loss+=$profit;
             }else{
-
+                $upd->remain_bal  =  $upd->remain_bal - $exposer;
                 if($winner == 'Tie' && ($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b')){
 
                 }
@@ -251,6 +253,8 @@ class CasinoCalculationController extends Controller
 
                 $admin_profit+=$exposer;
             }
+
+            $update_ = $upd->update();
 
             if ($update_) {
                 $parentid = self::GetAllParentofPlayer($bet->user_id);

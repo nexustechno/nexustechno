@@ -422,3 +422,10 @@
         }
     }
 </script>
+
+
+<style>
+    .flip-clock__piece{
+        display: none;
+    }
+</style>
