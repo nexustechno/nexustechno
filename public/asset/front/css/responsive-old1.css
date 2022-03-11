@@ -322,11 +322,11 @@
         width: 100%;
         overflow-x: auto;
     }
-    
+
     .inplay-table.table.w1-table td:first-child {
-        width: 50%;        
+        width: 50%;
     }
-    
+
     .inplay-table.table .bets-fancy td:nth-child(3), .inplay-table.table .bets-fancy td:nth-child(4) {
         width: 100%;
     }
@@ -482,17 +482,17 @@
     .matchul li {
         flex-flow: column;
     }
-    
+
     .today_content .linktoday{
         display: flex;
         align-items: center;
         width: 66%;
     }
-    
+
     .today_content .linktoday a {
         padding-left: 3px;
     }
-    
+
     .backall, .layall {
         font-size: 11px;
     }

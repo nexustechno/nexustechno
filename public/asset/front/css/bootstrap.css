@@ -584,7 +584,7 @@ pre code {
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto
-} 
+}
 
 @media (min-width:576px) {
     .container {
@@ -624,7 +624,7 @@ pre code {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     margin-right: -15px;
-    margin-left: -15px; 
+    margin-left: -15px;
 }
 
 .no-gutters {
