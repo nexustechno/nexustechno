@@ -833,12 +833,17 @@ class PlayerController extends Controller
                 $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
                 $total_fancy_expo = $total_fancy_expo + $sessionexposer;
             }
+
+            $casinoExposerCalculated = CasinoCalculationController::getCasinoExAmount("",$userId);
+
+            $casinoExposer =  $casinoExposerCalculated['exposer'];
+
         }
 
 
         Log::info("total_fancy_expo: " . $total_fancy_expo . "\n");
 
-        $exposer = $exposer + $total_fancy_expo;
+        $exposer = $exposer + $total_fancy_expo + $casinoExposer;
         $upd = CreditReference::find($creditref['id']);
         $upd->exposure = $exposer;
         $upd->available_balance_for_D_W = ($balance - $exposer);
@@ -1855,6 +1860,8 @@ class PlayerController extends Controller
 
         $exposureAmt = SELF::getExAmount();
         $exposureAmt_session = SELF::getExAmountForSession($userId, '', $requestData['match_id']); /// nnnn 21-10-2021
+        $exposureAmt_casino_resp = CasinoCalculationController::getCasinoExAmount('', $userId); /// nnnn 21-10-2021
+        $exposureAmt_casino =   $exposureAmt_casino_resp['exposer'];
         $expAmt = $exposureAmt;
         $betamount = $requestData['bet_amount'];
         $headerUserBalance = SELF::getBlanceAmount();
@@ -1914,7 +1921,7 @@ class PlayerController extends Controller
             }
         }
 
-        $finalExposerWithCurrentMatchSession = $exposureAmt + $deduct_expo_amt + $exposureAmt_session;
+        $finalExposerWithCurrentMatchSession = $exposureAmt + $deduct_expo_amt + $exposureAmt_session + $exposureAmt_casino;
 
 //        dd($finalExposerWithCurrentMatchSession,$exposureAmt_session);
 
@@ -3073,7 +3080,8 @@ class PlayerController extends Controller
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_type'] == 'BOOKMAKER') {
                         $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) / 100);
@@ -3215,7 +3223,7 @@ class PlayerController extends Controller
             //if($headerUserBalance < ($exposureAmt+$deduct_expo_amt))
             $currentSessionBetTotalExposer = $exposureAmt_SESSION;
 
-            $sessionBetTotalExposer = $exposureAmt + $exposureAmt_session + $currentSessionBetTotalExposer;
+            $sessionBetTotalExposer = $exposureAmt + $exposureAmt_session + $currentSessionBetTotalExposer + $exposureAmt_casino;
             // dd($deduct_expo_amt, $headerUserBalance, $exposureAmt, $exposureAmt_session, $exposureAmt_SESSION);
             if ($headerUserBalance < $sessionBetTotalExposer) {
                 $responce['status'] = 'false';

@@ -2538,7 +2538,7 @@ table {
 }
 
 .fancy-suspend-td .fancy-suspend span {
-    font-size: 12px;
+    font-size: 16px;
     line-height: 45px;
     font-weight: 400;
     display: block;
@@ -3374,7 +3374,7 @@ iframe html {
 
 .casino-video .casino_time {
     position: absolute;
-    right: 5px;
+    right: -20px;
     bottom: 5px;
     display: flex;
     display: -webkit-flex;

@@ -15,7 +15,7 @@ use Session;
 class CasinoCalculationController extends Controller
 {
 
-    public function getExAmountCasino($casino_name,$id){
+    public static function getExAmountCasinoForEachTeam($casino_name,$id){
         $casinoBets = CasinoBet::where("casino_name",$casino_name)->where('user_id',$id)->whereNull('winner')->get();
         $response = array();
         $arr = array();
@@ -24,41 +24,43 @@ class CasinoCalculationController extends Controller
             if ($bet['bet_side'] == 'lay') {
                 $profitAmt = $bet['exposureAmt'];
                 $profitAmt = ($profitAmt * (-1));
-                if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
-                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
+                if (!isset($response['ODDS'][$bet['team_sid']])) {
+                    $response['ODDS'][$bet['team_sid']] = $profitAmt;
                 } else {
-                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                    $response['ODDS'][$bet['team_sid']] += $profitAmt;
                 }
 
                 foreach ($extra as $team){
-                    if (!isset($response['ODDS'][$team]['ODDS_profitLost'])) {
-                        $response['ODDS'][$team]['ODDS_profitLost'] = $bet['stake_value'];
+                    if (!isset($response['ODDS'][$team])) {
+                        $response['ODDS'][$team] = $bet['stake_value'];
                     } else {
-                        $response['ODDS'][$team]['ODDS_profitLost'] += $bet['stake_value'];
+                        $response['ODDS'][$team] += $bet['stake_value'];
                     }
                 }
             }
             else {
                 $profitAmt = $bet['casino_profit']; ////nnn
                 $bet_amt = ($bet['stake_value'] * (-1));
-                if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
-                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
+                if (!isset($response['ODDS'][$bet['team_sid']])) {
+                    $response['ODDS'][$bet['team_sid']] = $profitAmt;
                 } else {
-                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                    $response['ODDS'][$bet['team_sid']] += $profitAmt;
                 }
 
                 foreach ($extra as $team){
-                    if (!isset($response['ODDS'][$team]['ODDS_profitLost'])) {
-                        $response['ODDS'][$team]['ODDS_profitLost'] = $bet_amt;
+                    if (!isset($response['ODDS'][$team])) {
+                        $response['ODDS'][$team] = $bet_amt;
                     } else {
-                        $response['ODDS'][$team]['ODDS_profitLost'] += $bet_amt;
+                        $response['ODDS'][$team] += $bet_amt;
                     }
                 }
             }
         }
+
+        return $response;
     }
 
-    public static function getExAmount($casino_name = '', $id = '')
+    public static function getCasinoExAmount($casino_name = '', $id = '')
     {
         if(empty($id)) {
             $getUserCheck = Session::get('playerUser');
@@ -72,25 +74,30 @@ class CasinoCalculationController extends Controller
         } else {
             $casinoBets = CasinoBet::where('user_id',$id)->where('user_id',$id)->groupBy('casino_name')->whereNull('winner')->get();
         }
-        $exAmtTot = 0;
+        $exAmtTot = [
+            'exposer' => 0,
+        ];
         foreach ($casinoBets as $bet) {
-            $exAmtArr = self::getExAmountCasino($bet->casino_name,$id);
+            $exAmtArr = self::getExAmountCasinoForEachTeam($bet->casino_name,$id);
 
             if (isset($exAmtArr['ODDS'])) {
                 $arr = array();
                 foreach ($exAmtArr['ODDS'] as $key => $profitLos) {
-                    if ($profitLos['ODDS_profitLost'] < 0) {
-                        $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                    if ($profitLos < 0) {
+                        $arr[abs($profitLos)] = abs($profitLos);
                     }
                 }
                 if (is_array($arr) && count($arr) > 0) {
-                    $exAmtTot += max($arr);
+                    $exAmtTot['exposer'] += max($arr);
                 }
-            }
 
+                $exAmtTot['ODDS'] = $exAmtArr['ODDS'];
+            }
         }
 
-        return (abs($exAmtTot));
+        $exAmtTot['exposer'] = abs($exAmtTot['exposer']);
+
+        return $exAmtTot;
     }
 
     public function casino_bet(Request $request)
@@ -119,7 +126,9 @@ class CasinoCalculationController extends Controller
             return response()->json(['status'=>false,'message'=>'Insufficient Balance!']);
         }
 
-        $currentRoundCasinoExposer = self::getExAmount($casino->casino_name,$getUser->id);
+        $casinoExposer = self::getCasinoExAmount($casino->casino_name,$getUser->id);
+
+//        dd($casinoExposer);
 
         $roundid = $request->roundid;
         $stake_value = $request->stake_value;
@@ -134,16 +143,78 @@ class CasinoCalculationController extends Controller
             $profit = $stake_value;
         }
 
-        if ($headerUserBalance < ($currentRoundCasinoExposer+$exposer)) {
+        $data = $request->all();
+        $other_team_name = array_filter(explode(",",$request->other_team_name));
+        unset($data['other_team_name']);
+        $betTeamIndex = array_search($request->team_sid, $other_team_name);
+        unset($other_team_name[$betTeamIndex]);
+
+        $currentRoundCasinoExposer = $casinoExposer['exposer'];
+        $oldExposer = $casinoExposer;
+
+//        dd($other_team_name);
+
+//        dd($casinoExposer);
+//        if($currentRoundCasinoExposer > 0)
+//        {
+            if ($request->bet_side == 'lay') {
+                $profitAmt = $exposer;
+                $profitAmt = -($profitAmt);
+
+//                dd($casinoExposer['ODDS'][$request->team_sid] , $profitAmt);
+
+                if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
+                    $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
+                } else {
+                    $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
+                }
+
+                foreach ($other_team_name as $team) {
+                    if (!isset($casinoExposer['ODDS'][$team])) {
+                        $casinoExposer['ODDS'][$team] = $stake_value;
+                    } else {
+                        $casinoExposer['ODDS'][$team] += $stake_value;
+                    }
+                }
+            } else {
+                $profitAmt = $profit;
+                $bet_amt = ($stake_value * (-1));
+                if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
+                    $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
+                } else {
+                    $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
+                }
+
+                foreach ($other_team_name as $team) {
+                    if (!isset($casinoExposer['ODDS'][$team])) {
+                        $casinoExposer['ODDS'][$team] = $bet_amt;
+                    } else {
+                        $casinoExposer['ODDS'][$team] += $bet_amt;
+                    }
+                }
+            }
+            $arr = [];
+            $casinoExposer['exposer'] = 0;
+            foreach ($casinoExposer['ODDS'] as $key => $profitLos) {
+                if ($profitLos < 0) {
+                    $arr[abs($profitLos)] = abs($profitLos);
+                }
+            }
+            if (is_array($arr) && count($arr) > 0) {
+                $casinoExposer['exposer'] += max($arr);
+            }
+
+            $currentRoundCasinoExposer = $casinoExposer['exposer'];
+//        }else{
+//            $currentRoundCasinoExposer = $exposer;
+//        }
+
+//        dd($headerUserBalance,  $currentRoundCasinoExposer, $exposer, $oldExposer, $casinoExposer);
+
+        if ($headerUserBalance < $currentRoundCasinoExposer) {
             return response()->json(['status'=>false,'message'=>'Insufficient Balance!!']);
         }
 
-        $data = $request->all();
-        unset($data['other_team_name']);
-        $other_team_name = array_filter(explode(",",$request->other_team_name));
-
-        $betTeamIndex = array_search($request->team_name, $other_team_name);
-        unset($other_team_name[$betTeamIndex]);
 
         $data['odds_value'] = $odds_value;
         $data['casino_profit'] = $profit;
@@ -154,20 +225,28 @@ class CasinoCalculationController extends Controller
         $data['exposureAmt'] = $exposer;
         $data['extra'] = json_encode($other_team_name);
         if(CasinoBet::create($data)){
-            $upd = CreditReference::find($depTot->id);
-            $upd->exposure = $upd->exposure + $exposer;
-            $upd->available_balance_for_D_W = ($upd->available_balance_for_D_W - $exposer);
-            $upd->update();
+
+            $playerController = new PlayerController();
+            $playerController->SaveBalance($exposer);
+
+//            $upd = CreditReference::find($depTot->id);
+//            $upd->exposure = $upd->exposure + $exposer;
+//            $upd->available_balance_for_D_W = ($upd->available_balance_for_D_W - $exposer);
+//            $upd->update();
         }
 
         $bets = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->get();
         $betHtml = $this->renderBetsHtml($bets);
 
-        $totalProfitPlayers =  CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->groupBy('team_name')->get();
-        $playerProfit = [];
-        foreach ($totalProfitPlayers as $team){
-            $playerProfit[$team->team_sid] = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->where('team_name',$team->team_name)->whereNull('winner')->sum('casino_profit');
-        }
+//        $totalProfitPlayers =  CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->groupBy('team_name')->get();
+//        $playerProfit = [];
+//        foreach ($totalProfitPlayers as $team){
+//            $playerProfit[$team->team_sid] = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->where('team_name',$team->team_name)->whereNull('winner')->sum('casino_profit');
+//        }
+
+        $casinoExposerWithNewBet = self::getCasinoExAmount($casino->casino_name,$getUser->id);
+
+        $playerProfit = $casinoExposerWithNewBet['ODDS'];
 
         return response()->json(array('status' => true,'message'=>'Bet has been placed and matched successfully', 'playerProfit' => $playerProfit,'betHtml'=>$betHtml));
 
@@ -254,6 +333,57 @@ class CasinoCalculationController extends Controller
                     }else if($resultArray[$bet->roundid] == 0){
                         $winner = 'Tie';
                     }
+                }else if($bet->casino_name == '20poker') {
+                    if ($resultArray[$bet->roundid] == 11){
+                        $winner = 'Player A';
+                    }else if($resultArray[$bet->roundid] == 21){
+                        $winner = 'Player B';
+                    }
+                }else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2') {
+                    if ($resultArray[$bet->roundid] == 1){
+                        $winner = 'Player A';
+                    }else{
+                        $winner = 'Player B';
+                    }
+                }else if($bet->casino_name == 'aaa') {
+                    if ($resultArray[$bet->roundid] == 1){
+                        $winner = 'Amar';
+                    }else if($resultArray[$bet->roundid] == 2){
+                        $winner = 'Akbar';
+                    }else if($resultArray[$bet->roundid] == 3){
+                        $winner = 'Anthony';
+                    }
+                }else if($bet->casino_name == 'bollywood') {
+                    if ($resultArray[$bet->roundid] == 1){
+                        $winner = 'DON';
+                    }else if($resultArray[$bet->roundid] == 2){
+                        $winner = 'Amar Akbar Anthony';
+                    }else if($resultArray[$bet->roundid] == 3){
+                        $winner = 'Sahib Bibi Aur Ghulam';
+                    }else if($resultArray[$bet->roundid] == 4){
+                        $winner = 'Dharam Veer';
+                    }else if($resultArray[$bet->roundid] == 5){
+                        $winner = 'Kis KisKo Pyaar Karoon';
+                    }else if($resultArray[$bet->roundid] == 6){
+                        $winner = 'Ghulam';
+                    }
+                }else if($bet->casino_name == '32a' || $bet->casino_name == '32b') {
+                    if ($resultArray[$bet->roundid] == 1){
+                        $winner = 'Player 8';
+                    }else if($resultArray[$bet->roundid] == 2){
+                        $winner = 'Player 9';
+                    }else if($resultArray[$bet->roundid] == 3){
+                        $winner = 'Player 10';
+                    }else if($resultArray[$bet->roundid] == 4){
+                        $winner = 'Player 11';
+                    }
+                }
+                else if($bet->casino_name == '1daydt') {
+                    if ($resultArray[$bet->roundid] == 1){
+                        $winner = 'Dragon';
+                    }else if($resultArray[$bet->roundid] == 2){
+                        $winner = 'Tiger';
+                    }
                 }
                 $profit = 0;
                 $exposer = $bet->stake_value;
@@ -297,11 +427,9 @@ class CasinoCalculationController extends Controller
                 ]);
 
                 $admin_loss+=$profit;
-            }else{
+            }
+            else{
                 $upd->remain_bal  =  $upd->remain_bal - $exposer;
-                if($winner == 'Tie' && ($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b')){
-
-                }
 
                 UsersAccount::create([
                     'user_id' => $bet->user_id,
@@ -425,7 +553,7 @@ class CasinoCalculationController extends Controller
                     }
 
                     $html.='</div></div>';
-            }else if($bet->casino_name == '20dt' || $bet->casino_name == 'dt202'){
+            }else if($bet->casino_name == '20dt' || $bet->casino_name == 'dt202' || $bet->casino_name == '1daydt'){
                     $html.= '<div class="row">
                             <div class="col br1 text-center playera"><h4>Dragon</h4>
                                 <div class="result-image">
@@ -449,7 +577,7 @@ class CasinoCalculationController extends Controller
                         $html.='<div class="row"><div class="col text-center m-t">WINNER: <b>Tie</b></div></div>';
                     }
             }
-            else if($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b'){
+            else if($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b' || $bet->casino_name == 'aaa' || $bet->casino_name == 'bollywood'){
                 $html.= '<div class="row">
                             <div class="col br1 text-center playera"><h4>'.$bet->winner.'</h4>
                                 <div class="result-image">
@@ -496,7 +624,7 @@ class CasinoCalculationController extends Controller
                         $html.='<div class="row"><div class="col text-center m-t">WINNER: <b>Tie</b></div></div>';
                     }
 
-            }else if($bet->casino_name == 'ab2'){
+            }else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2'){
 
                 $html1 = '';
                 foreach($cards[0] as $card){
@@ -520,6 +648,52 @@ class CasinoCalculationController extends Controller
                         $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
                     }
 
+                    $html.='</div></div>';
+            }
+            else if($bet->casino_name == '32a' || $bet->casino_name == '32b'){
+
+                $html1 = '';
+                foreach($cards[0] as $card){
+                    $html1.= '<img class="mr-2" src="'.asset('asset/front/img/cards')."/".$card.'.png">';
+                }
+                $html2 = '';
+                foreach($cards[1] as $card){
+                    $html2.= '<img class="mr-2" src="'.asset('asset/front/img/cards')."/".$card.'.png">';
+                }
+                $html3 = '';
+                foreach($cards[2] as $card){
+                    $html3.= '<img class="mr-2" src="'.asset('asset/front/img/cards')."/".$card.'.png">';
+                }
+                $html4 = '';
+                foreach($cards[3] as $card){
+                    $html4.= '<img class="mr-2" src="'.asset('asset/front/img/cards')."/".$card.'.png">';
+                }
+
+                $html.= '<div class="row">
+                            <div class="col-12 br1 text-center playera"><h4>Player 8</h4>
+                                <div class="result-image">'.$html1.'</div>';
+                    if($bet->winner == 'Player 8') {
+                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                    }
+                    $html.='</div>
+                            <div class="col-12 text-center playerb"><h4>Player 9</h4>
+                                <div class="result-image">'.$html2.'</div>';
+                    if($bet->winner == 'Player 9') {
+                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                    }
+                $html.='</div>
+                            <div class="col-12 text-center playerb"><h4>Player 10</h4>
+                                <div class="result-image">'.$html2.'</div>';
+                if($bet->winner == 'Player 10') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
+
+                $html.='</div>
+                            <div class="col-12 text-center playerb"><h4>Player 11</h4>
+                                <div class="result-image">'.$html2.'</div>';
+                if($bet->winner == 'Player 11') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
                     $html.='</div></div>';
             }
 

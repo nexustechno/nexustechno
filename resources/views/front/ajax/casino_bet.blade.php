@@ -1,7 +1,7 @@
 @foreach($bets as $bet)
-    <div class="betslip_box light-blue-bg-1 casino-bet-item" id="backbet">
+    <div class="betslip_box @if($bet->bet_side=='lay'){{'light-pink-bg-2'}}@else{{'light-blue-bg-1'}}@endif casino-bet-item" id="backbet">
         <div class="betn">
-            <span class="slip_type lightblue-bg2 text-uppercase">{{$bet->bet_side}}</span>
+            <span class="slip_type @if($bet->bet_side=='lay'){{'lightpink-bg2'}}@else{{'lightblue-bg2'}}@endif text-uppercase">{{$bet->bet_side}}</span>
             <span class="shortamount">{{ $bet->team_name }}</span>
         </div>
         <div class="col-odd text-color-blue-2 text-center">{{$bet->odds_value}}</div>

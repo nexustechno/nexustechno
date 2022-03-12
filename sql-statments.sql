@@ -20,3 +20,6 @@ ALTER TABLE `casino_bet` CHANGE `winner` `winner` VARCHAR(100) CHARACTER SET utf
 
 ALTER TABLE `users_account` ADD `casino_id` INT NOT NULL AFTER `match_id`;
 ALTER TABLE `casino_bet` ADD `extra` TEXT NULL AFTER `winner`;
+ALTER TABLE `casino_bet` CHANGE `team_name` `team_name` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
+ALTER TABLE `casino_bet` CHANGE `winner` `winner` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+

@@ -1,9 +1,34 @@
 @extends('layouts.front_layout')
 @push('page_css')
     <link href="{{ asset('asset/front/css/countDown.min.css') }}" rel="stylesheet">
-    <style>
+    <style type="text/css">
         body {
             overflow: hidden;
+        }
+        .betloaderimage1{
+            top: 50%;
+            height: 135px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgb(0 0 0 / 50%);
+            padding-top: 30px;
+            z-index: 50;
+            position: absolute;
+            left: 50%;
+            width: 190px;
+            margin-left: -95px;
+        }
+
+        .loading1 img {
+            background-position: -42px -365px;
+            height: 51px;
+            width: 51px;
+        }
+
+        .loading1 li{
+            list-style: none;
+            text-align: center;
+            font-size: 11px;
         }
     </style>
 @endpush
@@ -28,16 +53,24 @@
                     <div id="site_bet_loading" class="betloaderimage" style="display: none;"></div>
                     <div class="collapse show" id="collapseExample">
                         <div class="card card-body showForm" id="betslip-block" style="display: none;">
+                            <div class="betloaderimage1 site_bet_loading1 loader-style1" style="display: none" >
+                                <ul class="loading1">
+                                    <li>
+                                        <img src="/asset/front/img/loaderajaxbet.gif">
+                                    </li>
+                                    <li>Loading...</li>
+                                </ul>
+                            </div>
                             <form class="">
                                 <div class="casinolay_bettitle black-bg-2 text-color-white">
                                     <span>Place Bet</span>
                                     <span class="float-right casinomin_max">Range:<span>{{$casino->min_casino}}</span>-<span>{{$casino->max_casino}}K</span></span>
                                 </div>
                                 <div class="casinoplay-betheader light-grey-bg-4">
-                                    <div>(Bet for)</div>
+                                    <div><span class="bet-type-text text-uppercase"></span> (Bet for)</div>
                                     <div>Odds</div>
                                     <div>Stake</div>
-                                    <div>Profit</div>
+                                    <div><span class="bet-type-calculation-header-text">Profit</span></div>
                                 </div>
                                 <div class="casinoplay-box blue-dark-bg">
                                     <div class="casinoplay_betinfo">
@@ -173,14 +206,25 @@
         }
 
         function cancelBet() {
+
             if ($(window).width() < 990) {
                 $(".mobile-casino-bet-tr .casino_right_side form").remove();
             }else {
+                $(".showForm .site_bet_loading1").hide();
                 $(".showForm").hide();
+                $('.showForm form').show();
             }
         }
 
         function opnForm(vl) {
+
+            $('.input-stake').val('');
+            $('.casinoplay-box .other_team_name').val('');
+            $('.casinoplay-box .team_name').html('');
+            $('.casinoplay-box .team_sid').val('');
+            $('.casinoplay-box .bet_side').val('');
+            $('.casinoplay-box .bet-type-text').html('');
+
             var value = $(vl).attr("data-val");
             if(value <= 0){
                 return false;
@@ -209,7 +253,18 @@
                 $('.casinoplay-box .bet_side').val(bet_side);
             }
 
+            $('.bet-type-text').html(bet_side);
             $('.casinoplay-box .other_team_name').val(other_team_name);
+
+            $(".casinoplay-box").removeClass('cyan-bg-light');
+            $(".casinoplay-box").removeClass('pink-bg-light');
+            if(bet_side == 'lay'){
+                $(".casinoplay-box").addClass('pink-bg-light');
+                $(".bet-type-calculation-header-text").html('Liability');
+            }else{
+                $(".casinoplay-box").addClass('cyan-bg-light');
+                $(".bet-type-calculation-header-text").html('Profit');
+            }
         }
 
         $("body").on('click','.casino_odds',function () {
@@ -247,10 +302,15 @@
                         other_team_name: other_team_name,
                     },
                     beforeSend: function () {
-                        $('#site_bet_loading1').show();
+                        if ($(window).width() < 990) {
+                            $("#mobile-casino-bet-td-"+team_sid+" form").hide();
+                            $("#mobile-casino-bet-td-"+team_sid+" .site_bet_loading1").show();
+                        }else{
+                            $('.showForm form').hide();
+                            $('.showForm .site_bet_loading1').show();
+                        }
                     },
                     complete: function () {
-                        $('#site_bet_loading1').hide();
                     },
                     success: function (data) {
                         if (data.status == true) {
@@ -258,7 +318,17 @@
                             cancelBet();
 
                             for (const property in data.playerProfit) {
-                                $("#"+property+"-profit").html(data.playerProfit[property]);
+
+                                $("#" + property + "-profit").removeClass('towin text-color-green');
+                                $("#" + property + "-profit").removeClass('tolose text-color-red');
+
+                                if(data.playerProfit[property] > 0) {
+                                    $("#" + property + "-profit").addClass('towin text-color-green');
+                                }else if(data.playerProfit[property] < 0) {
+                                    $("#" + property + "-profit").addClass('tolose text-color-red');
+                                }
+
+                                $("#" + property + "-profit").html(data.playerProfit[property]);
                             }
 
                             // if ($(window).width() < 990) {

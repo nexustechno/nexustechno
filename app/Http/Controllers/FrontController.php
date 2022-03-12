@@ -114,11 +114,17 @@ class FrontController extends Controller
 
         $bets = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->get();
 
+//        $playerProfit = [];
+//        $totalProfitPlayers =  CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->groupBy('team_name')->get();
+//        foreach ($totalProfitPlayers as $team){
+//            $playerProfit[$team->team_sid] = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->where('team_name',$team->team_name)->whereNull('winner')->sum('casino_profit');
+//        }
+
+        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name,$getUser->id);
 
         $playerProfit = [];
-        $totalProfitPlayers =  CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->groupBy('team_name')->get();
-        foreach ($totalProfitPlayers as $team){
-            $playerProfit[$team->team_sid] = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->where('team_name',$team->team_name)->whereNull('winner')->sum('casino_profit');
+        if(isset($casinoExposerWithNewBet['ODDS'])) {
+            $playerProfit = $casinoExposerWithNewBet['ODDS'];
         }
 
         return view('front.casinoDetail', compact('casino','bets','playerProfit'));

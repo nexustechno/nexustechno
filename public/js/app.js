@@ -3646,6 +3646,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3654,6 +3696,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      alphabets: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
       data: {},
       results: {},
       roundId: 0,
@@ -3661,7 +3704,8 @@ __webpack_require__.r(__webpack_exports__);
       cards: [],
       teams: [],
       team_name: '',
-      autotime: null
+      autotime: null,
+      lay_enable: false
     };
   },
   props: ['casino', 'basepath', 'playerprofit', 'today'],
@@ -3670,6 +3714,7 @@ __webpack_require__.r(__webpack_exports__);
 
     this.autotime = this.today;
     window.Echo.channel('casino-detail').listen('.' + this.casino.casino_name, function (data) {
+      // console.log("data: ",data);
       _this.teams = [];
       _this.cards = [];
       var playerACards = '';
@@ -3749,18 +3794,18 @@ __webpack_require__.r(__webpack_exports__);
         _this.teams.push(playerA);
 
         _this.teams.push(playerB);
-      } else if (_this.casino.casino_name == 'ab2') {
+      } else if (_this.casino.casino_name == 'ab1' || _this.casino.casino_name == 'ab2') {
         var playerA = _this.data.t2[0];
         playerA.nation = "Player A";
-        playerA.b1 = 2;
+        playerA.b1 = "2.00";
         playerA.bs1 = 0;
-        playerA.l1 = 2;
+        playerA.l1 = "2.00";
         playerA.ls1 = 0;
         var playerB = _this.data.t2[3];
         playerB.nation = "Player B";
-        playerB.b1 = 2;
+        playerB.b1 = "2.00";
         playerB.bs1 = 0;
-        playerB.l1 = 2;
+        playerB.l1 = "2.00";
         playerB.ls1 = 0;
 
         _this.teams.push(playerA);
@@ -3776,16 +3821,44 @@ __webpack_require__.r(__webpack_exports__);
         _this.teams.push(_this.data.t2[1]);
 
         _this.teams.push(_this.data.t2[2]);
+
+        _this.lay_enable = true;
+      } else if (_this.casino.casino_name == 'bollywood') {
+        _this.teams.push(_this.data.t2[0]);
+
+        _this.teams.push(_this.data.t2[1]);
+
+        _this.teams.push(_this.data.t2[2]);
+
+        _this.teams.push(_this.data.t2[3]);
+
+        _this.teams.push(_this.data.t2[4]);
+
+        _this.teams.push(_this.data.t2[5]);
+
+        _this.lay_enable = true;
+      } else if (_this.casino.casino_name == '32a' || _this.casino.casino_name == '32b') {
+        _this.teams.push(_this.data.t2[0]);
+
+        _this.teams.push(_this.data.t2[1]);
+
+        _this.teams.push(_this.data.t2[2]);
+
+        _this.teams.push(_this.data.t2[3]);
+
+        _this.lay_enable = true;
+      } else if (_this.casino.casino_name == '1daydt') {
+        _this.teams.push(_this.data.t2[0]);
+
+        _this.teams.push(_this.data.t2[1]);
+
+        _this.lay_enable = true;
       }
 
       var team_name = '';
 
       for (var t = 0; t < _this.teams.length; t++) {
-        if (_this.teams[t].nat != undefined) {
-          team_name += _this.teams[t].nat + ",";
-        } else if (_this.teams[t].nation != undefined) {
-          team_name += _this.teams[t].nation + ",";
-        }
+        team_name += _this.teams[t].sid + ",";
       }
 
       _this.team_name = team_name;
@@ -3794,11 +3867,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.cards.push([_this.data.t1[0].C1, _this.data.t1[0].C2, _this.data.t1[0].C3]);
 
         _this.cards.push([_this.data.t1[0].C4, _this.data.t1[0].C5, _this.data.t1[0].C6]);
-      } else if (_this.casino.casino_name == '20dt' && _this.data.t1[0].C1 != undefined && _this.data.t1[0].C2 != undefined || _this.casino.casino_name == 'dt202' && _this.data.t1[0].C1 != undefined && _this.data.t1[0].C2 != undefined) {
+      } else if (_this.casino.casino_name == '20dt' && _this.data.t1[0].C1 != undefined && _this.data.t1[0].C2 != undefined || _this.casino.casino_name == 'dt202' && _this.data.t1[0].C1 != undefined && _this.data.t1[0].C2 != undefined || _this.casino.casino_name == '1daydt' && _this.data.t1[0].C1 != undefined) {
         _this.cards.push([_this.data.t1[0].C1]);
 
         _this.cards.push([_this.data.t1[0].C2]);
-      } else if (_this.casino.casino_name == 'l7a' && _this.data.t1[0].C1 != undefined || _this.casino.casino_name == 'l7b' && _this.data.t1[0].C1 != undefined) {
+      } else if (_this.casino.casino_name == 'l7a' && _this.data.t1[0].C1 != undefined || _this.casino.casino_name == 'l7b' && _this.data.t1[0].C1 != undefined || _this.casino.casino_name == 'aaa' && _this.data.t1[0].C1 != undefined || _this.casino.casino_name == 'bollywood' && _this.data.t1[0].C1 != undefined) {
         _this.cards.push([_this.data.t1[0].C1]);
       } else if (_this.casino.casino_name == '20poker') {
         _this.cards.push([_this.data.t1[0].C1, _this.data.t1[0].C2]);
@@ -3806,7 +3879,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.cards.push([_this.data.t1[0].C3, _this.data.t1[0].C4]);
 
         _this.cards.push([_this.data.t1[0].C5, _this.data.t1[0].C6, _this.data.t1[0].C7, _this.data.t1[0].C8, _this.data.t1[0].C9]);
-      } else if (_this.casino.casino_name == 'ab2') {
+      } else if (_this.casino.casino_name == 'ab1' || _this.casino.casino_name == 'ab2') {
         var playersCardsString = _this.data.t1[0].Cards;
         var playersCards = playersCardsString.split(",");
         var playerCardAArray = [];
@@ -3827,9 +3900,45 @@ __webpack_require__.r(__webpack_exports__);
         _this.cards.push(playerCardBArray);
 
         _this.cards.push([playersCards[0]]);
+      } else if (_this.casino.casino_name == '32a' || _this.casino.casino_name == '32b') {
+        var playersCardsString = _this.data.t1[0].desc;
+        var playersCards = playersCardsString.split(",");
+        var playerCardAArray = [];
+        var playerCardBArray = [];
+        var playerCardCArray = [];
+        var playerCardDArray = [];
+        var j = 1;
+
+        for (var x = 0; x < playersCards.length; x++) {
+          if (playersCards[x] != 1) {
+            if (j == 1) {
+              playerCardAArray.push(playersCards[x]);
+            } else if (j == 2) {
+              playerCardBArray.push(playersCards[x]);
+            } else if (j == 3) {
+              playerCardCArray.push(playersCards[x]);
+            } else if (j == 4) {
+              playerCardDArray.push(playersCards[x]);
+            }
+          }
+
+          if (j == 4) {
+            j = 1;
+          } else {
+            j++;
+          }
+        }
+
+        _this.cards.push(playerCardAArray);
+
+        _this.cards.push(playerCardBArray);
+
+        _this.cards.push(playerCardCArray);
+
+        _this.cards.push(playerCardDArray);
       }
 
-      if (_this.data.t2[0].gstatus == 0 || _this.data.t2[0].gstatus == 'SUSPENDED' || _this.data.t2[0].gstatus == 'CLOSED') {
+      if (_this.teams.length > 0 && (_this.teams[0].gstatus == 0 || _this.teams[0].gstatus == 'SUSPENDED' || _this.teams[0].gstatus == 'CLOSED')) {
         $(".showForm").hide();
       }
 
@@ -107415,7 +107524,8 @@ var render = function () {
               : _vm._e(),
             _vm._v(" "),
             _vm.casino.casino_name == "20dt" ||
-            _vm.casino.casino_name == "dt202"
+            _vm.casino.casino_name == "dt202" ||
+            _vm.casino.casino_name == "1daydt"
               ? _c("div", { staticClass: "casinocards-container" }, [
                   _c(
                     "span",
@@ -107465,7 +107575,10 @@ var render = function () {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.casino.casino_name == "l7a" || _vm.casino.casino_name == "l7b"
+            _vm.casino.casino_name == "l7a" ||
+            _vm.casino.casino_name == "l7b" ||
+            _vm.casino.casino_name == "aaa" ||
+            _vm.casino.casino_name == "bollywood"
               ? _c("div", { staticClass: "casinocards-container" }, [
                   _c(
                     "span",
@@ -107565,7 +107678,7 @@ var render = function () {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.casino.casino_name == "ab2"
+            _vm.casino.casino_name == "ab1" || _vm.casino.casino_name == "ab2"
               ? _c("div", { staticClass: "casinocards-container" }, [
                   _c("span", {
                     staticClass: "text-color-white text-uppercase",
@@ -107653,6 +107766,158 @@ var render = function () {
                     : _vm._e(),
                 ])
               : _vm._e(),
+            _vm._v(" "),
+            _vm.casino.casino_name == "32a" || _vm.casino.casino_name == "32b"
+              ? _c("div", { staticClass: "casinocards-container" }, [
+                  _c(
+                    "span",
+                    { staticClass: "text-color-white text-uppercase" },
+                    [
+                      _vm._v("Player 8 "),
+                      _c(
+                        "span",
+                        { staticClass: "text-color-green font-weight-bold" },
+                        [_vm._v("(" + _vm._s(_vm.data.t1[0].C1) + ")")]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm.cards[0].length > 0
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "card_con",
+                          attrs: { id: "casinoCarda" },
+                        },
+                        _vm._l(_vm.cards[0], function (card, index) {
+                          return _c(
+                            "span",
+                            { key: index, staticClass: "text-color-white" },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: _vm.basepath + "/" + card + ".png",
+                                },
+                              }),
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { staticClass: "text-color-white text-uppercase" },
+                    [
+                      _vm._v("Player 9 "),
+                      _c(
+                        "span",
+                        { staticClass: "text-color-green font-weight-bold" },
+                        [_vm._v("(" + _vm._s(_vm.data.t1[0].C2) + ")")]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm.cards[1].length > 0
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "card_con",
+                          attrs: { id: "casinoCardb" },
+                        },
+                        _vm._l(_vm.cards[1], function (card, index) {
+                          return _c(
+                            "span",
+                            { key: index, staticClass: "text-color-white" },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: _vm.basepath + "/" + card + ".png",
+                                },
+                              }),
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { staticClass: "text-color-white text-uppercase" },
+                    [
+                      _vm._v("Player 10 "),
+                      _c(
+                        "span",
+                        { staticClass: "text-color-green font-weight-bold" },
+                        [_vm._v("(" + _vm._s(_vm.data.t1[0].C3) + ")")]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm.cards[2].length > 0
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "card_con",
+                          attrs: { id: "casinoCardb" },
+                        },
+                        _vm._l(_vm.cards[2], function (card, index) {
+                          return _c(
+                            "span",
+                            { key: index, staticClass: "text-color-white" },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: _vm.basepath + "/" + card + ".png",
+                                },
+                              }),
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { staticClass: "text-color-white text-uppercase" },
+                    [
+                      _vm._v("Player 11 "),
+                      _c(
+                        "span",
+                        { staticClass: "text-color-green font-weight-bold" },
+                        [_vm._v("(" + _vm._s(_vm.data.t1[0].C4) + ")")]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm.cards[3].length > 0
+                    ? _c(
+                        "div",
+                        {
+                          staticClass: "card_con",
+                          attrs: { id: "casinoCardb" },
+                        },
+                        _vm._l(_vm.cards[3], function (card, index) {
+                          return _c(
+                            "span",
+                            { key: index, staticClass: "text-color-white" },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: _vm.basepath + "/" + card + ".png",
+                                },
+                              }),
+                            ]
+                          )
+                        }),
+                        0
+                      )
+                    : _vm._e(),
+                ])
+              : _vm._e(),
           ]),
           _vm._v(" "),
           _vm.autotime !== null
@@ -107721,7 +107986,29 @@ var render = function () {
                               ]
                             ),
                             _vm._v(" "),
-                            _vm._m(2, true),
+                            _c(
+                              "td",
+                              {
+                                staticClass: "fancy-suspend-td",
+                                staticStyle: { width: "20%" },
+                                attrs: { colspan: "2" },
+                              },
+                              [
+                                _vm.lay_enable == false ||
+                                team.gstatus == 0 ||
+                                team.gstatus == "SUSPENDED" ||
+                                team.gstatus == "CLOSED"
+                                  ? _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "fancy-suspend black-bg-5 text-color-white",
+                                      },
+                                      [_vm._m(2, true)]
+                                    )
+                                  : _vm._e(),
+                              ]
+                            ),
                           ]
                         ),
                         _vm._v(" "),
@@ -107734,16 +108021,55 @@ var render = function () {
                           [
                             _c("th", { staticStyle: { width: "60%" } }, [
                               team.nation != undefined
-                                ? _c("p", [_vm._v(_vm._s(team.nation))])
+                                ? _c("p", [
+                                    _vm.casino.casino_name == "aaa" ||
+                                    _vm.casino.casino_name == "bollywood"
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "text-color-red font-weight-bold pr-1",
+                                          },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.alphabets[index]) + "."
+                                            ),
+                                          ]
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(" " + _vm._s(team.nation)),
+                                  ])
                                 : team.nat != undefined
-                                ? _c("p", [_vm._v(_vm._s(team.nat))])
+                                ? _c("p", [
+                                    _vm.casino.casino_name == "aaa" ||
+                                    _vm.casino.casino_name == "bollywood"
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "text-color-red font-weight-bold pr-1",
+                                          },
+                                          [
+                                            _vm._v(
+                                              _vm._s(_vm.alphabets[index]) + "."
+                                            ),
+                                          ]
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(_vm._s(team.nat)),
+                                  ])
                                 : _vm._e(),
                               _vm._v(" "),
                               _vm.playerprofit[team.sid] != undefined
                                 ? _c(
                                     "span",
                                     {
-                                      staticClass: "towin text-color-green",
+                                      class:
+                                        _vm.playerprofit[team.sid] !=
+                                          undefined &&
+                                        _vm.playerprofit[team.sid] > 0
+                                          ? "towin text-color-green"
+                                          : "tolose text-color-red",
                                       attrs: { id: team.sid + "-profit" },
                                     },
                                     [_vm._v(_vm._s(_vm.playerprofit[team.sid]))]
@@ -107761,7 +108087,7 @@ var render = function () {
                             _c(
                               "td",
                               {
-                                staticClass: "back-1 suspended",
+                                staticClass: "cyan-bg suspended",
                                 staticStyle: { width: "20%" },
                                 attrs: { id: "back_1", colspan: "2" },
                               },
@@ -107821,7 +108147,7 @@ var render = function () {
                             _c(
                               "td",
                               {
-                                staticClass: "back-1 suspended",
+                                staticClass: "pink-bg suspended",
                                 staticStyle: { width: "20%" },
                                 attrs: { id: "back_1", colspan: "2" },
                               },
@@ -107956,7 +108282,8 @@ var render = function () {
               : _vm._e(),
             _vm._v(" "),
             _vm.casino.casino_name == "20dt" ||
-            _vm.casino.casino_name == "dt202"
+            _vm.casino.casino_name == "dt202" ||
+            _vm.casino.casino_name == "1daydt"
               ? _c(
                   "p",
                   { staticClass: "text-right", attrs: { id: "last-result" } },
@@ -108123,7 +108450,7 @@ var render = function () {
                 )
               : _vm._e(),
             _vm._v(" "),
-            _vm.casino.casino_name == "ab2"
+            _vm.casino.casino_name == "ab1" || _vm.casino.casino_name == "ab2"
               ? _c(
                   "p",
                   { staticClass: "text-right", attrs: { id: "last-result" } },
@@ -108228,6 +108555,237 @@ var render = function () {
                   2
                 )
               : _vm._e(),
+            _vm._v(" "),
+            _vm.casino.casino_name == "bollywood"
+              ? _c(
+                  "p",
+                  { staticClass: "text-right", attrs: { id: "last-result" } },
+                  [
+                    _vm._l(_vm.results, function (result, index) {
+                      return [
+                        result.result == 6
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("F")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 5
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("E")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 4
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("D")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 3
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("C")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 2
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("B")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 1
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("A")]
+                            )
+                          : _vm._e(),
+                      ]
+                    }),
+                  ],
+                  2
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.casino.casino_name == "32a" || _vm.casino.casino_name == "32b"
+              ? _c(
+                  "p",
+                  { staticClass: "text-right", attrs: { id: "last-result" } },
+                  [
+                    _vm._l(_vm.results, function (result, index) {
+                      return [
+                        result.result == 4
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("11")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 3
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("10")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 2
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("9")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 1
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("8")]
+                            )
+                          : _vm._e(),
+                      ]
+                    }),
+                  ],
+                  2
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.casino.casino_name == "1daydt"
+              ? _c(
+                  "p",
+                  { staticClass: "text-right", attrs: { id: "last-result" } },
+                  [
+                    _vm._l(_vm.results, function (result, index) {
+                      return [
+                        result.result == 2
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("T")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 1
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("D")]
+                            )
+                          : _vm._e(),
+                      ]
+                    }),
+                  ],
+                  2
+                )
+              : _vm._e(),
           ]),
         ]),
       ])
@@ -108242,14 +108800,14 @@ var staticRenderFns = [
       _c("td", { staticStyle: { width: "60%" } }),
       _vm._v(" "),
       _c("td", { staticStyle: { width: "20%" }, attrs: { colspan: "2" } }, [
-        _c("a", { staticClass: "back-allcasino", attrs: { id: "backAll" } }, [
-          _c("span", [_vm._v("Back")]),
+        _c("a", { staticClass: "cyan-bg", attrs: { id: "backAll" } }, [
+          _c("span", { staticClass: "text-uppercase" }, [_vm._v("Back")]),
         ]),
       ]),
       _vm._v(" "),
       _c("td", { staticStyle: { width: "20%" }, attrs: { colspan: "2" } }, [
-        _c("a", { staticClass: "back-allcasino", attrs: { id: "backAll" } }, [
-          _c("span", [_vm._v("Lay")]),
+        _c("a", { staticClass: "pink-bg", attrs: { id: "backAll" } }, [
+          _c("span", { staticClass: "text-uppercase" }, [_vm._v("Lay")]),
         ]),
       ]),
     ])
@@ -108266,28 +108824,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "td",
-      {
-        staticClass: "fancy-suspend-td",
-        staticStyle: { width: "20%" },
-        attrs: { colspan: "2" },
-      },
-      [
-        _c(
-          "div",
-          { staticClass: "fancy-suspend black-bg-5 text-color-white" },
-          [
-            _c("span", [
-              _c("i", {
-                staticClass: "fa fa-lock",
-                attrs: { "aria-hidden": "true" },
-              }),
-            ]),
-          ]
-        ),
-      ]
-    )
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-lock", attrs: { "aria-hidden": "true" } }),
+    ])
   },
   function () {
     var _vm = this
