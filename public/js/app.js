@@ -3639,6 +3639,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3653,6 +3660,7 @@ __webpack_require__.r(__webpack_exports__);
       fullRoundId: 0,
       cards: [],
       teams: [],
+      team_name: '',
       autotime: null
     };
   },
@@ -3770,6 +3778,18 @@ __webpack_require__.r(__webpack_exports__);
         _this.teams.push(_this.data.t2[2]);
       }
 
+      var team_name = '';
+
+      for (var t = 0; t < _this.teams.length; t++) {
+        if (_this.teams[t].nat != undefined) {
+          team_name += _this.teams[t].nat + ",";
+        } else if (_this.teams[t].nation != undefined) {
+          team_name += _this.teams[t].nation + ",";
+        }
+      }
+
+      _this.team_name = team_name;
+
       if (_this.casino.casino_name == 'teen20' && _this.data.t1[0].C1 != undefined && _this.data.t1[0].C2 != undefined && _this.data.t1[0].C3 != undefined && _this.data.t1[0].C4 != undefined && _this.data.t1[0].C5 != undefined && _this.data.t1[0].C6 != undefined) {
         _this.cards.push([_this.data.t1[0].C1, _this.data.t1[0].C2, _this.data.t1[0].C3]);
 
@@ -3809,7 +3829,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.cards.push([playersCards[0]]);
       }
 
-      if (_this.data.t2[0].gstatus == 0) {
+      if (_this.data.t2[0].gstatus == 0 || _this.data.t2[0].gstatus == 'SUSPENDED' || _this.data.t2[0].gstatus == 'CLOSED') {
         $(".showForm").hide();
       }
 
@@ -3885,16 +3905,21 @@ __webpack_require__.r(__webpack_exports__);
         day: '2-digit'
       }).format(date);
       var h = new Intl.DateTimeFormat('en', {
-        hour: 'numeric'
+        hour: 'numeric',
+        hour12: false
       }).format(date);
       var m = new Intl.DateTimeFormat('en', {
-        minute: 'numeric'
+        minute: '2-digit'
       }).format(date);
       var s = new Intl.DateTimeFormat('en', {
         second: 'numeric'
       }).format(date);
-      var dateime = "".concat(ye2, "-").concat(mo2, "-").concat(da2, " ").concat(h, ":").concat(m, ":").concat(s);
-      console.log("dateime: ", dateime); // this.autotime = dateime;
+      var dateime = "".concat(ye2, "-").concat(mo2, "-").concat(da2, " ").concat(h, ":").concat(m, ":").concat(s); // var dateime = `${ye2}-${mo2}-${da2} 24:00:00`;
+
+      console.log("dateime: ", dateime, " == ", this.formatTime(val));
+      setTimeout(function () {
+        $(".flip-clock__piece .flip-clock__slot").css('display', 'none');
+      }, 100); // this.autotime = dateime;
     }
   }
 });
@@ -107681,7 +107706,9 @@ var render = function () {
                                 attrs: { colspan: "2" },
                               },
                               [
-                                team.gstatus == 0 || team.gstatus == "SUSPENDED"
+                                team.gstatus == 0 ||
+                                team.gstatus == "SUSPENDED" ||
+                                team.gstatus == "CLOSED"
                                   ? _c(
                                       "div",
                                       {
@@ -107745,6 +107772,7 @@ var render = function () {
                                       {
                                         attrs: {
                                           onclick: "opnForm(this)",
+                                          "data-team-name": _vm.team_name,
                                           "data-bet-side": "back",
                                           "data-val": team.b1,
                                           "data-team-sid": team.sid,
@@ -107768,6 +107796,7 @@ var render = function () {
                                       {
                                         attrs: {
                                           onclick: "opnForm(this)",
+                                          "data-team-name": _vm.team_name,
                                           "data-bet-side": "back",
                                           "data-val": team.b1,
                                           "data-team-sid": team.sid,
@@ -107803,6 +107832,7 @@ var render = function () {
                                       {
                                         attrs: {
                                           onclick: "opnForm(this)",
+                                          "data-team-name": _vm.team_name,
                                           "data-bet-side": "lay",
                                           "data-val": team.l1,
                                           "data-team-sid": team.sid,
@@ -107826,6 +107856,7 @@ var render = function () {
                                       {
                                         attrs: {
                                           onclick: "opnForm(this)",
+                                          "data-team-name": _vm.team_name,
                                           "data-bet-side": "lay",
                                           "data-val": team.l1,
                                           "data-team-sid": team.sid,
@@ -108104,6 +108135,67 @@ var render = function () {
                               "span",
                               {
                                 staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("B")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 1
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("A")]
+                            )
+                          : _vm._e(),
+                      ]
+                    }),
+                  ],
+                  2
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.casino.casino_name == "aaa"
+              ? _c(
+                  "p",
+                  { staticClass: "text-right", attrs: { id: "last-result" } },
+                  [
+                    _vm._l(_vm.results, function (result, index) {
+                      return [
+                        result.result == 3
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playerb",
+                                staticStyle: { cursor: "pointer" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.getResult(result.mid)
+                                  },
+                                },
+                              },
+                              [_vm._v("C")]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        result.result == 2
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "ball-runs last-result playera",
                                 staticStyle: { cursor: "pointer" },
                                 on: {
                                   click: function ($event) {

@@ -89,7 +89,7 @@
                     <tr :key="team.sid" class="fancy-suspend-tr team1_bm_fancy">
                         <td style="width: 60%"></td>
                         <td style="width: 20%" class="fancy-suspend-td" colspan="2">
-                            <div v-if="team.gstatus == 0 || team.gstatus == 'SUSPENDED'" class="fancy-suspend black-bg-5 text-color-white">
+                            <div v-if="team.gstatus == 0 || team.gstatus == 'SUSPENDED' || team.gstatus == 'CLOSED'" class="fancy-suspend black-bg-5 text-color-white">
                                 <span> <i class="fa fa-lock" aria-hidden="true"></i></span>
                             </div>
                         </td>
@@ -105,12 +105,12 @@
                             <span :id="team.sid+'-profit'" class="towin text-color-green" v-else>0</span>
                         </th>
                         <td style="width: 20%" id="back_1" colspan="2" class="back-1 suspended">
-                            <a onclick="opnForm(this)" data-bet-side="back" :data-val="team.b1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>
-                            <a onclick="opnForm(this)" data-bet-side="back" :data-val="team.b1" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>
+                            <a onclick="opnForm(this)" :data-team-name="team_name" data-bet-side="back" :data-val="team.b1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>
+                            <a onclick="opnForm(this)" :data-team-name="team_name" data-bet-side="back" :data-val="team.b1" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>
                         </td>
                         <td style="width: 20%" id="back_1" colspan="2" class="back-1 suspended">
-                            <a onclick="opnForm(this)" data-bet-side="lay" :data-val="team.l1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.l1}}<span class="black" v-if="team.ls1!=undefined">{{team.ls1}}</span></a>
-                            <a onclick="opnForm(this)" data-bet-side="lay" :data-val="team.l1" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.l1}}<span class="black" v-if="team.ls1!=undefined">{{team.ls1}}</span></a>
+                            <a onclick="opnForm(this)" :data-team-name="team_name" data-bet-side="lay" :data-val="team.l1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.l1}}<span class="black" v-if="team.ls1!=undefined">{{team.ls1}}</span></a>
+                            <a onclick="opnForm(this)" :data-team-name="team_name" data-bet-side="lay" :data-val="team.l1" v-else-if="team.nat!=undefined" :data-team-sid="team.sid" :data-team="team.nat">{{team.l1}}<span class="black" v-if="team.ls1!=undefined">{{team.ls1}}</span></a>
                         </td>
                     </tr>
                     <tr class="collapse mobile-casino-bet-tr" :id="'mobile-casino-bet-tr-'+team.sid">
@@ -160,6 +160,13 @@
                         <span style="cursor: pointer;" v-if="result.result== 1" @click="getResult(result.mid)" class="ball-runs last-result playera">A</span>
                     </template>
                 </p>
+                <p id="last-result" class="text-right" v-if="casino.casino_name  == 'aaa'">
+                    <template v-for="(result,index) in results">
+                        <span style="cursor: pointer;" v-if="result.result== 3" @click="getResult(result.mid)" class="ball-runs last-result playerb">C</span>
+                        <span style="cursor: pointer;" v-if="result.result== 2" @click="getResult(result.mid)" class="ball-runs last-result playera">B</span>
+                        <span style="cursor: pointer;" v-if="result.result== 1" @click="getResult(result.mid)" class="ball-runs last-result playera">A</span>
+                    </template>
+                </p>
             </div>
         </div>
     </div>
@@ -179,6 +186,7 @@
                 fullRoundId: 0,
                 cards: [],
                 teams: [],
+                team_name:'',
                 autotime:null
             }
         },
@@ -215,7 +223,8 @@
                     this.teams.push(playerA);
                     this.teams.push(playerB);
 
-                }else if (this.casino.casino_name == '20dt' || this.casino.casino_name == 'dt202'){
+                }
+                else if (this.casino.casino_name == '20dt' || this.casino.casino_name == 'dt202'){
 
                     var playerA = this.data.t2[0];
                     playerA.b1 = playerA.rate;
@@ -238,7 +247,8 @@
                     this.teams.push(playerA);
                     this.teams.push(playerB);
                     this.teams.push(playerC);
-                }else if (this.casino.casino_name == 'l7a' || this.casino.casino_name == 'l7b'){
+                }
+                else if (this.casino.casino_name == 'l7a' || this.casino.casino_name == 'l7b'){
 
                     var playerA = this.data.t2[0];
                     playerA.b1 = playerA.rate;
@@ -254,7 +264,8 @@
 
                     this.teams.push(playerA);
                     this.teams.push(playerB);
-                }else if (this.casino.casino_name == '20poker'){
+                }
+                else if (this.casino.casino_name == '20poker'){
 
                     var playerA = this.data.t2[0];
                     playerA.nation = "Player A";
@@ -272,7 +283,8 @@
 
                     this.teams.push(playerA);
                     this.teams.push(playerB);
-                }else if (this.casino.casino_name == 'ab2'){
+                }
+                else if (this.casino.casino_name == 'ab2'){
 
                     var playerA = this.data.t2[0];
                     playerA.nation = "Player A";
@@ -290,15 +302,28 @@
 
                     this.teams.push(playerA);
                     this.teams.push(playerB);
-                }else if (this.casino.casino_name == 'odtp'){
+                }
+                else if (this.casino.casino_name == 'odtp'){
                     this.teams.push(this.data.bf[0]);
                     this.teams.push(this.data.bf[1]);
-                }else if (this.casino.casino_name == 'aaa'){
+                }
+                else if (this.casino.casino_name == 'aaa'){
                     this.teams.push(this.data.t2[0]);
                     this.teams.push(this.data.t2[1]);
                     this.teams.push(this.data.t2[2]);
                 }
 
+                var team_name = '';
+                for(var t=0;t<this.teams.length;t++){
+
+                    if(this.teams[t].nat!=undefined) {
+                        team_name += this.teams[t].nat+",";
+                    }else if(this.teams[t].nation!=undefined) {
+                        team_name += this.teams[t].nation+",";
+                    }
+                }
+
+                this.team_name = team_name;
 
                 if (this.casino.casino_name == 'teen20' && this.data.t1[0].C1 != undefined && this.data.t1[0].C2 != undefined && this.data.t1[0].C3 != undefined && this.data.t1[0].C4 != undefined && this.data.t1[0].C5 != undefined && this.data.t1[0].C6 != undefined) {
                     this.cards.push([this.data.t1[0].C1, this.data.t1[0].C2, this.data.t1[0].C3])
@@ -334,7 +359,7 @@
                     this.cards.push([playersCards[0]]);
                 }
 
-                if (this.data.t2[0].gstatus == 0) {
+                if (this.data.t2[0].gstatus == 0 || this.data.t2[0].gstatus == 'SUSPENDED' || this.data.t2[0].gstatus == 'CLOSED') {
                     $(".showForm").hide();
                 }
 
@@ -410,12 +435,17 @@
                 var ye2 = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
                 var mo2 = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
                 var da2 = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
-                var h = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(date);
-                var m = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(date);
+                var h = new Intl.DateTimeFormat('en', { hour: 'numeric',hour12: false }).format(date);
+                var m = new Intl.DateTimeFormat('en', { minute: '2-digit' }).format(date);
                 var s = new Intl.DateTimeFormat('en', { second: 'numeric' }).format(date);
                 var dateime = `${ye2}-${mo2}-${da2} ${h}:${m}:${s}`;
+                // var dateime = `${ye2}-${mo2}-${da2} 24:00:00`;
 
-                console.log("dateime: ",dateime)
+                console.log("dateime: ",dateime," == ",this.formatTime(val))
+
+                setTimeout(()=>{
+                    $(".flip-clock__piece .flip-clock__slot").css('display','none');
+                },100);
 
                 // this.autotime = dateime;
             }

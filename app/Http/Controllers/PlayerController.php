@@ -2859,7 +2859,8 @@ class PlayerController extends Controller
                     exit;
                 }
             }
-        } else {
+        }
+        else {
             $exAmtArr = self::getExAmountCricketAndTennis($requestData['match_id'], $userId);
             if (isset($exAmtArr[$requestData['bet_type']][$requestData['team_name']][$requestData['bet_type'] . "_profitLost"])) {
                 $exArrs = array();

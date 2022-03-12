@@ -19,3 +19,4 @@ ALTER TABLE `casino_bet` CHANGE `winner` `winner` VARCHAR(100) CHARACTER SET utf
 -- DONE
 
 ALTER TABLE `users_account` ADD `casino_id` INT NOT NULL AFTER `match_id`;
+ALTER TABLE `casino_bet` ADD `extra` TEXT NULL AFTER `winner`;

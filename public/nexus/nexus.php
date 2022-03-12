@@ -22,11 +22,17 @@ curl_close($process);
 
 $match_data = json_decode($return, true);
 
-echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);die();
+//echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);die();
 
-if(isset($match_data['result']) && count($match_data['result']) > 0) {
-    $tvdata1 = $match_data['result'][0];
-}else{
+if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
+    if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
+        $tvLink = $match_data['result'][0]['link'];
+    }else if(isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
+        $tvLink = $match_data['result'][0]['link2'];
+    }
+}
+
+if(!isset($tvLink){
     echo "<center><h1>TV not available right now</h1></center>";die();
 }
 
@@ -47,7 +53,7 @@ if(isset($match_data['result']) && count($match_data['result']) > 0) {
 </head>
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
 <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
-    <source src="<?php echo $tvdata1['link']; ?>" type="application/x-mpegURL">
+    <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
 </video>
 </body>
 </html>

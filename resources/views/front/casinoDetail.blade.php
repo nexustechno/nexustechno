@@ -45,6 +45,7 @@
                                         <div class="odds_box">
                                             <input type="hidden" id="team_sid" value="" disabled="disabled" class="team_sid">
                                             <input type="hidden" id="bet_side" value="" disabled="disabled" class="bet_side">
+                                            <input type="hidden" id="other_team_name" value="" disabled="disabled" class="other_team_name">
                                             <input type="text" id="odds_val" value="" disabled="disabled" class="odds_val form-control">
                                             <img src="https://sitethemedata.com/v3/static/front/img/arrow-down.svg" class="arrow-up">
                                             <img src="https://sitethemedata.com/v3/static/front/img/arrow-down.svg" class="arrow-down">
@@ -55,7 +56,17 @@
                                         <div>0</div>
                                     </div>
                                     <div class="casinoplay_button">
-                                        <?php $stkval = array("100", "200", "300", "400", "500", "600", "700", "800"); ?>
+                                        <?php
+                                        $logindata = Session::get('playerUser');
+                                        if($logindata){
+                                            $stkdata = \App\UserStake::where('user_id', $logindata->id)->first();
+                                            $stkval = json_decode($stkdata->stake);
+                                        }
+                                        else{
+                                            $stkval = array("100", "200", "300", "400", "500", "600", "700", "800");
+                                        }
+                                        ?>
+
                                         @foreach($stkval as $data1)
                                             <button type="button" class="btn btn-bet green-bg-1 text-color-white casino_odds"  data-odd="{{$data1}}"><span>{{$data1}}</span></button>
                                         @endforeach
@@ -171,10 +182,14 @@
 
         function opnForm(vl) {
             var value = $(vl).attr("data-val");
+            if(value <= 0){
+                return false;
+            }
             var teamName = $(vl).attr("data-team");
 
             var teamSID = $(vl).attr('data-team-sid');
             var bet_side = $(vl).attr('data-bet-side');
+            var other_team_name = $(vl).attr('data-team-name');
 
             if ($(window).width() < 990) {
                 $(".mobile-casino-bet-tr .casino_right_side form").remove();
@@ -193,6 +208,8 @@
                 $('.casinoplay-box .team_sid').val(teamSID);
                 $('.casinoplay-box .bet_side').val(bet_side);
             }
+
+            $('.casinoplay-box .other_team_name').val(other_team_name);
         }
 
         $("body").on('click','.casino_odds',function () {
@@ -213,6 +230,7 @@
                 var team_name = $('#team_name').html();
                 var team_sid = $('#team_sid').val();
                 var bet_side = $('#bet_side').val();
+                var other_team_name = $('#other_team_name').val();
                 var casino_name = '{{ $casino->casino_name }}';
                 $.ajax({
                     type: "POST",
@@ -225,7 +243,8 @@
                         team_sid: team_sid,
                         roundid: roundid,
                         casino_name: casino_name,
-                        bet_side: bet_side
+                        bet_side: bet_side,
+                        other_team_name: other_team_name,
                     },
                     beforeSend: function () {
                         $('#site_bet_loading1').show();

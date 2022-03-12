@@ -14,17 +14,85 @@ use Session;
 
 class CasinoCalculationController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    public function getExAmountCasino($casino_name,$id){
+        $casinoBets = CasinoBet::where("casino_name",$casino_name)->where('user_id',$id)->whereNull('winner')->get();
+        $response = array();
+        $arr = array();
+        foreach ($casinoBets as $bet) {
+            $extra = json_decode($bet->extra, true);
+            if ($bet['bet_side'] == 'lay') {
+                $profitAmt = $bet['exposureAmt'];
+                $profitAmt = ($profitAmt * (-1));
+                if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
+                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
+                } else {
+                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                }
+
+                foreach ($extra as $team){
+                    if (!isset($response['ODDS'][$team]['ODDS_profitLost'])) {
+                        $response['ODDS'][$team]['ODDS_profitLost'] = $bet['stake_value'];
+                    } else {
+                        $response['ODDS'][$team]['ODDS_profitLost'] += $bet['stake_value'];
+                    }
+                }
+            }
+            else {
+                $profitAmt = $bet['casino_profit']; ////nnn
+                $bet_amt = ($bet['stake_value'] * (-1));
+                if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
+                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
+                } else {
+                    $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                }
+
+                foreach ($extra as $team){
+                    if (!isset($response['ODDS'][$team]['ODDS_profitLost'])) {
+                        $response['ODDS'][$team]['ODDS_profitLost'] = $bet_amt;
+                    } else {
+                        $response['ODDS'][$team]['ODDS_profitLost'] += $bet_amt;
+                    }
+                }
+            }
+        }
+    }
+
+    public static function getExAmount($casino_name = '', $id = '')
+    {
+        if(empty($id)) {
+            $getUserCheck = Session::get('playerUser');
+            if (empty($getUserCheck)) {
+                return ['status'=>false,'message'=>'Required login'];
+            }
+            $id = $getUserCheck->id;
+        }
+        if (!empty($casino_name)) {
+            $casinoBets = CasinoBet::where("casino_name",$casino_name)->where('user_id',$id)->groupBy('casino_name')->whereNull('winner')->get();
+        } else {
+            $casinoBets = CasinoBet::where('user_id',$id)->where('user_id',$id)->groupBy('casino_name')->whereNull('winner')->get();
+        }
+        $exAmtTot = 0;
+        foreach ($casinoBets as $bet) {
+            $exAmtArr = self::getExAmountCasino($bet->casino_name,$id);
+
+            if (isset($exAmtArr['ODDS'])) {
+                $arr = array();
+                foreach ($exAmtArr['ODDS'] as $key => $profitLos) {
+                    if ($profitLos['ODDS_profitLost'] < 0) {
+                        $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                    }
+                }
+                if (is_array($arr) && count($arr) > 0) {
+                    $exAmtTot += max($arr);
+                }
+            }
+
+        }
+
+        return (abs($exAmtTot));
+    }
+
     public function casino_bet(Request $request)
     {
 
@@ -45,10 +113,13 @@ class CasinoCalculationController extends Controller
         }
 
         $depTot = CreditReference::where('player_id', $getUser->id)->first();
-        $headerUserBalance = $depTot['available_balance_for_D_W'];
+//        $headerUserBalance = $depTot['available_balance_for_D_W'];
+        $headerUserBalance = $depTot['remain_bal'];
         if ($headerUserBalance <= 0) {
             return response()->json(['status'=>false,'message'=>'Insufficient Balance!']);
         }
+
+        $currentRoundCasinoExposer = self::getExAmount($casino->casino_name,$getUser->id);
 
         $roundid = $request->roundid;
         $stake_value = $request->stake_value;
@@ -63,11 +134,16 @@ class CasinoCalculationController extends Controller
             $profit = $stake_value;
         }
 
-        if ($headerUserBalance < ($exposer)) {
-            return response()->json(['status'=>false,'message'=>'Insufficient Balance!!!']);
+        if ($headerUserBalance < ($currentRoundCasinoExposer+$exposer)) {
+            return response()->json(['status'=>false,'message'=>'Insufficient Balance!!']);
         }
 
         $data = $request->all();
+        unset($data['other_team_name']);
+        $other_team_name = array_filter(explode(",",$request->other_team_name));
+
+        $betTeamIndex = array_search($request->team_name, $other_team_name);
+        unset($other_team_name[$betTeamIndex]);
 
         $data['odds_value'] = $odds_value;
         $data['casino_profit'] = $profit;
@@ -76,6 +152,7 @@ class CasinoCalculationController extends Controller
         $data['roundid'] = $roundid;
         $data['bet_side'] = $request->bet_side;
         $data['exposureAmt'] = $exposer;
+        $data['extra'] = json_encode($other_team_name);
         if(CasinoBet::create($data)){
             $upd = CreditReference::find($depTot->id);
             $upd->exposure = $upd->exposure + $exposer;
@@ -101,7 +178,7 @@ class CasinoCalculationController extends Controller
     }
 
     public function declareCasinoBetWinner(Request $request){
-
+        die();
         $last10Results = json_decode($request->result,true);
 
         $casino = Casino::where("casino_name",$request->casino_name)->first();
