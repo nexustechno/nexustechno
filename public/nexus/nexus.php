@@ -32,7 +32,7 @@ if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($ma
     }
 }
 
-if(!isset($tvLink){
+if(!isset($tvLink)){
     echo "<center><h1>TV not available right now</h1></center>";die();
 }
 
