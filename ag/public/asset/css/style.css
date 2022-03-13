@@ -3678,7 +3678,7 @@ iframe html {
     display: inline-block;
     position: absolute;
     left: 0;
-    top: 50%;
+    top: 85px;
     transform: translateY(-50%);
     display: flex;
     display: -webkit-flex;
@@ -3686,7 +3686,7 @@ iframe html {
     background-color: rgba(0, 0, 0, .6);
     padding: 5px 20px 5px 5px;
     display: inline-block;
-    height: 135px;
+    /*height: 135px;*/
     overflow: hidden;
     transition: 1s;
     width: 172px;
@@ -3718,7 +3718,8 @@ iframe html {
 
 .casino-video .casinocards-container span img {
     margin-right: 8px;
-    width: 42px;
+    width: 35px;
+    max-width: 35px;
 }
 
 .casino-video .casinocards_shuffle {
