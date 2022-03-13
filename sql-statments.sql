@@ -16,9 +16,11 @@ ALTER TABLE `casino` ADD `casino_title` VARCHAR(255) NOT NULL AFTER `id`;
 ALTER TABLE `casino_bet` ADD `roundid` INT NOT NULL AFTER `user_id`;
 ALTER TABLE `casino_bet` ADD `bet_side` VARCHAR(50) NOT NULL AFTER `casino_profit`, ADD `exposureAmt` DOUBLE(30,2) NOT NULL AFTER `bet_side`, ADD `winner` VARCHAR(100) NOT NULL AFTER `exposureAmt`;
 ALTER TABLE `casino_bet` CHANGE `winner` `winner` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
--- DONE
 
 ALTER TABLE `users_account` ADD `casino_id` INT NOT NULL AFTER `match_id`;
+
+-- DONE
+
 ALTER TABLE `casino_bet` ADD `extra` TEXT NULL AFTER `winner`;
 ALTER TABLE `casino_bet` CHANGE `team_name` `team_name` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
 ALTER TABLE `casino_bet` CHANGE `winner` `winner` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
