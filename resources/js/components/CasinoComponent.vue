@@ -247,7 +247,7 @@
                 all_cards:{}
             }
         },
-        props: ['casino', 'basepath', 'playerprofit','today'],
+        props: ['casino', 'basepath', 'playerprofit','today','admin'],
         mounted() {
             this.autotime = this.today;
 
@@ -471,7 +471,7 @@
                     this.cards.push(playerCardDArray);
                 }
 
-                if(this.roundId > 0) {
+                if(this.roundId > 0 && this.admin == false) {
                     // console.log('cards: ',this.cards);
                     this.$set(this.all_cards, this.roundId, {});
                     for(var c=0;c<this.cards.length;c++){
@@ -483,24 +483,25 @@
                     // this.all_cards[this.roundId] = this.cards;
                 }
 
-                if ($(window).width() < 990) {
-                    var teamSid = $("mobile-casino-bet-tr .casino_right_side form .team_sid").val();
-                }else{
-                    var teamSid = $(".casino_right_side  form .team_sid").val();
-                }
+                if(this.admin == false) {
+                    if ($(window).width() < 990) {
+                        var teamSid = $("mobile-casino-bet-tr .casino_right_side form .team_sid").val();
+                    } else {
+                        var teamSid = $(".casino_right_side  form .team_sid").val();
+                    }
 
-                if (this.teams.length > 0 && teamSid!=undefined && teamSid!='' && teamSid!=null) {
-                    for (var j=0;j<this.teams.length;j++) {
-                        if(this.teams[j].sid == teamSid && (this.teams[j].gstatus == 0 || this.teams[j].gstatus == 'SUSPENDED' || this.teams[j].gstatus == 'CLOSED')) {
-                            $(".showForm").hide();
+                    if (this.teams.length > 0 && teamSid != undefined && teamSid != '' && teamSid != null) {
+                        for (var j = 0; j < this.teams.length; j++) {
+                            if (this.teams[j].sid == teamSid && (this.teams[j].gstatus == 0 || this.teams[j].gstatus == 'SUSPENDED' || this.teams[j].gstatus == 'CLOSED')) {
+                                $(".showForm").hide();
+                            }
                         }
                     }
-                }
 
-                if ($(".casino-bet-item").length > 0) {
-                    if(this.resultReceivedCurrentRoundId(this.fullRoundId) || this.fullRoundId!=mid)
-                    {
-                        this.declareResult(this.fullRoundId);
+                    if ($(".casino-bet-item").length > 0) {
+                        if (this.resultReceivedCurrentRoundId(this.fullRoundId) || this.fullRoundId != mid) {
+                            this.declareResult(this.fullRoundId);
+                        }
                     }
                 }
 
@@ -608,7 +609,8 @@
                 var ye2 = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
                 var mo2 = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
                 var da2 = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
-                var h = new Intl.DateTimeFormat('en', { hour: 'numeric',hour12: false }).format(date);
+                // var h = new Intl.DateTimeFormat('en', { hour: 'numeric',hour12: false }).format(date);
+                var h = date.getHours();
                 var m = new Intl.DateTimeFormat('en', { minute: '2-digit' }).format(date);
                 var s = new Intl.DateTimeFormat('en', { second: 'numeric' }).format(date);
                 var dateime = `${ye2}-${mo2}-${da2} ${h}:${m}:${s}`;

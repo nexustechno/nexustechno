@@ -39,7 +39,7 @@
             <div id="app">
                 <div class="middle-section casino">
                     <div class="middle-wraper">
-                        <casino today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
+                        <casino :admin="true" today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
                     </div>
                 </div>
             </div>
@@ -189,7 +189,7 @@
 </div>
 @endsection
 @push('third_party_scripts')
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}?v={{$vue_app_version}}"></script>
 
     <script>
         var _token = $("input[name='_token']").val();

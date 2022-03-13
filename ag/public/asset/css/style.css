@@ -4160,7 +4160,7 @@ iframe html {
     opacity: 1;
     font-weight: 400;
     display: inline-block;
-    float: left;
+    /*float: left;*/
     width: 45px;
     text-align: center;
 }

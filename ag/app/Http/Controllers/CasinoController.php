@@ -76,14 +76,47 @@ class CasinoController extends Controller
 
         $bets = CasinoBet::where('casino_name',$casino->casino_name)->whereNull('winner')->get();
 
-//        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name,'');
-//
+        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name);
         $playerProfit = [];
-//        if(isset($casinoExposerWithNewBet['ODDS'])) {
-//            $playerProfit = $casinoExposerWithNewBet['ODDS'];
-//        }
+        if(isset($casinoExposerWithNewBet['ODDS'])) {
+            $playerProfit = $casinoExposerWithNewBet['ODDS'];
+
+            foreach ($playerProfit as $teamSid=>$amount){
+                if($amount > 0){
+                    $playerProfit[$teamSid] = -1 * ($amount);
+                }else{
+                    $playerProfit[$teamSid] = abs($amount);
+                }
+            }
+        }
 
         return view('backpanel.casinoDetail', compact('casino','playerProfit','bets'));
+    }
+
+    public function allUserCasinoBet(Request $request){
+        $casino = Casino::where('casino_name',$request->casino_name)->first();
+        if(empty($casino)){
+            return response()->json(['status'=>false]);
+        }
+        $bets = CasinoBet::where('casino_name',$casino->casino_name)->whereNull('winner')->get();
+
+        $html =  view('backpanel.ajax.casino_bet',compact('bets'))->render();
+
+        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name);
+        $playerProfit = [];
+        if(isset($casinoExposerWithNewBet['ODDS'])) {
+            $playerProfit = $casinoExposerWithNewBet['ODDS'];
+
+            foreach ($playerProfit as $teamSid=>$amount){
+                if($amount > 0){
+                    $playerProfit[$teamSid] = -1 * ($amount);
+                }else{
+                    $playerProfit[$teamSid] = abs($amount);
+                }
+            }
+        }
+
+        return response()->json(['status'=>true,'betHtml'=>$html,'playerProfit'=>$playerProfit]);
     }
 
     public function chkstatusactive(Request $request)

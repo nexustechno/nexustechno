@@ -192,6 +192,29 @@
             justify-content: center;
             flex-flow: column;
         }
+
+        .ball-runs.playerb {
+            background: #355e3b;
+            color: #ff3;
+        }
+        .ball-runs.playera {
+            background: #355e3b;
+        }
+        .ball-runs.playerc {
+            background: #355e3b;
+            color: #ff3;
+        }
+        .ball-runs {
+            display: inline-block;
+            height: 25px;
+            line-height: 25px;
+            width: 25px;
+            border-radius: 50%;
+            font-size: var(--font-small);
+            background-color: #08c;
+            color: #fff;
+            text-align: center;
+        }
     </style>
 @endpush
 @section('content')
@@ -203,7 +226,7 @@
                 <div id="app">
                     <div class="middle1-section casino">
                         <div class="middle-wraper">
-                            <casino today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
+                            <casino :admin="true" today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
                         </div>
                     </div>
                 </div>
@@ -222,7 +245,7 @@
                                         </ul>
                                         <div id="divbetlist">
                                             <ul class="betslip_head">
-                                                <li class="col-bet bet_type_uppercase">Back (Bet For)</li>
+                                                <li class="col-bet bet_type_uppercase">(Bet For)</li>
                                                 <li class="col-odd">Odds</li>
                                                 <li class="col-stake">Stake</li>
                                                 <li class="col-profit">Profit</li>
@@ -296,155 +319,51 @@
     <script>
         var _token = $("input[name='_token']").val();
 
-        function isNumber(evt) {
-            evt = (evt) ? evt : window.event;
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            return true;
+        loadAllUserBet();
+
+        setTimeout(()=>{
+            loadAllUserBet();
+        },1000);
+
+        function opnForm() {
+
         }
 
-        function cancelBet() {
+        function loadAllUserBet(){
+            var casino_name = '{{ $casino->casino_name }}';
+            $.ajax({
+                type: "POST",
+                url: '{{route("all_user_casino_bet")}}',
+                data: {
+                    _token: _token,
+                    casino_name: casino_name,
+                    roundid: $("#roundId").attr('data-round-id')
+                },
+                beforeSend: function () {},
+                complete: function () {
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        for (const property in data.playerProfit) {
 
-            if ($(window).width() < 990) {
-                $(".mobile-casino-bet-tr .casino_right_side form").remove();
-                $(".mobile-casino-bet-tr .casino_right_side .site_bet_loading1 ").remove();
-            }else {
-                $(".showForm .site_bet_loading1").hide();
-                $(".showForm").hide();
-                $('.showForm form').show();
-            }
-        }
+                            $("#" + property + "-profit").removeClass('towin text-color-green');
+                            $("#" + property + "-profit").removeClass('tolose text-color-red');
 
-        function opnForm(vl) {
-
-            $('.input-stake').val('');
-            $('.casinoplay-box .other_team_name').val('');
-            $('.casinoplay-box .team_name').html('');
-            $('.casinoplay-box .team_sid').val('');
-            $('.casinoplay-box .bet_side').val('');
-            $('.casinoplay-box .bet-type-text').html('');
-
-            var value = $(vl).attr("data-val");
-            if(value <= 0){
-                return false;
-            }
-            var teamName = $(vl).attr("data-team");
-
-            var teamSID = $(vl).attr('data-team-sid');
-            var bet_side = $(vl).attr('data-bet-side');
-            var other_team_name = $(vl).attr('data-team-name');
-
-            if ($(window).width() < 990) {
-                $(".mobile-casino-bet-tr .casino_right_side form").remove();
-                $("#mobile-casino-bet-td-"+teamSID).html($(".betform-section .showForm").html());
-                $("#mobile-casino-bet-tr-"+teamSID).show();
-                $(".casinoplay-box .odds_val").val(value);
-                $('.casinoplay-box .odds_box').css('display', 'block');
-                $('.casinoplay-box .team_name').html(teamName);
-                $('.casinoplay-box .team_sid').val(teamSID);
-                $('.casinoplay-box .bet_side').val(bet_side);
-            }else{
-                $(".showForm").show();
-                $(".casinoplay-box .odds_val").val(value);
-                $('.casinoplay-box .odds_box').css('display', 'block');
-                $('.casinoplay-box .team_name').html(teamName);
-                $('.casinoplay-box .team_sid').val(teamSID);
-                $('.casinoplay-box .bet_side').val(bet_side);
-            }
-
-            $('.bet-type-text').html(bet_side);
-            $('.casinoplay-box .other_team_name').val(other_team_name);
-
-            $(".casinoplay-box").removeClass('cyan-bg-light');
-            $(".casinoplay-box").removeClass('pink-bg-light');
-            if(bet_side == 'lay'){
-                $(".casinoplay-box").addClass('pink-bg-light');
-                $(".bet-type-calculation-header-text").html('Liability');
-            }else{
-                $(".casinoplay-box").addClass('cyan-bg-light');
-                $(".bet-type-calculation-header-text").html('Profit');
-            }
-        }
-
-        $("body").on('click','.casino_odds',function () {
-            var oddval = $(this).data("odd");
-            $('.input-stake').val(oddval);
-        });
-        // bet calculation
-        $("body").on('click','.casino_bet',function () {
-
-            if($(".roundId").attr('data-status') == 0) {
-                toastr.error('Bet Not Confirm Reason Game Suspended.');
-                $(".showForm").hide();
-            }else {
-                // console.log("round id: ", $('.roundId').attr('data-round-id'));
-                var roundid = $('.roundId').attr('data-round-id');
-                var odds_value = $('#odds_val').val();
-                var stake_value = $('#stake_val').val();
-                var team_name = $('#team_name').html();
-                var team_sid = $('#team_sid').val();
-                var bet_side = $('#bet_side').val();
-                var other_team_name = $('#other_team_name').val();
-                var casino_name = '{{ $casino->casino_name }}';
-                $.ajax({
-                    type: "POST",
-                    url: '{{route("casino_bet")}}',
-                    data: {
-                        _token: _token,
-                        odds_value: odds_value,
-                        stake_value: stake_value,
-                        team_name: team_name,
-                        team_sid: team_sid,
-                        roundid: roundid,
-                        casino_name: casino_name,
-                        bet_side: bet_side,
-                        other_team_name: other_team_name,
-                    },
-                    beforeSend: function () {
-                        if ($(window).width() < 990) {
-                            $("#mobile-casino-bet-td-"+team_sid+" form").hide();
-                            $("#mobile-casino-bet-td-"+team_sid+" .site_bet_loading1").show();
-                        }else{
-                            $('.showForm form').hide();
-                            $('.showForm .site_bet_loading1').show();
-                        }
-                    },
-                    complete: function () {
-                    },
-                    success: function (data) {
-                        if (data.status == true) {
-                            toastr.success(data.message);
-                            cancelBet();
-
-                            for (const property in data.playerProfit) {
-
-                                $("#" + property + "-profit").removeClass('towin text-color-green');
-                                $("#" + property + "-profit").removeClass('tolose text-color-red');
-
-                                if(data.playerProfit[property] > 0) {
-                                    $("#" + property + "-profit").addClass('towin text-color-green');
-                                }else if(data.playerProfit[property] < 0) {
-                                    $("#" + property + "-profit").addClass('tolose text-color-red');
-                                }
-
-                                $("#" + property + "-profit").html(data.playerProfit[property]);
+                            if(data.playerProfit[property] > 0) {
+                                $("#" + property + "-profit").addClass('towin text-color-green');
+                            }else if(data.playerProfit[property] < 0) {
+                                $("#" + property + "-profit").addClass('tolose text-color-red');
                             }
 
-                            // if ($(window).width() < 990) {
-                            //
-                            // }else{
-                            $("#bet-list-section").html(data.betHtml);
-                            // }
-
-                        } else {
-                            toastr.error(data.message);
+                            $("#" + property + "-profit").html(data.playerProfit[property]);
                         }
-                    }
 
-                });
-            }
-        });
+                        $("#bet-list-section").html(data.betHtml);
+
+                    }
+                }
+
+            });
+        }
     </script>
 @endpush

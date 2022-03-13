@@ -17,9 +17,17 @@ class CasinoCalculationController extends Controller
 
     public static function getExAmountCasinoForEachTeam($casino_name,$id,$roundid=''){
         if(empty($roundid)) {
-            $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->whereNull('winner')->get();
+            if(!empty($id)) {
+                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->whereNull('winner')->get();
+            }else{
+                $casinoBets = CasinoBet::where("casino_name", $casino_name)->whereNull('winner')->get();
+            }
         }else{
-            $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->where('roundid',$roundid)->whereNull('winner')->get();
+            if(!empty($id)) {
+                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->where('roundid', $roundid)->whereNull('winner')->get();
+            }else{
+                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('roundid', $roundid)->whereNull('winner')->get();
+            }
         }
         $response = array();
         $arr = array();
@@ -66,24 +74,40 @@ class CasinoCalculationController extends Controller
 
     public static function getCasinoExAmount($casino_name = '', $id = '',$roundid='')
     {
-        if(empty($id)) {
-            $getUserCheck = Session::get('playerUser');
-            if (empty($getUserCheck)) {
-                return ['status'=>false,'message'=>'Required login'];
-            }
-            $id = $getUserCheck->id;
-        }
+//        if(empty($id)) {
+//            $getUserCheck = Session::get('playerUser');
+//            if (empty($getUserCheck)) {
+//                return ['status'=>false,'message'=>'Required login'];
+//            }
+//            $id = $getUserCheck->id;
+//        }
         if (!empty($casino_name)) {
             if(empty($roundid)) {
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
+                if(empty($id)) {
+                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->groupBy('casino_name')->whereNull('winner')->get();
+                }else {
+                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
+                }
             }else{
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                if(empty($id)) {
+                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->groupBy('roundid')->whereNull('winner')->get();
+                }else {
+                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                }
             }
         } else {
             if(empty($roundid)) {
-                $casinoBets = CasinoBet::where('user_id', $id)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
+                if(!empty($id)) {
+                    $casinoBets = CasinoBet::where('user_id', $id)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
+                }else{
+                    $casinoBets = CasinoBet::groupBy('casino_name')->whereNull('winner')->get();
+                }
             }else{
-                $casinoBets = CasinoBet::where('user_id', $id)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                if(!empty($id)) {
+                    $casinoBets = CasinoBet::where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                }else{
+                    $casinoBets = CasinoBet::groupBy('roundid')->whereNull('winner')->get();
+                }
             }
         }
         $exAmtTot = [

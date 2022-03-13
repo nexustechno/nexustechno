@@ -240,6 +240,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('casino', 'CasinoController@insertCasino')->name('insertCasino');
     Route::get('live/casino', 'CasinoController@listCasino')->name('listCasino');
     Route::get('live/casino/{casino_name}', 'CasinoController@casinoDetail')->name('casinoDetail');
+    Route::post('casino/bet', 'CasinoController@allUserCasinoBet')->name('all_user_casino_bet');
+
+    Route::get('casino/winner/{roundid}/cards/{casino_name}', 'CasinoCalculationController@getWinnerCards')->name('get.casino_bet.winner.cards');
+    
     Route::post('chkstatusactive', 'CasinoController@chkstatusactive')->name('chkstatusactive');
 ////Theme mangement
     Route::get('themeAll', 'ThemeController@index')->name('themeAll');
@@ -255,11 +259,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('savecasinoMinLimit', 'CasinoController@savecasinoMinLimit')->name('savecasinoMinLimit');
 
     Route::post('saveMatchSuspend', 'SettingController@saveMatchSuspend')->name('saveMatchSuspend');
-    Route::get('teen20back/{id}', 'CasinoController@casinoDetail')->name('teen20back');
-    Route::get('baccaratback/{id}', 'CasinoController@casinoDetail')->name('baccaratback');
-    Route::get('dt202back/{id}', 'CasinoController@casinoDetail')->name('dt202back');
-    Route::get('ab20back/{id}', 'CasinoController@casinoDetail')->name('ab20back');
-    Route::get('32cardback/{id}', 'CasinoController@casinoDetail')->name('32cardback');
     Route::get('downline-list', 'SettingController@downline_list')->name('downline-list');
     Route::post('getAgentChildAgent', 'SettingController@getAgentChildAgent')->name('getAgentChildAgent');
     Route::post('getAdminAgentBalance', 'SettingController@getAdminAgentBalance')->name('getAdminAgentBalance');
