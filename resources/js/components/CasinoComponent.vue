@@ -1,5 +1,5 @@
 <template>
-    <div class="casinotrap-table blue-dark-bg" v-if="data.t1!=undefined">
+    <div class="casinotrap-table blue-dark-bg" v-if="!loading && teams.length!=undefined">
         <div id="gameHead" class="game-head">
             <div class="game-team">
                 <div class="game-name">
@@ -212,6 +212,16 @@
             </div>
         </div>
     </div>
+    <div class="casinotrap-table blue-dark-bg" v-else-if="loading">
+        <div class="betloaderimage1 site_bet_loading1 loader-style1 mt-5">
+            <ul class="loading1">
+                <li>
+                    <img src="/asset/front/img/loaderajaxbet.gif">
+                </li>
+                <li>Loading...</li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -232,6 +242,7 @@
                 team_name:'',
                 autotime:null,
                 lay_enable:false,
+                loading:true,
             }
         },
         props: ['casino', 'basepath', 'playerprofit','today'],
@@ -373,7 +384,8 @@
                     this.teams.push(this.data.t2[2]);
                     this.teams.push(this.data.t2[3]);
                     this.lay_enable = true;
-                }else if (this.casino.casino_name == '1daydt'){
+                }
+                else if (this.casino.casino_name == '1daydt'){
                     this.teams.push(this.data.t2[0]);
                     this.teams.push(this.data.t2[1]);
                     this.lay_enable = true;
@@ -389,10 +401,12 @@
                 if (this.casino.casino_name == 'teen20' && this.data.t1[0].C1 != undefined && this.data.t1[0].C2 != undefined && this.data.t1[0].C3 != undefined && this.data.t1[0].C4 != undefined && this.data.t1[0].C5 != undefined && this.data.t1[0].C6 != undefined) {
                     this.cards.push([this.data.t1[0].C1, this.data.t1[0].C2, this.data.t1[0].C3])
                     this.cards.push([this.data.t1[0].C4, this.data.t1[0].C5, this.data.t1[0].C6])
-                }else if ((this.casino.casino_name == '20dt' && this.data.t1[0].C1 != undefined && this.data.t1[0].C2 != undefined) || (this.casino.casino_name == 'dt202' && this.data.t1[0].C1 != undefined && this.data.t1[0].C2 != undefined) || (this.casino.casino_name == '1daydt' && this.data.t1[0].C1 != undefined)){
+                }
+                else if ((this.casino.casino_name == '20dt' && this.data.t1[0].C1 != undefined && this.data.t1[0].C2 != undefined) || (this.casino.casino_name == 'dt202' && this.data.t1[0].C1 != undefined && this.data.t1[0].C2 != undefined) || (this.casino.casino_name == '1daydt' && this.data.t1[0].C1 != undefined)){
                     this.cards.push([this.data.t1[0].C1])
                     this.cards.push([this.data.t1[0].C2])
-                }else if ((this.casino.casino_name == 'l7a' && this.data.t1[0].C1 != undefined) || (this.casino.casino_name == 'l7b' && this.data.t1[0].C1 != undefined) || (this.casino.casino_name == 'aaa' && this.data.t1[0].C1 != undefined) || (this.casino.casino_name == 'bollywood' && this.data.t1[0].C1 != undefined)){
+                }
+                else if ((this.casino.casino_name == 'l7a' && this.data.t1[0].C1 != undefined) || (this.casino.casino_name == 'l7b' && this.data.t1[0].C1 != undefined) || (this.casino.casino_name == 'aaa' && this.data.t1[0].C1 != undefined) || (this.casino.casino_name == 'bollywood' && this.data.t1[0].C1 != undefined)){
                     this.cards.push([this.data.t1[0].C1])
                 }
                 else if (this.casino.casino_name == '20poker'){
@@ -400,7 +414,8 @@
                     this.cards.push([this.data.t1[0].C3,this.data.t1[0].C4])
 
                     this.cards.push([this.data.t1[0].C5,this.data.t1[0].C6,this.data.t1[0].C7,this.data.t1[0].C8,this.data.t1[0].C9])
-                }else if (this.casino.casino_name == 'ab1' || this.casino.casino_name == 'ab2'){
+                }
+                else if (this.casino.casino_name == 'ab1' || this.casino.casino_name == 'ab2'){
                     var playersCardsString = this.data.t1[0].Cards;
                     var playersCards = playersCardsString.split(",");
                     var playerCardAArray = [];
@@ -418,7 +433,8 @@
                     this.cards.push(playerCardAArray);
                     this.cards.push(playerCardBArray);
                     this.cards.push([playersCards[0]]);
-                }else if (this.casino.casino_name == '32a' || this.casino.casino_name == '32b'){
+                }
+                else if (this.casino.casino_name == '32a' || this.casino.casino_name == '32b'){
                     var playersCardsString = this.data.t1[0].desc;
                     var playersCards = playersCardsString.split(",");
                     var playerCardAArray = [];
@@ -454,17 +470,34 @@
                     $(".showForm").hide();
                 }
 
-                if ($(".casino-bet-item").length > 0 && mid == 0) {
-                    this.declareResult(this.fullRoundId);
+                if ($(".casino-bet-item").length > 0) {
+                    if(this.resultReceivedCurrentRoundId(this.fullRoundId)) {
+                        this.declareResult(this.fullRoundId);
+                    }
                 }
 
                 this.fullRoundId = mid;
 
                 this.timerteen20(this.data.t1[0].autotime);
 
+                this.loading = false;
+
             });
         },
         methods: {
+            resultReceivedCurrentRoundId(roundId){
+                var resultValue = false;
+                if(this.results.length > 0){
+                    for (var i=0;i<this.results.length;i++){
+                        if(this.results[i].mid == roundId){
+                            resultValue = true;
+                            break;
+                        }
+                    }
+                }
+
+                return resultValue;
+            },
             getResult(fullRoundId) {
                 axios.get('/casino/winner/' + fullRoundId + '/cards/' + this.casino.casino_name)
                     .then((res) => {

@@ -292,9 +292,16 @@
         display: none;
     }
 
+    .middle-section:not(.casino) {
+        padding: 0px 0 70px;
+    }
+
+    .middle-section.casino {
+        padding: 0px;
+    }
+
     .middle-section {
         margin: 0;
-        padding: 0px 0 70px;
     }
 
     .middle-wraper {
@@ -580,7 +587,15 @@
         display: none;
     }
 
-    .rightblock-games {
+    .casino_right_side .betform-section{
+        display: none;
+    }
+
+    .rightblock-games.casino_right_side{
+        padding-bottom: 100px;
+    }
+
+    .rightblock-games:not(.casino_right_side) {
        display: none;
     }
 
@@ -952,9 +967,9 @@
         padding: 0 !important;
     }
 
-    .casino_right_side {
-        width: 26.0417%;
-    }
+    /*.casino_right_side {*/
+    /*    width: 26.0417%;*/
+    /*}*/
 
     .casino-video .videotitle {
         left: 5px;

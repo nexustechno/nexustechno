@@ -38,7 +38,7 @@
         <div class="main-wrapper">
             @include('layouts.leftpanel')
             <div id="app">
-                <div class="middle-section">
+                <div class="middle-section casino">
                     <div class="middle-wraper">
                         <casino today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
                     </div>
