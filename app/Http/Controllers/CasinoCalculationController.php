@@ -329,17 +329,25 @@ class CasinoCalculationController extends Controller
 
             $winnerSid = $resultArray[$bet->roundid];
 
-            $winnerProfitLose = $odds[$winnerSid];
-            if($winnerProfitLose < 0){
-                $lose = abs($winnerProfitLose);
-                $exposerToBeReturn =  abs($totalExposer - abs($winnerProfitLose));
-                $profit = 0;
-            }else{
-                $profit = abs($winnerProfitLose);
-                $exposerToBeReturn =  $totalExposer;
-                $lose = 0;
-            }
+//            dd($casinoExposer, $resultArray, $bet->roundid);
 
+            if($winnerSid == "0" || $winnerSid == 0){
+                $lose = abs($casinoExposer['exposer'])*50/100;
+                $exposerToBeReturn = $casinoExposer['exposer'] - $lose ;
+                $profit = 0;
+            }else {
+                $winnerProfitLose = $odds[$winnerSid];
+                if ($winnerProfitLose < 0) {
+                    $lose = abs($winnerProfitLose);
+                    $exposerToBeReturn = abs($totalExposer - abs($winnerProfitLose));
+                    $profit = 0;
+                } else {
+                    $profit = abs($winnerProfitLose);
+                    $exposerToBeReturn = $totalExposer;
+                    $lose = 0;
+                }
+            }
+            $winner = null;
             if($bet->casino_name == 'teen20') {
                 if ($resultArray[$bet->roundid] == 1){
                     $winner = 'Player A';
@@ -523,8 +531,7 @@ class CasinoCalculationController extends Controller
                 }
             }
 
-            $bet->winner = $winner;
-            $bet->save();
+            CasinoBet::where('casino_name',$bet->casino_name)->where("roundid",$bet->roundid)->update(['winner'=>$winner]);
         }
 
         if($admin_loss > 0 || $admin_profit > 0){

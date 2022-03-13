@@ -3374,7 +3374,7 @@ iframe html {
 
 .casino-video .casino_time {
     position: absolute;
-    right: -20px;
+    right: 0px;
     bottom: 5px;
     display: flex;
     display: -webkit-flex;
@@ -7358,4 +7358,8 @@ table.dataTable thead > tr > th {
     background-color: #243A48;
     color: #fff;
     padding: 7px;
+}
+
+.flip-clock__slot {
+    display: none !important;
 }

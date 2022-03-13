@@ -209,6 +209,7 @@
 
             if ($(window).width() < 990) {
                 $(".mobile-casino-bet-tr .casino_right_side form").remove();
+                $(".mobile-casino-bet-tr .casino_right_side .site_bet_loading1 ").remove();
             }else {
                 $(".showForm .site_bet_loading1").hide();
                 $(".showForm").hide();

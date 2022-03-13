@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="casino_time" v-if="autotime!==null">
-                <flip-countdown :deadline="autotime" :showDays="false" :showHours="false" :showMinutes="false"></flip-countdown>
+                <flip-countdown :deadline="autotime" :showDays="false" :showHours="false" :showMinutes="false" @timeElapsed="timeElapsedHandler"></flip-countdown>
             </div>
         </div>
         <div class="casino-videodetails" id="appendData">
@@ -243,24 +243,29 @@
                 autotime:null,
                 lay_enable:false,
                 loading:true,
+                timer:0,
+                all_cards:{}
             }
         },
         props: ['casino', 'basepath', 'playerprofit','today'],
         mounted() {
             this.autotime = this.today;
+
+            setTimeout(()=>{
+                $(".flip-clock__piece .flip-clock__slot").css('display','none');
+            },100);
+
             window.Echo.channel('casino-detail').listen('.' + this.casino.casino_name, (data) => {
                 // console.log("data: ",data);
 
                 this.teams = [];
-
                 this.cards = [];
                 var playerACards = '';
                 var playerBCards = '';
                 this.data = data.data;
                 this.results = data.results;
                 var mid = this.data.t1[0].mid;
-                var explode = mid.split(".");
-                this.roundId = explode[1];
+
 
                 if (this.casino.casino_name == 'teen20') {
 
@@ -466,25 +471,58 @@
                     this.cards.push(playerCardDArray);
                 }
 
-                if (this.teams.length > 0 &&  (this.teams[0].gstatus == 0 || this.teams[0].gstatus == 'SUSPENDED' || this.teams[0].gstatus == 'CLOSED')) {
-                    $(".showForm").hide();
+                if(this.roundId > 0) {
+                    // console.log('cards: ',this.cards);
+                    this.$set(this.all_cards, this.roundId, {});
+                    for(var c=0;c<this.cards.length;c++){
+                        this.$set(this.all_cards[this.roundId], c, []);
+                        for (var cc=0;cc<this.cards[c].length;cc++){
+                            this.$set(this.all_cards[this.roundId][c], cc, this.cards[c][cc]);
+                        }
+                    }
+                    // this.all_cards[this.roundId] = this.cards;
+                }
+
+                if ($(window).width() < 990) {
+                    var teamSid = $("mobile-casino-bet-tr .casino_right_side form .team_sid").val();
+                }else{
+                    var teamSid = $(".casino_right_side  form .team_sid").val();
+                }
+
+                if (this.teams.length > 0 && teamSid!=undefined && teamSid!='' && teamSid!=null) {
+                    for (var j=0;j<this.teams.length;j++) {
+                        if(this.teams[j].sid == teamSid && (this.teams[j].gstatus == 0 || this.teams[j].gstatus == 'SUSPENDED' || this.teams[j].gstatus == 'CLOSED')) {
+                            $(".showForm").hide();
+                        }
+                    }
                 }
 
                 if ($(".casino-bet-item").length > 0) {
-                    if(this.resultReceivedCurrentRoundId(this.fullRoundId)) {
+                    if(this.resultReceivedCurrentRoundId(this.fullRoundId) || this.fullRoundId!=mid)
+                    {
                         this.declareResult(this.fullRoundId);
                     }
                 }
 
                 this.fullRoundId = mid;
 
-                this.timerteen20(this.data.t1[0].autotime);
+                var explode = mid.split(".");
+                this.roundId = explode[1];
+
+                if(this.timer <= 0 && this.data.t1!=undefined && this.data.t1[0]!=undefined && this.data.t1[0].autotime!=undefined && parseInt(this.data.t1[0].autotime) > 0) {
+                    this.timer = this.data.t1[0].autotime;
+                    this.timerteen20();
+                }
 
                 this.loading = false;
 
             });
         },
         methods: {
+            timeElapsedHandler(){
+                this.timer = 0;
+                console.log("timeElapsedHandler");
+            },
             resultReceivedCurrentRoundId(roundId){
                 var resultValue = false;
                 if(this.results.length > 0){
@@ -516,9 +554,12 @@
                 if(fullRoundId <= 0){
                     return false;
                 }
+
+                var explode = fullRoundId.split(".");
+                var roundId = explode[1];
                 var form = {
                     roundid: fullRoundId,
-                    cards: this.cards,
+                    cards: this.all_cards[roundId],
                     casino_name: this.casino.casino_name,
                     result: JSON.stringify(this.results)
                 }
@@ -532,6 +573,8 @@
                         for (var i=0;i<this.teams.length;i++) {
                             $("#"+this.teams[i].sid+"-profit").html(0);
                         }
+
+                        // this.cards = [];
 
                         // }
                     })
@@ -549,12 +592,18 @@
                 }
                 return `${seconds}`;
             },
-            timerteen20(val) {
+            timerteen20() {
+                var val = parseInt(this.timer);
+                // var val = 10;
                 var date = new Date();
 
-                console.log("autotime ",this.formatTime(val))
+                console.log("autotime ",date , date.getSeconds(), this.formatTime(val), val)
 
-                date.setSeconds( date.getSeconds() + this.formatTime(val) );
+                // date.setSeconds( date.getSeconds() + this.formatTime(val) );
+                var seconds = date.getSeconds() + val;
+                date.setSeconds( seconds );
+
+                console.log("autotime ",date , date.getSeconds(), this.formatTime(val), val)
 
                 var ye2 = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
                 var mo2 = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
@@ -571,7 +620,7 @@
                     $(".flip-clock__piece .flip-clock__slot").css('display','none');
                 },100);
 
-                // this.autotime = dateime;
+                this.autotime = dateime;
             }
         }
     }
@@ -579,6 +628,9 @@
 
 
 <style>
+    .container.flip-clock {
+        padding: 0;
+    }
     .flip-clock__piece{
         display: none;
     }
