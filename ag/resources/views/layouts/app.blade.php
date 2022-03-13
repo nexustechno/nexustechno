@@ -67,6 +67,8 @@ else
         z-index: 9999 !important;
     }
     </style>
+
+    @stack('page_css')
 </head>
 
 <body class="white-bg text-color-black1 chreme-bg {{ $website->themeClass }}">
@@ -347,6 +349,7 @@ else
     </div>
 </div>
 <script src="{{ asset('asset/js/index.js') }}" ></script>
+
 <script type="text/javascript">
 /*
    function disableBack() { window.history.forward(); }
@@ -521,6 +524,8 @@ $('.period_date6b').datepicker({
     dateFormat: "dd-mm-yy"
 });
 </script>
+
+@stack('third_party_scripts')
 
 </body>
 </html>

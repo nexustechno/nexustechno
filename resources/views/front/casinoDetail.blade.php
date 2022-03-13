@@ -1,6 +1,5 @@
 @extends('layouts.front_layout')
 @push('page_css')
-    <link href="{{ asset('asset/front/css/countDown.min.css') }}" rel="stylesheet">
     <style type="text/css">
         body {
             overflow: hidden;
@@ -190,7 +189,6 @@
 </div>
 @endsection
 @push('third_party_scripts')
-    <script src="{{ asset('asset/front/js/countDown.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 
     <script>

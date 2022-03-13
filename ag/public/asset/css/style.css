@@ -3639,32 +3639,6 @@ table.table #inplay-tableblock-fancy .fancy-suspend-td .fancy-suspend-half {
 
 /********* Casino Page Style ***********/
 
-.casinotrap-table {
-    border-radius: 8px;
-    padding-bottom: 10%;
-    position: relative;
-    transform: translateZ(0);
-}
-
-.casino-video {
-    position: relative;
-}
-
-.casino-video .video-block {
-    height: 100%;
-    width: 100%;
-    position: relative;
-    padding-bottom: 55.55%;
-}
-
-.casino-video .video-block iframe {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-}
-
 iframe body {
     margin: 0px !important;
 }
@@ -4088,19 +4062,141 @@ iframe html {
     align-items: center;
 }
 
-.casino_right_side {
-    width: 25.6223%;
-    padding: 0px;
-    height: calc(100vh - 100px);
-    overflow-x: hidden;
-    position: fixed;
-    right: 13px;
-    top: 139px;
-}
+
 
 .casino_right_side .casinoplay-bet {
     width: 100%;
     margin-bottom: 6px;
+}
+
+.betslip-block .collape-link {
+    font-size: 12px;
+    line-height: 25px;
+    font-weight: 400;
+    padding-left: 10px;
+    box-shadow: 0 2px 0 rgb(0 0 0 / 10%);
+    display: block;
+}
+
+.blue-gradient-bg1 {
+    background-image: linear-gradient(#2e4a5c, #243a48);
+}
+
+.betslip_head {
+    padding: 0 10px;
+    box-shadow: inset 0 2px 0 rgb(0 0 0 / 10%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lightblue-bg1 {
+    background: #CED5DA;
+}
+.betslip_head {
+    padding: 0 10px;
+    box-shadow: inset 0 2px 0 rgb(0 0 0 / 10%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.betslip_head li.col-bet {
+    width: 43.23529%;
+}
+.betslip_head li {
+    padding: 5px 0px;
+    text-align: left;
+}
+
+.bet_type_uppercase {
+    text-transform: uppercase;
+}
+
+.betslip-block .card {
+    padding: 0;
+    width: 100%;
+}
+
+.betslip-block .card {
+    border: 0px;
+    font-size: 13px;
+    padding: 15px 5px 2px;
+    text-align: center;
+}
+
+.betslip_box {
+    border-bottom: 1px solid #67afe5;
+}
+.light-blue-bg-1 {
+    background: #beddf4;
+}
+
+.betslip_box .betn {
+    position: relative;
+    width: 50%;
+    font-weight: 700;
+    padding-left: 5px;
+    text-align: left;
+}
+.betslip_box > div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.betslip_box {
+    border-bottom: 1px solid #67afe5;
+}
+
+.light-pink-bg-2 {
+    background: #efd3d9;
+}
+
+.slip_type {
+    line-height: 22px;
+    border-radius: 3px;
+    padding: 0 5px;
+    margin: 0px 5px 0 0;
+    opacity: 1;
+    font-weight: 400;
+    display: inline-block;
+    float: left;
+    width: 45px;
+    text-align: center;
+}
+
+.betslip_box .col-odd {
+    width: 10%;
+    padding: 5px 0;
+    line-height: 22px;
+}
+.betslip_box > div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.betn .shortamount{
+    line-height: 22px;
+}
+.betslip_box .col-stake {
+    width: 15.53672%;
+    padding: 5px 0 5px 5px;
+    line-height: 22px;
+}
+
+.betslip_box > div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.betslip_box .col-profit {
+    text-align: right;
+    width: 20.751%;
+    padding: 5px;
+}
+.betslip_box > div {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .casinoplay-bet {
@@ -4303,6 +4399,7 @@ iframe html {
 .dragon2_table .casino-video .casinocards.opencards {
     width: 0;
 }
+
 
 .dragon2_table .playerblock .casino_box span img {
     width: 20px;
@@ -6008,3 +6105,4 @@ select.acc-filter{ height: 25px !important; }
     font-weight: 400;
     font-size: 11px;
 }
+

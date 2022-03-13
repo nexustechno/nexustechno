@@ -5164,7 +5164,7 @@ class MyaccountController extends Controller
             ->where('bet_type',$btyp)
             ->where('team_name',$tnm)
             //->groupBy('team_name',$tnm)
-            ->whereBetween('created_at',[$fromdate,$todate])
+//            ->whereBetween('created_at',[$fromdate,$todate])
             ->get();
         }
         else{
@@ -5172,7 +5172,7 @@ class MyaccountController extends Controller
             ->where('result_declare',1)
             ->where('match_id', $mid)
             ->where('bet_type',$btyp)
-            ->whereBetween('created_at',[$fromdate,$todate])
+//            ->whereBetween('created_at',[$fromdate,$todate])
             ->get();
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CasinoBet;
 use Illuminate\Http\Request;
 use App\Casino;
 use App\User;
@@ -26,7 +27,7 @@ class CasinoController extends Controller
 
     public function listCasino()
     {
-        $casino = Casino::all();
+        $casino = Casino::where('status',1)->get();
         return view('backpanel/listCasino', compact('casino'));
     }
 
@@ -62,13 +63,27 @@ class CasinoController extends Controller
         if(!empty($casino)){
             $casino->delete();
         }
+
         return redirect()->route('casinoAll') ->with('message', 'Casino deleted successfully.');
     }
 
-    public function casinoDetail($id)
+    public function casinoDetail($casino_name)
     {
-        $casino = Casino::find($id);
-        return view('backpanel.' . $casino->casino_name . 'back', compact('casino'));
+        $casino = Casino::where('casino_name',$casino_name)->first();
+        if(empty($casino)){
+            return redirect('/home');
+        }
+
+        $bets = CasinoBet::where('casino_name',$casino->casino_name)->whereNull('winner')->get();
+
+//        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name,'');
+//
+        $playerProfit = [];
+//        if(isset($casinoExposerWithNewBet['ODDS'])) {
+//            $playerProfit = $casinoExposerWithNewBet['ODDS'];
+//        }
+
+        return view('backpanel.casinoDetail', compact('casino','playerProfit','bets'));
     }
 
     public function chkstatusactive(Request $request)

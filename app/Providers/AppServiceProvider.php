@@ -40,8 +40,6 @@ class AppServiceProvider extends ServiceProvider
         });
         $matchesToBeDisplay = Match::where('status', 1)->where('winner', NULL)->pluck('event_id');
 
-//        dd($matches->toArray());
-
         // Sharing is caring
         View::share('website', $this->website);
         View::share('vue_app_version', 4);

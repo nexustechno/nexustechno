@@ -1157,7 +1157,6 @@ if (!$DEVICE) {
 </script>
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-
 <script src="{{ asset('js/laravel-echo-server.js') }}"></script>
 
 @stack('third_party_scripts')

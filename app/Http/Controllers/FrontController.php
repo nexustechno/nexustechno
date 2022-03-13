@@ -114,12 +114,6 @@ class FrontController extends Controller
 
         $bets = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->get();
 
-//        $playerProfit = [];
-//        $totalProfitPlayers =  CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->groupBy('team_name')->get();
-//        foreach ($totalProfitPlayers as $team){
-//            $playerProfit[$team->team_sid] = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->where('team_name',$team->team_name)->whereNull('winner')->sum('casino_profit');
-//        }
-
         $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name,$getUser->id);
 
         $playerProfit = [];
@@ -9400,8 +9394,9 @@ class FrontController extends Controller
             } elseif ($data->casino_id > 0) {
                 $casino = Casino::find($data->casino_id);
                 $casinoBet = CasinoBet::where("id", $data->user_exposure_log_id)->first();
-
-                $remark = '<span><a class="text-dark" >CASINO / ' . $casino->casino_title . " / " . $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+                if(!empty($casinoBet)) {
+                    $remark = '<span><a class="text-dark" >CASINO / ' . $casino->casino_title . " / " . $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+                }
             }
 
             if($data->remark=='Commission'){

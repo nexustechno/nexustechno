@@ -238,7 +238,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('casino/{id}/update', 'CasinoController@addCasino')->name('update.casino');
     Route::get('casino/{id}/delete', 'CasinoController@delete')->name('delete.casino');
     Route::post('casino', 'CasinoController@insertCasino')->name('insertCasino');
-    Route::get('listCasino', 'CasinoController@listCasino')->name('listCasino');
+    Route::get('live/casino', 'CasinoController@listCasino')->name('listCasino');
+    Route::get('live/casino/{casino_name}', 'CasinoController@casinoDetail')->name('casinoDetail');
     Route::post('chkstatusactive', 'CasinoController@chkstatusactive')->name('chkstatusactive');
 ////Theme mangement
     Route::get('themeAll', 'ThemeController@index')->name('themeAll');
