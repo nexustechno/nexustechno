@@ -22,7 +22,7 @@ class UpdateCasinoBetResults extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Declare casino pending bets winner';
 
     /**
      * Create a new command instance.
@@ -46,8 +46,8 @@ class UpdateCasinoBetResults extends Command
         $casinoCalculationController = new CasinoCalculationController();
 
         foreach ($bets as $bet){
-            $apiURL = 'http://3.6.94.71:3000';
-            $apiURL.="/getresult/".$bet->casino_name;
+
+            $apiURL = "http://3.6.94.71:3000/getresult/".$bet->casino_name;
             $response = Http::get($apiURL);
             $result = $response->json();
 

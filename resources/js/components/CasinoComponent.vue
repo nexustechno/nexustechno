@@ -119,8 +119,8 @@
                         <th style="width: 60%">
                             <p v-if="team.nation!=undefined"><span class="text-color-red font-weight-bold pr-1" v-if="casino.casino_name  == 'aaa' || casino.casino_name  == 'bollywood'">{{alphabets[index]}}.</span> {{team.nation}}</p>
                             <p v-else-if="team.nat!=undefined"><span class="text-color-red font-weight-bold pr-1" v-if="casino.casino_name  == 'aaa' || casino.casino_name  == 'bollywood'">{{alphabets[index]}}.</span>{{team.nat}}</p>
-                            <span :id="team.sid+'-profit'" :class="playerprofit[team.sid]!=undefined && playerprofit[team.sid] > 0 ? 'towin text-color-green' : 'tolose text-color-red'" v-if="playerprofit[team.sid]!=undefined">{{playerprofit[team.sid]}}</span>
-                            <span :id="team.sid+'-profit'" class="towin text-color-green" v-else>0</span>
+                            <span class="profit-lose" :id="team.sid+'-profit'" :class="playerprofit[team.sid]!=undefined && playerprofit[team.sid] > 0 ? 'towin text-color-green' : 'tolose text-color-red'" v-if="playerprofit[team.sid]!=undefined">{{playerprofit[team.sid]}}</span>
+                            <span :id="team.sid+'-profit'" class="towin text-color-green profit-lose" v-else>0</span>
                         </th>
                         <td style="width: 20%" id="back_1" colspan="2" class="cyan-bg suspended">
                             <a onclick="opnForm(this)" :data-team-name="team_name" data-bet-side="back" :data-val="team.b1" v-if="team.nation!=undefined" :data-team-sid="team.sid" :data-team="team.nation">{{team.b1}}<span class="black" v-if="team.bs1!=undefined">{{team.bs1}}</span></a>

@@ -191,54 +191,54 @@ class CasinoCalculationController extends Controller
 //        dd($casinoExposer);
 //        if($currentRoundCasinoExposer > 0)
 //        {
-            if ($request->bet_side == 'lay') {
-                $profitAmt = $exposer;
-                $profitAmt = -($profitAmt);
+        if ($request->bet_side == 'lay') {
+            $profitAmt = $exposer;
+            $profitAmt = -($profitAmt);
 
 //                dd($casinoExposer['ODDS'][$request->team_sid] , $profitAmt);
 
-                if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
-                    $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
-                } else {
-                    $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
-                }
-
-                foreach ($other_team_name as $team) {
-                    if (!isset($casinoExposer['ODDS'][$team])) {
-                        $casinoExposer['ODDS'][$team] = $stake_value;
-                    } else {
-                        $casinoExposer['ODDS'][$team] += $stake_value;
-                    }
-                }
+            if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
+                $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
             } else {
-                $profitAmt = $profit;
-                $bet_amt = ($stake_value * (-1));
-                if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
-                    $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
+                $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
+            }
+
+            foreach ($other_team_name as $team) {
+                if (!isset($casinoExposer['ODDS'][$team])) {
+                    $casinoExposer['ODDS'][$team] = $stake_value;
                 } else {
-                    $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
-                }
-
-                foreach ($other_team_name as $team) {
-                    if (!isset($casinoExposer['ODDS'][$team])) {
-                        $casinoExposer['ODDS'][$team] = $bet_amt;
-                    } else {
-                        $casinoExposer['ODDS'][$team] += $bet_amt;
-                    }
+                    $casinoExposer['ODDS'][$team] += $stake_value;
                 }
             }
-            $arr = [];
-            $casinoExposer['exposer'] = 0;
-            foreach ($casinoExposer['ODDS'] as $key => $profitLos) {
-                if ($profitLos < 0) {
-                    $arr[abs($profitLos)] = abs($profitLos);
-                }
-            }
-            if (is_array($arr) && count($arr) > 0) {
-                $casinoExposer['exposer'] += max($arr);
+        } else {
+            $profitAmt = $profit;
+            $bet_amt = ($stake_value * (-1));
+            if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
+                $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
+            } else {
+                $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
             }
 
-            $currentRoundCasinoExposer = $casinoExposer['exposer'];
+            foreach ($other_team_name as $team) {
+                if (!isset($casinoExposer['ODDS'][$team])) {
+                    $casinoExposer['ODDS'][$team] = $bet_amt;
+                } else {
+                    $casinoExposer['ODDS'][$team] += $bet_amt;
+                }
+            }
+        }
+        $arr = [];
+        $casinoExposer['exposer'] = 0;
+        foreach ($casinoExposer['ODDS'] as $key => $profitLos) {
+            if ($profitLos < 0) {
+                $arr[abs($profitLos)] = abs($profitLos);
+            }
+        }
+        if (is_array($arr) && count($arr) > 0) {
+            $casinoExposer['exposer'] += max($arr);
+        }
+
+        $currentRoundCasinoExposer = $casinoExposer['exposer'];
 //        }else{
 //            $currentRoundCasinoExposer = $exposer;
 //        }
@@ -603,44 +603,44 @@ class CasinoCalculationController extends Controller
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[0][1].'.png">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[0][2].'.png">
                                 </div>';
-                    if($bet->winner == 'Player A') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
-                    $html.='</div>
+                if($bet->winner == 'Player A') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
+                $html.='</div>
                             <div class="col text-center playerb"><h4>Player B</h4>
                                 <div class="result-image">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[1][0].'.png">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[1][1].'.png">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[1][2].'.png">
                                 </div>';
-                    if($bet->winner == 'Player B') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
+                if($bet->winner == 'Player B') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
 
-                    $html.='</div></div>';
+                $html.='</div></div>';
             }else if($bet->casino_name == '20dt' || $bet->casino_name == 'dt202' || $bet->casino_name == '1daydt'){
-                    $html.= '<div class="row">
+                $html.= '<div class="row">
                             <div class="col br1 text-center playera"><h4>Dragon</h4>
                                 <div class="result-image">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[0][0].'.png">
                                 </div>';
-                    if($bet->winner == 'Dragon') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
-                    $html.='</div>
+                if($bet->winner == 'Dragon') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
+                $html.='</div>
                             <div class="col text-center playerb"><h4>Tiger</h4>
                                 <div class="result-image">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[1][0].'.png">
                                 </div>';
-                    if($bet->winner == 'Tiger') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
+                if($bet->winner == 'Tiger') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
 
-                    $html.='</div></div>';
+                $html.='</div></div>';
 
-                    if($bet->winner == 'Tie') {
-                        $html.='<div class="row"><div class="col text-center m-t">WINNER: <b>Tie</b></div></div>';
-                    }
+                if($bet->winner == 'Tie') {
+                    $html.='<div class="row"><div class="col text-center m-t">WINNER: <b>Tie</b></div></div>';
+                }
             }
             else if($bet->casino_name == 'l7a' || $bet->casino_name == 'l7b' || $bet->casino_name == 'aaa' || $bet->casino_name == 'bollywood'){
                 $html.= '<div class="row">
@@ -660,20 +660,20 @@ class CasinoCalculationController extends Controller
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[0][0].'.png">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[0][1].'.png">
                                 </div>';
-                    if($bet->winner == 'Player A') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
-                    $html.='</div>
+                if($bet->winner == 'Player A') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
+                $html.='</div>
                             <div class="col text-center playerb"><h4>Player B</h4>
                                 <div class="result-image">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[1][0].'.png">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[1][1].'.png">
                                 </div>';
-                    if($bet->winner == 'Player B') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
+                if($bet->winner == 'Player B') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
 
-                    $html.='</div>
+                $html.='</div>
                             <div class="col-12 text-center playerb"><h4>Cards</h4>
                                 <div class="result-image">
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[2][0].'.png">
@@ -683,11 +683,11 @@ class CasinoCalculationController extends Controller
                                     <img class="mr-2" src="'.asset('asset/front/img/cards')."/".$cards[2][4].'.png">
                                 </div>';
 
-                    $html.='</div></div>';
+                $html.='</div></div>';
 
-                    if($bet->winner == 'Tie') {
-                        $html.='<div class="row"><div class="col text-center m-t">WINNER: <b>Tie</b></div></div>';
-                    }
+                if($bet->winner == 'Tie') {
+                    $html.='<div class="row"><div class="col text-center m-t">WINNER: <b>Tie</b></div></div>';
+                }
 
             }else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2'){
 
@@ -703,17 +703,17 @@ class CasinoCalculationController extends Controller
                 $html.= '<div class="row">
                             <div class="col-12 br1 text-center playera"><h4>Player A</h4>
                                 <div class="result-image">'.$html1.'</div>';
-                    if($bet->winner == 'Player A') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
-                    $html.='</div>
+                if($bet->winner == 'Player A') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
+                $html.='</div>
                             <div class="col-12 text-center playerb"><h4>Player B</h4>
                                 <div class="result-image">'.$html2.'</div>';
-                    if($bet->winner == 'Player B') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
+                if($bet->winner == 'Player B') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
 
-                    $html.='</div></div>';
+                $html.='</div></div>';
             }
             else if($bet->casino_name == '32a' || $bet->casino_name == '32b'){
 
@@ -737,15 +737,15 @@ class CasinoCalculationController extends Controller
                 $html.= '<div class="row">
                             <div class="col-12 br1 text-center playera"><h4>Player 8</h4>
                                 <div class="result-image">'.$html1.'</div>';
-                    if($bet->winner == 'Player 8') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
-                    $html.='</div>
+                if($bet->winner == 'Player 8') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
+                $html.='</div>
                             <div class="col-12 text-center playerb"><h4>Player 9</h4>
                                 <div class="result-image">'.$html2.'</div>';
-                    if($bet->winner == 'Player 9') {
-                        $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
-                    }
+                if($bet->winner == 'Player 9') {
+                    $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
+                }
                 $html.='</div>
                             <div class="col-12 text-center playerb"><h4>Player 10</h4>
                                 <div class="result-image">'.$html2.'</div>';
@@ -759,7 +759,7 @@ class CasinoCalculationController extends Controller
                 if($bet->winner == 'Player 11') {
                     $html .= '<div class="winner-icon mt-3"><i class="fas fa-trophy mr-2"></i></div>';
                 }
-                    $html.='</div></div>';
+                $html.='</div></div>';
             }
 
             return response()->json(array('status' => true,'message'=>'Result cards detail','html'=>$html));

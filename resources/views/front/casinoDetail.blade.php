@@ -39,7 +39,7 @@
             <div id="app">
                 <div class="middle-section casino">
                     <div class="middle-wraper">
-                        <casino :admin="true" today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
+                        <casino :admin="false" today="{{ date('Y-m-d H:i:s') }}" :playerprofit="{{json_encode($playerProfit)}}" basepath="{{asset('asset/front/img/cards')}}" :casino="{{ json_encode($casino) }}"></casino>
                     </div>
                 </div>
             </div>
@@ -310,6 +310,11 @@
                         }
                     },
                     complete: function () {
+                        if ($(window).width() < 990) {
+                            $("#mobile-casino-bet-td-"+team_sid+" .site_bet_loading1").hide();
+                        }else{
+                            $('.showForm .site_bet_loading1').hide();
+                        }
                     },
                     success: function (data) {
                         if (data.status == true) {
@@ -338,6 +343,7 @@
 
                         } else {
                             toastr.error(data.message);
+
                         }
                     }
 
