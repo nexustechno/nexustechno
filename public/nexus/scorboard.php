@@ -22,7 +22,7 @@ if($match_type == 'cricket') {
     $iFrameUrl = "https://central.satsport247.com/score_widget/" . $eventId2;
     $height = '180px;';
 }else{
-    $height = '107px;';
+    $height = '110px;';
     $iFrameUrl = "https://bfscore.onlyscore.live/?id=" . $eventId;
 }
 
