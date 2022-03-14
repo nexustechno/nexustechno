@@ -3,16 +3,16 @@ error_reporting(0);
 $eventId = $_GET['event_id'];
 $match_type = $_GET['match_type'];
 
-$url = "http://marketsarket.in:3002/scoreurl/".$eventId;
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_URL, $url);
-$res = curl_exec($ch);
-
-$arr = json_decode($res,true);
-
-
 if($match_type == 'cricket') {
+    $url = "http://marketsarket.in:3002/scoreurl/".$eventId;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    $res = curl_exec($ch);
+
+    $arr = json_decode($res,true);
+
+
     if(isset($arr['score'])){
         $explode = explode("/",$arr['score']);
         $eventId2 = end($explode);
