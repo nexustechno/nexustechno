@@ -11,13 +11,14 @@ $res = curl_exec($ch);
 
 $arr = json_decode($res,true);
 
-if(isset($arr['score'])){
-    $explode = explode("/",$arr['score']);
-    $eventId2 = end($explode);
-}else{
-    echo "<center><h1>OOPS!<br>Scoreboard not available right now</h1></center>";die();
-}
+
 if($match_type == 'cricket') {
+    if(isset($arr['score'])){
+        $explode = explode("/",$arr['score']);
+        $eventId2 = end($explode);
+    }else{
+        echo "<center><h1>OOPS!<br>Scoreboard not available right now</h1></center>";die();
+    }
     $iFrameUrl = "https://central.satsport247.com/score_widget/" . $eventId2;
 }else{
     $iFrameUrl = "https://bfscore.onlyscore.live/?id=" . $eventId;
