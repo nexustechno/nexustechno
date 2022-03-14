@@ -6112,3 +6112,6 @@ select.acc-filter{ height: 25px !important; }
     font-size: 11px;
 }
 
+#card-result-dialog .result-image img {
+    width: 50px;
+}

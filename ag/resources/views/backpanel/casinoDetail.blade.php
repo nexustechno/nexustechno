@@ -240,7 +240,7 @@
                             <div class="middle-wraper">
                                 <casino :admin="true" today="{{ date('Y-m-d H:i:s') }}"
                                         :playerprofit="{{json_encode($playerProfit)}}"
-                                        basepath="{{asset('asset/img/cards')}}"
+                                        basepath="{{asset('asset/front/img/cards')}}"
                                         :casino="{{ json_encode($casino) }}"></casino>
                             </div>
                         </div>
@@ -296,7 +296,7 @@
                 </div>
                 <div class="modal-body">
                     <div class=" modal-plus-block text-center">
-                        <img src="{{ asset('asset/img/cards/'.$casino->casino_name.'.jpg')}}"
+                        <img src="{{ asset('asset/front/img/cards/'.$casino->casino_name.'.jpg')}}"
                              class="img-fluid trapmodal_img1">
                     </div>
                 </div>

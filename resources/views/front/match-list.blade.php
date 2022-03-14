@@ -9,7 +9,7 @@
 @section('content')
 <?php
 use App\setting;
-
+$getUser = session('playerUser');
 $settings =setting::first();
 ?>
 

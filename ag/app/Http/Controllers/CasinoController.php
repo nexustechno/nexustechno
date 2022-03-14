@@ -109,10 +109,12 @@ class CasinoController extends Controller
 
             foreach ($playerProfit as $teamSid=>$amount){
                 if($amount > 0){
-                    $playerProfit[$teamSid] = -1 * ($amount);
+                    $formattedAmount = -1 * ($amount);
                 }else{
-                    $playerProfit[$teamSid] = abs($amount);
+                    $formattedAmount = abs($amount);
                 }
+
+                $playerProfit[$teamSid] = round($formattedAmount,2);
             }
         }
 

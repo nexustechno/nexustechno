@@ -6718,8 +6718,8 @@ flex-flow: column;
 }
 
 .live_score_card_4 iframe{height: 200px !important;}
-.live_score_card_2 iframe{height: 128px !important;}
-.live_score_card_1 iframe{height: 128px !important;}
+.live_score_card_2 iframe{height: 120px !important;}
+.live_score_card_1 iframe{height: 120px !important;}
 
 @media (min-width: 1200px) {
     .middle-section .middle-wraper .soccerbg iframe, .middle-section .middle-wraper .tennisbg iframe, .middle-section .middle-wraper .cricketbg iframe{
