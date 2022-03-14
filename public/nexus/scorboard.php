@@ -20,7 +20,9 @@ if($match_type == 'cricket') {
         echo "<center><h1>OOPS!<br>Scoreboard not available right now</h1></center>";die();
     }
     $iFrameUrl = "https://central.satsport247.com/score_widget/" . $eventId2;
+    $height = '180px;';
 }else{
+    $height = '107px;';
     $iFrameUrl = "https://bfscore.onlyscore.live/?id=" . $eventId;
 }
 
@@ -31,6 +33,6 @@ if($match_type == 'cricket') {
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-<iframe style="width: 100%; height: 180px;" src="<?php echo $iFrameUrl; ?>" title="Iframe Example"></iframe>
+<iframe style="width: 100%; height: <?php echo $height; ?>" src="<?php echo $iFrameUrl; ?>" title="Iframe Example"></iframe>
 </body>
 </html>
