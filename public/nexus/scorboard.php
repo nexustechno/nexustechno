@@ -32,7 +32,7 @@ if($match_type == 'cricket') {
     <title>LIVE SCOREBOARD</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
-<body style="margin: 0;">
+<body style="margin: 0;overflow: hidden;">
 <iframe style="width: 100%; height: <?php echo $height; ?>" src="<?php echo $iFrameUrl; ?>" title="Iframe Example"></iframe>
 </body>
 </html>
