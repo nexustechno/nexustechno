@@ -1,6 +1,7 @@
 <?php
 error_reporting(0);
 $eventId = $_GET['event_id'];
+$match_type = $_GET['match_type'];
 
 $url = "http://marketsarket.in:3002/scoreurl/".$eventId;
 $ch = curl_init();
@@ -16,7 +17,11 @@ if(isset($arr['score'])){
 }else{
     echo "<center><h1>OOPS!<br>Scoreboard not available right now</h1></center>";die();
 }
-$iFrameUrl = "https://central.satsport247.com/score_widget/".$eventId2;
+if($match_type == 'cricket') {
+    $iFrameUrl = "https://central.satsport247.com/score_widget/" . $eventId2;
+}else{
+    $iFrameUrl = "https://bfscore.onlyscore.live/?id=" . $eventId2;
+}
 
 ?>
 <html>

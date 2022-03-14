@@ -339,6 +339,8 @@
                     return time.trim();
                 }else if(matchDate == this.tomorrowdate){
                     return 'Tomorrow '+time.trim();
+                }else{
+                    return matchDate +" "+time.trim();
                 }
 
                 return  '';

@@ -321,13 +321,13 @@
                                                            style="border-radius: 3px;">
                                                 </form>
                                             </div>
-                                            @if($loginUser->agent_level=='COM')
-                                                <div class="col-md-4 col-xs-4">
-                                                    <button class="btn btn-danger btn-sm" data-toggle="modal"
-                                                            data-target="#Reject-Multiple-Bet">Reject All Bets
-                                                    </button>
-                                                </div>
-                                            @endif
+{{--                                            @if($loginUser->agent_level=='COM')--}}
+{{--                                                <div class="col-md-4 col-xs-4">--}}
+{{--                                                    <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
+{{--                                                            data-target="#Reject-Multiple-Bet">Reject All Bets--}}
+{{--                                                    </button>--}}
+{{--                                                </div>--}}
+{{--                                            @endif--}}
                                         </div>
                                         <div id="risk3" class="panel-collapse collapse show" role="tabpanel">
                                             <div class="row unmatch_wrap">
@@ -403,13 +403,13 @@
                                                                    style="border-radius: 3px;">
                                                         </form>
                                                     </div>
-                                                    @if($loginUser->agent_level=='COM')
-                                                        <div class="col-md-4 col-xs-4">
-                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"
-                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets
-                                                            </button>
-                                                        </div>
-                                                    @endif
+{{--                                                    @if($loginUser->agent_level=='COM')--}}
+{{--                                                        <div class="col-md-4 col-xs-4">--}}
+{{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
+{{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
+{{--                                                            </button>--}}
+{{--                                                        </div>--}}
+{{--                                                    @endif--}}
                                                 </div>
                                                 <div id="risk4" class="panel-collapse collapse show" role="tabpanel">
                                                     <div class="row unmatch_wrap">
@@ -480,13 +480,13 @@
                                                                    style="border-radius: 3px;">
                                                         </form>
                                                     </div>
-                                                    @if($loginUser->agent_level=='COM')
-                                                        <div class="col-md-4 col-xs-4">
-                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"
-                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets
-                                                            </button>
-                                                        </div>
-                                                    @endif
+{{--                                                    @if($loginUser->agent_level=='COM')--}}
+{{--                                                        <div class="col-md-4 col-xs-4">--}}
+{{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
+{{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
+{{--                                                            </button>--}}
+{{--                                                        </div>--}}
+{{--                                                    @endif--}}
                                                 </div>
                                                 <div id="risk3" class="panel-collapse collapse show" role="tabpanel">
                                                     <div class="row unmatch_wrap">
