@@ -335,6 +335,11 @@
                                 $("#" + property + "-profit").html(data.playerProfit[property]);
                             }
 
+                            $("#main_balance_div").html('{{ $website->currency }} ' + data.available_balance_for_D_W);
+                            $("#exposer_div").html(data.exposure);
+                            $('#tot_bal').val(data.available_balance_for_D_W);
+                            $('#tot_expo').val(data.exposure);
+
                             // if ($(window).width() < 990) {
                             //
                             // }else{

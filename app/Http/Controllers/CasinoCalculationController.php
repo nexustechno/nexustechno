@@ -282,7 +282,11 @@ class CasinoCalculationController extends Controller
 
         $playerProfit = $casinoExposerWithNewBet['ODDS'];
 
-        return response()->json(array('status' => true,'message'=>'Bet has been placed and matched successfully', 'playerProfit' => $playerProfit,'betHtml'=>$betHtml));
+        $balance = CreditReference::where('player_id', $getUser->id)->first();
+        $available_balance_for_D_W = number_format($balance->available_balance_for_D_W, 2);
+        $exposure = number_format($balance->exposure, 2);
+
+        return response()->json(array('status' => true,'message'=>'Bet has been placed and matched successfully','exposure'=>$exposure,'available_balance_for_D_W'=>$available_balance_for_D_W, 'playerProfit' => $playerProfit,'betHtml'=>$betHtml));
 
     }
 
@@ -478,7 +482,6 @@ class CasinoCalculationController extends Controller
                     'casino_id' => $casino->id,
                     'user_exposure_log_id' => $bet->id
                 ]);
-
                 UsersAccount::create([
                     'user_id' => $masterAdmin->id,
                     'from_user_id' => $bet->user_id,

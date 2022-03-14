@@ -9370,7 +9370,8 @@ class FrontController extends Controller
                         ->first();
 
                     $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
-                } else {
+                }
+                else {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
@@ -9391,11 +9392,13 @@ class FrontController extends Controller
 
                     $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
                 }
-            } elseif ($data->casino_id > 0) {
+            }
+            elseif ($data->casino_id > 0) {
                 $casino = Casino::find($data->casino_id);
                 $casinoBet = CasinoBet::where("id", $data->user_exposure_log_id)->first();
                 if(!empty($casinoBet)) {
-                    $remark = '<span><a class="text-dark" >CASINO / ' . $casino->casino_title . " / " . $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
+                    $roundId = explode(".",$casinoBet->roundid);
+                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $casinoBet->roundid . '" data-name="' . $casinoBet->team_name . '" data-type="casino" class="text-dark" onclick="openMatchReport(this);" >CASINO / ' . $casino->casino_title . ' / ' . $casinoBet->team_name . ' / '.$roundId[1].' / ' . strtoupper($casinoBet->bet_side) . ' / ' . $casinoBet->winner . '</a></span>';
                 }
             }
 
@@ -10479,6 +10482,8 @@ class FrontController extends Controller
 //                ->groupBy('team_name',$tnm)
 //                ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
+        }elseif($btyp == 'casino') {
+            $gmdata = CasinoBet::where('user_id', $loginuser->id)->where('roundid',$mid)->get();
         } else {
             $gmdata = MyBets::where('user_id', $loginuser->id)
                 ->where('result_declare', 1)
@@ -10488,130 +10493,157 @@ class FrontController extends Controller
                 ->get();
         }
 
+        if($btyp != 'casino') {
+            $matchdata = Match::where('event_id', $mid)->first();
+        }
 
-        $matchdata = Match::where('event_id', $mid)->first();
-
-
-        //echo"<pre>";print_r($gmdata);echo"<pre>";exit;
 
         $html = '';
         $i = 1;
         $sumAmt = 0;
         foreach ($gmdata as $data) {
 
-            $winner = ucwords($matchdata->winner);
+            if($btyp == 'casino'){
+                $winner = $data->winner;
+                $html .= '<tr role="row" class="' . $data->bet_side . '">
+                    <td aria-colindex="1" role="cell" class="text-right">
+                        <span>' . $i . '</span>
+                    </td>
+                    <td aria-colindex="2" role="cell" class="text-center">' . $data->team_name . '</td>
+                    <td aria-colindex="3" role="cell" class="text-center">ODDS</td>';
+                $html .= '<td aria-colindex="4" role="cell" class="text-center" style="text-transform: uppercase;">' . $data->bet_side . '</td>';
+                $html .= '<td aria-colindex="5" role="cell" class="text-center">' . $data->odds_value . '</td>';
+                $html .= '<td aria-colindex="6" role="cell" class="text-right">' . $data->stake_value . '</td>';
+                $html.='<td aria-colindex="7" role="cell" class="text-right">';
+                if ($winner == $data->team_name && $data->bet_side == 'back') {
+                    $sumAmt += $data->casino_profit;
+                    $html .= '<span class="text-success">' . $data->casino_profit . '</span> ';
+                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
+                    $sumAmt -= $data->exposureAmt;
+                    $html .= '<span class="text-danger">' . $data->exposureAmt . '</span> ';
+                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
+                    $sumAmt += $data->casino_profit;
+                    $html .= '<span class="text-success">' . $data->casino_profit . '</span> ';
+                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
+                    $sumAmt -= $data->exposureAmt;
+                    $html .= '<span class="text-danger">' . $data->exposureAmt . '</span> ';
+                }
 
-            $html .= '
-	    	<tr role="row" class="'.$data->bet_side.'">
+                $html .= '</td><td aria-colindex="9" role="cell" class="text-center">' . $data->created_at . '</td></tr>';
+            }else {
+                $winner = ucwords($matchdata->winner);
+                $html .= '
+	    	<tr role="row" class="' . $data->bet_side . '">
 	            <td aria-colindex="1" role="cell" class="text-right">
 	                <span>' . $i . '</span>
 	            </td>
 	            <td aria-colindex="2" role="cell" class="text-center">' . $data->team_name . '</td>
 	            <td aria-colindex="3" role="cell" class="text-center">' . $data->bet_type . '</td>
 	            ';
-            if ($data->bet_type == 'SESSION') {
-                if ($data->bet_side == 'back') {
-                    $html .= '<td aria-colindex="4" role="cell" class="text-center text-success" style="text-transform: uppercase;">Yes</td>';
+                if ($data->bet_type == 'SESSION') {
+                    if ($data->bet_side == 'back') {
+                        $html .= '<td aria-colindex="4" role="cell" class="text-center text-success" style="text-transform: uppercase;">Yes</td>';
+                    } else {
+                        $html .= '<td aria-colindex="4" role="cell" class="text-center text-danger" style="text-transform: uppercase;">No</td>';
+                    }
                 } else {
-                    $html .= '<td aria-colindex="4" role="cell" class="text-center text-danger" style="text-transform: uppercase;">No</td>';
+                    $html .= '<td aria-colindex="4" role="cell" class="text-center" style="text-transform: uppercase;">' . $data->bet_side . '</td>';
                 }
-            } else {
-                $html .= '<td aria-colindex="4" role="cell" class="text-center" style="text-transform: uppercase;">' . $data->bet_side . '</td>';
-            }
-            $html .= '
+                $html .= '
 	            <td aria-colindex="5" role="cell" class="text-center">' . $data->bet_odds . '';
-            if ($data->bet_type == 'SESSION') {
-                $html .= '<br>(' . $data->bet_oddsk . ')';
-            }
-            $html .= '</td>
+                if ($data->bet_type == 'SESSION') {
+                    $html .= '<br>(' . $data->bet_oddsk . ')';
+                }
+                $html .= '</td>
 	            <td aria-colindex="6" role="cell" class="text-right">' . $data->bet_amount . '</td>
 	            <td aria-colindex="7" role="cell" class="text-right">';
-            if ($data->bet_type == 'ODDS') {
-                if ($winner == $data->team_name && $data->bet_side == 'back') {
-                    $sumAmt += $data->bet_profit;
+                if ($data->bet_type == 'ODDS') {
+                    if ($winner == $data->team_name && $data->bet_side == 'back') {
+                        $sumAmt += $data->bet_profit;
 
-                    $html .= '<span class="text-success">
+                        $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
-                    $sumAmt -= $data->exposureAmt;
-                    $html .= '<span class="text-danger">
+                    } else if ($winner != $data->team_name && $data->bet_side == 'back') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
-                    $sumAmt += $data->bet_profit;
-                    $html .= '<span class="text-success">
+                    } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
+                        $sumAmt += $data->bet_profit;
+                        $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
-                    $sumAmt -= $data->exposureAmt;
-                    $html .= '<span class="text-danger">
+                    } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
+                    }
                 }
-            }
-            if ($data->bet_type == 'BOOKMAKER') {
-                if ($winner == $data->team_name && $data->bet_side == 'back') {
-                    $sumAmt += $data->bet_profit;
-                    $html .= '<span class="text-success">
+                if ($data->bet_type == 'BOOKMAKER') {
+                    if ($winner == $data->team_name && $data->bet_side == 'back') {
+                        $sumAmt += $data->bet_profit;
+                        $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
-                    $sumAmt -= $data->exposureAmt;
-                    $html .= '<span class="text-danger">
+                    } else if ($winner != $data->team_name && $data->bet_side == 'back') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
-                    $sumAmt += $data->bet_profit;
-                    $html .= '<span class="text-success">
+                    } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
+                        $sumAmt += $data->bet_profit;
+                        $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
-                    $sumAmt -= $data->exposureAmt;
-                    $html .= '<span class="text-danger">
+                    } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
+                    }
                 }
-            }
-            if ($data->bet_type == 'SESSION') {
-                //$exposer_fancy=UserExposureLog::where('match_id',$matchdata->id)->where('bet_type','SESSION')->where('fancy_name',$data->team_name)->where('user_id', $loginuser->id)->first();
-
-                $fancydata = FancyResult::where(['eventid' => $mid, 'fancy_name' => $data->team_name])->first();
-
                 if ($data->bet_type == 'SESSION') {
+                    //$exposer_fancy=UserExposureLog::where('match_id',$matchdata->id)->where('bet_type','SESSION')->where('fancy_name',$data->team_name)->where('user_id', $loginuser->id)->first();
 
-                    if ($data->bet_side == 'back') {
-                        if ($data->bet_odds <= $fancydata->result) {
-                            $sumAmt += $data->bet_profit;
-                            $html .= '<span class="text-success">
+                    $fancydata = FancyResult::where(['eventid' => $mid, 'fancy_name' => $data->team_name])->first();
+
+                    if ($data->bet_type == 'SESSION') {
+
+                        if ($data->bet_side == 'back') {
+                            if ($data->bet_odds <= $fancydata->result) {
+                                $sumAmt += $data->bet_profit;
+                                $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
-                        } else {
-                            $sumAmt -= $data->exposureAmt;
-                            $html .= '<span class="text-danger">
+                            } else {
+                                $sumAmt -= $data->exposureAmt;
+                                $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
-                        }
-                    } else if ($data->bet_side == 'lay') {
-                        if ($data->bet_odds > $fancydata->result) {
-                            $sumAmt += $data->bet_profit;
-                            $html .= '<span class="text-success">
+                            }
+                        } else if ($data->bet_side == 'lay') {
+                            if ($data->bet_odds > $fancydata->result) {
+                                $sumAmt += $data->bet_profit;
+                                $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
-                        } else {
-                            $sumAmt -= $data->exposureAmt;
-                            $html .= '<span class="text-danger">
+                            } else {
+                                $sumAmt -= $data->exposureAmt;
+                                $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
+                            }
                         }
                     }
                 }
-            }
 
-            $html .= '
+                $html .= '
 	            </td>
 	            <td aria-colindex="9" role="cell" class="text-center">' . $data->created_at . '</td>
 	        </tr>';
+            }
 
             $i++;
         }
