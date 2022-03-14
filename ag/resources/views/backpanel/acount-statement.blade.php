@@ -111,6 +111,7 @@
                         <table class="table custom-table white-bg text-color-blue-2" id="pager">
                             <thead>
                             <tr>
+                                <th class="light-grey-bg">Sr no</th>
                                 <th class="light-grey-bg">Date/Time</th>
                                 <th class="light-grey-bg">Credit</th>
                                 <th class="light-grey-bg">Debit</th>

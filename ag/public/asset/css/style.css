@@ -5797,10 +5797,15 @@ select.acc-filter{ height: 25px !important; }
     background-color: #315195;
     border-color: #315195;
 }
-#appendpopup_data .back {
+.back {
     background-color: #72BBEF !important;
     font-weight: bold;
 }
+
+.lay {
+    background-color: #FAA9BA !important;
+}
+
 #__BVID__533 thead {
     background-color: #6c757d7a;
 }

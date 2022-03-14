@@ -261,13 +261,13 @@ use App\Match;
                                                                     <div class="modal-body">
                                                                         <form action="" class="captcha_form d-flex">
                                                                             <?php
-                                                                            $team = explode(' v ', strtolower($match->match_name));
+                                                                            $team = explode(' v ', ($match->match_name));
                                                                             ?>
                                                                             <table>
                                                                                 <tr>
                                                                                     <td>{{ @ucfirst($team[0]) }}</td>
                                                                                     <td><input type="radio"
-                                                                                            @if ($match->winner == ucfirst(@$team[0])) checked @endif
+                                                                                            @if ($match->winner == (@$team[0])) checked @endif
                                                                                             class="team_winner"
                                                                                             data-matchid="{{ $match->id }}"
                                                                                             data-winner="{{ @$team[0] }}"
@@ -280,7 +280,7 @@ use App\Match;
                                                                                 <tr>
                                                                                     <td>{{ ucfirst(@$team[1]) }}</td>
                                                                                     <td><input type="radio"
-                                                                                            @if ($match->winner == ucfirst(@$team[1])) checked @endif
+                                                                                            @if ($match->winner == (@$team[1])) checked @endif
                                                                                             class="team_winner"
                                                                                             data-matchid="{{ $match->id }}"
                                                                                             data-winner="{{ @$team[1] }}"
@@ -422,7 +422,7 @@ use App\Match;
                         success: function(data) { //alert(data);
                             if (data.trim() == 'Success') {
                                 toastr.success('Winner set successfully!');
-                                setInterval(function() {
+                                setTimeout(function() {
                                     location.reload();
                                 }, 500);
 

@@ -9692,16 +9692,16 @@ class SettingController extends Controller
         }
         else {
             $settingData = Match::find($mid);
-            $settingData->winner = ucfirst($win);
+            $settingData->winner = ($win);
             $upd = $settingData->update();
             if ($upd) {
                 $bet = MyBets::where('match_id', $match->event_id)->where('bet_type', 'ODDS')->where('result_declare', 0)->groupby('user_id')->get();
                 foreach ($bet as $b) {
-                    $exposer = SELF::getExAmount($match->event_id, $b->user_id, ucfirst($win), $match->id, $match->match_name, 'ODDS');
+                    $exposer = SELF::getExAmount($match->event_id, $b->user_id, ($win), $match->id, $match->match_name, 'ODDS');
                 }
                 $bet = MyBets::where('match_id', $match->event_id)->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->groupby('user_id')->get();
                 foreach ($bet as $b) {
-                    $exposer = SELF::getExAmount($match->event_id, $b->user_id, ucfirst($win), $match->id, $match->match_name, 'BOOKMAKER');
+                    $exposer = SELF::getExAmount($match->event_id, $b->user_id, ($win), $match->id, $match->match_name, 'BOOKMAKER');
                 }
 
                     //calculating admin balance

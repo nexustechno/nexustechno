@@ -10498,8 +10498,11 @@ class FrontController extends Controller
         $i = 1;
         $sumAmt = 0;
         foreach ($gmdata as $data) {
+
+            $winner = ucwords($matchdata->winner);
+
             $html .= '
-	    	<tr role="row" class="back">
+	    	<tr role="row" class="'.$data->bet_side.'">
 	            <td aria-colindex="1" role="cell" class="text-right">
 	                <span>' . $i . '</span>
 	            </td>
@@ -10524,23 +10527,23 @@ class FrontController extends Controller
 	            <td aria-colindex="6" role="cell" class="text-right">' . $data->bet_amount . '</td>
 	            <td aria-colindex="7" role="cell" class="text-right">';
             if ($data->bet_type == 'ODDS') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if ($winner == $data->team_name && $data->bet_side == 'back') {
                     $sumAmt += $data->bet_profit;
 
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt += $data->bet_profit;
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
@@ -10548,22 +10551,22 @@ class FrontController extends Controller
                 }
             }
             if ($data->bet_type == 'BOOKMAKER') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if ($winner == $data->team_name && $data->bet_side == 'back') {
                     $sumAmt += $data->bet_profit;
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt += $data->bet_profit;
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
@@ -10575,55 +10578,50 @@ class FrontController extends Controller
 
                 $fancydata = FancyResult::where(['eventid' => $mid, 'fancy_name' => $data->team_name])->first();
 
-                /*if(!empty($exposer_fancy))
-						{
-							$fancy_win_type=$exposer_fancy['win_type'];
-							if($fancy_win_type=='Profit')
-								$html.='<span class="text-success">
-									'.$sumAmt=$exposer_fancy->profit.'
-								</span> ';
-							else
-								$html.='<span class="text-danger">
-								'.$sumAmt=$exposer_fancy->loss.'
-								</span> ';
-						}*/
-
-
                 if ($data->bet_type == 'SESSION') {
 
                     if ($data->bet_side == 'back') {
                         if ($data->bet_odds <= $fancydata->result) {
+                            $sumAmt += $data->bet_profit;
                             $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
                         } else {
+                            $sumAmt -= $data->exposureAmt;
                             $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
                         }
                     } else if ($data->bet_side == 'lay') {
                         if ($data->bet_odds > $fancydata->result) {
+                            $sumAmt += $data->bet_profit;
                             $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
                         } else {
+                            $sumAmt -= $data->exposureAmt;
                             $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
                         }
                     }
                 }
-
-
             }
 
             $html .= '
 	            </td>
 	            <td aria-colindex="9" role="cell" class="text-center">' . $data->created_at . '</td>
 	        </tr>';
+
             $i++;
         }
-
+        $html.='<tr role="row"><td aria-colindex="1" role="cell" class="text-right" colspan="6">Total</td>';
+        if ($sumAmt > 0) {
+            $html .= '<td aria-colindex="2" role="cell" class="text-right text-success">'.abs($sumAmt).'</td>';
+        } else {
+            $html .= '<td aria-colindex="2" role="cell" class="text-right text-danger">'.abs($sumAmt).'</td>';
+        }
+        $html.='<td aria-colindex="3" role="cell" class="text-right"></td></tr>';
 
         return $html;
     }

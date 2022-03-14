@@ -85,7 +85,25 @@ class MyaccountController extends Controller
             $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->orderBy('created_at', 'ASC')->get();
         }
 
+        $record = UsersAccount::where("user_id", $id)->where('created_at', "<",$fromdate)->orderBy('created_at', 'ASC')->first();
+        $openingBalanceDate = '';
+        if(!empty($record)){
+            $openingBalance = $record->closing_balance;
+            $openingBalanceDate = date('d-m-y H:i', strtotime($record->created_at));
+        }
+
+        $closing_balance = $openingBalance;
+        $i=1;
         $html = '';
+        $html.='<tr>
+                        <td style="width: 110px"> '.$i.' </td>
+                        <td style="width: 110px"> '.$openingBalanceDate.' </td>
+                        <td style="width: 110px;text-align: right;" class="text-color-green">0</td>
+                        <td style="width: 110px;text-align: right;" class="text-color-red">0</td>
+                        <td style="text-align: right;">'.$openingBalance.'</td>
+                        <td>Opening Balance</td>
+			        </tr>';
+
 		foreach($records as $data)
 		{
 		    $username = '';
@@ -99,31 +117,33 @@ class MyaccountController extends Controller
             }
 
             $remark = $data->remark;
-		    if($data->match_id > 0){
 
-		        $match = Match::where("id",$data->match_id)->first();
+            if ($data->match_id > 0) {
+
+                $match = Match::where("id", $data->match_id)->first();
 
                 $sprtnm = Sport::where('sId', $match->sports_id)->first();
 
-                $log = UserExposureLog::where("id",$data->user_exposure_log_id)->first();
+                $log = UserExposureLog::where("id", $data->user_exposure_log_id)->first();
 
-                if($log->bet_type != 'SESSION') {
+                if ($log->bet_type != 'SESSION') {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
                         ->where('match_id', $match->event_id)
                         ->whereBetween('created_at', [$fromdate, $todate])
                         ->groupBy('bet_type')
-                        ->where('bet_type',$log->bet_type)
+                        ->where('bet_type', $log->bet_type)
                         ->orderBy('created_at')
                         ->first();
 
-                    $remark = '<span><a data-betuserid="'.$data->bet_user_id.'" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
-                }else{
+                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
+                } else {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
                         ->where('bet_type', 'SESSION')
+                        ->where('team_name', $log->fancy_name)
                         ->groupBy('team_name')
                         ->where('match_id', $match->event_id)
                         ->whereBetween('created_at', [$fromdate, $todate])
@@ -137,24 +157,37 @@ class MyaccountController extends Controller
                         $f_result = $fnc_rslt->result;
                     }
 
-                    $remark = '<span><a data-betuserid="'.$data->bet_user_id.'" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
+                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
+                }
+            } elseif ($data->casino_id > 0) {
+                $casino = Casino::find($data->casino_id);
+                $casinoBet = CasinoBet::where("id", $data->user_exposure_log_id)->first();
+                if(!empty($casinoBet)) {
+                    $remark = '<span><a class="text-dark" >CASINO / ' . $casino->casino_title . " / " . $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
                 }
             }
-            elseif($data->casino_id > 0){
-                $casino = Casino::find($data->casino_id);
-                $casinoBet = CasinoBet::where("id",$data->user_exposure_log_id)->first();
 
-                $remark = '<span><a class="text-dark" >CASINO / ' .$casino->casino_title." / ". $casinoBet->team_name . ' / ' . strtoupper($casinoBet->bet_side) . ' / WINNER: ' . $casinoBet->winner . '</a></span>';
-                $username = '';
+            if($data->remark=='Commission'){
+                $remark.="(".$data->remark.")";
             }
+
+            if($data->credit_amount > 0){
+                $closing_balance+= $data->credit_amount;
+            }else{
+                $closing_balance-= $data->debit_amount;
+            }
+
 			$html.='<tr>
+                        <td style="width: 110px"> '.($i).' </td>
                         <td style="width: 110px"> '.date('d-m-y H:i', strtotime($data->created_at)).' </td>
                         <td style="width: 110px" class="text-color-green">'.$data->credit_amount.'</td>
                         <td style="width: 110px" class="text-color-red">'.$data->debit_amount.'</td>
-                        <td>'.$data->closing_balance.'</td>
+                        <td>'.$closing_balance.'</td>
                         <td>'.$remark.' </td>
                         <td style="width: 120px">'.$username.'</td>
 			        </tr>';
+
+            $i++;
 		}
 		return $html;
 	}
@@ -210,8 +243,11 @@ class MyaccountController extends Controller
         $i = 1;
         $sumAmt = 0;
         foreach ($gmdata as $data) {
+
+            $winner = ucwords($matchdata->winner);
+
             $html .= '
-	    	<tr role="row" class="back">
+	    	<tr role="row" class="'.$data->bet_side.'">
 	            <td aria-colindex="1" role="cell" class="text-right">
 	                <span>' . $i . '</span>
 	            </td>
@@ -236,23 +272,23 @@ class MyaccountController extends Controller
 	            <td aria-colindex="6" role="cell" class="text-right">' . $data->bet_amount . '</td>
 	            <td aria-colindex="7" role="cell" class="text-right">';
             if ($data->bet_type == 'ODDS') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if ($winner == $data->team_name && $data->bet_side == 'back') {
                     $sumAmt += $data->bet_profit;
 
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt += $data->bet_profit;
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
@@ -260,22 +296,22 @@ class MyaccountController extends Controller
                 }
             }
             if ($data->bet_type == 'BOOKMAKER') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if ($winner == $data->team_name && $data->bet_side == 'back') {
                     $sumAmt += $data->bet_profit;
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt += $data->bet_profit;
                     $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
@@ -289,20 +325,24 @@ class MyaccountController extends Controller
 
                     if ($data->bet_side == 'back') {
                         if ($data->bet_odds <= $fancydata->result) {
+                            $sumAmt += $data->bet_profit;
                             $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
                         } else {
+                            $sumAmt -= $data->exposureAmt;
                             $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
                         }
                     } else if ($data->bet_side == 'lay') {
                         if ($data->bet_odds > $fancydata->result) {
+                            $sumAmt += $data->bet_profit;
                             $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
                         } else {
+                            $sumAmt -= $data->exposureAmt;
                             $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
@@ -311,12 +351,19 @@ class MyaccountController extends Controller
                 }
             }
 
-            $html .= '
-	            </td>
+            $html .= '</td>
 	            <td aria-colindex="9" role="cell" class="text-center">' . $data->created_at . '</td>
 	        </tr>';
             $i++;
         }
+
+        $html.='<tr role="row"><td aria-colindex="1" role="cell" class="text-right" colspan="6">Total</td>';
+        if ($sumAmt > 0) {
+            $html .= '<td aria-colindex="2" role="cell" class="text-right text-success">'.abs($sumAmt).'</td>';
+        } else {
+            $html .= '<td aria-colindex="2" role="cell" class="text-right text-danger">'.abs($sumAmt).'</td>';
+        }
+        $html.='<td aria-colindex="3" role="cell" class="text-right"></td></tr>';
 
         return $html;
     }
