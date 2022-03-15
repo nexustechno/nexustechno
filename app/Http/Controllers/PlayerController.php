@@ -801,6 +801,35 @@ class PlayerController extends Controller
         return $results;
     }
 
+    public function getUserAllMatchFancyExposer($userId){
+        $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
+            ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
+
+        $total_fancy_expo = 0;
+        foreach ($my_placed_bets as $bet) {
+            $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
+            $total_fancy_expo = $total_fancy_expo + $sessionexposer;
+        }
+
+        return $total_fancy_expo;
+    }
+
+    public function getUserExposer($userId){
+        $exposer = SELF::getExAmount('',$userId);
+        Log::info("exposer: " . $exposer . "\n");
+
+        $total_fancy_expo = $this->getUserAllMatchFancyExposer($userId);
+        Log::info("total_fancy_expo: " . $total_fancy_expo . "\n");
+
+        $casinoExposerCalculated = CasinoCalculationController::getCasinoExAmount($userId);
+
+        $casinoExposer =  $casinoExposerCalculated['exposer'];
+
+        Log::info("casinoExposer: " . $casinoExposer . "\n");
+
+        return ($exposer+$total_fancy_expo+$casinoExposer);
+    }
+
     public function SaveBalance($stack, $betType = '', $sessionBetTotalExposer = 0)
     {
         $getUserCheck = Session::get('playerUser');
@@ -813,37 +842,11 @@ class PlayerController extends Controller
 
         Log::info(str_repeat("~=~", 30));
         $balance = SELF::getBlanceAmount();
-        $exposer = 0;
-        $total_fancy_expo = 0;
-//        if ($betType == 'SESSION') {
-//            $total_fancy_expo = $sessionBetTotalExposer;
-//        } else
-        {
-            $exposer = SELF::getExAmount();
+        $exposer = $this->getUserExposer($userId);
 
-            Log::info("balance: " . $balance);
-            Log::info("exposer: " . $exposer);
+        Log::info("main balance: " . $balance);
+        Log::info("total exposer: " . $exposer);
 
-
-            $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
-                ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
-
-            $total_fancy_expo = 0;
-            foreach ($my_placed_bets as $bet) {
-                $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
-                $total_fancy_expo = $total_fancy_expo + $sessionexposer;
-            }
-
-            $casinoExposerCalculated = CasinoCalculationController::getCasinoExAmount("",$userId);
-
-            $casinoExposer =  $casinoExposerCalculated['exposer'];
-
-        }
-
-
-        Log::info("total_fancy_expo: " . $total_fancy_expo . "\n");
-
-        $exposer = $exposer + $total_fancy_expo + $casinoExposer;
         $upd = CreditReference::find($creditref['id']);
         $upd->exposure = $exposer;
         $upd->available_balance_for_D_W = ($balance - $exposer);
@@ -1860,7 +1863,7 @@ class PlayerController extends Controller
 
         $exposureAmt = SELF::getExAmount();
         $exposureAmt_session = SELF::getExAmountForSession($userId, '', $requestData['match_id']); /// nnnn 21-10-2021
-        $exposureAmt_casino_resp = CasinoCalculationController::getCasinoExAmount('', $userId); /// nnnn 21-10-2021
+        $exposureAmt_casino_resp = CasinoCalculationController::getCasinoExAmount($userId); /// nnnn 21-10-2021
         $exposureAmt_casino =   $exposureAmt_casino_resp['exposer'];
         $expAmt = $exposureAmt;
         $betamount = $requestData['bet_amount'];

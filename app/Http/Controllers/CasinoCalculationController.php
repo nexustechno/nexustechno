@@ -15,19 +15,11 @@ use Session;
 class CasinoCalculationController extends Controller
 {
 
-    public static function getExAmountCasinoForEachTeam($casino_name,$id,$roundid=''){
+    public static function getExAmountCasinoForEachTeam($id, $casino_name='',$roundid=''){
         if(empty($roundid)) {
-            if(!empty($id)) {
                 $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->whereNull('winner')->get();
-            }else{
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->whereNull('winner')->get();
-            }
         }else{
-            if(!empty($id)) {
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->where('roundid', $roundid)->whereNull('winner')->get();
-            }else{
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('roundid', $roundid)->whereNull('winner')->get();
-            }
+            $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->where('roundid', $roundid)->whereNull('winner')->get();
         }
         $response = array();
         $arr = array();
@@ -72,49 +64,26 @@ class CasinoCalculationController extends Controller
         return $response;
     }
 
-    public static function getCasinoExAmount($casino_name = '', $id = '',$roundid='')
+    public static function getCasinoExAmount($id = '',$casino_name = '',$roundid='')
     {
-//        if(empty($id)) {
-//            $getUserCheck = Session::get('playerUser');
-//            if (empty($getUserCheck)) {
-//                return ['status'=>false,'message'=>'Required login'];
-//            }
-//            $id = $getUserCheck->id;
-//        }
         if (!empty($casino_name)) {
             if(empty($roundid)) {
-                if(empty($id)) {
-                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->groupBy('casino_name')->whereNull('winner')->get();
-                }else {
-                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
-                }
+                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
             }else{
-                if(empty($id)) {
-                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->groupBy('roundid')->whereNull('winner')->get();
-                }else {
-                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
-                }
+                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('roundid', $roundid)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
             }
         } else {
             if(empty($roundid)) {
-                if(!empty($id)) {
-                    $casinoBets = CasinoBet::where('user_id', $id)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
-                }else{
-                    $casinoBets = CasinoBet::groupBy('casino_name')->whereNull('winner')->get();
-                }
+                $casinoBets = CasinoBet::where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
             }else{
-                if(!empty($id)) {
-                    $casinoBets = CasinoBet::where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
-                }else{
-                    $casinoBets = CasinoBet::groupBy('roundid')->whereNull('winner')->get();
-                }
+                $casinoBets = CasinoBet::where('user_id', $id)->where('roundid', $roundid)->groupBy('roundid')->whereNull('winner')->get();
             }
         }
         $exAmtTot = [
             'exposer' => 0,
         ];
         foreach ($casinoBets as $bet) {
-            $exAmtArr = self::getExAmountCasinoForEachTeam($bet->casino_name,$id,$roundid);
+            $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name,$roundid);
 
             if (isset($exAmtArr['ODDS'])) {
                 $arr = array();
@@ -162,7 +131,16 @@ class CasinoCalculationController extends Controller
             return response()->json(['status'=>false,'message'=>'Insufficient Balance!']);
         }
 
-        $casinoExposer = self::getCasinoExAmount($casino->casino_name,$getUser->id,'');
+        $userId = $getUser->id;
+
+        $playerController = new PlayerController();
+        $totalMatchExposer = PlayerController::getExAmount('',$userId);
+        $totalFancyExpo = $playerController->getUserAllMatchFancyExposer($userId);
+        $totalCasinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name,'not-equal-to-given-casino-name');
+        $currentRoundCasinoExposer = $totalMatchExposer + $totalFancyExpo + $totalCasinoExposer['exposer'];
+        if ($headerUserBalance < $currentRoundCasinoExposer) {
+            return response()->json(['status'=>false,'message'=>'Insufficient Balance!!']);
+        }
 
         $roundid = $request->roundid;
         $stake_value = $request->stake_value;
@@ -183,14 +161,8 @@ class CasinoCalculationController extends Controller
         $betTeamIndex = array_search($request->team_sid, $other_team_name);
         unset($other_team_name[$betTeamIndex]);
 
-        $currentRoundCasinoExposer = $casinoExposer['exposer'];
-        $oldExposer = $casinoExposer;
+        $casinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name);
 
-//        dd($other_team_name);
-
-//        dd($casinoExposer);
-//        if($currentRoundCasinoExposer > 0)
-//        {
         if ($request->bet_side == 'lay') {
             $profitAmt = $exposer;
             $profitAmt = -($profitAmt);
@@ -210,7 +182,8 @@ class CasinoCalculationController extends Controller
                     $casinoExposer['ODDS'][$team] += $stake_value;
                 }
             }
-        } else {
+        }
+        else {
             $profitAmt = $profit;
             $bet_amt = ($stake_value * (-1));
             if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
@@ -227,6 +200,7 @@ class CasinoCalculationController extends Controller
                 }
             }
         }
+
         $arr = [];
         $casinoExposer['exposer'] = 0;
         foreach ($casinoExposer['ODDS'] as $key => $profitLos) {
@@ -238,17 +212,13 @@ class CasinoCalculationController extends Controller
             $casinoExposer['exposer'] += max($arr);
         }
 
-        $currentRoundCasinoExposer = $casinoExposer['exposer'];
-//        }else{
-//            $currentRoundCasinoExposer = $exposer;
-//        }
+        $newExposer = $casinoExposer['exposer'];
 
-//        dd($headerUserBalance,  $currentRoundCasinoExposer, $exposer, $oldExposer, $casinoExposer);
+//        dd($headerUserBalance,  $currentRoundCasinoExposer, $exposer, $newExposer);
 
-        if ($headerUserBalance < $currentRoundCasinoExposer) {
+        if ($headerUserBalance < ($currentRoundCasinoExposer+$newExposer)) {
             return response()->json(['status'=>false,'message'=>'Insufficient Balance!!']);
         }
-
 
         $data['odds_value'] = $odds_value;
         $data['casino_profit'] = $profit;
@@ -278,7 +248,8 @@ class CasinoCalculationController extends Controller
 //            $playerProfit[$team->team_sid] = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->where('team_name',$team->team_name)->whereNull('winner')->sum('casino_profit');
 //        }
 
-        $casinoExposerWithNewBet = self::getCasinoExAmount($casino->casino_name,$getUser->id);
+//        $casinoExposerWithNewBet = self::getCasinoExAmount($getUser->id, $casino->casino_name);
+        $casinoExposerWithNewBet = $casinoExposer;
 
         $playerProfit = $casinoExposerWithNewBet['ODDS'];
 
@@ -295,7 +266,7 @@ class CasinoCalculationController extends Controller
     }
 
     public function declareCasinoBetWinner(Request $request){
-//        die();
+
         $last10Results = json_decode($request->result,true);
 
         $casino = Casino::where("casino_name",$request->casino_name)->first();
@@ -345,12 +316,9 @@ class CasinoCalculationController extends Controller
         $settings = setting::latest('id')->first();
         $adm_balance = $settings->balance;
 
-//        dd($bets);
-
         foreach ($bets as $bet){
 
-            $casinoExposer = self::getCasinoExAmount($casino->casino_name,$getUser->id,$bet->roundid);
-//            dd($casinoExposer);
+            $casinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name, $bet->roundid);
 
             $odds = $casinoExposer['ODDS'];
             $totalExposer = $casinoExposer['exposer'];
@@ -548,7 +516,7 @@ class CasinoCalculationController extends Controller
                             }else{
                                 $creditref_bal = CreditReference::where(['player_id' => $pid])->get();
                                 $bal = $creditref_bal->remain_bal;
-                                $remain_balance_ = $bal - abs($exposer);
+                                $remain_balance_ = $bal - abs($lose);
                                 $upd_ = CreditReference::find($creditref_bal->id);
                                 $upd_->remain_bal = $remain_balance_;
                                 $update_parent = $upd_->update();
