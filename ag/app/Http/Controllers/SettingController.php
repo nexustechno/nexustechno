@@ -8597,7 +8597,7 @@ class SettingController extends Controller
             }
         }
 
-        if ($winner == ucfirst($team1_name)) {
+        if (strtolower($winner) == strtolower($team1_name)) {
             $profit = '';
             $loss = '';
             $is_won = 0;
@@ -8818,7 +8818,7 @@ class SettingController extends Controller
                 }
             }
         }
-        else if ($winner == ucfirst($team2_name)) {
+        else if (strtolower($winner) == strtolower($team2_name)) {
             $profit = '';
             $loss = '';
             $is_won = 0;
@@ -9032,7 +9032,7 @@ class SettingController extends Controller
                 }
             }
         }
-        else if ($winner == ucfirst($team_draw_name)) {
+        else if (strtolower($winner) == strtolower($team_draw_name)) {
             $profit = '';
             $loss = '';
             $is_won = 0;
