@@ -707,7 +707,7 @@ class SettingController extends Controller
     public function getFancyBetResult($fancyname, $matchid, $eventid, $id, $result)
     {
 
-        $masterAdmin = User::where("agent_level",'COM')->first();
+        $masterAdmin = User::where("agent_level", 'COM')->first();
         $mytotal = 0;
         $total_expo_amount = 0;
         $my_placed_bets = MyBets::where('match_id', $eventid)->where('user_id', $id)
@@ -806,8 +806,7 @@ class SettingController extends Controller
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W;
@@ -905,8 +904,7 @@ class SettingController extends Controller
                 $adminData->update();
 
             }
-        }
-        else if ($mytotal < 0) // loss
+        } else if ($mytotal < 0) // loss
         {
 
             $is_won = 0;
@@ -969,8 +967,7 @@ class SettingController extends Controller
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
@@ -1018,60 +1015,59 @@ class SettingController extends Controller
                 }
 
 
-                    //calculating admin balance
-                    $admin_tran = UserExposureLog::where('match_id', $matchid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $id)->get();
-                    $admin_profit = 0;
-                    $admin_loss = 0;
+                //calculating admin balance
+                $admin_tran = UserExposureLog::where('match_id', $matchid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $id)->get();
+                $admin_profit = 0;
+                $admin_loss = 0;
 
-                    $settings = setting::latest('id')->first();
-                    $adm_balance = $settings->balance;
-                    $available_balance = $settings->balance;
-                    foreach ($admin_tran as $trans) {
-                        if ($trans->profit != '') {
-                            $admin_loss += $trans->profit;
+                $settings = setting::latest('id')->first();
+                $adm_balance = $settings->balance;
+                $available_balance = $settings->balance;
+                foreach ($admin_tran as $trans) {
+                    if ($trans->profit != '') {
+                        $admin_loss += $trans->profit;
 
-                            UsersAccount::create([
-                                'user_id' => $masterAdmin->id,
-                                'from_user_id' => $id,
-                                'to_user_id' => $masterAdmin->id,
-                                'debit_amount' => $trans->profit,
-                                'balance' => $available_balance,
-                                'closing_balance' => $available_balance - $trans->profit,
-                                'remark' => "",
-                                'match_id' => $matchid,
-                                'bet_user_id' => $id,
-                                'user_exposure_log_id' => $trans->id
-                            ]);
-                            $available_balance = $available_balance - $trans->profit;
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'debit_amount' => $trans->profit,
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance - $trans->profit,
+                            'remark' => "",
+                            'match_id' => $matchid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $trans->id
+                        ]);
+                        $available_balance = $available_balance - $trans->profit;
 
-                        } else if ($trans->loss != '') {
-                            $admin_profit += abs($trans->loss);
+                    } else if ($trans->loss != '') {
+                        $admin_profit += abs($trans->loss);
 
-                            UsersAccount::create([
-                                'user_id' => $masterAdmin->id,
-                                'from_user_id' => $id,
-                                'to_user_id' => $masterAdmin->id,
-                                'credit_amount' => abs($trans->loss),
-                                'balance' => $available_balance,
-                                'closing_balance' => $available_balance + abs($trans->loss),
-                                'remark' => "",
-                                'match_id' => $matchid,
-                                'bet_user_id' => $id,
-                                'user_exposure_log_id' => $trans->id
-                            ]);
-                            $available_balance = $available_balance + abs($trans->loss);
-                        }
+                        UsersAccount::create([
+                            'user_id' => $masterAdmin->id,
+                            'from_user_id' => $id,
+                            'to_user_id' => $masterAdmin->id,
+                            'credit_amount' => abs($trans->loss),
+                            'balance' => $available_balance,
+                            'closing_balance' => $available_balance + abs($trans->loss),
+                            'remark' => "",
+                            'match_id' => $matchid,
+                            'bet_user_id' => $id,
+                            'user_exposure_log_id' => $trans->id
+                        ]);
+                        $available_balance = $available_balance + abs($trans->loss);
                     }
+                }
 
 
-                    $new_balance = $adm_balance + $admin_profit - $admin_loss;
-                    $adminData = setting::find($settings->id);
-                    $adminData->balance = $new_balance;
-                    $adminData->update();
+                $new_balance = $adm_balance + $admin_profit - $admin_loss;
+                $adminData = setting::find($settings->id);
+                $adminData->balance = $new_balance;
+                $adminData->update();
 
             }
-        }
-        else if ($mytotal == 0) // no profit no loss
+        } else if ($mytotal == 0) // no profit no loss
         {
 
             $is_won = 1;
@@ -1412,13 +1408,13 @@ class SettingController extends Controller
 
                             $item['match_detail']['formatted_match_date'] = $match_date;
 
-                            $my_placed_bets = MyBets::where('match_id', $match['event_id'])->where('bet_type','!=', 'SESSION')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->get();
-                            $my_placed_bets_session = MyBets::where('match_id', $match['event_id'])->where('bet_type','=', 'SESSION')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->count();
+                            $my_placed_bets = MyBets::where('match_id', $match['event_id'])->where('bet_type', '!=', 'SESSION')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->get();
+                            $my_placed_bets_session = MyBets::where('match_id', $match['event_id'])->where('bet_type', '=', 'SESSION')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->count();
                             $team2_bet_total = 0;
                             $team1_bet_total = 0;
                             $team_draw_bet_total = 0;
                             if ($my_placed_bets->count() > 0 || $my_placed_bets_session > 0) {
-                                if($my_placed_bets->count() > 0) {
+                                if ($my_placed_bets->count() > 0) {
                                     foreach ($my_placed_bets as $bet) {
                                         $abc = json_decode($bet->extra, true);
                                         if (!empty($abc)) {
@@ -1501,9 +1497,9 @@ class SettingController extends Controller
                                 $item['match_detail']['team_one'] = $teamone;
                                 $item['match_detail']['team_two'] = $teamtwo;
                                 $item['match_detail']['total_bets'] = $my_placed_bets->count() + $my_placed_bets_session;
-                                $item['match_detail']['team1_bet_total'] = round($team1_bet_total,2);
-                                $item['match_detail']['team2_bet_total'] = round($team2_bet_total,2);
-                                $item['match_detail']['team_draw_bet_total'] = round($team_draw_bet_total,2);
+                                $item['match_detail']['team1_bet_total'] = round($team1_bet_total, 2);
+                                $item['match_detail']['team2_bet_total'] = round($team2_bet_total, 2);
+                                $item['match_detail']['team_draw_bet_total'] = round($team_draw_bet_total, 2);
 
                                 $records[] = $item;
                             }
@@ -3728,10 +3724,11 @@ class SettingController extends Controller
         $adminBookUserTeamDrawEnable = $resp['adminBookUserTeamDrawEnable'];
         $adminBookBMUserTeamDrawEnable = $resp['adminBookBMUserTeamDrawEnable'];
 
-        return view('backpanel/risk-management-details', compact('inplay', 'matchList', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy',  'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable','adminBookBMUserTeamDrawEnable'));
+        return view('backpanel/risk-management-details', compact('inplay', 'matchList', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
     }
 
-    public function risk_management_book_bm_book(Request $request){
+    public function risk_management_book_bm_book(Request $request)
+    {
         $loginUser = Auth::user();
         $matchList = Match::where('match_id', $request->matchid)->first();
 
@@ -3741,7 +3738,8 @@ class SettingController extends Controller
         return response()->json($resp);
     }
 
-    public function getMatchDetailAdminBkUserHtml($matchList, $loginUser, $website){
+    public function getMatchDetailAdminBkUserHtml($matchList, $loginUser, $website)
+    {
 
         $ag_id = $loginUser->id;
         $all_child = $this->GetChildofAgent($ag_id);
@@ -3805,8 +3803,7 @@ class SettingController extends Controller
                             $team1_bet_total = $team1_bet_total - $bet->bet_amount;
                         }
                     }
-                }
-                else if (count($abc) == 1) {
+                } else if (count($abc) == 1) {
                     if (array_key_exists("teamname1", $abc)) {
                         //bet on team2
                         if ($bet->bet_side == 'back') {
@@ -3854,11 +3851,11 @@ class SettingController extends Controller
         $adminBookUser .= '
                 <tr class="trMDl">
                   <td style="width: 215px;"><b class="ng-binding">Admin P&amp;L</b></td>
-                  <td class="text-center ng-binding ' . $clsa1 . '" >' . round(abs($team1_bet_total),2) . '</td>
-                  <td class="text-center ng-binding ' . $clsa2 . '" >' . round(abs($team2_bet_total),2) . '</td>';
+                  <td class="text-center ng-binding ' . $clsa1 . '" >' . round(abs($team1_bet_total), 2) . '</td>
+                  <td class="text-center ng-binding ' . $clsa2 . '" >' . round(abs($team2_bet_total), 2) . '</td>';
         if ($team_draw_bet_total != '') {
             $adminBookUserTeamDrawEnable = true;
-            $adminBookUser .= '<td class="text-center ng-binding ' . $clsa3 . '">' . round(abs($team_draw_bet_total),2) . '</td>';
+            $adminBookUser .= '<td class="text-center ng-binding ' . $clsa3 . '">' . round(abs($team_draw_bet_total), 2) . '</td>';
         }
         $adminBookUser .= '</tr>';
 
@@ -3922,8 +3919,7 @@ class SettingController extends Controller
                             $team1_bet_totalB = $team1_bet_totalB - $bet->bet_amount;
                         }
                     }
-                }
-                else if (count($abc) == 1) {
+                } else if (count($abc) == 1) {
                     if (array_key_exists("teamname1", $abc)) {
                         //bet on team2
                         if ($bet->bet_side == 'back') {
@@ -3970,12 +3966,12 @@ class SettingController extends Controller
                 <tr class="trMDl">
                   <td style="width: 215px;" class="text-left cursor-pointer"><b class="ng-binding">Admin P&amp;L</b>
                   </td>
-                  <td class="text-center ng-binding ' . $cls1 . '">' . round(abs($team1_bet_totalB),2) . '</td>
-                  <td class="text-center ng-binding ' . $cls2 . '">' . round(abs($team2_bet_totalB),2) . '</td>';
-                if ($team_draw_bet_totalB != '') {
-                    $adminBookBMUserTeamDrawEnable = true;
-                    $adminBookUserBM .= '<td class="text-center ng-binding ' . $cls3 . '">' . round(abs($team_draw_bet_totalB),2) . '</td>';
-                }
+                  <td class="text-center ng-binding ' . $cls1 . '">' . round(abs($team1_bet_totalB), 2) . '</td>
+                  <td class="text-center ng-binding ' . $cls2 . '">' . round(abs($team2_bet_totalB), 2) . '</td>';
+        if ($team_draw_bet_totalB != '') {
+            $adminBookBMUserTeamDrawEnable = true;
+            $adminBookUserBM .= '<td class="text-center ng-binding ' . $cls3 . '">' . round(abs($team_draw_bet_totalB), 2) . '</td>';
+        }
         $adminBookUserBM .= '</tr>';
 
 
@@ -3999,7 +3995,7 @@ class SettingController extends Controller
                     $all_child = $this->GetChildofAgent($value->id);
                     $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'ODDS')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
                     $recordFound = true;
-                }else{
+                } else {
                     $recordFound = false;
                 }
             }
@@ -4007,7 +4003,7 @@ class SettingController extends Controller
 //                dd($value->id, $all_child, $my_placed_bets_ods);
 //            }
 
-            if (isset($my_placed_bets_ods) && $recordFound==true && $my_placed_bets_ods->count() > 0) {
+            if (isset($my_placed_bets_ods) && $recordFound == true && $my_placed_bets_ods->count() > 0) {
 
                 foreach ($my_placed_bets_ods as $bet) {
 
@@ -4063,8 +4059,7 @@ class SettingController extends Controller
                                 $team1_bet_total_user = $team1_bet_total_user - $bet->bet_amount;
                             }
                         }
-                    }
-                    else if (count($abc) == 1) {
+                    } else if (count($abc) == 1) {
                         if (array_key_exists("teamname1", $abc)) {
                             //bet on team2
                             if ($bet->bet_side == 'back') {
@@ -4107,19 +4102,19 @@ class SettingController extends Controller
                 }
 
                 $name = $value->user_name . '[' . $value->first_name . ']';
-                if($value->id == $loginUser->id){
+                if ($value->id == $loginUser->id) {
                     $name = 'Admin P&L';
                 }
 
                 $adminBookUser .= '
                 <tr class="trMDl">
-                  <td style="width: 215px;" class="text-left cursor-pointer" data-toggle="collapse" data-target="#SPname-' . $i . '"><b class="ng-binding">'.$name.'</b>
+                  <td style="width: 215px;" class="text-left cursor-pointer" data-toggle="collapse" data-target="#SPname-' . $i . '"><b class="ng-binding">' . $name . '</b>
                   </td>
-                  <td class="text-center ng-binding ' . $clsa1 . '" >' . round(abs($team1_bet_total_user),2) . '</td>
-                  <td class="text-center ng-binding ' . $clsa2 . '" >' . round(abs($team2_bet_total_user),2) . '</td>';
+                  <td class="text-center ng-binding ' . $clsa1 . '" >' . round(abs($team1_bet_total_user), 2) . '</td>
+                  <td class="text-center ng-binding ' . $clsa2 . '" >' . round(abs($team2_bet_total_user), 2) . '</td>';
                 if ($team_draw_bet_total_user != '') {
                     $adminBookUserTeamDrawEnable = true;
-                    $adminBookUser .= '<td class="text-center ng-binding ' . $clsa3 . '" >' . round(abs($team_draw_bet_total_user),2) . '</td>';
+                    $adminBookUser .= '<td class="text-center ng-binding ' . $clsa3 . '" >' . round(abs($team_draw_bet_total_user), 2) . '</td>';
                 }
                 $adminBookUser .= '</tr>';
                 $i++;
@@ -4148,12 +4143,12 @@ class SettingController extends Controller
                     $all_child = $this->GetChildofAgent($value->id);
                     $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
                     $recordFound = true;
-                }else{
+                } else {
                     $recordFound = false;
                 }
             }
 
-            if (isset($my_placed_bets_ods) && $recordFound==true && $my_placed_bets_ods->count() > 0) {
+            if (isset($my_placed_bets_ods) && $recordFound == true && $my_placed_bets_ods->count() > 0) {
 
                 foreach ($my_placed_bets_ods as $bet) {
 
@@ -4209,8 +4204,7 @@ class SettingController extends Controller
                                 $team1_bet_total_user = $team1_bet_total_user - $bet->bet_amount;
                             }
                         }
-                    }
-                    else if (count($abc) == 1) {
+                    } else if (count($abc) == 1) {
                         if (array_key_exists("teamname1", $abc)) {
                             //bet on team2
                             if ($bet->bet_side == 'back') {
@@ -4249,7 +4243,7 @@ class SettingController extends Controller
                 }
 
                 $name = $value->user_name . '[' . $value->first_name . ']';
-                if($value->id == $loginUser->id){
+                if ($value->id == $loginUser->id) {
                     $name = 'Admin P&L';
                 }
 
@@ -4257,11 +4251,11 @@ class SettingController extends Controller
                 <tr class="trMDl">
                   <td style="width: 215px;" class="text-left cursor-pointer" data-toggle="collapse" data-target="#SPnameB-' . $i . '"><b class="ng-binding">' . $name . '</b>
                   </td>
-                  <td class="text-center ng-binding ' . $cls1 . '">' . round(abs($team1_bet_total_user),2) . '</td>
-                  <td class="text-center ng-binding ' . $cls2 . '">' . round(abs($team2_bet_total_user),2) . '</td>';
+                  <td class="text-center ng-binding ' . $cls1 . '">' . round(abs($team1_bet_total_user), 2) . '</td>
+                  <td class="text-center ng-binding ' . $cls2 . '">' . round(abs($team2_bet_total_user), 2) . '</td>';
                 if ($team_draw_bet_total_user != '') {
                     $adminBookBMUserTeamDrawEnable = true;
-                    $adminBookUserBM .= '<td class="text-center ng-binding ' . $cls3 . '" >' . round(abs($team_draw_bet_total_user),2) . '</td>';
+                    $adminBookUserBM .= '<td class="text-center ng-binding ' . $cls3 . '" >' . round(abs($team_draw_bet_total_user), 2) . '</td>';
                 }
                 $adminBookUserBM .= '</tr>';
                 $i++;
@@ -5125,7 +5119,7 @@ class SettingController extends Controller
         $userId = $userData->user_id;
         $event_id = $userData->match_id;
 //        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', 'ODDS')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type',"!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
+        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
         $team2_bet_total = 0;
         $team1_bet_total = 0;
         $team_draw_bet_total = 0;
@@ -5233,7 +5227,7 @@ class SettingController extends Controller
         $del = $userData->update();
         if ($del) {
 //            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', 'ODDS')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type',"!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
+            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
             $team2_bet_total = 0;
             $team1_bet_total = 0;
             $team_draw_bet_total = 0;
@@ -5294,8 +5288,7 @@ class SettingController extends Controller
                                     $team1_bet_total = $team1_bet_total + $bet->bet_amount;
                                 }
                             }
-                        }
-                        else if (count($abc) == 1) {
+                        } else if (count($abc) == 1) {
                             if (array_key_exists("teamname1", $abc)) {
                                 //bet on team2
                                 if ($bet->bet_side == 'back') {
@@ -5338,7 +5331,7 @@ class SettingController extends Controller
             }
 
             $updc->exposure = ($getc->exposure - abs($original_expo) - $original_total_fancy_expo) + abs($new_expo) + $total_fancy_expo;
-            $updc->available_balance_for_D_W = ($getc->available_balance_for_D_W + abs($original_expo) + $original_total_fancy_expo) - abs($new_expo) - $total_fancy_expo ;
+            $updc->available_balance_for_D_W = ($getc->available_balance_for_D_W + abs($original_expo) + $original_total_fancy_expo) - abs($new_expo) - $total_fancy_expo;
             $upd = $updc->update();
 
             if ($upd)
@@ -5463,7 +5456,7 @@ class SettingController extends Controller
         //calculate original exposure for this match
         $userId = $userData->user_id;
         $event_id = $userData->match_id;
-        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type',"!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
+        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
         $team2_bet_total = 0;
         $team1_bet_total = 0;
         $team_draw_bet_total = 0;
@@ -5571,7 +5564,7 @@ class SettingController extends Controller
         $userData->isDeleted = 0;
         $del = $userData->update();
         if ($del) {
-            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type',"!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
+            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
             $team2_bet_total = 0;
             $team1_bet_total = 0;
             $team_draw_bet_total = 0;
@@ -5676,7 +5669,7 @@ class SettingController extends Controller
             }
 
             $updc->exposure = ($getc->exposure - abs($original_expo) - $original_total_fancy_expo) + abs($new_expo) + $total_fancy_expo;
-            $updc->available_balance_for_D_W = ($getc->available_balance_for_D_W + abs($original_expo) + $original_total_fancy_expo) - abs($new_expo) - $total_fancy_expo ;
+            $updc->available_balance_for_D_W = ($getc->available_balance_for_D_W + abs($original_expo) + $original_total_fancy_expo) - abs($new_expo) - $total_fancy_expo;
             $upd = $updc->update();
 
 
@@ -5803,8 +5796,7 @@ class SettingController extends Controller
                             $team1_bet_total = $team1_bet_total - $bet->bet_amount;
                         }
                     }
-                }
-                else if (count($abc) == 1) {
+                } else if (count($abc) == 1) {
                     if (array_key_exists("teamname1", $abc)) {
                         //bet on team2
                         if ($bet->bet_side == 'back') {
@@ -5947,8 +5939,7 @@ class SettingController extends Controller
 								</tr>';
                     }
                 }
-            }
-            else {
+            } else {
                 //check status
                 if (@$match_data['t1'][0][0]['mstatus'] == 'OPEN' || @$match_data[0]['status'] == 'OPEN') {
                     //check section and set data for it
@@ -6019,8 +6010,7 @@ class SettingController extends Controller
 									</tr>
 									';
                         }
-                    }
-                    else {
+                    } else {
                         if (isset($match_data['t1'][0][0]['b1'])) {
 
                             $display = '';
@@ -6087,8 +6077,7 @@ class SettingController extends Controller
 										</td>
 									</tr>
 									';
-                        }
-                        else {
+                        } else {
                             $html .= '<tr class="tr_team1">
 										<td> <img src="' . asset('asset/front/img/bars.png') . '"> <b class="team1">' . ucfirst($team[0]) . ' </b> </td>
 										<td class="light-blue-bg-2 td_team1_back_2"><a class="back1btn">
@@ -6280,8 +6269,7 @@ class SettingController extends Controller
 									</tr>';
                         }
                     }
-                }
-                else {
+                } else {
                     $html_chk .= '
 								<tr class="fancy-suspend-tr team1_fancy 33333">
 									<td></td>
@@ -6306,8 +6294,7 @@ class SettingController extends Controller
                 }
 
                 //team3
-                if ($section == 3)
-                { //soccer
+                if ($section == 3) { //soccer
                     if (isset($match_data[0]['runners'][2])) {
                         $display = '';
                         $cls = '';
@@ -6374,8 +6361,7 @@ class SettingController extends Controller
 								</td>
 							</tr>
 							';
-                    }
-                    else {
+                    } else {
                         $html .= '<tr class="white-bg tr_team3">
 									<td> <img src="' . asset('asset/front/img/bars.png') . '"> <b class="team3">The Draw</b> </td>
 									<td class="light-blue-bg-2 td_team3_back_2"><a class="back1btn">
@@ -6387,8 +6373,7 @@ class SettingController extends Controller
 									<td class="light-pink-bg-3 td_team3_lay_2"><a class="lay1btn">--</td>
 								</tr>';
                     }
-                }
-                else {
+                } else {
                     if (!empty(@$match_data['t1'][0][2])) {
                         if (@$match_data['t1'][0][2]['mstatus'] == 'OPEN') {
                             if ($section == 4) { //cricket
@@ -6502,7 +6487,7 @@ class SettingController extends Controller
             $html .= $html_chk;
             $html .= '</table>';
 
-            if($section == 4) {
+            if ($section == 4) {
                 $matchname = $request->matchname;
                 $match_b = $request->match_b;
                 $match_f = $request->match_f;
@@ -6514,8 +6499,8 @@ class SettingController extends Controller
                     $team2_name = '';
 
                 $resp = $this->risk_management_matchCallForFancyNBM($match_data, $matchId, $event_id, $loginUser, $website, $all_child, $match_f, $match_b, $team1_name, $team2_name, $sport);
-            }else{
-                $resp = ['boomaker'=>'','fancy'=>''];
+            } else {
+                $resp = ['boomaker' => '', 'fancy' => ''];
             }
 
             return response()->json([
@@ -6523,8 +6508,7 @@ class SettingController extends Controller
                 'boomaker' => $resp['boomaker'],
                 'fancy' => $resp['fancy']
             ]);
-        }
-        else {
+        } else {
             return 'No data found.';
         }
     }
@@ -6774,8 +6758,7 @@ class SettingController extends Controller
             }
             $html .= '</table>';
             return $html;
-        }
-        else {
+        } else {
             $split = explode(" v ", $matchname);
             if (@count($split) > 0) {
                 $teamone = $split[0];
@@ -7074,8 +7057,7 @@ class SettingController extends Controller
                                 ]);
                             }
 
-                        }
-                        else {
+                        } else {
 
                             $rem_balance = $balance + $amount;
                             // echo 'balance'.$balance ."+". $amount;;
@@ -7318,8 +7300,7 @@ class SettingController extends Controller
                                 ]);
                             }
 
-                        }
-                        else {
+                        } else {
                             $rem_balance = $balance + $amount;
                             $new_balance = $new_balance + $amount;
                             $player_new_balance = $available_balance + $amount;
@@ -7512,8 +7493,9 @@ class SettingController extends Controller
 
     }
 
-    public function resultRollback(Request $request){
-       return $this->updateFancyResultRollback($request->id);
+    public function resultRollback(Request $request)
+    {
+        return $this->updateFancyResultRollback($request->id);
     }
 
     public function updateFancyResultRollback($id)
@@ -7547,17 +7529,17 @@ class SettingController extends Controller
             $expamt = abs($check_value[2]);
 
             $exposer_tran_log = UserExposureLog::where('match_id', $mid)->where('bet_type', 'SESSION')->where('fancy_name', $fancyname)->where('user_id', $userData->user_id)->first();
-            if(!empty($exposer_tran_log)) {
+            if (!empty($exposer_tran_log)) {
                 $fancy_win_type = $exposer_tran_log['win_type'];
                 $fancy_profit = $exposer_tran_log->profit;
                 $fancy_loss = $exposer_tran_log->loss;
-            }else {
+            } else {
 
                 $fancy_profit = $profit_and_loss_amount;
                 $fancy_loss = $proift_or_loss;
             }
 
-            if($fancy_loss <= 0 && $fancy_profit > 0){
+            if ($fancy_loss <= 0 && $fancy_profit > 0) {
                 $expamt = 0;
             }
 
@@ -7615,7 +7597,6 @@ class SettingController extends Controller
                                 $adminData->update();
 
 
-
                                 //calculating parent balance
                                 $parentid = self::GetAllParentofPlayer($uid);
                                 $parentid = json_decode($parentid);
@@ -7633,8 +7614,7 @@ class SettingController extends Controller
                                     }
                                 }
                                 //end for calculating parent balance
-                            }
-                            else if ($trans->loss != '' && $trans->win_type == 'Loss') {
+                            } else if ($trans->loss != '' && $trans->win_type == 'Loss') {
 
                                 $settings = setting::latest('id')->first();
                                 $adm_balance = $settings->balance;
@@ -7665,7 +7645,7 @@ class SettingController extends Controller
 
                             // removing account statment entries from account table         :: JEET DUMS
 
-                            UsersAccount::where("user_exposure_log_id",$trans->id)->delete();
+                            UsersAccount::where("user_exposure_log_id", $trans->id)->delete();
                         }
                     }
                     //end for calculating admin balance
@@ -7926,8 +7906,7 @@ class SettingController extends Controller
                             $bm_win_type = $expo->win_type;
                         }
                     }
-                }
-                else {
+                } else {
                     $odds_win_type = 'Cancel';
                     $userData = MyBets::where("match_id", $match->event_id)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
                     //$betnew=MyBets::where('match_id',$match->event_id)->where('bet_type','!=','SESSION')->where('result_declare',0)->where("user_id", $userid)->groupby('user_id')->get();
@@ -7971,43 +7950,42 @@ class SettingController extends Controller
                     $upd = $updc->update();
                     if ($upd) {
 
-                            //admin balance update
-                            $settings = setting::latest('id')->first();
-                            $adm_balance = $settings->balance;
-                            $new_balance = $adm_balance + $odds_profit;
+                        //admin balance update
+                        $settings = setting::latest('id')->first();
+                        $adm_balance = $settings->balance;
+                        $new_balance = $adm_balance + $odds_profit;
 
-                            $adminData = setting::find($settings->id);
+                        $adminData = setting::find($settings->id);
+                        $adminData->balance = $new_balance;
+                        $adminData->update();
+                        //end for admin balance
+
+                        //update commission on my player's parent account
+                        if ($my_parent > 1) {
+                            $creditref_bal = CreditReference::where(['player_id' => $my_parent])->first();
+                            $bal = $creditref_bal->remain_bal;
+                            $available_balance = $creditref_bal->available_balance_for_D_W;
+
+                            $upd_ = CreditReference::find($creditref_bal->id);
+                            //$upd_->available_balance_for_D_W =$available_balance-$calculated_commission;
+                            $upd_->available_balance_for_D_W = $available_balance;
+                            $update_parent = $upd_->update();
+                        } else {
+                            $setting = setting::latest('id')->first();
+                            $balance = $setting->balance;
+                            $new_balance = $balance - $calculated_commission;
+
+                            $adminData = setting::find($setting->id);
                             $adminData->balance = $new_balance;
                             $adminData->update();
-                            //end for admin balance
-
-                            //update commission on my player's parent account
-                            if ($my_parent > 1) {
-                                $creditref_bal = CreditReference::where(['player_id' => $my_parent])->first();
-                                $bal = $creditref_bal->remain_bal;
-                                $available_balance = $creditref_bal->available_balance_for_D_W;
-
-                                $upd_ = CreditReference::find($creditref_bal->id);
-                                //$upd_->available_balance_for_D_W =$available_balance-$calculated_commission;
-                                $upd_->available_balance_for_D_W = $available_balance;
-                                $update_parent = $upd_->update();
-                            } else {
-                                $setting = setting::latest('id')->first();
-                                $balance = $setting->balance;
-                                $new_balance = $balance - $calculated_commission;
-
-                                $adminData = setting::find($setting->id);
-                                $adminData->balance = $new_balance;
-                                $adminData->update();
-                            }
+                        }
 
                         //end for updating commission on player's parent account
                         $userData = MyBets::where("match_id", $match->event_id)->where("user_id", $userid)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
                         //delete exposer log
                         $del_exp = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', 'ODDS')->delete();
                     }
-                }
-                else if ($odds_win_type == 'Loss') {
+                } else if ($odds_win_type == 'Loss') {
 
                     $getc = CreditReference::where('player_id', $userid)->first();
                     $creid = $getc['id'];
@@ -8018,13 +7996,13 @@ class SettingController extends Controller
                     $upd = $updc->update();
                     if ($upd) {
 
-                            $settings = setting::latest('id')->first();
-                            $adm_balance = $settings->balance;
-                            $new_balance = $adm_balance - $odds_loss;
+                        $settings = setting::latest('id')->first();
+                        $adm_balance = $settings->balance;
+                        $new_balance = $adm_balance - $odds_loss;
 
-                            $adminData = setting::find($settings->id);
-                            $adminData->balance = $new_balance;
-                            $adminData->update();
+                        $adminData = setting::find($settings->id);
+                        $adminData->balance = $new_balance;
+                        $adminData->update();
 
 
                         $userData = MyBets::where("match_id", $match->event_id)->where("user_id", $userid)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
@@ -8046,20 +8024,19 @@ class SettingController extends Controller
                     $upd = $updc->update();
                     if ($upd) {
 
-                            $settings = setting::latest('id')->first();
-                            $adm_balance = $settings->balance;
-                            $new_balance = $adm_balance + $bm_profit;
+                        $settings = setting::latest('id')->first();
+                        $adm_balance = $settings->balance;
+                        $new_balance = $adm_balance + $bm_profit;
 
-                            $adminData = setting::find($settings->id);
-                            $adminData->balance = $new_balance;
-                            $adminData->update();
+                        $adminData = setting::find($settings->id);
+                        $adminData->balance = $new_balance;
+                        $adminData->update();
 
 
                         $userData = MyBets::where("match_id", $match->event_id)->where("user_id", $userid)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
                         $del_exp = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', 'BOOKMAKER')->delete();
                     }
-                }
-                else if ($bm_win_type == 'Loss') {
+                } else if ($bm_win_type == 'Loss') {
 
                     $getc = CreditReference::where('player_id', $userid)->first();
                     $creid = $getc['id'];
@@ -8070,13 +8047,13 @@ class SettingController extends Controller
                     $upd = $updc->update();
                     if ($upd) {
 
-                            $settings = setting::latest('id')->first();
-                            $adm_balance = $settings->balance;
-                            $new_balance = $adm_balance - $bm_loss;
+                        $settings = setting::latest('id')->first();
+                        $adm_balance = $settings->balance;
+                        $new_balance = $adm_balance - $bm_loss;
 
-                            $adminData = setting::find($settings->id);
-                            $adminData->balance = $new_balance;
-                            $adminData->update();
+                        $adminData = setting::find($settings->id);
+                        $adminData->balance = $new_balance;
+                        $adminData->update();
 
 
                         $userData = MyBets::where("match_id", $match->event_id)->where("user_id", $userid)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
@@ -8084,7 +8061,7 @@ class SettingController extends Controller
                     }
                 }
 
-                if(count($expoLogIds) > 0) {
+                if (count($expoLogIds) > 0) {
                     UsersAccount::whereIn("user_exposure_log_id", $expoLogIds)->delete();
                 }
             }
@@ -8515,7 +8492,7 @@ class SettingController extends Controller
     public static function getExAmount($sportID = '', $id = '', $winner, $mid, $matchname, $bettype)
     {
 
-        $masterAdmin = User::where("agent_level","COM")->first();
+        $masterAdmin = User::where("agent_level", "COM")->first();
         $settings = setting::latest('id')->first();
         $adm_balance = $settings->balance;
         $team1_bet_total = '';
@@ -8594,8 +8571,7 @@ class SettingController extends Controller
                             $team1_bet_total = $team1_bet_total + $bet->bet_amount;
                         }
                     }
-                }
-                else if (is_array($abc) && count($abc) == 1) {
+                } else if (is_array($abc) && count($abc) == 1) {
                     if (array_key_exists("teamname1", $abc)) {
                         //bet on team2
                         if ($bet->bet_side == 'back') {
@@ -8635,7 +8611,7 @@ class SettingController extends Controller
             } else {
                 $loss = $team1_bet_total;
 
-                if($team2_bet_total > 0)
+                if ($team2_bet_total > 0)
                     $profit = $team2_bet_total;
                 else
                     $profit = 0;
@@ -8701,7 +8677,7 @@ class SettingController extends Controller
 
                     $adm_balance = $adm_balance - $profit;
 
-                    if($calculated_commission > 0) {
+                    if ($calculated_commission > 0) {
                         UsersAccount::create([
                             'user_id' => $id,
                             'from_user_id' => $id,
@@ -8749,7 +8725,7 @@ class SettingController extends Controller
 //                            $upd_->available_balance_for_D_W = $available_balance;
 //                            $update_parent = $upd_->update();
                         } else {
-                            if($calculated_commission > 0) {
+                            if ($calculated_commission > 0) {
                                 $setting = setting::latest('id')->first();
                                 $balance = $setting->balance;
                                 $new_balance = $balance + $calculated_commission;
@@ -8778,8 +8754,7 @@ class SettingController extends Controller
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
@@ -8857,7 +8832,7 @@ class SettingController extends Controller
             } else {
                 $loss = $team2_bet_total;
 
-                if($team1_bet_total > 0)
+                if ($team1_bet_total > 0)
                     $profit = $team1_bet_total;
                 else
                     $profit = 0;
@@ -8921,7 +8896,7 @@ class SettingController extends Controller
 
                     $adm_balance = $adm_balance - $profit;
 
-                    if($calculated_commission > 0) {
+                    if ($calculated_commission > 0) {
                         UsersAccount::create([
                             'user_id' => $id,
                             'from_user_id' => $id,
@@ -8970,7 +8945,7 @@ class SettingController extends Controller
 //                            $upd_->available_balance_for_D_W = $available_balance;
 //                            $update_parent = $upd_->update();
                         } else {
-                            if($calculated_commission > 0) {
+                            if ($calculated_commission > 0) {
                                 $setting = setting::latest('id')->first();
                                 $balance = $setting->balance;
                                 $new_balance = $balance + $calculated_commission;
@@ -8998,8 +8973,7 @@ class SettingController extends Controller
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
@@ -9072,7 +9046,7 @@ class SettingController extends Controller
             } else {
                 $loss = $team_draw_bet_total;
 
-                if($team1_bet_total > 0)
+                if ($team1_bet_total > 0)
                     $profit = $team1_bet_total;
                 else
                     $profit = 0;
@@ -9137,7 +9111,7 @@ class SettingController extends Controller
 
                     $adm_balance = $adm_balance - $profit;
 
-                    if($calculated_commission > 0) {
+                    if ($calculated_commission > 0) {
                         UsersAccount::create([
                             'user_id' => $id,
                             'from_user_id' => $id,
@@ -9185,7 +9159,7 @@ class SettingController extends Controller
 //                            $upd_->available_balance_for_D_W = $available_balance;
 //                            $update_parent = $upd_->update();
                         } else {
-                            if($calculated_commission > 0) {
+                            if ($calculated_commission > 0) {
                                 $setting = setting::latest('id')->first();
                                 $balance = $setting->balance;
                                 $new_balance = $balance + $calculated_commission;
@@ -9280,8 +9254,9 @@ class SettingController extends Controller
     {
         $mid = $request->matchid;
         $win = $request->winner;
-        if(empty($win) || $win==null){
-            echo 'Problem';exit();
+        if (empty($win) || $win == null) {
+            echo 'Problem';
+            exit();
         }
 
         $result = $this->updateMatchWinnerResult($mid, $win);
@@ -9689,8 +9664,7 @@ class SettingController extends Controller
             } else {
                 return ['message' => 'Problem'];
             }
-        }
-        else {
+        } else {
             $settingData = Match::find($mid);
             $settingData->winner = ($win);
             $upd = $settingData->update();
@@ -9704,26 +9678,26 @@ class SettingController extends Controller
                     $exposer = SELF::getExAmount($match->event_id, $b->user_id, ($win), $match->id, $match->match_name, 'BOOKMAKER');
                 }
 
-                    //calculating admin balance
-                    $admin_tran = UserExposureLog::where('match_id', $match->id)->get();
-                    $admin_profit = 0;
-                    $admin_loss = 0;
-                    foreach ($admin_tran as $trans) {
-                        if ($trans->profit != '' && $trans->win_type == 'Profit') {
-                            $admin_loss += abs($trans->profit);
+                //calculating admin balance
+                $admin_tran = UserExposureLog::where('match_id', $match->id)->get();
+                $admin_profit = 0;
+                $admin_loss = 0;
+                foreach ($admin_tran as $trans) {
+                    if ($trans->profit != '' && $trans->win_type == 'Profit') {
+                        $admin_loss += abs($trans->profit);
 
-                        } else if ($trans->loss != '' && $trans->win_type == 'Loss') {
-                            $admin_profit += abs($trans->loss);
-                        }
+                    } else if ($trans->loss != '' && $trans->win_type == 'Loss') {
+                        $admin_profit += abs($trans->loss);
                     }
-                    $settings = setting::latest('id')->first();
-                    $adm_balance = $settings->balance;
-                    $new_balance = $adm_balance + $admin_profit - $admin_loss;
+                }
+                $settings = setting::latest('id')->first();
+                $adm_balance = $settings->balance;
+                $new_balance = $adm_balance + $admin_profit - $admin_loss;
 
-                    $adminData = setting::find($settings->id);
-                    $adminData->balance = $new_balance;
-                    $adminData->update();
-                    //end for calculating admin balance
+                $adminData = setting::find($settings->id);
+                $adminData->balance = $new_balance;
+                $adminData->update();
+                //end for calculating admin balance
 
 
                 //update in my_bet table for bet winner
@@ -9810,8 +9784,7 @@ class SettingController extends Controller
                             $team1_bet_total = $team1_bet_total - $bet->bet_amount;
                         }
                     }
-                }
-                else if (count($abc) == 1) {
+                } else if (count($abc) == 1) {
                     if (array_key_exists("teamname1", $abc)) {
                         //bet on team2
                         if ($bet->bet_side == 'back') {
@@ -10421,8 +10394,7 @@ class SettingController extends Controller
                                             } else if ($bet->bet_odds > $run_arr[$kk]) {
                                                 $bet_deduct_amt = $bet_deduct_amt - $bet->bet_amount;
                                             }
-                                        }
-                                        else if ($bet->bet_side == 'back') {
+                                        } else if ($bet->bet_side == 'back') {
                                             if ($bet->bet_odds == $run_arr[$kk]) {
                                                 $bet_deduct_amt = $bet_deduct_amt - $bet->bet_profit;
                                             } else if ($bet->bet_odds < $run_arr[$kk]) {
@@ -10513,8 +10485,7 @@ class SettingController extends Controller
                                 <td class="back1 text-center"></td>
 							</tr>';
                         }
-                    }
-                    else {
+                    } else {
                         $placed_bet = '';
                         $position = '';
                         $bet_model = '';

@@ -10504,7 +10504,7 @@ class FrontController extends Controller
         foreach ($gmdata as $data) {
 
             if($btyp == 'casino'){
-                $winner = $data->winner;
+                $winner = strtolower($data->winner);
                 $html .= '<tr role="row" class="' . $data->bet_side . '">
                     <td aria-colindex="1" role="cell" class="text-right">
                         <span>' . $i . '</span>
@@ -10515,23 +10515,23 @@ class FrontController extends Controller
                 $html .= '<td aria-colindex="5" role="cell" class="text-center">' . $data->odds_value . '</td>';
                 $html .= '<td aria-colindex="6" role="cell" class="text-right">' . $data->stake_value . '</td>';
                 $html.='<td aria-colindex="7" role="cell" class="text-right">';
-                if ($winner == $data->team_name && $data->bet_side == 'back') {
+                if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
                     $sumAmt += $data->casino_profit;
                     $html .= '<span class="text-success">' . $data->casino_profit . '</span> ';
-                } else if ($winner != $data->team_name && $data->bet_side == 'back') {
+                } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'back') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">' . $data->exposureAmt . '</span> ';
-                } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $sumAmt += $data->casino_profit;
                     $html .= '<span class="text-success">' . $data->casino_profit . '</span> ';
-                } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if ($winner == strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $sumAmt -= $data->exposureAmt;
                     $html .= '<span class="text-danger">' . $data->exposureAmt . '</span> ';
                 }
 
                 $html .= '</td><td aria-colindex="9" role="cell" class="text-center">' . $data->created_at . '</td></tr>';
             }else {
-                $winner = ucwords($matchdata->winner);
+                $winner = strtolower($matchdata->winner);
                 $html .= '
 	    	<tr role="row" class="' . $data->bet_side . '">
 	            <td aria-colindex="1" role="cell" class="text-right">
@@ -10558,23 +10558,23 @@ class FrontController extends Controller
 	            <td aria-colindex="6" role="cell" class="text-right">' . $data->bet_amount . '</td>
 	            <td aria-colindex="7" role="cell" class="text-right">';
                 if ($data->bet_type == 'ODDS') {
-                    if ($winner == $data->team_name && $data->bet_side == 'back') {
+                    if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
                         $sumAmt += $data->bet_profit;
 
                         $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                    } else if ($winner != $data->team_name && $data->bet_side == 'back') {
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'back') {
                         $sumAmt -= $data->exposureAmt;
                         $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                    } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'lay') {
                         $sumAmt += $data->bet_profit;
                         $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                    } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
+                    } else if ($winner == strtolower($data->team_name) && $data->bet_side == 'lay') {
                         $sumAmt -= $data->exposureAmt;
                         $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
@@ -10582,22 +10582,22 @@ class FrontController extends Controller
                     }
                 }
                 if ($data->bet_type == 'BOOKMAKER') {
-                    if ($winner == $data->team_name && $data->bet_side == 'back') {
+                    if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
                         $sumAmt += $data->bet_profit;
                         $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                    } else if ($winner != $data->team_name && $data->bet_side == 'back') {
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'back') {
                         $sumAmt -= $data->exposureAmt;
                         $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '
 			                </span> ';
-                    } else if ($winner != $data->team_name && $data->bet_side == 'lay') {
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'lay') {
                         $sumAmt += $data->bet_profit;
                         $html .= '<span class="text-success">
 			                    ' . $data->bet_profit . '
 			                </span> ';
-                    } else if ($winner == $data->team_name && $data->bet_side == 'lay') {
+                    } else if ($winner == strtolower($data->team_name) && $data->bet_side == 'lay') {
                         $sumAmt -= $data->exposureAmt;
                         $html .= '<span class="text-danger">
 			                    ' . $data->exposureAmt . '

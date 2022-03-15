@@ -59,9 +59,9 @@ else{
                         <div class="middle-wraper1">
                             <div class="home-carousel owl-reponsive owl-carousel owl-theme">
                                 @foreach($banner as $banners)
-                                <div class="itemslider">
-                                    <img src="{{ URL::to('asset/upload')}}/{{$banners->banner_image}}" alt="Image">
-                                </div>
+                                    <div class="itemslider">
+                                        <img src="{{ URL::to('asset/upload')}}/{{$banners->banner_image}}" alt="Image">
+                                    </div>
                                 @endforeach
                                 <!-- <div class="itemslider">
                                     <img src="{{ URL::to('asset/front/img/slider/slider-2.png') }}" alt="Image">
@@ -75,10 +75,10 @@ else{
                                 	<div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 p-1">
                                     	<div class="casino_list_items">
                                             <a href="{{route('cricket')}}">
-                                            <dl id="onLiveBoard" class="on_live"><dt><p class="live_icon"><span></span> LIVE</p></dt><dd id="onLiveCount_CRICKET"><p>Cricket</p><span class="cricketCount" id=""></span></dd><dd id="onLiveCount_SOCCER"><p>Soccer</p><span class="soccerCount" id=""></span></dd><dd id="onLiveCount_TENNIS"><p>Tennis</p><span class="tennisCount" id=""></span></dd></dl>
-                                            <img src="{{ URL::to('asset/front/img/home-screen/banner_sports.png') }} " alt="">
-                                            <dl class="entrance-title"><dt>Bet Games</dt><dd> <span class="blink_me"> Play Now </span> </dd></dl>
-                                        </a>
+                                                <dl id="onLiveBoard" class="on_live"><dt><p class="live_icon"><span></span> LIVE</p></dt><dd id="onLiveCount_CRICKET"><p>Cricket</p><span class="cricketCount" id=""></span></dd><dd id="onLiveCount_SOCCER"><p>Soccer</p><span class="soccerCount" id=""></span></dd><dd id="onLiveCount_TENNIS"><p>Tennis</p><span class="tennisCount" id=""></span></dd></dl>
+                                                <img src="{{ URL::to('asset/front/img/home-screen/banner_sports.png') }} " alt="">
+                                                <dl class="entrance-title"><dt>Bet Games</dt><dd> <span class="blink_me"> Play Now </span> </dd></dl>
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12  p-1">

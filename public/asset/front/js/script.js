@@ -78,8 +78,9 @@ if ($('.home-carousel').length) {
         margin: 0,
         items: 1,
         nav: false,
-        smartSpeed: 500,
         autoplay: true,
+        autoplayTimeout:2000,
+        autoplayHoverPause:false,
         navText: ['', ''],
         responsive: {
             0: {

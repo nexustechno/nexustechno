@@ -40,27 +40,27 @@
                     </td>
                     <td :data-team="'team'+(index+1)" class="light-blue-bg-2 opnForm ODDSBack" :class="'td_team'+(index+1)+'_back_2'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToBack[2].price" data-cls="cyan-bg"
-                           class="back1btn text-color-black"> {{ runner.ex.availableToBack[2].price }} <br><span>{{ nFormatter(runner.ex.availableToBack[2].size,1) }}</span></a>
+                           class="back1btn text-color-black"> {{ runner.ex.availableToBack[2].price }} <br><span>{{ runner.ex.availableToBack[2].size }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="link(target, link)ght-blue-bg-3 ODDSBack" :class="'td_team'+(index+1)+'_back_1'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" data-cls="cyan-bg" :data-val="runner.ex.availableToBack[1].price"
-                           class="back1btn text-color-black"> {{ runner.ex.availableToBack[1].price }}<br><span>{{ nFormatter(runner.ex.availableToBack[1].size,1) }}</span></a>
+                           class="back1btn text-color-black"> {{ runner.ex.availableToBack[1].price }}<br><span>{{ runner.ex.availableToBack[1].size }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="cyan-bg ODDSBack" :class="'td_team'+(index+1)+'_back_0'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToBack[0].price" data-cls="cyan-bg"
-                           class="back1btn text-color-black"> {{ runner.ex.availableToBack[0].price }} <br><span>{{ nFormatter(runner.ex.availableToBack[0].size,1) }}</span></a>
+                           class="back1btn text-color-black"> {{ runner.ex.availableToBack[0].price }} <br><span>{{ runner.ex.availableToBack[0].size }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="pink-bg ODDSLay" :class="'td_team'+(index+1)+'_lay_0'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToLay[0].price" data-cls="pink-bg"
-                           class="lay1btn text-color-black"> {{ runner.ex.availableToLay[0].price }} <br><span>{{ nFormatter(runner.ex.availableToLay[0].size,1) }}</span></a>
+                           class="lay1btn text-color-black"> {{ runner.ex.availableToLay[0].price }} <br><span>{{ runner.ex.availableToLay[0].size }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="light-pink-bg-2 ODDSLay" :class="'td_team'+(index+1)+'_lay_1'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToLay[1].price" data-cls="pink-bg"
-                           class="lay1btn text-color-black"> {{ runner.ex.availableToLay[1].price }} <br><span>{{ nFormatter(runner.ex.availableToLay[1].size,1) }}</span></a>
+                           class="lay1btn text-color-black"> {{ runner.ex.availableToLay[1].price }} <br><span>{{ runner.ex.availableToLay[1].size }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="light-pink-bg-3 ODDSLay" :class="'td_team'+(index+1)+'_lay_2'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToLay[2].price" data-cls="pink-bg"
-                           class="lay1btn text-color-black"> {{ runner.ex.availableToLay[2].price }} <br><span>{{ nFormatter(runner.ex.availableToLay[2].size,1) }}</span></a>
+                           class="lay1btn text-color-black"> {{ runner.ex.availableToLay[2].price }} <br><span>{{ runner.ex.availableToLay[2].size }}</span></a>
                     </td>
                 </tr>
                 <tr id="mobile_tr" class="mobileBack mobile_bet_model_div" :class="'tr_team'+(index+1)">

@@ -56,7 +56,7 @@ class UpdateMatchWinner extends Command
 
                     if (!empty($apiResultData) && isset($apiResultData[0]) && isset($apiResultData[0]['runners']) && isset($apiResultData[0]['runners'][0]) && $apiResultData[0]['runners']!=null) {
 
-                        $teams = explode(" v ", strtolower($match->match_name));
+                        $teams = explode(" v ", $match->match_name);
                         if (count($apiResultData[0]['runners']) >= 3) {
                             $teams[] = "The Draw";
                         }

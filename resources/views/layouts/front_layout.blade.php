@@ -1,6 +1,5 @@
 <?php
 //echo $main_url[0]; exit;
-
 use App\Website;
 use App\CreditReference;
 use App\Match;
@@ -8,19 +7,15 @@ use Carbon\Carbon;
 use App\UserStake;
 use App\setting;
 use App\User;
-
-
 $getUserCheck = Session::get('playerUser');
 if ($getUserCheck) {
     $mntnc = setting::first();
     $msg = $mntnc->maintanence_msg;
 }
-
-
 ?>
 @if($website->status == 1)
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -121,12 +116,15 @@ if (!$DEVICE) {
                             <ul>
                                 <li class="li-tv_bet d-lg-none">
                                     @if($page2=='matchDetail' && $is_agent=='mobile')
-                                        <a id="openTv" class="a-open_tv" data-toggle="collapse" data-target="#live_tv"><img
+                                        <a id="openTv" class="a-open_tv" data-toggle="collapse"
+                                           data-target="#live_tv"><img
                                                 src="{{ URL::to('asset/front/img/tv.svg')}}"></a>
                                         <a id="openBetsBtn" class="a-open_bets"><img
                                                 src="{{ URL::to('asset/front/img/coin.svg')}}">Bets</a>
                                     @else
-                                        <a id="openTv" class="a-open_tv"><img style="width: 100%;height: 100%;object-fit: contain;" src="{{ URL::to('ag/asset/front/img')}}/{{$website->logo}}"></a>
+                                        <a id="openTv" class="a-open_tv"><img
+                                                style="width: 100%;height: 100%;object-fit: contain;"
+                                                src="{{ URL::to('ag/asset/front/img')}}/{{$website->logo}}"></a>
                                     @endif
                                 </li>
                                 <li class="text-color-yellow1 mobile_balance">
@@ -764,79 +762,6 @@ if (!$DEVICE) {
 
 <script type="text/javascript">
     var getUser = '<?php echo isset($getUser) ? $getUser : '' ?>';
-    /*
-    function disableBack() { window.history.forward(); }
-    setTimeout("disableBack()", 0);
-    window.onunload = function () { null };
-
-        // right click disable
-        $(document).bind("contextmenu",function(e){
-
-            window.location.replace("https://www.google.com/");
-            return false;
-        });
-
-        // disable using keys
-        $(document).keydown(function(e){
-            if(e.which === 123){
-               return false;
-            }
-
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-                return false;
-            }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-                return false;
-            }
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-                return false;
-            }
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-                return false;
-            }
-        });
-
-    console.log('Is DevTools open:', window.devtools.isOpen);
-
-
-    console.log('DevTools orientation:', window.devtools.orientation);
-
-
-    window.addEventListener('devtoolschange', event => {
-        if(event.detail.isOpen){
-
-            $.ajax({
-
-                type: 'POST',
-
-                url: '{{route("autoLogout")}}',
-
-            success: function(data) {
-
-             window.location.replace("https://www.google.com/");
-            }
-
-        });
-        window.location.replace("https://www.google.com/");
-    }
-    if(window.devtools.isOpen){
-        $.ajax({
-
-            type: 'POST',
-
-            url: '{{route("autoLogout")}}',
-
-            success: function(data) {
-
-             window.location.replace("https://www.google.com/");
-            }
-
-        });
-        window.location.replace("https://www.google.com/");
-    }
-    console.log('Is DevTools open1:', event.detail.isOpen);
-    console.log('DevTools orientation1:', event.detail.orientation);
-});*/
 </script>
 <script type="text/javascript">
     $(document).ajaxStart(function () {
@@ -847,32 +772,9 @@ if (!$DEVICE) {
     });
 </script>
 <script type="text/javascript">
+
     var _token = $("input[name='_token']").val();
 
-    $(document).ready(function () {
-        //default call
-        if (getUser != '') {
-            {{--$(window).load(function () {--}}
-            {{--    $.ajax({--}}
-            {{--        type: "POST",--}}
-            {{--        url: '<?php echo e(route("getleftpanelMenu")); ?>',--}}
-            {{--        data: {_token: _token},--}}
-            {{--        timeout: 200000,--}}
-            {{--        beforeSend: function () {--}}
-            {{--            $('#site_statistics_loading').show();--}}
-            {{--        },--}}
-            {{--        complete: function () {--}}
-            {{--            $('#site_statistics_loading').hide();--}}
-            {{--        },--}}
-            {{--        success: function (data) {--}}
-
-            {{--            $(".leftul").html(data);--}}
-
-            {{--        }--}}
-            {{--    });--}}
-            {{--});--}}
-        }
-    });
     $("#refreshpage").click(function () {
         window.location.reload();
     });
@@ -1170,68 +1072,68 @@ if (!$DEVICE) {
     // console.log(matchesToBeDisplay);
 
     var cricketCount = localStorage.getItem('cricketCount');
-    if(cricketCount!=undefined && cricketCount!=null && cricketCount!='') {
+    if (cricketCount != undefined && cricketCount != null && cricketCount != '') {
         $('.cricketCount').html(cricketCount);
     }
 
     var tennisCount = localStorage.getItem('tennisCount');
-    if(tennisCount!=undefined && tennisCount!=null && tennisCount!='') {
+    if (tennisCount != undefined && tennisCount != null && tennisCount != '') {
         $('.tennisCount').html(tennisCount);
     }
 
     var soccerCount = localStorage.getItem('soccerCount');
-    if(soccerCount!=undefined && soccerCount!=null && soccerCount!='') {
+    if (soccerCount != undefined && soccerCount != null && soccerCount != '') {
         $('.soccerCount').html(soccerCount);
     }
 
     window.Echo.channel('matches').listen('.cricket', (data) => {
         var inPlayCount = 0;
         var cricketLeftMenuHtml = '';
-        for(var i=0;i<data.records.length;i++){
-            if(matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
+        for (var i = 0; i < data.records.length; i++) {
+            if (matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
                 if (data.records[i].inPlay == 'True') {
                     inPlayCount++;
                 }
 
                 var eventNameString = data.records[i].eventName.split('/');
-                cricketLeftMenuHtml+='<li><a href="/matchDetail/'+ data.records[i].gameId+'" class="text-color-black2">'+eventNameString[0]+'</a></li>'
+                cricketLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
             }
 
         }
-        localStorage.setItem('cricketCount',inPlayCount);
+        localStorage.setItem('cricketCount', inPlayCount);
         $('.cricketCount').html(inPlayCount);
         $('ul#homeSubmenu_4').html(cricketLeftMenuHtml);
         // console.log("inplay cricket count ",inPlayCount);
     }).listen('.tennis', (data) => {
         var inPlayCount = 0;
         var tennisLeftMenuHtml = '';
-        for(var i=0;i<data.records.length;i++){
-            if(matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
+        for (var i = 0; i < data.records.length; i++) {
+            if (matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
                 if (data.records[i].inPlay == 'True') {
                     inPlayCount++;
                 }
                 var eventNameString = data.records[i].eventName.split('/');
-                tennisLeftMenuHtml+='<li><a href="/matchDetail/'+ data.records[i].gameId+'" class="text-color-black2">'+eventNameString[0]+'</a></li>'
+                tennisLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
             }
         }
-        localStorage.setItem('tennisCount',inPlayCount);
+        localStorage.setItem('tennisCount', inPlayCount);
         $('.tennisCount').html(inPlayCount);
         $('ul#homeSubmenu_2').html(tennisLeftMenuHtml);
         // console.log("inplay tennisCount count ",inPlayCount);
     }).listen('.soccer', (data) => {
         var inPlayCount = 0;
         var soccerLeftMenuHtml = '';
-        for(var i=0;i<data.records.length;i++){
-            if(matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
+        for (var i = 0; i < data.records.length; i++) {
+            if (matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
                 if (data.records[i].inPlay == 'True') {
                     inPlayCount++;
                 }
 
                 var eventNameString = data.records[i].eventName.split('/');
-                soccerLeftMenuHtml+='<li><a href="/matchDetail/'+ data.records[i].gameId+'" class="text-color-black2">'+eventNameString[0]+'</a></li>'
+                soccerLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
             }
         }
-        localStorage.setItem('soccerCount',inPlayCount);
+        localStorage.setItem('soccerCount', inPlayCount);
         $('.soccerCount').html(inPlayCount);
         $('ul#homeSubmenu_1').html(soccerLeftMenuHtml);
         // console.log("inplay soccerCount count ",inPlayCount);
@@ -1273,9 +1175,9 @@ if (!$DEVICE) {
         </style>
     </head>
     <body style="background-image: url(/public/asset/img/maintance-image.jpg)">
-        <div class="txt_maintanence">
-            <h1 style="color: #fff;">{{$msg}}</h1>
-        </div>
+    <div class="txt_maintanence">
+        <h1 style="color: #fff;">{{$msg}}</h1>
+    </div>
     </body>
     </html>
 @endif
