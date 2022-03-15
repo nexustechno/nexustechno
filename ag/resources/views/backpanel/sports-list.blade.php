@@ -424,7 +424,7 @@ use App\Match;
                                 toastr.success('Winner set successfully!');
                                 setTimeout(function() {
                                     location.reload();
-                                }, 500);
+                                }, 100);
 
                             } else if (data.trim() == 'Fail') {
                                 toastr.error('First decide result of fancy!');
