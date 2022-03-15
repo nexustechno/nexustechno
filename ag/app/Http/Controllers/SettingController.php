@@ -8790,7 +8790,6 @@ class SettingController extends Controller
 
                     $adm_balance = $adm_balance + abs($loss);
 
-
                     $upd = CreditReference::find($creditref['id']);
                     $upd->exposure = $exposer;
                     $upd->available_balance_for_D_W = $balance;

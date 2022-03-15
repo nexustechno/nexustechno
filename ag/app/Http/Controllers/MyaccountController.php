@@ -591,7 +591,7 @@ class MyaccountController extends Controller
 
         if ($childlist != 0) {
             $chk = User::where('id', $childlist)->first();
-
+            $clist = [$childlist];
             if ($chk->agent_level == 'PL') {
                 if ($sport_data != 0) {
                     $getresult = MyBets::select('my_bets.match_id', 'my_bets.sportID')
@@ -847,7 +847,8 @@ class MyaccountController extends Controller
                 } else {
                     $html .= 'No Record Found';
                 }
-            } else {
+            }
+            else {
                 $all_child = UserHirarchy::where('agent_user', $childlist)->first();
                 $clist = (explode(",", $all_child->sub_user));
                 $cmp = 0;
@@ -1161,7 +1162,8 @@ class MyaccountController extends Controller
                     $html .= 'No Record Found';
                 }
             }
-        } else {
+        }
+        else {
             $loginuser = Auth::user();
             $all_child = UserHirarchy::where('agent_user', $loginuser->id)->first();
             $clist = (explode(",", $all_child->sub_user));
@@ -1339,9 +1341,6 @@ class MyaccountController extends Controller
                                 if (!empty($usercm->commission)) {
                                     $cmp += $usercm->commission;
                                 }
-                                //echo $cmdata;
-                                //echo "**";
-
                             }
 
                             $exposer_bm_a = UserExposureLog::where('bet_type', 'BOOKMAKER')->where('match_id', $matchdata->id)->whereBetween('created_at', [$fromdate, $todate])->whereIn('user_id', $result_list)->whereBetween('created_at', [$fromdate, $todate])->get();
@@ -1431,10 +1430,8 @@ class MyaccountController extends Controller
                         $html .= '<td class="white-bg"> -- </td>';
                     }
 
-                    /* if(!empty($ttlodd))
-                        {*/
                     $ttlnp = $ttlodd + $sumAmtb + $sumAmt;
-                    //$ttlnps+=$ttlnp;
+
                     if ($ttlnp > 0) {
                         $ttlnpR += $ttlnp;
                         $html .= '<td class="white-bg text-color-red">' . round($ttlnp, 2) . '</td>';
@@ -1443,40 +1440,67 @@ class MyaccountController extends Controller
                         $html .= '<td class="white-bg text-color-green">' . round(abs($ttlnp), 2) . '</td>';
                     }
                     $ttlnps1 = abs($ttlnpG) - abs($ttlnpR);
-                    //}
-                    /*else if(empty($sumAmto))
-                        {
-                            $ttlnp=$sumAmtb+$sumAmt;
-                            if($ttlnp > 0)
-                            {
-                                $ttlnpsR+=$ttlnp;
-                                $html.='<td class="white-bg text-color-red">'.round($ttlnp,2).'</td>';
-                            }
-                            else{
-                                $ttlnpsG+=$ttlnp;
-                                //$ttlnpG+=$ttlnp;
-                                $html.='<td class="white-bg text-color-green">'.round(abs($ttlnp),2).'</td>';
-                            }
-                            $ttlnps2=abs($ttlnpsG)-abs($ttlnpsR);
-                        }*/
-                    /* else{
 
-                            $html.='<td class="white-bg"> -- </td>';
-                        }*/
                     $html .= '
                     </tr>';
                 }
             } else {
-                $html .= 'No Record Found';
+//                $html .= 'No Record Found';
             }
         }
+
+        $casino_entries = UsersAccount::whereIn('user_id', $clist)->where('casino_id', ">", 0)->get();
+
+        if(!empty($casino_entries)){
+            foreach ($casino_entries as $statment){
+                $casino = Casino::find($statment->casino_id);
+                $casinoBet = CasinoBet::find($statment->user_exposure_log_id);
+                if(!empty($casinoBet)) {
+                    $html .= '<tr>
+                    <td class="white-bg"><img src="' . asset('asset/img/plus-icon.png') . '">
+                        <a class="ico_account text-color-blue-light">
+                            CASINO <i class="fas fa-caret-right text-color-grey"></i> <strong> ' . $casino->casino_title . ' </strong>
+                        </a>
+                    </td>';
+
+                    if ($statment->credit_amount > 0) {
+                        $totcmsG += $statment->credit_amount;
+                        $html .= '<td class="white-bg text-color-green">' . round($statment->credit_amount, 2) . ' </td>';
+                    } else {
+                        $totcmsR -= $statment->debit_amount;
+                        $html .= '<td class="white-bg text-color-red">' . round(abs($statment->debit_amount), 2) . ' </td>';
+                    }
+
+                    $totAmto += $casinoBet->stake_value;
+
+                    $html .= '<td class="white-bg text-color-red">' . round(abs($casinoBet->stake_value), 2) . ' </td>';
+                    $html .= '<td class="white-bg text-color-red">0</td>';
+                    $html .= '<td class="white-bg text-color-red">0</td>';
+                    $html .= '<td class="white-bg text-color-red">0</td>';
+                    $html .= '<td class="white-bg text-color-red">0</td>';
+
+                    if ($statment->credit_amount > 0) {
+                        $ttlnpR += $statment->credit_amount;
+                        $html .= '<td class="white-bg text-color-green">' . round($statment->credit_amount, 2) . '</td>';
+                    } else {
+                        $ttlnpG += $statment->debit_amount;
+                        $html .= '<td class="white-bg text-color-red">' . round($statment->debit_amount, 2) .'</td>';
+                    }
+                    $ttlnps1 = abs($ttlnpG) - abs($ttlnpR);
+
+                    $html .= "</tr>";
+                }
+            }
+        }
+
+
         $totcms = $totcmsG - abs($totcmsR);
         $totsumAmtb = $totsumAmtbG - abs($totsumAmtbR);
-        $totttlAmt += $ttlAmt;
+//        $totttlAmt += $ttlAmt;
         $totsumAmt = $sumAmtG - abs($sumAmtR);
 
         //$totttlnp = $ttlnpG-abs($ttlnpR);
-        $totttlnp += $sumAmtb + $sumAmt;
+//        $totttlnp += $sumAmtb + $sumAmt;
         if ($totcms < 0) {
             $totcmsClass = 'text-color-red';
         } else {

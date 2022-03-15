@@ -456,7 +456,7 @@ class FrontController extends Controller
         $html_bm = '';
         $html_bm_team = "";
 
-        @$team_name = explode(" v ", strtolower($matchname));
+        @$team_name = explode(" v ", ($matchname));
         $team1_name = @$team_name[0];
         if (@$team_name[1])
             @$team2_name = $team_name[1];
