@@ -69,9 +69,9 @@ class UpdateCasinoBetResults extends Command
                     continue;
                 }
 
-                dd($bet->user);
+//                dd($bet->user);
 
-//                $resp = $casinoCalculationController->updateCasinoWinner($result['data'], $casino,$bet->user);
+                $resp = $casinoCalculationController->updateCasinoWinner($result['data'], $casino,$bet->user);
 
                 Log::info("casino: " . $bet->casino_name);
                 Log::info($resp['message']);
