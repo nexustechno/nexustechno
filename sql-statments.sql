@@ -19,9 +19,10 @@ ALTER TABLE `casino_bet` CHANGE `winner` `winner` VARCHAR(100) CHARACTER SET utf
 
 ALTER TABLE `users_account` ADD `casino_id` INT NOT NULL AFTER `match_id`;
 
--- DONE
-
 ALTER TABLE `casino_bet` ADD `extra` TEXT NULL AFTER `winner`;
 ALTER TABLE `casino_bet` CHANGE `team_name` `team_name` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;
 ALTER TABLE `casino_bet` CHANGE `winner` `winner` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+-- DONE
+
+CREATE TABLE `works_rich`.`exposer_deduct_log` ( `id` INT NOT NULL , `user_id` INT NOT NULL , `action` VARCHAR(200) NOT NULL , `current_exposer` VARCHAR(200) NULL DEFAULT NULL , `new_exposer` VARCHAR(200) NULL DEFAULT NULL , `exposer_deduct` VARCHAR(200) NULL DEFAULT NULL , `match_id` VARCHAR(200) NULL DEFAULT NULL , `bet_type` VARCHAR(200) NULL DEFAULT NULL , `bet_amount` VARCHAR(200) NULL DEFAULT NULL , `odds_value` VARCHAR(200) NULL DEFAULT NULL , `odds_volume` VARCHAR(200) NULL DEFAULT NULL , `profit` VARCHAR(200) NULL DEFAULT NULL , `lose` VARCHAR(200) NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ) ENGINE = MyISAM;
 

@@ -70,7 +70,11 @@ class CasinoCalculationController extends Controller
             if(empty($roundid)) {
                 $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
             }else{
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('roundid', $roundid)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                if($roundid == 'not-equal-to-given-casino-name'){
+                    $casinoBets = CasinoBet::where("casino_name","!=", $casino_name)->where('roundid', $roundid)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                }else {
+                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('roundid', $roundid)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
+                }
             }
         } else {
             if(empty($roundid)) {
@@ -83,7 +87,12 @@ class CasinoCalculationController extends Controller
             'exposer' => 0,
         ];
         foreach ($casinoBets as $bet) {
-            $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name,$roundid);
+
+            if($roundid == 'not-equal-to-given-casino-name'){
+                $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name, '');
+            }else {
+                $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name, $roundid);
+            }
 
             if (isset($exAmtArr['ODDS'])) {
                 $arr = array();
