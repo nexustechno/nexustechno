@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ExposerDeductLog;
 use App\UsersAccount;
 use Illuminate\Http\Request;
 use App\setting;
@@ -767,6 +768,22 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
 
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => "Fancy ".$fancyname." > mytotal ".$mytotal." win type ".$betModel->win_type,
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($total_expo_amount),
+                        'match_id' => $mid,
+                        'bet_type' => $betModel->bet_type,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $mytotal,
+                        'lose' => abs($total_expo_amount),
+                        'available_balance' => $balance
+                    ]);
+
                     $available_balance = $creditref->available_balance_for_D_W + abs($total_expo_amount);
                     UsersAccount::create([
                         'user_id' => $id,
@@ -806,11 +823,28 @@ class SettingController extends Controller
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($total_expo_amount);
+
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => "Fancy ".$fancyname." > mytotal ".$mytotal." win type ".$betModel->win_type,
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($total_expo_amount),
+                        'match_id' => $mid,
+                        'bet_type' => $betModel->bet_type,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $mytotal,
+                        'lose' => abs($total_expo_amount),
+                        'available_balance' => $balance
+                    ]);
 
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
@@ -927,6 +961,22 @@ class SettingController extends Controller
                     //$remain_balance=$creditref->remain_bal-abs($total_expo_amount);   ///nnn 20-10-2021
                     $remain_balance = $creditref->remain_bal - abs($expamt);
 
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => "Fancy ".$fancyname." > mytotal ".$mytotal." win type ".$betModel->win_type,
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($total_expo_amount),
+                        'match_id' => $mid,
+                        'bet_type' => $betModel->bet_type,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $mytotal,
+                        'lose' => abs($total_expo_amount),
+                        'available_balance' => $balance
+                    ]);
+
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
                         'user_id' => $id,
@@ -967,12 +1017,28 @@ class SettingController extends Controller
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     $creditref = CreditReference::where(['player_id' => $id])->first();
                     $exposer = $creditref->exposure - abs($total_expo_amount);
                     $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
                     $remain_balance = $creditref->remain_bal + $mytotal;
 
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => "Fancy ".$fancyname." > mytotal ".$mytotal." win type ".$betModel->win_type,
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($total_expo_amount),
+                        'match_id' => $mid,
+                        'bet_type' => $betModel->bet_type,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $mytotal,
+                        'lose' => abs($total_expo_amount),
+                        'available_balance' => $balance
+                    ]);
 
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
@@ -1090,7 +1156,21 @@ class SettingController extends Controller
                 $balance = $creditref->available_balance_for_D_W + abs($total_expo_amount) + $mytotal;
 
                 $remain_balance = $creditref->remain_bal + $mytotal;
-
+                ExposerDeductLog::createLog([
+                    'user_id' => $id,
+                    'action' => "Fancy ".$fancyname." > mytotal ".$mytotal." win type ".$betModel->win_type,
+                    'current_exposer' => $creditref->exposure,
+                    'new_exposer' => $exposer,
+                    'exposer_deduct' => abs($total_expo_amount),
+                    'match_id' => $mid,
+                    'bet_type' => $betModel->bet_type,
+                    'bet_amount' => 0,
+                    'odds_value' => 0,
+                    'odds_volume' => 0,
+                    'profit' => $mytotal,
+                    'lose' => abs($total_expo_amount),
+                    'available_balance' => $balance
+                ]);
                 $available_balance = $creditref->available_balance_for_D_W;
                 UsersAccount::create([
                     'user_id' => $id,
@@ -8645,6 +8725,21 @@ class SettingController extends Controller
                     $balance = $creditref->available_balance_for_D_W + abs($loss) + $profit - $calculated_commission;
                     $remain_balance = $creditref->remain_bal + $profit - $calculated_commission;
 
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => strtolower($winner) ."==". strtolower($team1_name)." is_won if",
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($loss),
+                        'match_id' => $mid,
+                        'bet_type' => $bettype,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $profit,
+                        'lose' => abs($loss),
+                        'available_balance' => $balance
+                    ]);
 
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
@@ -8759,6 +8854,22 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($loss);
+
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => strtolower($winner) ."==". strtolower($team1_name)." is_won else",
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($loss),
+                        'match_id' => $mid,
+                        'bet_type' => $bettype,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $profit,
+                        'lose' => abs($loss),
+                        'available_balance' => $balance
+                    ]);
 
 
                     $available_balance = $creditref->available_balance_for_D_W;
@@ -8863,8 +8974,25 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W + abs($loss) + $profit - $calculated_commission;
                     $remain_balance = $creditref->remain_bal + $profit - $calculated_commission;
-
                     $available_balance = $creditref->available_balance_for_D_W;
+
+
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => strtolower($winner) ."==". strtolower($team2_name)." is_won if",
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($loss),
+                        'match_id' => $mid,
+                        'bet_type' => $bettype,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $profit,
+                        'lose' => abs($loss),
+                        'available_balance' => $balance
+                    ]);
+
                     UsersAccount::create([
                         'user_id' => $id,
                         'from_user_id' => $id,
@@ -8977,6 +9105,22 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($loss);
+
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => strtolower($winner) ."==". strtolower($team2_name)." is_won else",
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($loss),
+                        'match_id' => $mid,
+                        'bet_type' => $bettype,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $profit,
+                        'lose' => abs($loss),
+                        'available_balance' => $balance
+                    ]);
 
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
@@ -9079,6 +9223,22 @@ class SettingController extends Controller
                     $balance = $creditref->available_balance_for_D_W + abs($loss) + $profit - $calculated_commission;
                     $remain_balance = $creditref->remain_bal + $profit - $calculated_commission;
 
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => strtolower($winner) ."==". strtolower($team_draw_name)." is_won if",
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($loss),
+                        'match_id' => $mid,
+                        'bet_type' => $bettype,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $profit,
+                        'lose' => abs($loss),
+                        'available_balance' => $balance
+                    ]);
+
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
                         'user_id' => $id,
@@ -9191,6 +9351,22 @@ class SettingController extends Controller
                     $exposer = $creditref->exposure - abs($loss);
                     $balance = $creditref->available_balance_for_D_W;
                     $remain_balance = $creditref->remain_bal - abs($loss);
+
+                    ExposerDeductLog::createLog([
+                        'user_id' => $id,
+                        'action' => strtolower($winner) ."==". strtolower($team_draw_name)." is_won else",
+                        'current_exposer' => $creditref->exposure,
+                        'new_exposer' => $exposer,
+                        'exposer_deduct' => abs($loss),
+                        'match_id' => $mid,
+                        'bet_type' => $bettype,
+                        'bet_amount' => 0,
+                        'odds_value' => 0,
+                        'odds_volume' => 0,
+                        'profit' => $profit,
+                        'lose' => abs($loss),
+                        'available_balance' => $balance
+                    ]);
 
                     $available_balance = $creditref->available_balance_for_D_W;
                     UsersAccount::create([
@@ -9652,8 +9828,26 @@ class SettingController extends Controller
 
                     $creid = $getc['id'];
                     $updc = CreditReference::find($creid);
+
+                    ExposerDeductLog::createLog([
+                        'user_id' => $b->user_id,
+                        'action' => 'Declare Match Result Tie',
+                        'current_exposer' => $updc->exposure,
+                        'new_exposer' => $getc->exposure - $exposer,
+                        'exposer_deduct' => $exposer,
+                        'match_id' => $b->match_id,
+                        'bet_type' => $b->bet_type,
+                        'bet_amount' => $b->bet_amount,
+                        'odds_value' => $b->bet_odds,
+                        'odds_volume' => 0,
+                        'profit' => $b->bet_profit,
+                        'lose' => $b->exposureAmt,
+                        'available_balance' => $updc->available_balance_for_D_W
+                    ]);
+
                     $updc->exposure = $getc->exposure - $exposer;
                     $updc->available_balance_for_D_W = $getc->available_balance_for_D_W + $exposer;
+
 
                     if ($updc->save()) {
                         $userData = MyBets::where("match_id", $match->event_id)->where('user_id', $b->user_id)->update(["result_declare" => 1]);

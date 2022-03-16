@@ -1043,11 +1043,12 @@ img {
 
 .fir-col3.pinimg {
     padding: 5px 3px;
-    width: 4%;      margin-left: 225px;
+    width: 4%;
+    margin-left: 225px;
 }
 .fir-col3 img {
-    width: 50%;
-    margin: 0 auto;
+    width: 18px;
+    margin: 0 10px;
 }
 
 .secondblock-cricket {
@@ -1064,7 +1065,7 @@ img {
 
 .secondblock-cricket .fir-col1 {
     display: flex;
-    padding-left: 15px;
+    padding: 0px 0px 0px 15px;
     position: relative;
 }
 
@@ -1110,6 +1111,7 @@ img {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0px 3px;
 }
 
 .secondblock-cricket .fir-col2 a::before {
@@ -4609,7 +4611,7 @@ table.dataTable.display tbody tr {
 .casino_list_items {
     width: calc(20% - 8.4px);
     margin-right: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     cursor: pointer;
     position: relative;
 }
@@ -4905,6 +4907,7 @@ table.dataTable.display tbody tr {
     display: inline-block;
     margin-right: 2px;
     margin-left: -3px;
+    background-size: contain;
 }
 
 /******** 15 - 6 - 21 *******/
@@ -6981,10 +6984,10 @@ table.dataTable thead > tr > th {
     }
 }
 
-#inplay-cricket-collapse .fir-col3 img {
-    width: 50% !important;
-    margin: 0 auto;
-}
+/*#inplay-cricket-collapse .fir-col3 img {*/
+/*    width: 50% !important;*/
+/*    margin: 0 auto;*/
+/*}*/
 
 /*--.black-yello --*/
 .black-yello .top_header,
@@ -7362,4 +7365,77 @@ table.dataTable thead > tr > th {
 
 .flip-clock__slot {
     display: none !important;
+}
+
+
+.game-live:after {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><g fill="none" fill-rule="evenodd"><circle cx="6" cy="6" r="6" fill="%234AA2DB"/><path fill="%23FFF" d="M6 0a6 6 0 110 12A6 6 0 016 0zm0 1a5 5 0 100 10A5 5 0 006 1z" opacity=".605"/><path fill="%23FFF" d="M4 3v6l5-3z"/></g></svg>');
+    background-repeat: no-repeat;
+}
+
+.game-live:after {
+    content: "";
+    background-size: cover;
+    width: 12px;
+    height: 12px;
+    display: block;
+}
+
+.game-live {
+    width: 18px;
+    background-color: #1876B2;
+}
+
+.game-fancy, .game-sportsbook, .game-bookmaker, .game-live {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    border-radius: 3px;
+    width: 17px;
+    height: 16px;
+    padding: 0 !important;
+}
+
+
+.game-bookmaker {
+    background-color: #226BC3;
+}
+
+
+.in-play.game-fancy, .in-play.game-sportsbook, .in-play.game-bookmaker, .in-play.game-live {
+    /*position: relative;*/
+    overflow: hidden;
+    width: 35px;
+    float: right;
+}
+
+
+.in-play.game-live:after {
+    margin-left: 19px;
+}
+.game-bookmaker:after {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M15.58 21c.876 0 1.642-.257 2.3-.77.656-.513 1.085-1.195 1.286-2.047l.986-4.487c.091-.348.05-.679-.123-.992A1.722 1.722 0 0019.33 12c.365-.14.699-.365 1-.678.3-.313.497-.644.588-.992l.986-4.513c.2-.852.087-1.534-.342-2.047-.43-.513-1.09-.77-1.985-.77H5.997L2 21h13.58zm-1.096-10.122h-3.942l1.26-5.608h3.942l-1.26 5.608zm-1.752 7.879H8.79l1.26-5.635h3.942l-1.26 5.635z" fill="%23CAFCFF" fill-rule="nonzero"/></svg>');
+}
+.game-bookmaker:after{
+    content: "";
+    background-size: cover;
+    width: 12px;
+    height: 12px;
+}
+
+.game-live:after {
+    content: "";
+    background-size: cover;
+    width: 12px;
+    height: 12px;
+}
+
+
+.in-play.game-f:after {
+    background-image: url('data:image/svg+xml,<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M9.44 21.32l1.792-8.456h5.628l.504-2.408h-5.628l1.288-6.02h7.252L20.78 2H10.112c-.896 0-1.68.275-2.352.826-.672.55-1.11 1.283-1.316 2.198L3 21.32h6.44z" fill="%23C5F6EE" fill-rule="nonzero"/></svg>');
+    content: "";
+    background-size: cover;
+    width: 12px;
+    height: 12px;
 }

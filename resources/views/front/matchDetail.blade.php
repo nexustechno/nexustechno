@@ -4204,16 +4204,16 @@
             $('.count').prop('disabled', true);
             $('.count2').prop('disabled', true);
             $(document).on('click', '.plusodds', function () {
-                var newVal = parseFloat(parseFloat($('.count2').val()) + 0.01).toFixed(2);
+                var newVal = parseFloat(parseFloat($('.count2').val()) + 0.1).toFixed(2);
                 $('#odds_val').val(newVal);
                 $('.count2').val(newVal);
             });
             $(document).on('click', '.minusodds', function () {
                 var oldValue = parseFloat($('.count2').val());
-                $('.count2').val(parseFloat(parseFloat($('.count2').val()) - 0.01).toFixed(2));
+                $('.count2').val(parseFloat(parseFloat($('.count2').val()) - 0.1).toFixed(2));
 
                 if (oldValue > 0) {
-                    var newVal = parseFloat(oldValue) - 0.01;
+                    var newVal = parseFloat(parseFloat(oldValue) - 0.1).toFixed(2);
                 } else {
                     newVal = 0;
                 }

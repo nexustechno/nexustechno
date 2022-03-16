@@ -36,7 +36,7 @@ if (empty($eventid)) {
 //    echo "<center><h1>TV not available right now</h1></center>";die();
 //}
 
-$tvLink = "https://orangeexch999.com/jmp/nm3/all.php?eventId=".$eventid;
+$tvLink = "http://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=".$eventid;
 
 //die($tvLink);
 ?>
@@ -55,9 +55,9 @@ $tvLink = "https://orangeexch999.com/jmp/nm3/all.php?eventId=".$eventid;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video.min.js"></script>
 </head>
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
-<iframe src="<?php echo $tvLink; ?>" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>
-<!--<video src= id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">-->
-<!--    <source src="--><?php //echo $tvLink; ?><!--" type="application/x-mpegURL">-->
-<!--</video>-->
+<!--<iframe src="--><?php //echo $tvLink; ?><!--" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>-->
+<video src= id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
+    <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
+</video>
 </body>
 </html>

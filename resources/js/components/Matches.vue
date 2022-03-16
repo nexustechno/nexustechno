@@ -12,9 +12,12 @@
                     {{ getMatchName(match.eventName) }}
                     <span style="color:green" v-if="match.inPlay == 'True'" class="deskinplay">In-Play</span>
                 </a>
+                <span class="game-live" v-if="match.tv == 'True'" id="streamingIcon" style="display: inline-flex;"></span>
                 <div class="mobileDate" v-if="match.inPlay != 'True'">{{ getMatchDate(match.eventName) }}</div>
-                <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy in-play blue-bg-3 text-color-white">F</span>
-                <span v-if="matchtype == 4 && match.m1 == 'True'" style="color:green;margin-right: 40px;" class="game-fancy in-play blue-bg-3 text-color-white">B</span>
+                <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>
+<!--                <span v-if="matchtype == 4 && match.f == 'True'" class="game-fancy in-play game-f" id="fancyBetIcon" style="cursor: pointer; display: inline-flex;">Fancy</span>-->
+                <span v-if="matchtype == 4 && match.m1 == 'True'" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>
+<!--                <span v-if="matchtype == 4 && match.m1 == 'True'" style="color:green;margin-right: 40px;" class="game-fancy game-bookmaker in-play blue-bg-3 text-color-white">B</span>-->
             </span>
             <span class="fir-col2" :class="'col1-back-lay'+match.gameId">
                 <a class="backbtn lightblue-bg2" v-if="match.back1 > 0">{{ match.back1 }}</a>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ExposerDeductLog;
 use Illuminate\Http\Request;
 use Auth;
 use App\User;
@@ -3411,7 +3412,8 @@ class PlayerController extends Controller
 
                         $betModel->bet_profit = round($requestData['bet_cal_amt'], 2);
                     }
-                } else {
+                }
+                else {
                     $betModel->bet_profit = round($requestData['bet_cal_amt'], 2);
                 }
 
@@ -3440,6 +3442,24 @@ class PlayerController extends Controller
                 $betModel->updated_at = $timezone;
                 if ($betModel->save()) {
                     $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
+
+                    $depTot = CreditReference::where('player_id', $betModel->user_id)->first();
+                    ExposerDeductLog::createLog([
+                        'user_id' => $getUser->id,
+                        'action' => 'Place Match Bet',
+                        'current_exposer' => $depTot->exposure,
+                        'new_exposer' => $save_exposer_balance,
+                        'exposer_deduct' => $deduct_expo_amt,
+                        'match_id' => $betModel->match_id,
+                        'bet_type' => $betModel->bet_type,
+                        'bet_amount' => $stack,
+                        'odds_value' => $betModel->bet_odds,
+                        'odds_volume' => 0,
+                        'profit' => $betModel->bet_profit,
+                        'lose' => $betModel->exposureAmt,
+                        'available_balance' => $depTot->available_balance_for_D_W
+                    ]);
+
                     $responce['status'] = 'true';
                     $responce['msg'] = 'Bet Added Successfully';
                     $responce['sessionBetTotalExposer'] = $sessionBetTotalExposer;
@@ -3601,7 +3621,25 @@ class PlayerController extends Controller
                 $betModel->created_at = $timezone;
                 $betModel->updated_at = $timezone;
                 if ($betModel->save()) {
+                    $depTot = CreditReference::where('player_id', $betModel->user_id)->first();
                     $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
+                    $depTot1 = CreditReference::where('player_id', $betModel->user_id)->first();
+                    ExposerDeductLog::createLog([
+                        'user_id' => $getUser->id,
+                        'action' => 'Place Match Bet',
+                        'current_exposer' => $depTot->exposure,
+                        'new_exposer' => $depTot1->exposure,
+                        'exposer_deduct' => $deduct_expo_amt,
+                        'match_id' => $betModel->match_id,
+                        'bet_type' => $betModel->bet_type,
+                        'bet_amount' => $stack,
+                        'odds_value' => $betModel->bet_odds,
+                        'odds_volume' => 0,
+                        'profit' => $betModel->bet_profit,
+                        'lose' => $betModel->exposureAmt,
+                        'available_balance' => $depTot1->available_balance_for_D_W
+                    ]);
+
                     $responce['status'] = 'true';
                     $responce['msg'] = 'Bet Added Successfully.';
                     $responce['currentSessionBetTotalExposer'] = $currentSessionBetTotalExposer;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Casino;
 use App\CreditReference;
+use App\ExposerDeductLog;
 use App\setting;
 use App\UsersAccount;
 use Illuminate\Http\Request;
@@ -240,7 +241,22 @@ class CasinoCalculationController extends Controller
         if(CasinoBet::create($data)){
 
             $playerController = new PlayerController();
-            $playerController->SaveBalance($exposer);
+            $deductedExposer = $playerController->SaveBalance($exposer);
+
+            ExposerDeductLog::createLog([
+                'user_id' => $getUser->id,
+                'action' => 'Place Casino Bet',
+                'current_exposer' => $depTot->exposure,
+                'new_exposer' => $deductedExposer,
+                'exposer_deduct' => abs($deductedExposer - $depTot->exposure),
+                'match_id' => $casino->id,
+                'bet_type' => 'ODDS',
+                'bet_amount' => $stake_value,
+                'odds_value' => $odds_value,
+                'odds_volume' => 0,
+                'profit' => $profit,
+                'lose' => $exposer
+            ]);
 
 //            $upd = CreditReference::find($depTot->id);
 //            $upd->exposure = $upd->exposure + $exposer;
@@ -436,12 +452,28 @@ class CasinoCalculationController extends Controller
             }
 
             $upd = CreditReference::where('player_id', $bet->user_id)->first();
-
+            $cExoser = $upd->exposure;
             $available_balance = $upd->available_balance_for_D_W;
 
             $upd->exposure = $upd->exposure - $totalExposer;
 
             $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposerToBeReturn));
+
+            ExposerDeductLog::createLog([
+                'user_id' => $getUser->id,
+                'action' => 'Declare Casino Bet Result',
+                'current_exposer' => $cExoser,
+                'new_exposer' => $upd->exposure,
+                'exposer_deduct' => $totalExposer,
+                'match_id' => $casino->id,
+                'bet_type' => 'ODDS',
+                'bet_amount' => 0,
+                'odds_value' => 0,
+                'odds_volume' => 0,
+                'profit' => $profit,
+                'lose' => $lose,
+                'available_balance' => $upd->available_balance_for_D_W
+            ]);
 
             if($profit > 0){
 
