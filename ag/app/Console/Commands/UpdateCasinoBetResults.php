@@ -68,6 +68,7 @@ class UpdateCasinoBetResults extends Command
                 if (!isset($result['data'])) {
                     continue;
                 }
+                dd($bet->user);
 
                 $resp = $casinoCalculationController->updateCasinoWinner($result['data'], $casino,$bet->user);
 
