@@ -763,61 +763,65 @@ if (!$DEVICE) {
 <script type="text/javascript">
     var getUser = '<?php echo isset($getUser) ? $getUser : '' ?>';
 
-    function disableBack() {
-        window.history.forward();
-    }
+    var hostname  = window.location.hostname;
 
-    setTimeout("disableBack()", 0);
-    window.onunload = function () {
-        null
-    };
-
-    // right click disable
-    $(document).bind("contextmenu", function (e) {
-        if(getUser!=null && getUser!='') {
-            window.location.replace("/frontLogout");
-        }
-        return false;
-    });
-
-    // disable using keys
-    $(document).keydown(function (e) {
-        if (e.which === 123) {
-            return false;
+    if(hostname != 'richexchange.test' && hostname != 'richexchange.live') {
+        function disableBack() {
+            window.history.forward();
         }
 
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-            return false;
-        }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-            return false;
-        }
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-            return false;
-        }
-        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-            return false;
-        }
-    });
+        setTimeout("disableBack()", 0);
+        window.onunload = function () {
+            null
+        };
 
-    if (window.devtools.isOpen) {
-        if(getUser!=null && getUser!='') {
-            window.location.replace("/frontLogout");
-        }
-    }
-
-    window.addEventListener('devtoolschange', event => {
-        if (event.detail.isOpen) {
-            if(getUser!=null && getUser!='') {
+        // right click disable
+        $(document).bind("contextmenu", function (e) {
+            if (getUser != null && getUser != '') {
                 window.location.replace("/frontLogout");
             }
-        }
+            return false;
+        });
+
+        // disable using keys
+        $(document).keydown(function (e) {
+            if (e.which === 123) {
+                return false;
+            }
+
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        });
+
         if (window.devtools.isOpen) {
-            if(getUser!=null && getUser!='') {
+            if (getUser != null && getUser != '') {
                 window.location.replace("/frontLogout");
             }
         }
-    });
+
+        window.addEventListener('devtoolschange', event => {
+            if (event.detail.isOpen) {
+                if (getUser != null && getUser != '') {
+                    window.location.replace("/frontLogout");
+                }
+            }
+            if (window.devtools.isOpen) {
+                if (getUser != null && getUser != '') {
+                    window.location.replace("/frontLogout");
+                }
+            }
+        });
+    }
 </script>
 <script type="text/javascript">
     $(document).ajaxStart(function () {
