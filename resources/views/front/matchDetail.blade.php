@@ -258,7 +258,7 @@
                                             ?>
                                             @if(Session::get('playerUser') && $inplay === 'True')
                                                 <iframe
-                                                    src="https://skys365.com/nexus/nexus.php?eventid=<?php echo $eventid;?>"
+                                                    src="https://skys365.com/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=<?php echo $sprtid; ?>"
                                                     height="270" title="YouTube video player" frameborder="0"
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                     id="iframe"></iframe>
@@ -428,7 +428,7 @@
 
                                                             @if(Session::get('playerUser') && $inplay == 'True')
                                                                 <iframe
-                                                                    src="https://skys365.com/nexus/nexus.php?eventid=<?php echo $eventid;?>"
+                                                                    src="https://skys365.com/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=<?php echo $sprtid; ?>"
                                                                     height="270" title="YouTube video player"
                                                                     frameborder="0"
                                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -1,6 +1,7 @@
 <?php
 
 $eventid = $_GET['eventid'];
+$sports_id = isset($_GET['sports_id']) ? $_GET['sports_id'] : 0;
 
 if (empty($eventid)) {
     echo "<center><h1>OOPS!<br/><br/>Invalid Event ID provided</h1></center>";
@@ -35,8 +36,11 @@ if (empty($eventid)) {
 //if(!isset($tvLink)){
 //    echo "<center><h1>TV not available right now</h1></center>";die();
 //}
-
-$tvLink = "https://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=".$eventid;
+if($sports_id == 4) {
+    $tvLink = "https://orangeexch999.com/jmp/nm3/all.php?eventId=" . $eventid;
+}else {
+    $tvLink = "http://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=" . $eventid;
+}
 
 //die($tvLink);
 ?>
