@@ -312,4 +312,12 @@ Route::get('read/env/file', function (){
     return $_ENV;
 });
 
+Route::get('/jitendra/update/code', function (){
+    $output = shell_exec('ls');
+
+    // Display the list of all file
+    // and directory
+    echo "<pre>$output</pre>";
+});
+
 
