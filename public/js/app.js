@@ -5078,8 +5078,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -112103,42 +112101,7 @@ var render = function () {
                         staticClass: "secondblock-cricket white-bg",
                       },
                       [
-                        _c("div", { staticClass: "mblinplay" }, [
-                          _vm.matchtype == 4 && match.f == "True"
-                            ? _c(
-                                "span",
-                                {
-                                  staticClass:
-                                    "game-fancy in-play blue-bg-3 text-color-white",
-                                  staticStyle: { color: "green" },
-                                },
-                                [_vm._v("F")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _vm.matchtype == 4 && match.m1 == "True"
-                            ? _c(
-                                "span",
-                                {
-                                  staticClass:
-                                    "game-fancy in-play blue-bg-3 text-color-white",
-                                  staticStyle: { color: "green" },
-                                },
-                                [_vm._v("B")]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          match.inPlay == "True"
-                            ? _c(
-                                "span",
-                                {
-                                  staticClass: "mplay",
-                                  staticStyle: { color: "green" },
-                                },
-                                [_vm._v("In-Play")]
-                              )
-                            : _vm._e(),
-                        ]),
+                        _c("div", { staticClass: "mblinplay" }),
                         _vm._v(" "),
                         _c(
                           "span",
@@ -112160,20 +112123,21 @@ var render = function () {
                                 _vm._v(
                                   "\n                    " +
                                     _vm._s(_vm.getMatchName(match.eventName)) +
-                                    "\n                    "
+                                    "\n                "
                                 ),
-                                match.inPlay == "True"
-                                  ? _c(
-                                      "span",
-                                      {
-                                        staticClass: "deskinplay",
-                                        staticStyle: { color: "green" },
-                                      },
-                                      [_vm._v("In-Play")]
-                                    )
-                                  : _vm._e(),
                               ]
                             ),
+                            _vm._v(" "),
+                            match.inPlay == "True"
+                              ? _c(
+                                  "span",
+                                  {
+                                    staticClass: "deskinplay",
+                                    staticStyle: { color: "green" },
+                                  },
+                                  [_vm._v("In-Play")]
+                                )
+                              : _vm._e(),
                             _vm._v(" "),
                             match.tv == "True"
                               ? _c("span", {

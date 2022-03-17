@@ -16,6 +16,9 @@
     padding-left: 15px;
     position: relative;
 }
+.mobileDate {
+    display: contents;
+}
 
 .secondblock-cricket .fir-col1-green span{
     display: inline-flex;

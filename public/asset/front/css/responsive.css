@@ -421,7 +421,7 @@
     .secondblock-cricket .fir-col1 .game-fancy,
     .secondblock-cricket .fir-col1-green .game-fancy {
         position: relative;
-        width: max-content;
+        /*width: max-content;*/
     }
 
     .lefthead-logo,
@@ -1247,6 +1247,11 @@
 
 @media only screen and (max-width: 767px) {
 
+    .fir-col3 img {
+        width: 25px;
+        margin: 0 10px;
+    }
+
     .special_bets-tab{
         justify-content: left;
     }
@@ -1830,13 +1835,13 @@
 
     .secondblock-cricket .fir-col1-green a span { position: absolute; margin-top: -13px; }
     .mblinplay { display: block; width: 100%; padding-top: 5px; padding-left: 10px; }
-    .mblinplay .game-fancy{ display: inline-flex; width: auto; position: inherit; margin-left: 5px; vertical-align: bottom; }
+    .mblinplay .game-fancy{ display: inline-flex; position: inherit; margin-left: 5px; vertical-align: bottom; }
     .mblinplay .mplay{ margin-left: 5px; }
     .mplay{ margin-left: 5px; }
     .desk .bmclass{ display: none; }
-    .desk .game-fancy.in-play:not(.inplay), .desk .game-fancy:not(.inplay){ display: none !important; }
+    /*.desk .game-fancy.in-play:not(.inplay), .desk .game-fancy:not(.inplay){ display: none !important; }*/
     .desk .game-fancy.in-play.inplay, .desk .game-fancy.inplay{ margin-right: 10px !important; }
-    .desk .deskinplay{ display: none !important; }
+    /*.desk .deskinplay{ display: none !important; }*/
     .account_wrap .acmenu_list li a{ padding: 10px 10px; font-size: 16px; }
 
     .blink_me {
