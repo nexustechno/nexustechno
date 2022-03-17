@@ -77,14 +77,14 @@ if(!isset($tvLink)){
         // hook up the video switcher
         var loadUrl = document.getElementById('load-url');
         var url = document.getElementById('url');
-        loadUrl.addEventListener('submit', function(event) {
-            event.preventDefault();
-            player.src({
-                src: url.value,
-                type: 'application/x-mpegURL'
-            });
-            return false;
-        });
+        // loadUrl.addEventListener('submit', function(event) {
+        //     event.preventDefault();
+        //     player.src({
+        //         src: url.value,
+        //         type: 'application/x-mpegURL'
+        //     });
+        //     return false;
+        // });
     }(window, window.videojs));
 </script>
 
