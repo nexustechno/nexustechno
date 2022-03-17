@@ -1247,6 +1247,18 @@
 
 @media only screen and (max-width: 767px) {
 
+    .secondblock-cricket .fir-col1 {
+        display: flex;
+    }
+
+    .mobileDate {
+        display: inherit !important;
+    }
+
+    .game-fancy {
+        position: absolute;
+    }
+
     .fir-col3 img {
         width: 25px;
         margin: 0 10px;

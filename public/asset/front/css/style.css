@@ -1064,7 +1064,7 @@ img {
 }
 
 .secondblock-cricket .fir-col1 {
-    display: flex;
+    /*display: flex;*/
     padding: 0px 0px 0px 15px;
     position: relative;
 }
@@ -4887,7 +4887,7 @@ table.dataTable.display tbody tr {
     font-size: 11px;
     margin-right: 5px;
     border-radius: 3px;
-    position: absolute;
+    /*position: absolute;*/
     right: 0;
     display: flex;
     align-items: center;

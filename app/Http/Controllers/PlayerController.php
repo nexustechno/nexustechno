@@ -3401,20 +3401,23 @@ class PlayerController extends Controller
                         } else {
                             $deduct_expo_amt = ($requestData['bet_cal_amt'] * ($betodds - 1)) / ($requestData['bet_odds'] - 1);
                             $betModel->bet_profit = round($deduct_expo_amt, 2);
+                            $betModel->bet_profit = ((($betodds - 1) * $stack));
                             $deduct_expo_amt = $stack;
                         }
                     } else {
                         if ($requestData['bet_side'] === 'lay') {
-                            $deduct_expo_amt = $requestData['bet_cal_amt'];
+//                            $deduct_expo_amt = $requestData['bet_cal_amt'];
+                            $deduct_expo_amt = ((($betModel->bet_odds - 1) * $stack));
+                            $betModel->bet_profit = $stack;
                         } else {
+                            $betModel->bet_profit = ((($betModel->bet_odds - 1) * $stack));
                             $deduct_expo_amt = $stack;
                         }
-
-                        $betModel->bet_profit = round($requestData['bet_cal_amt'], 2);
                     }
                 }
                 else {
-                    $betModel->bet_profit = round($requestData['bet_cal_amt'], 2);
+                    $prft = ((($betModel->bet_odds - 1) * $stack));;
+                    $betModel->bet_profit = round($prft, 2);
                 }
 
                 $betModel->team_name = $requestData['team_name'];
@@ -3490,7 +3493,8 @@ class PlayerController extends Controller
                                 exit;
                             }
                         }
-                    } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
+                    }
+                    else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
                         if ($requestData['bet_side'] == 'lay') {
                             if ($requestData['bet_odds'] >= $team2_main_odds)
                                 $betodds = $team2_main_odds;
@@ -3510,7 +3514,8 @@ class PlayerController extends Controller
                                 exit;
                             }
                         }
-                    } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
+                    }
+                    else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
                         if ($requestData['bet_side'] == 'lay') {
                             if ($requestData['bet_odds'] >= $team3_main_odds)
                                 $betodds = $team3_main_odds;
@@ -3547,19 +3552,18 @@ class PlayerController extends Controller
                             $deduct_expo_amt = ((($betodds - 1) * $stack));
                             $betModel->bet_profit = round($stack, 2);
                         } else {
-                            $deduct_expo_amt = ($requestData['bet_cal_amt'] * ($betodds - 1)) / ($requestData['bet_odds'] - 1);
-                            $betModel->bet_profit = round($deduct_expo_amt, 2);
+                            $betModel->bet_profit = round(((($betodds - 1) * $stack)), 2);
                             $deduct_expo_amt = $stack;
                         }
                     } else {
                         if ($requestData['bet_side'] === 'lay') {
-                            $deduct_expo_amt = $requestData['bet_cal_amt'];
+                            $deduct_expo_amt = ((($betModel->bet_odds - 1) * $stack));
+                            $betModel->bet_profit = round($stack, 2);
                         } else {
+                            $betModel->bet_profit = round(((($betModel->bet_odds - 1) * $stack)), 2);
                             $deduct_expo_amt = $stack;
                         }
-                        $betModel->bet_profit = round($deduct_expo_amt, 2);
                     }
-
                 }
                 else if ($requestData['bet_type'] == 'SESSION') {
                     if ($requestData['bet_side'] === 'lay') {
@@ -3571,7 +3575,7 @@ class PlayerController extends Controller
                     if ($requestData['bet_side'] === 'lay') {
                         $betModel->bet_profit = round($stack, 2);
                     } else {
-                        $betModel->bet_profit = round(($requestData['bet_odds'] * $stack) / 100, 2);
+                        $betModel->bet_profit = round(($betModel->bet_odds * $stack) / 100, 2);
                     }
                 }
                 $betModel->team_name = $requestData['team_name'];

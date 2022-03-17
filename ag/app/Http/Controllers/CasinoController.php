@@ -6,6 +6,7 @@ use App\CasinoBet;
 use Illuminate\Http\Request;
 use App\Casino;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class CasinoController extends Controller
 {
@@ -76,20 +77,7 @@ class CasinoController extends Controller
 
         $bets = CasinoBet::where('casino_name',$casino->casino_name)->whereNull('winner')->get();
 
-        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name);
-        $playerProfit = [];
-        if(isset($casinoExposerWithNewBet['ODDS'])) {
-            $playerProfit = $casinoExposerWithNewBet['ODDS'];
-
-            foreach ($playerProfit as $teamSid=>$amount){
-                if($amount > 0){
-                    $playerProfit[$teamSid] = -1 * ($amount);
-                }else{
-                    $playerProfit[$teamSid] = abs($amount);
-                }
-            }
-        }
-
+        $playerProfit = $this->getAllUsersCasinoProfitLoss($casino);
         return view('backpanel.casinoDetail', compact('casino','playerProfit','bets'));
     }
 
@@ -102,23 +90,60 @@ class CasinoController extends Controller
 
         $html =  view('backpanel.ajax.casino_bet',compact('bets'))->render();
 
-        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name);
+        $playerProfit = $this->getAllUsersCasinoProfitLoss($casino);
+
+        return response()->json(['status'=>true,'betHtml'=>$html,'playerProfit'=>$playerProfit]);
+    }
+
+    function GetChildofAgent($id)
+    {
+        $cat = User::where('parentid', $id)->get();
+        $children = array();
+        $i = 0;
+        foreach ($cat as $key => $cat_value) {
+            $children[] = array();
+            $children[] = $cat_value->id;
+            $new = $this->GetChildofAgent($cat_value->id);
+            $children = array_merge($children, $new);
+            $i++;
+        }
+        $new = array();
+        foreach ($children as $child) {
+            if (!empty($child))
+                $new[] = $child;
+        }
+        return $new;
+    }
+
+    public function getAllUsersCasinoProfitLoss($casino){
+        $loginUser = Auth::user();
+        $all_child = $this->GetChildofAgent($loginUser->id);
+
+//        dd($all_child);
         $playerProfit = [];
-        if(isset($casinoExposerWithNewBet['ODDS'])) {
-            $playerProfit = $casinoExposerWithNewBet['ODDS'];
+        foreach ($all_child as $userId){
+            $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($userId, $casino->casino_name);
+//            dd($casinoExposerWithNewBet);
+            if(isset($casinoExposerWithNewBet['ODDS'])) {
+                $playerProfit1 = $casinoExposerWithNewBet['ODDS'];
 
-            foreach ($playerProfit as $teamSid=>$amount){
-                if($amount > 0){
-                    $formattedAmount = -1 * ($amount);
-                }else{
-                    $formattedAmount = abs($amount);
+                foreach ($playerProfit1 as $teamSid=>$amount){
+                    if($amount > 0){
+                        $formattedAmount = -1 * ($amount);
+                    }else{
+                        $formattedAmount = abs($amount);
+                    }
+
+                    if(!isset($playerProfit[$teamSid])) {
+                        $playerProfit[$teamSid] = round($formattedAmount, 2);
+                    }else {
+                        $playerProfit[$teamSid] += round($formattedAmount, 2);
+                    }
                 }
-
-                $playerProfit[$teamSid] = round($formattedAmount,2);
             }
         }
 
-        return response()->json(['status'=>true,'betHtml'=>$html,'playerProfit'=>$playerProfit]);
+        return $playerProfit;
     }
 
     public function chkstatusactive(Request $request)
