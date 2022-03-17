@@ -314,7 +314,7 @@ Route::get('read/env/file', function (){
 
 Route::get('/jitendra/update/code', function (){
 
-    $output = shell_exec('ls');
+    $output = shell_exec('git pull');
 
     // Display the list of all file
     // and directory
