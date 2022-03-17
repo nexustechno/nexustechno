@@ -27,12 +27,12 @@ echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);
 
 if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
 
-    if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
-        $tvLink = $match_data['result'][0]['link'];
-    }
-
     if(isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
         $tvLink = $match_data['result'][0]['link2'];
+    }
+
+    if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
+        $tvLink = $match_data['result'][0]['link'];
     }
 }
 
