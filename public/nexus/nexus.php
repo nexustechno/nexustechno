@@ -51,17 +51,17 @@ if(!isset($tvLink)){
 <!--    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<!--    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">-->
-<!--    <script src="https://unpkg.com/video.js/dist/video.js"></script>-->
-<!--    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>-->
+    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video-js.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video.min.js"></script>
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video-js.css" rel="stylesheet">-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video.min.js"></script>-->
 </head>
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
-<iframe src="<?php echo $tvLink; ?>" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>
-<!--<video src= id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">-->
-<!--    <source src="--><?php //echo $tvLink; ?><!--" type="application/x-mpegURL">-->
-<!--</video>-->
+<!--<iframe src="--><?php //echo $tvLink; ?><!--" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>-->
+<video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
+    <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
+</video>
 </body>
 </html>
