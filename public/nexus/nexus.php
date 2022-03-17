@@ -53,7 +53,7 @@ if(!isset($tvLink)){
     <link rel="stylesheet" type="text/css" href="https://vjs.zencdn.net/7.0.0/video-js.css">
 </head>
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
-<!--<iframe src="--><?php //echo $tvLink; ?><!--" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>-->
+<iframe src="https://beetaexch.com/mediaplayergame/31299345/103.107.60.37" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>
 <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
     <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
 </video>
