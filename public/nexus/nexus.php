@@ -23,7 +23,7 @@ curl_close($process);
 
 $match_data = json_decode($return, true);
 
-//echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);die();
+echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);
 
 if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
     if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
