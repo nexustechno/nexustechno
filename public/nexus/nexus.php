@@ -28,17 +28,17 @@ echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);
 if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
 
     if(isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
-        $tvLink = $match_data['result'][0]['link2'];
+        $tvLink1 = $match_data['result'][0]['link2'];
     }
 
     if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
-        $tvLink = $match_data['result'][0]['link'];
+        $tvLink2 = $match_data['result'][0]['link'];
     }
 }
 
-if(!isset($tvLink)){
-    echo "<center><h1>TV not available right now</h1></center>";die();
-}
+//if(!isset($tvLink)){
+//    echo "<center><h1>TV not available right now</h1></center>";die();
+//}
 //if($sports_id == 4) {
 //    $tvLink = "https://orangeexch999.com/jmp/nm3/all.php?eventId=" . $eventid;
 //}else {
@@ -55,11 +55,11 @@ if(!isset($tvLink)){
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
 <!--<iframe src="https://beetaexch.com/mediaplayergame/31299345/103.107.60.37" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>-->
 <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
-    <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
+    <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
 </video>
 
 <video id="videojs-contrib-hls-player" class="video-js vjs-default-skin" autoplay muted controls style="height: 270px;padding: 0;width: 100%;">
-    <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
+    <source src="<?php echo $tvLink2; ?>" type="application/x-mpegURL">
 </video>
 
 <script src="https://vjs.zencdn.net/7.0.0/video.min.js"></script>
