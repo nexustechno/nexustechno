@@ -770,7 +770,7 @@ if (!$DEVICE) {
             window.history.forward();
         }
 
-        setTimeout("disableBack()", 0);
+
         window.onunload = function () {
             null
         };
@@ -778,6 +778,7 @@ if (!$DEVICE) {
         // right click disable
         $(document).bind("contextmenu", function (e) {
             if (getUser != null && getUser != '') {
+                setTimeout("disableBack()", 0);
                 window.location.replace("/frontLogout");
             }
             return false;
@@ -805,6 +806,7 @@ if (!$DEVICE) {
 
         if (window.devtools.isOpen) {
             if (getUser != null && getUser != '') {
+                setTimeout("disableBack()", 0);
                 window.location.replace("/frontLogout");
             }
         }
@@ -812,11 +814,13 @@ if (!$DEVICE) {
         window.addEventListener('devtoolschange', event => {
             if (event.detail.isOpen) {
                 if (getUser != null && getUser != '') {
+                    setTimeout("disableBack()", 0);
                     window.location.replace("/frontLogout");
                 }
             }
             if (window.devtools.isOpen) {
                 if (getUser != null && getUser != '') {
+                    setTimeout("disableBack()", 0);
                     window.location.replace("/frontLogout");
                 }
             }

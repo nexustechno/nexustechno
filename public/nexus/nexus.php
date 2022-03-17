@@ -7,23 +7,23 @@ if (empty($eventid)) {
     echo "<center><h1>OOPS!<br/><br/>Invalid Event ID provided</h1></center>";
 }
 
-//$url = 'http://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=' . $eventid;
-//
-//$headers = array('Content-Type: application/json');
-//$process = curl_init();
-//curl_setopt($process, CURLOPT_URL, $url);
-//curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
-//curl_setopt($process, CURLOPT_CUSTOMREQUEST, "GET");
-//curl_setopt($process, CURLOPT_TIMEOUT, 30);
-//curl_setopt($process, CURLOPT_HTTPGET, 1);
-//curl_setopt($process, CURLOPT_SSL_VERIFYPEER, false);
-//curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
-//$return = curl_exec($process);
-//curl_close($process);
-//
-//$match_data = json_decode($return, true);
-//
-////echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);die();
+$url = 'http://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=' . $eventid;
+
+$headers = array('Content-Type: application/json');
+$process = curl_init();
+curl_setopt($process, CURLOPT_URL, $url);
+curl_setopt($process, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($process, CURLOPT_CUSTOMREQUEST, "GET");
+curl_setopt($process, CURLOPT_TIMEOUT, 30);
+curl_setopt($process, CURLOPT_HTTPGET, 1);
+curl_setopt($process, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
+$return = curl_exec($process);
+curl_close($process);
+
+$match_data = json_decode($return, true);
+
+echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);die();
 //
 //if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
 //    if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
