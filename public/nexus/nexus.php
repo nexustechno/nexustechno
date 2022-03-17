@@ -67,7 +67,7 @@ if(!isset($tvLink)){
 <!--    <source src="--><?php //echo $tvLink; ?><!--" type="application/x-mpegURL">-->
 <!--</video>-->
 
-<video id="videojs-contrib-hls-player" class="video-js vjs-default-skin" controls>
+<video id="videojs-contrib-hls-player" class="video-js vjs-default-skin" autoplay muted controls style="height: 270px;padding: 0;width: 100%;">
     <source src="<?php echo $tvLink; ?>" type="application/x-mpegURL">
 </video>
 
