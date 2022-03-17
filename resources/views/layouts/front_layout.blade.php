@@ -187,6 +187,10 @@ if (!$DEVICE) {
                             <a href="#" class="loginbtn1 red-gradient-bg text-color-white" data-toggle="modal"
                                data-target="#myLoginModalFront"><img src="{{ URL::to('asset/front/img/user.svg') }} ">
                                 Login</a>
+
+                            @if(!empty($website->agent_list_url))
+                                <a target="_blank" href="<?php echo $website->agent_list_url; ?>" class="loginbtn btn btn-sm black-gradient-bg text-color-white">Agent List</a>
+                            @endif
                         </div>
 
                         <form method="POST" action="{{route('frontLogin')}}" class="d-none d-lg-block">
