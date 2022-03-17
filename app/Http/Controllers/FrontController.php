@@ -114,7 +114,7 @@ class FrontController extends Controller
 
         $bets = CasinoBet::where("user_id",$getUser->id)->where('casino_name',$casino->casino_name)->whereNull('winner')->get();
 
-        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($casino->casino_name,$getUser->id);
+        $casinoExposerWithNewBet = CasinoCalculationController::getCasinoExAmount($getUser->id, $casino->casino_name);
 
         $playerProfit = [];
         if(isset($casinoExposerWithNewBet['ODDS'])) {
