@@ -36,7 +36,7 @@ if (empty($eventid)) {
 //    echo "<center><h1>TV not available right now</h1></center>";die();
 //}
 
-$tvLink = "http://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=".$eventid;
+$tvLink = "https://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=".$eventid;
 
 //die($tvLink);
 ?>
