@@ -232,6 +232,11 @@ if (!$DEVICE) {
                                             class="loginbtn1 red-gradient-bg text-color-white">Login <img
                                             src="{{ URL::to('asset/front/img/logout-white.svg') }} "></button>
                                 </li>
+                                @if(!empty($website->agent_list_url))
+                                    <li>
+                                        <a target="_blank" href="<?php echo $website->agent_list_url; ?>" class="loginbtn1 black-gradient-bg text-color-white">Agent List</a>
+                                    </li>
+                                @endif
                             </ul>
                         </form>
                     @endif
@@ -587,8 +592,8 @@ if (!$DEVICE) {
                                     <span class="validation-txt text-color-black">{{$randomNumber_popup}}</span>
                                     <span class="text-danger cls-error" id="errvalid_poup"></span>
                                 </div>
-                                <a class="login-btn text-color-yellow" id="popup_loginbtn"> Login<img
-                                        src="{{ URL::to('asset/front/img/login/logout-yellow.svg') }} "> </a>
+                                <a class="login-btn text-color-yellow" id="popup_loginbtn"> Login<img  src="{{ URL::to('asset/front/img/login/logout-yellow.svg') }} "> </a>
+
                             </form>
                         </div>
                     </div>

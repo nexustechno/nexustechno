@@ -27,8 +27,8 @@
                                                 <div class="headdetail"><input type="text" name="domain" id="domain" placeholder="" value="{{$list->domain}}" class="form-control"> </div>
                                             </div>
                                             <div class="profile-main">
-                                                <div class="headlabel">Enable Partnership</div>
-                                                <div class="headdetail"><input type="checkbox" name="enable_partnership" id="enable_partnership" value="1" @if($list->enable_partnership == 1){{"checked"}}@endif class="form-control1"> </div>
+                                                <div class="headlabel">Agent List URL</div>
+                                                <div class="headdetail"><input type="text" name="agent_list_url" id="agent_list_url" placeholder="" value="{{$list->agent_list_url}}" class="form-control"> </div>
                                             </div>
                                             <div class="profile-main">
                                                 <div class="headlabel">Logo</div>

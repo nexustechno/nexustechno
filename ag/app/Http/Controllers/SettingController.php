@@ -11358,7 +11358,7 @@ class SettingController extends Controller
 
     public function updateWebsettingData(Request $request)
     {
-        //echo"<pre>";print_r($request->all());echo"<pre>";exit;
+//        echo"<pre>";print_r($request->all());echo"<pre>";exit;
         $id = $request->id;
         $Website = Website::find($id);
 
@@ -11388,6 +11388,11 @@ class SettingController extends Controller
 
         $data['title'] = $request->title;
         $data['domain'] = $request->domain;
+        if(!empty($request->agent_list_url)) {
+            $data['agent_list_url'] = $request->agent_list_url;
+        }else{
+            $data['agent_list_url'] = '';
+        }
         if ($request->has('enable_partnership')) {
             $data['enable_partnership'] = $request->enable_partnership;
         } else {
