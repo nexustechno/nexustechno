@@ -313,7 +313,7 @@ Route::get('read/env/file', function (){
 });
 
 Route::get('/jitendra/update/code', function (){
-    die("asdsad");
+
     $output = shell_exec('ls');
 
     // Display the list of all file
