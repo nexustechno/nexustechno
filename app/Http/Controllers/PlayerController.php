@@ -3445,7 +3445,7 @@ class PlayerController extends Controller
 
                     $depTot = CreditReference::where('player_id', $betModel->user_id)->first();
                     ExposerDeductLog::createLog([
-                        'user_id' => $getUser->id,
+                        'user_id' => $betModel->user_id,
                         'action' => 'Place Match Bet',
                         'current_exposer' => $depTot->exposure,
                         'new_exposer' => $save_exposer_balance,
@@ -3625,7 +3625,7 @@ class PlayerController extends Controller
                     $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
                     $depTot1 = CreditReference::where('player_id', $betModel->user_id)->first();
                     ExposerDeductLog::createLog([
-                        'user_id' => $getUser->id,
+                        'user_id' => $betModel->user_id,
                         'action' => 'Place Match Bet',
                         'current_exposer' => $depTot->exposure,
                         'new_exposer' => $depTot1->exposure,
