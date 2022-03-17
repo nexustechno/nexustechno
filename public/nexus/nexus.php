@@ -75,8 +75,8 @@ if(!isset($tvLink)){
         var player = window.player = videojs('videojs-contrib-hls-player');
 
         // hook up the video switcher
-        var loadUrl = document.getElementById('load-url');
-        var url = document.getElementById('url');
+        // var loadUrl = document.getElementById('load-url');
+        // var url = document.getElementById('url');
         // loadUrl.addEventListener('submit', function(event) {
         //     event.preventDefault();
         //     player.src({
