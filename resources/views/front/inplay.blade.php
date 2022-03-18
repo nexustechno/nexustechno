@@ -54,7 +54,7 @@
         <div class="container-fluid">
             <div class="main-wrapper">
 {{--                @include('layouts.leftpanel')--}}
-                <div class="middle-section ml-0 pr-3">
+                <div class="middle-section ml-0 pr-sm-3">
                     @if(!empty($settings->user_msg))
                         <div class="news-addvertisment black-gradient-bg text-color-white">
                             <h4>News</h4>
