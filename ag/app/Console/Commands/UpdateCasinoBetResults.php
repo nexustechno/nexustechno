@@ -69,7 +69,7 @@ class UpdateCasinoBetResults extends Command
                         return response()->json(['status' => false, 'message' => 'Casino not found']);
                     }
 
-                    if (!isset($result['data'])) {
+                    if (!isset($result['data']) && count($result['data']) > 0) {
                         continue;
                     }
 
