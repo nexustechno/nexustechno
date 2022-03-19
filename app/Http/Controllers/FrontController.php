@@ -10699,15 +10699,14 @@ class FrontController extends Controller
 
             $fancydata = FancyResult::where(['eventid' => $data->match_id, 'fancy_name' => $data->team_name])->first();
 
-            $html .= '
-            	<tr class="white-bg">
+            $html .= '<tr class="white-bg">
                     <td class="white-bg"><img src="">
                         <a class="text-color-blue-light">' . $data->id . '</a>
                     </td>
                     <td>' . $loginUser->user_name . '</td>
                     <td>' . $sports->sport_name . '<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $matchdata->match_name . ' </b> <i class="fas fa-caret-right text-color-grey"></i> ' . $data->bet_type . '</td>
-                    <td class="text-right">' . $data->team_name . ' </td>
-                    ';
+                    <td class="text-right">' . $data->team_name . ' </td>';
+
             if ($data->bet_side == 'lay') {
                 if ($data->bet_type == 'SESSION')
                     $html .= '<td class="text-right" style="color: #e33a5e !important;text-transform: uppercase;">no</td>';
@@ -10725,20 +10724,18 @@ class FrontController extends Controller
                     <td class="text-right">' . $data->bet_amount . '</td>
                     <td class="text-right">' . $data->bet_odds . '</td>';
             if ($data->bet_type == 'ODDS') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
                 }
             }
             if ($data->bet_type == 'SESSION') {
-
                 if (!empty($fancydata)) {
-
                     if ($data->bet_side == 'back') {
                         if ($data->bet_odds <= $fancydata->result) {
                             $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
@@ -10755,19 +10752,18 @@ class FrontController extends Controller
                 }
             }
             if ($data->bet_type == 'BOOKMAKER') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
                 }
             }
 
-            $html .= '</tr>
-            ';
+            $html .= '</tr>';
         }
 
         foreach ($casinoBets as $bet){
@@ -10794,23 +10790,22 @@ class FrontController extends Controller
                     <td class="text-right">'.$bet->odds_value.'</td>';
 
 
-                if($bet->winner == $bet->team_name && $bet->bet_side=='back')
+                if(strtolower($bet->winner) == strtolower($bet->team_name) && $bet->bet_side=='back')
                 {
                     $html.='<td class="text-color-green text-right">('.$bet->casino_profit.')</td>';
                 }
-                else if($bet->winner != $bet->team_name && $bet->bet_side=='back')
+                else if(strtolower($bet->winner) != strtolower($bet->team_name) && $bet->bet_side=='back')
                 {
                     $html.='<td class="text-color-red text-right">('.$bet->exposureAmt.')</td>';
                 }
-                else if($bet->winner == $bet->team_name && $bet->bet_side=='lay')
+                else if(strtolower($bet->winner) == strtolower($bet->team_name) && $bet->bet_side=='lay')
                 {
                     $html.='<td class="text-color-red text-right">('.$bet->exposureAmt.')</td>';
                 }
-                else if($bet->winner != $bet->team_name && $bet->bet_side=='lay')
+                else if(strtolower($bet->winner) != strtolower($bet->team_name) && $bet->bet_side=='lay')
                 {
                     $html.='<td class="text-color-green text-right">('.$bet->casino_profit.')</td>';
                 }
-
 
                 $html.="</tr>";
             }

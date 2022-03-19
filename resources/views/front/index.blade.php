@@ -60,7 +60,7 @@ else{
                             <div class="home-carousel pl-1 pr-1 owl-reponsive owl-carousel owl-theme">
                                 @foreach($banner as $banners)
                                     <div class="itemslider">
-                                        <img src="{{ URL::to('asset/upload')}}/{{$banners->banner_image}}" alt="Image">
+                                        <img src="{{ URL::to('ag/asset/upload')}}/{{$banners->banner_image}}" alt="Image">
                                     </div>
                                 @endforeach
                                 <!-- <div class="itemslider">

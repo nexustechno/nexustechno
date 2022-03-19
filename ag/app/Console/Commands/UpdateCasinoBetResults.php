@@ -49,38 +49,41 @@ class UpdateCasinoBetResults extends Command
 
         foreach ($bets as $item){
 
-            $userBets = CasinoBet::whereNull("winner")->where('user_id',$item->user_id)->groupBy('casino_name')->orderBy('updated_at','ASC')->take(3)->get();
+            $userBets = CasinoBet::whereNull("winner")->where('user_id',$item->user_id)->groupBy('casino_name')->orderBy('updated_at','ASC')->get();
 
             foreach ($userBets as $bet) {
-                Log::info(str_repeat("~=~", 20));
-                $apiURL = "http://3.6.94.71:3000/getresult/" . $bet->casino_name;
 
-                Log::info("API URL: " . $apiURL);
+                $userRoundIdBets = CasinoBet::whereNull("winner")->where('user_id',$item->user_id)->where('casino_name',$bet->casino_name)->groupBy('roundid')->orderBy('updated_at','ASC')->get();
+                foreach ($userRoundIdBets as $bet2) {
+                    Log::info(str_repeat("~=~", 20));
+//                    $apiURL = "http://3.6.94.71:3000/getresult/" . $bet->casino_name;
+                    $apiURL = 'https://nexusapi.xyz/api/v1/casino/' . $bet2->casino_name . '/result/' . $bet2->roundid;
 
-                $response = Http::get($apiURL);
-                $result = $response->json();
+                    Log::info("API URL: " . $apiURL);
 
-                $casino = Casino::where("casino_name", $bet->casino_name)->first();
-                if (empty($casino)) {
-                    return response()->json(['status' => false, 'message' => 'Casino not found']);
+                    $response = Http::get($apiURL);
+                    $result = $response->json();
+
+                    $casino = Casino::where("casino_name", $bet->casino_name)->first();
+                    if (empty($casino)) {
+                        return response()->json(['status' => false, 'message' => 'Casino not found']);
+                    }
+
+                    if (!isset($result['data'])) {
+                        continue;
+                    }
+
+                    $resp = $casinoCalculationController->updateCasinoWinner($result['data'], $casino, $bet->user);
+
+                    Log::info("casino: " . $bet->casino_name);
+                    Log::info($resp['message']);
+                    Log::info("\n");
+
+                    $this->info(str_repeat("~=~", 20));
+                    $this->info("casino: " . $bet->casino_name);
+                    $this->info($resp['message']);
+                    $this->info("\n");
                 }
-
-                if (!isset($result['data'])) {
-                    continue;
-                }
-
-//                dd($bet->user);
-
-                $resp = $casinoCalculationController->updateCasinoWinner($result['data'], $casino,$bet->user);
-
-                Log::info("casino: " . $bet->casino_name);
-                Log::info($resp['message']);
-                Log::info("\n");
-
-                $this->info(str_repeat("~=~", 20));
-                $this->info("casino: " . $bet->casino_name);
-                $this->info($resp['message']);
-                $this->info("\n");
             }
 
         }

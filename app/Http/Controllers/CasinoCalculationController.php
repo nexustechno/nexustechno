@@ -65,35 +65,34 @@ class CasinoCalculationController extends Controller
         return $response;
     }
 
-    public static function getCasinoExAmount($id = '',$casino_name = '',$roundid='')
+    public static function getCasinoExAmount($id,$casino_name = '',$roundid='',$casinoNameCondition=[])
     {
+
+        $query = CasinoBet::where('user_id', $id);
         if (!empty($casino_name)) {
-            if(empty($roundid)) {
-                $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
+            if(isset($casinoNameCondition['casino_name'])) {
+                $query->where("casino_name",$casinoNameCondition['casino_name'], $casino_name);
             }else{
-                if($roundid == 'not-equal-to-given-casino-name'){
-                    $casinoBets = CasinoBet::where("casino_name","!=", $casino_name)->where('roundid', $roundid)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
-                }else {
-                    $casinoBets = CasinoBet::where("casino_name", $casino_name)->where('roundid', $roundid)->where('user_id', $id)->groupBy('roundid')->whereNull('winner')->get();
-                }
-            }
-        } else {
-            if(empty($roundid)) {
-                $casinoBets = CasinoBet::where('user_id', $id)->groupBy('casino_name')->whereNull('winner')->get();
-            }else{
-                $casinoBets = CasinoBet::where('user_id', $id)->where('roundid', $roundid)->groupBy('roundid')->whereNull('winner')->get();
+                $query->where("casino_name", $casino_name);
             }
         }
+
+        if(!empty($roundid)) {
+            $query->where('roundid', $roundid);
+        }
+
+        if(!empty($roundid)) {
+            $casinoBets = $query->groupBy('roundid')->whereNull('winner')->get();
+        }else{
+            $casinoBets = $query->groupBy('casino_name')->whereNull('winner')->get();
+        }
+
         $exAmtTot = [
             'exposer' => 0,
         ];
         foreach ($casinoBets as $bet) {
 
-            if($roundid == 'not-equal-to-given-casino-name'){
-                $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name, '');
-            }else {
-                $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name, $roundid);
-            }
+            $exAmtArr = self::getExAmountCasinoForEachTeam($id, $bet->casino_name, $roundid);
 
             if (isset($exAmtArr['ODDS'])) {
                 $arr = array();
@@ -142,17 +141,16 @@ class CasinoCalculationController extends Controller
         }
 
         $userId = $getUser->id;
-
+        $roundid = $request->roundid;
         $playerController = new PlayerController();
         $totalMatchExposer = PlayerController::getExAmount('',$userId);
         $totalFancyExpo = $playerController->getUserAllMatchFancyExposer($userId);
-        $totalCasinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name,'not-equal-to-given-casino-name');
+        $totalCasinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name,$roundid,['casino_name'=>"!="]);
         $currentRoundCasinoExposer = $totalMatchExposer + $totalFancyExpo + $totalCasinoExposer['exposer'];
         if ($headerUserBalance < $currentRoundCasinoExposer) {
             return response()->json(['status'=>false,'message'=>'Insufficient Balance!!']);
         }
 
-        $roundid = $request->roundid;
         $stake_value = $request->stake_value;
         $odds_value = $request->odds_value;
         $team_name = $request->team_name;
@@ -171,7 +169,7 @@ class CasinoCalculationController extends Controller
         $betTeamIndex = array_search($request->team_sid, $other_team_name);
         unset($other_team_name[$betTeamIndex]);
 
-        $casinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name);
+        $casinoExposer = self::getCasinoExAmount($getUser->id, $casino->casino_name,$roundid);
 
         if ($request->bet_side == 'lay') {
             $profitAmt = $exposer;

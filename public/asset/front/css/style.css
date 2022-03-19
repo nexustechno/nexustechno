@@ -4619,18 +4619,22 @@ table.dataTable.display tbody tr {
 .casino-list-items-block .box1 {
     padding-left: 0;
     padding-right: 5px;
+    margin-bottom: 5px;
 }
 .casino-list-items-block .box4 {
     padding-right: 0;
     padding-left: 5px;
+    margin-bottom: 5px;
 }
 .casino-list-items-block .box2 {
     padding-right: 5px;
     padding-left: 5px;
+    margin-bottom: 5px;
 }
 .casino-list-items-block .box3 {
     padding-right: 5px;
     padding-left: 5px;
+    margin-bottom: 5px;
 }
 
 /*.casino_list_items:nth-child(5n) {*/
