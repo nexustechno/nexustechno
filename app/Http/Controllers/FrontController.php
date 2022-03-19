@@ -10613,26 +10613,26 @@ class FrontController extends Controller
 
                         if ($data->bet_side == 'back') {
                             if ($data->bet_odds <= $fancydata->result) {
-                                $sumAmt += $data->bet_profit;
+                                $sumAmt+= $data->bet_profit;
                                 $html .= '<span class="text-success">
-									' . $sumAmt = $data->bet_profit . '
+									' . $data->bet_profit . '
 									</span> ';
                             } else {
-                                $sumAmt -= $data->exposureAmt;
+                                $sumAmt-= $data->exposureAmt;
                                 $html .= '<span class="text-danger">
-									' . $sumAmt = $data->exposureAmt . '
+									' . $data->exposureAmt . '
 									</span> ';
                             }
                         } else if ($data->bet_side == 'lay') {
                             if ($data->bet_odds > $fancydata->result) {
-                                $sumAmt += $data->bet_profit;
+                                $sumAmt+= $data->bet_profit;
                                 $html .= '<span class="text-success">
-									' . $sumAmt = $data->bet_profit . '
+									' . $data->bet_profit . '
 									</span> ';
                             } else {
-                                $sumAmt -= $data->exposureAmt;
+                                $sumAmt-= $data->exposureAmt;
                                 $html .= '<span class="text-danger">
-									' . $sumAmt = $data->exposureAmt . '
+									' . $data->exposureAmt . '
 									</span> ';
                             }
                         }
@@ -10656,6 +10656,13 @@ class FrontController extends Controller
         $html.='<td aria-colindex="3" role="cell" class="text-right"></td></tr>';
 
         return $html;
+    }
+
+    public function fix_integer_overflow($size) {
+        if ($size < 0) {
+            $size += 2.0 * (PHP_INT_MAX + 1);
+        }
+        return $size;
     }
 
     public function mybets()
