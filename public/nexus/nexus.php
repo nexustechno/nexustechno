@@ -54,10 +54,12 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     <style>
         iframe, video {
             width: 480px;
+            height: 270px;
         }
         @media only screen and (max-width: 480px) {
             iframe, video {
                 width: 100%;
+                height: 215px;
             }
         }
     </style>
@@ -66,10 +68,10 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
 <?php
 if ($iframe == 'iframe') {
     ?>
-    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;"></iframe><?php
+    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="padding: 0;"></iframe><?php
 } else if ($iframe == 'video') {
     ?>
-    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
+    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="padding: 0;">
         <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
     </video>
 
