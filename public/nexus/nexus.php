@@ -23,9 +23,9 @@ curl_close($process);
 
 $match_data = json_decode($return, true);
 
-echo __FILE__ . " at line " . __LINE__ . "<br>";
-echo "<pre>";
-print_r($match_data);
+//echo __FILE__ . " at line " . __LINE__ . "<br>";
+//echo "<pre>";
+//print_r($match_data);
 
 $iframe = '';
 if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
@@ -40,9 +40,9 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
         $tvLink1 = $match_data['result'][0]['link'];
     }
 
-    if (isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2']) && $match_data['result'][0]['type'] == 3) {
-        $tvLink1 = $match_data['result'][0]['link2'];
-    }
+//    if (isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
+//        $tvLink1 = $match_data['result'][0]['link2'];
+//    }
 }
 ?>
 <html>
