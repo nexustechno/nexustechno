@@ -52,6 +52,9 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     <title>LIVE TV</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video-js.css" rel="stylesheet">
     <style>
+        iframe, video {
+            width: 480px;
+        }
         @media only screen and (max-width: 480px) {
             iframe, video {
                 width: 100%;
@@ -63,10 +66,10 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
 <?php
 if ($iframe == 'iframe') {
     ?>
-    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;width: 480px;"></iframe><?php
+    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;"></iframe><?php
 } else if ($iframe == 'video') {
     ?>
-    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;width: 480px;">
+    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
         <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
     </video>
 
