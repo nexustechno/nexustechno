@@ -51,7 +51,13 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
 <head>
     <title>LIVE TV</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video-js.css" rel="stylesheet">
-
+    <style>
+        @media only screen and (max-width: 480px) {
+            iframe, video {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;margin: 0 auto;text-align: center;background: black;">
 <?php
