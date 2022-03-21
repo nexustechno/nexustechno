@@ -23,29 +23,27 @@ curl_close($process);
 
 $match_data = json_decode($return, true);
 
-echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($match_data);
+echo __FILE__ . " at line " . __LINE__ . "<br>";
+echo "<pre>";
+print_r($match_data);
 
-if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
+$iframe = '';
+if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($match_data['result'][0])) {
 
-    if(isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
+    if ($match_data['result'][0]['type'] == 6) {
+        $iframe = 'iframe';
+    } else if ($match_data['result'][0]['type'] == 3) {
+        $iframe = 'video';
+    }
+
+    if (isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
+        $tvLink1 = $match_data['result'][0]['link'];
+    }
+
+    if (isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2']) && $match_data['result'][0]['type'] == 3) {
         $tvLink1 = $match_data['result'][0]['link2'];
     }
-
-    if(isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
-        $tvLink2 = $match_data['result'][0]['link'];
-    }
 }
-
-//if(!isset($tvLink)){
-//    echo "<center><h1>TV not available right now</h1></center>";die();
-//}
-//if($sports_id == 4) {
-//    $tvLink = "https://orangeexch999.com/jmp/nm3/all.php?eventId=" . $eventid;
-//}else {
-//    $tvLink = "http://194.233.65.10/LiveTV/TVApi.svc/GetLiveTV?eventid=" . $eventid;
-//}
-
-//die($tvLink);
 ?>
 <html>
 <head>
@@ -53,19 +51,23 @@ if(isset($match_data['result']) && count($match_data['result']) > 0 && isset($ma
     <link rel="stylesheet" type="text/css" href="https://vjs.zencdn.net/7.0.0/video-js.css">
 </head>
 <body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
-<!--<iframe src="https://beetaexch.com/mediaplayergame/31299345/103.107.60.37" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe>-->
-<video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
-    <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
-</video>
-
-<video id="videojs-contrib-hls-player" class="video-js vjs-default-skin" autoplay muted controls style="height: 270px;padding: 0;width: 100%;">
-    <source src="<?php echo $tvLink2; ?>" type="application/x-mpegURL">
-</video>
-
+<?php
+if ($iframe == 'iframe') {
+    ?>
+    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe><?php
+} else if ($iframe == 'video') {
+    ?>
+    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted
+           data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
+        <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
+    </video>
+    <?php
+}
+?>
 <script src="https://vjs.zencdn.net/7.0.0/video.min.js"></script>
 
 <script>
-    (function(window, videojs) {
+    (function (window, videojs) {
         var player = window.player = videojs('videojs-contrib-hls-player');
     }(window, window.videojs));
 </script>
