@@ -57,7 +57,7 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
 <?php
 if ($iframe == 'iframe') {
     ?>
-    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 100%;padding: 0;width: 100%"></iframe><?php
+    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;width: 100%"></iframe><?php
 } else if ($iframe == 'video') {
     ?>
     <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted
