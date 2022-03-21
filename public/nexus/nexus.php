@@ -79,11 +79,11 @@ if ($iframe == 'iframe') {
 }
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video.min.js"></script>
-<!--<script>-->
-<!--    (function (window, videojs) {-->
-<!--        var player = window.player = videojs('my_video_1');-->
-<!--    }(window, window.videojs));-->
-<!--</script>-->
+<script>
+    (function (window, videojs) {
+        var player = window.player = videojs('my_video_1');
+    }(window, window.videojs));
+</script>
 
 </body>
 </html>
