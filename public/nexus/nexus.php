@@ -40,9 +40,11 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
         $tvLink1 = $match_data['result'][0]['link'];
     }
 
-//    if (isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
-//        $tvLink1 = $match_data['result'][0]['link2'];
-//    }
+    if (isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
+        $tvLink1 = $match_data['result'][0]['link2'];
+    }
+
+    echo $tvLink1;
 }
 ?>
 <html>
