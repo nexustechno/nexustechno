@@ -53,14 +53,14 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video-js.css" rel="stylesheet">
 
 </head>
-<body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;">
+<body style="margin: 0;width: 100%;height: 100%;display: block;position: relative;margin: 0 auto;text-align: center;background: black;">
 <?php
 if ($iframe == 'iframe') {
     ?>
-    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;width: 100%"></iframe><?php
+    <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;width: 480px;"></iframe><?php
 } else if ($iframe == 'video') {
     ?>
-    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
+    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;width: 480px;">
         <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
     </video>
 
