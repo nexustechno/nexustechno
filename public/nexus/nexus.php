@@ -70,7 +70,7 @@ if ($iframe == 'iframe') {
 
 <script>
     (function (window, videojs) {
-        var player = window.player = videojs('videojs-contrib-hls-player');
+        var player = window.player = videojs('my_video_1');
     }(window, window.videojs));
 </script>
 
