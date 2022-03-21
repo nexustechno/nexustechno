@@ -22,6 +22,9 @@ Route::post("connection",'API\ApiController@connection');
 Route::post("website",'API\ApiController@updateWebsite');
 Route::get("fancy/matches",'API\ApiController@getFancyMatches');
 Route::get("match/fancy/{id}",'API\ApiController@getFancy');
+
+Route::get("matches/{type}",'API\ApiController@getMatches');
+
 Route::get("fancy/matches/history",'API\ApiController@getFancyMatchHistory');
 Route::get("fancy/history/{id}",'API\ApiController@getFancyHistory');
 Route::post("declare/fancy/result",'API\ApiController@declareFancyResult');

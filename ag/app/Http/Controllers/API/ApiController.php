@@ -253,4 +253,23 @@ class ApiController extends Controller
             'message' => 'Unable to found fancy result record',
         ],200);
     }
+
+    public function getMatches($type){
+        $matches = Match::query();
+        if($type == 'cricket'){
+            $matches->where('sports_id',4);
+        }elseif($type == 'tennis'){
+            $matches->where('sports_id',2);
+        }elseif($type == 'soccer'){
+            $matches->where('sports_id',1);
+        }
+
+        $data = $matches->selectRaw('*, CONCAT(match_name,"[",match_date,"]") as new_title')->whereNull('winner')->orderby('match_date', 'asc')->pluck('new_title','event_id');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Matches List',
+            'data' => $data
+        ],200);
+    }
 }

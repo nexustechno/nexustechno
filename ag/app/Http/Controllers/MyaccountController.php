@@ -71,7 +71,7 @@ class MyaccountController extends Controller
         if ($request->startdate) {
             $fromdate = date('Y-m-d', strtotime($request->startdate));
         }
-        if ($request->startdate) {
+        if ($request->todate) {
             $todate = date('Y-m-d', strtotime($request->todate));
         }
 
@@ -82,9 +82,20 @@ class MyaccountController extends Controller
         $drpval = intval($request->drpval);
         if ($drpval > 0) {
             if ($drpval == 1) {
-                $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id', 0)->orderBy('created_at', 'ASC')->get();
+                if($request->report_for!='all'){
+                    if($request->report_for=='upper') {
+                        $records = UsersAccount::where("user_id", $id)->where("to_user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id', 0)->where('casino_id', 0)->orderBy('created_at', 'ASC')->get();
+                    }else{
+                        $records = UsersAccount::where("user_id", $id)->where("from_user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id', 0)->where('casino_id', 0)->orderBy('created_at', 'ASC')->get();
+                    }
+                }else{
+                    $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id', 0)->where('casino_id', 0)->orderBy('created_at', 'ASC')->get();
+                }
             } else {
-                $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id', '!=', 0)->orderBy('created_at', 'ASC')->get();
+                $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where(function ($q){
+                    $q->where('match_id', '!=', 0);
+                    $q->orWhere('casino_id', '!=', 0);
+                })->orderBy('created_at', 'ASC')->get();
             }
         } else {
             $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->orderBy('created_at', 'ASC')->get();
@@ -92,6 +103,7 @@ class MyaccountController extends Controller
 
         $record = UsersAccount::where("user_id", $id)->where('created_at', "<", $fromdate)->orderBy('created_at', 'ASC')->first();
         $openingBalanceDate = '';
+        $openingBalance = 0;
         if (!empty($record)) {
             $openingBalance = $record->closing_balance;
             $openingBalanceDate = date('d-m-y H:i', strtotime($record->created_at));
@@ -405,100 +417,76 @@ class MyaccountController extends Controller
 
     public function datamyaccountstatement(Request $request)
     {
+
         $loginuser = Auth::user();
-        $user = User::where('id', $loginuser->id)->first();
 
-        $startdt = Carbon::parse($request->startdate);
-        $enddt = Carbon::parse($request->todate);
-
-        $start = $startdt->modify('-1 day');
-        $end = $enddt->modify('+1 day');
-
-        $user = $request->user;
-        $userid = User::where('user_name', $user)->first();
-
-        $credit = UserDeposit::where(['child_id' => $userid->id, 'parent_id' => $loginuser->id])
-            ->whereBetween('created_at', [$start, $end])
-            ->latest()
-            ->get();
-
-        $credit = UserDeposit::where('child_id', $userid->id)->where('parent_id', $loginuser->id)
-            ->whereBetween('created_at', [$start, $end])->latest()->get();
-
-        $auth_id = Auth::user()->id;
-        $auth_type = Auth::user()->agent_level;
-        if ($auth_type == 'COM') {
-            $settings = setting::latest('id')->first();
-            $balance = $settings->balance;
+        if (!empty($request->user) && $request->user != null) {
+            $id = $request->user;
         } else {
-            $settings = CreditReference::where('player_id', $auth_id)->first();
-            $balance = $settings['available_balance_for_D_W'];
+            $id = $loginuser->id;
         }
 
-        $player_balance = CreditReference::where('player_id', $userid->id)->first();
-        $player_balance = $player_balance['remain_bal'];
+        if ($request->startdate) {
+            $fromdate = date('Y-m-d', strtotime($request->startdate));
+        }
+        if ($request->todate) {
+            $todate = date('Y-m-d', strtotime($request->todate));
+        }
+
+        if ($request->startdate == $request->todate) {
+            $fromdate = date('Y-m-d', strtotime($request->startdate));
+            $todate = date('Y-m-d', strtotime($request->todate . "+1 day"));
+        }
+
+        $records = UsersAccount::where("user_id", $id)->whereBetween('created_at', [$fromdate, $todate])->where('match_id', 0)->where('casino_id', 0)->orderBy('created_at', 'ASC')->get();
+
+        $record = UsersAccount::where("user_id", $id)->where('created_at', "<", $fromdate)->orderBy('created_at', 'ASC')->first();
+        $openingBalanceDate = '';
+        $openingBalance = 0;
+        if (!empty($record)) {
+            $openingBalance = $record->closing_balance;
+            $openingBalanceDate = date('d-m-y H:i', strtotime($record->created_at));
+        }
+
+        $closing_balance = $openingBalance;
 
         $html = '';
-        $html .= '';
-        $i = 0;
-        $previousValue = null;
-        $prev_bal = 0;
-        $chk_ori = 0;
-        $closing_balance = 0;
-        $next_row_balance = 0;
-        foreach ($credit as $data) {
-            $from_data = User::where('id', $data->parent_id)->first();
-            $todatasds = User::where('id', $data->child_id)->first();
-            $html .= '
-           		<tr>
-					<td> ' . $data->created_at . ' </td>
-					<td class="text-color-green"> ';
-            if ($data->balanceType == 'DEPOSIT') {
-                $html .= '' . $data->amount . ' ';
-            }
-            $html .= '
-                  	</td>
-					<td class="text-color-red"> ';
-            if ($data->balanceType == 'WITHDRAW') {
-                $html .= ' ' . $data->amount . ' ';
-            }
-            $html .= '</td>
-			<td> ';
-            if ($i == 0) {
-                $prev_bal = $balance;
-                if ($data->balanceType == 'DEPOSIT') {
-                    $closing_balance = $player_balance;
-                    $html .= ' ' . $closing_balance . ' ';
-                    $next_row_balance = $player_balance - $data->amount;
-                }
-                if ($data->balanceType == 'WITHDRAW') {
-                    $closing_balance = $player_balance;
-                    $html .= ' ' . $closing_balance . ' ';
-                    $next_row_balance = $player_balance + $data->amount;
-                }
+        $html .= '<tr>
+                        <td style="width: 110px"> ' . $openingBalanceDate . ' </td>
+                        <td style="width: 110px;text-align: right;" class="text-color-green">0</td>
+                        <td style="width: 110px;text-align: right;" class="text-color-red">0</td>
+                        <td style="text-align: right;">' . $openingBalance . '</td>
+                        <td>Opening Balance</td>
+                         <td style="width: 120px">-</td>
+			        </tr>';
+
+        foreach ($records as $data){
+            if ($data->credit_amount > 0) {
+                $closing_balance += $data->credit_amount;
             } else {
-                if ($data->balanceType == 'DEPOSIT') {
-                    $closing_balance = $player_balance - $data->amount;
-                    $html .= ' ' . $next_row_balance . ' ';
-                    $next_row_balance = $next_row_balance - $data->amount;
-                }
-                if ($data->balanceType == 'WITHDRAW') {
-                    $closing_balance = $player_balance + $data->amount;
-                    $html .= ' ' . $next_row_balance . ' ';
-                    $next_row_balance = $next_row_balance + $data->amount;
-                }
+                $closing_balance -= $data->debit_amount;
             }
-            $html .= ' </td>
-			<td> ' . $data->extra . ' </td>';
-            $uname = '';
-            if (!empty($todatasds)) {
-                $uname = $todatasds->user_name;
+
+            $username = '';
+            if ($data->from_user_id > 0) {
+                $fromUser = User::select('id', 'user_name')->where('id', $data->from_user_id)->first();
+                $toUser = User::select('id', 'user_name')->where('id', $data->to_user_id)->first();
+                if (empty($toUser) || empty($fromUser)) {
+                    continue;
+                }
+                $username = $fromUser->user_name . ' <i class="fas fa-caret-right text-color-grey"></i> ' . $toUser->user_name;
             }
-            $html .= '<td> ' . $from_data->user_name . ' <i class="fas fa-caret-right text-color-grey"></i> ' . $uname . '</td>
-			</tr>';
-            $i++;
-            $previousValue = $data;
+
+            $html .= '<tr>
+                        <td style="width: 110px"> ' . date('d-m-y H:i', strtotime($data->created_at)) . ' </td>
+                        <td style="width: 110px" class="text-color-green">' . $data->credit_amount . '</td>
+                        <td style="width: 110px" class="text-color-red">' . $data->debit_amount . '</td>
+                        <td>' . $closing_balance . '</td>
+                        <td>' . $data->remark . ' </td>
+                        <td style="width: 120px">' . $username . '</td>
+			        </tr>';
         }
+
         return $html;
     }
 

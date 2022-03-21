@@ -56,9 +56,6 @@
 
     <section class="myaccount-section">
         <div class="container">
-            {{--            <div class="row">--}}
-
-
             <div class="row">
                 <div class="col-lg-12 col-md-9 col-sm-12">
                     <div class="pagetitle text-color-blue-2 mb-10">
@@ -69,7 +66,7 @@
 
             <div class="row">
                 @csrf
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>Search by client: </label>
                     <select name="user" id="user" class="form-control acc-filter">
                         <option value="">Select</option>
@@ -96,6 +93,15 @@
                         <option value="0"> All </option>
                         <option value="1"> Deposit/Withdraw Report </option>
                         <option value="2"> Game Report </option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label>Report For: </label>
+                    <select name="report_for" id="report_for" class="form-control acc-filter">
+                        <option value="all">Upline/Downline</option>
+                        <option value="upper">Upline</option>
+                        <option value="down">Downline</option>
                     </select>
                 </div>
 
@@ -189,11 +195,11 @@
             var todate = $("#todate").val();
             var user = $("#user").val();
             var drp_value = $('#drpval').val();
-
+            var report_for = $("#report_for").val();
             $.ajax({
                 type: "post",
                 url: '{{route("account.statement.data")}}',
-                data: {"_token": "{{ csrf_token() }}", "startdate": startdate, "todate": todate, "user": user,  drpval:drp_value},
+                data: {"_token": "{{ csrf_token() }}", "startdate": startdate, "todate": todate, "user": user,  drpval:drp_value,report_for:report_for},
                 beforeSend: function () {
                     $('#site_bet_loading1').show();
                 },
@@ -243,6 +249,27 @@
 
         $('#acntbtn').click(function () {
             loadData();
+        });
+
+
+        $(document).ready(function () {
+
+            function enabelDisableReportForOption(){
+                $("#report_for").prop('disabled', true);
+                $("#report_for").val('all');
+                if($('#drpval').val() == 1){
+                    $("#report_for").prop('disabled', false);
+                    $("#report_for").val('all');
+                }
+            }
+
+            enabelDisableReportForOption();
+
+            $("body").on('change','#drpval',function () {
+                enabelDisableReportForOption();
+            });
+
+
         });
 
     </script>
