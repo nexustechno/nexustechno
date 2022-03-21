@@ -60,12 +60,7 @@ if ($iframe == 'iframe') {
     <iframe src="<?php echo $tvLink1; ?>" frameborder="0" style="height: 270px;padding: 0;width: 100%"></iframe><?php
 } else if ($iframe == 'video') {
     ?>
-    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted
-           data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
-        <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
-    </video>
-
-    <video src= id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
+    <video id="my_video_1" class="video-js vjs-fluid vjs-default-skin" controls autoplay loop muted data-setup='{"fluid": true, "autoplay": true}' style="height: 270px;padding: 0;">
         <source src="<?php echo $tvLink1; ?>" type="application/x-mpegURL">
     </video>
 
