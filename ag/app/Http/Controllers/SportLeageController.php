@@ -30,6 +30,25 @@ class SportLeageController extends Controller
                     continue;
                 }
 
+                $draw = 0;
+                if($matches['back12'] > 0 || $matches['lay12'] > 0){
+                    $draw = 1;
+                }
+
+                if($sId == 1){
+                    $draw = 1;
+                }
+
+                $bookmaker = 0;
+                if($matches['m1'] == 'True'){
+                    $bookmaker = 1;
+                }
+
+                $fancy = 0;
+                if($matches['f'] == 'True'){
+                    $fancy = 1;
+                }
+
                 $matchAdded = Match::where('match_id',$matches['marketId'])->count();
                 $checked='';
                 $disabled='';
@@ -53,7 +72,7 @@ class SportLeageController extends Controller
                     <td class="text-left">'.$match_date.'</td>
 
                     <input type="hidden" name="event_id " id="event_id" value="'.$matches['gameId'].'" >
-                    <td class="text-left"><input '.$checked.'  '.$disabled.' type="checkbox" name="" data-leage="" data-marketid="'.$matches['marketId'].'" data-sid="'.$sId.'" data-matchdate="'.$match_date.'" data-event="'.$event.'" data-eventid="'.$matches['gameId'].'" id="" onclick="addMatch(this);"></td>
+                    <td class="text-left"><input '.$checked.'  '.$disabled.' type="checkbox" name="" data-fancy="'.$fancy.'" data-bookmaker="'.$bookmaker.'"  data-leage="" data-draw="'.$draw.'" data-marketid="'.$matches['marketId'].'" data-sid="'.$sId.'" data-matchdate="'.$match_date.'" data-event="'.$event.'" data-eventid="'.$matches['gameId'].'" id="" onclick="addMatch(this);"></td>
                 </tr>';
             }
         }
@@ -105,36 +124,12 @@ class SportLeageController extends Controller
 		}
 		else
 		{
-			// $match_data=app('App\Http\Controllers\RestApi')->Fancy_and_Bookmaker_DetailCall($request->event_id,$request->match_id,$request->sports_id);
-            // $match_data_getTeam=app('App\Http\Controllers\RestApi')->DetailCall($request->match_id,$request->event_id,$request->sports_id);
-
-            $match_data = app('App\Http\Controllers\RestApi')->getSingleCricketMatchData($request->event_id,$request->match_id,$request->sports_id);
-            // echo "<pre>"; print_r($match_data); exit;
-            // dd($match_data);
-
-            $draw=0;
-            if(isset($match_data['t1'][0][2]['nat']) =='The Draw'){
-                $draw=1;
-            }
-
-            // if(@$match_data_getTeam[0]['runners'][2]['ex']['availableToBack'][0]['price']!='')
-            // {
-            //     $draw=1;
-            // }
-            $nation = array();
-			$bm='';
-			if(isset($match_data['t2'][0]['bm1'][0])!='')
-            	$bm=1;
-			$fancy='';
-			if(isset($match_data['t3'][0])!='')
-				$fancy=1;
 			$data = $request->all();
 			$data['sports_id'] = $request->sports_id;
             $data['leage_name'] = $request->leage;
-            $data['is_draw'] = $draw;
-            $data['bookmaker'] = $bm;
-            $data['fancy'] = $fancy;
-            $data['is_draw'] = $draw;
+            $data['is_draw'] = $request->is_draw;
+            $data['bookmaker'] = $request->bookmaker;
+            $data['fancy'] = $request->fancy;
 			$match=Match::create($data);
             return response()->json(array('result'=> 'success','message'=>'Match added successfully!'));
 		}

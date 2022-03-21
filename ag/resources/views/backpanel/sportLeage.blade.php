@@ -145,6 +145,9 @@
             var match_date = $(val).data("matchdate");
             var sports_id = $(val).data("sid");
             var leage = $(val).data("leage");
+            var draw = $(val).data("draw");
+            var bookmaker = $(val).data("bookmaker");
+            var fancy = $(val).data("fancy");
             var _token = $("input[name='_token']").val();
             $.ajax({
                 type: "post",
@@ -157,6 +160,9 @@
                     event_id: event_id,
                     sports_id: sports_id,
                     leage: leage,
+                    is_draw:draw,
+                    bookmaker:bookmaker,
+                    fancy:fancy,
                 },
                 beforeSend: function() {
                     $('#site_bet_loading1').show();
