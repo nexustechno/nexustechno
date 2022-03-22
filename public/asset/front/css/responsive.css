@@ -222,9 +222,9 @@
 
 @media only screen and (max-width:991px) {
 
-    .live_score_card_2 iframe{
-        height: 100px !important;
-    }
+    /*.live_score_card_2 iframe{*/
+    /*    height: 100px !important;*/
+    /*}*/
 
     .sport-list-title{
         text-transform: uppercase !important;

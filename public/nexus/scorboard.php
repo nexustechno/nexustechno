@@ -15,7 +15,7 @@ $match_type = $_GET['match_type'];
 //    $iFrameUrl = "https://www.shivexch.com/soccer_scoree/index.html?eventid=" . $eventId;
 //}
 
-if($match_type == 'cricket' || $match_type == 'tennis') {
+if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer') {
     $url = "http://marketsarket.in:3002/scoreurl/".$eventId;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
