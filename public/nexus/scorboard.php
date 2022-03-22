@@ -2,31 +2,17 @@
 error_reporting(0);
 $eventId = $_GET['event_id'];
 $match_type = $_GET['match_type'];
-
-//if($match_type == 'cricket') {
-//    $url = "http://marketsarket.in:3002/scoreurl/".$eventId;
-//    $ch = curl_init();
-//    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-//    curl_setopt($ch, CURLOPT_URL, $url);
-//    $res = curl_exec($ch);
-//
-//    $arr = json_decode($res,true);
-//
-//
-//    if(isset($arr['score'])){
-//        $explode = explode("/",$arr['score']);
-//        $eventId2 = end($explode);
-//    }else{
-//        echo "<center><h1>OOPS!<br>Scoreboard not available right now</h1></center>";die();
-//    }
-//    $iFrameUrl = "https://central.satsport247.com/score_widget/" . $eventId2;
-//    $height = '180px;';
-//}else
-{
-    $height = '110px;';
-    $iFrameUrl = "https://bfscore.onlyscore.live/?id=" . $eventId;
+$height = '110px;';
+if($match_type == 'cricket') {
+    $matchdate = $_GET['date'];
+    $iFrameUrl = "https://www.shivexch.com/cricket_scoree/index.html?matchDate=".$matchdate."&mtid=".$eventId;
 }
-
+elseif($match_type == 'tennis'){
+    $iFrameUrl = "http://shivexch.com/tennis_score3/index.html?eventid=" . $eventId;
+}
+elseif($match_type == 'soccer'){
+    $iFrameUrl = "https://www.shivexch.com/soccer_scoree/index.html?eventid=" . $eventId;
+}
 ?>
 <html>
 <head>
