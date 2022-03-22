@@ -8,7 +8,7 @@ if($match_type == 'cricket') {
     $iFrameUrl = "https://www.shivexch.com/cricket_scoree/index.html?matchDate=".$matchdate."&mtid=".$eventId;
 }
 elseif($match_type == 'tennis'){
-    $iFrameUrl = "http://shivexch.com/tennis_score3/index.html?eventid=" . $eventId;
+    $iFrameUrl = "https://shivexch.com/tennis_score3/index.html?eventid=" . $eventId;
 }
 elseif($match_type == 'soccer'){
     $iFrameUrl = "https://www.shivexch.com/soccer_scoree/index.html?eventid=" . $eventId;
