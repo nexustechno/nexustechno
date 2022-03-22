@@ -5,7 +5,8 @@ $match_type = $_GET['match_type'];
 $height = '110px;';
 if($match_type == 'cricket') {
     $matchdate = $_GET['date'];
-    $iFrameUrl = "https://www.shivexch.com/cricket_scoree/index.html?matchDate=".$matchdate."&mtid=".$eventId;
+    $time = $_GET['time'];
+    $iFrameUrl = "https://www.shivexch.com/cricket_scoree/index.html?matchDate=".$matchdate." ".$time."&mtid=".$eventId;
 }
 elseif($match_type == 'tennis'){
     $iFrameUrl = "https://shivexch.com/tennis_score3/index.html?eventid=" . $eventId;
