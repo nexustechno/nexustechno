@@ -352,7 +352,7 @@
                                             allowfullscreen></iframe>
                                 @endif
                             </div>
-                    @endif
+                        @endif
 
                     <!-- match-innerbg-detail-->
                         <div class="game_info_match blue-gradient-bg4 text-color-grey d-lg-none">
