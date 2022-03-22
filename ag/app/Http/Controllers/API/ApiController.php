@@ -272,4 +272,51 @@ class ApiController extends Controller
             'data' => $data
         ],200);
     }
+
+    public function declareMatchResult(Request $request){
+
+        $match = Match::where('event_id', $request->event_id)->first();
+
+        if(empty($match)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unable to found match record',
+            ],200);
+        }
+
+        $settingController = new SettingController();
+        $res = $settingController->updateMatchWinnerResult($match->id,$request->winner);
+
+        if($res['message'] == 'Success'){
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Match result declare successfully'
+            ],200);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Match result not declare',
+        ],200);
+    }
+
+    public function getMatchesHistory($type){
+
+        $matches = Match::query();
+        if($type == 'cricket'){
+            $matches->where('sports_id',4);
+        }elseif($type == 'tennis'){
+            $matches->where('sports_id',2);
+        }elseif($type == 'soccer'){
+            $matches->where('sports_id',1);
+        }
+
+        $data = $matches->selectRaw('*, CONCAT(match_name,"[",match_date,"]==",winner) as new_title')->whereNotNull('winner')->orderby('match_date', 'asc')->pluck('new_title','event_id');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Matches List',
+            'data' => $data
+        ],200);
+    }
 }
