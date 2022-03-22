@@ -283,21 +283,37 @@ class ApiController extends Controller
                 'message' => 'Unable to found match record',
             ],200);
         }
-
         $settingController = new SettingController();
-        $res = $settingController->updateMatchWinnerResult($match->id,$request->winner);
+        if($request->action == 'rollback'){
+            $res = $settingController->updateMatchRollbackResult($match->id);
 
-        if($res['message'] == 'Success'){
+            if ($res['success'] == 'success') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Match result rollback successfully'
+                ], 200);
+            }
+
             return response()->json([
-                'status' => 'success',
-                'message' => 'Match result declare successfully'
-            ],200);
-        }
+                'status' => 'error',
+                'message' => 'Match result not rollback',
+            ], 200);
+        }else {
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Match result not declare',
-        ],200);
+            $res = $settingController->updateMatchRollbackResult($match->id);
+
+            if ($res['message'] == 'Success') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Match result declare successfully'
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Match result not declare',
+            ], 200);
+        }
     }
 
     public function getMatchesHistory($type){

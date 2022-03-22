@@ -7951,7 +7951,11 @@ class SettingController extends Controller
 
     public function resultRollbackMatch(Request $request)
     {
-        $match = Match::find($request->id);
+        return response()->json($this->updateMatchRollbackResult($request->id));
+    }
+
+    public function updateMatchRollbackResult($id){
+        $match = Match::find($id);
         $match->winner = Null;
         $upd = $match->update();
 
@@ -7986,7 +7990,8 @@ class SettingController extends Controller
                             $bm_win_type = $expo->win_type;
                         }
                     }
-                } else {
+                }
+                else {
                     $odds_win_type = 'Cancel';
                     $userData = MyBets::where("match_id", $match->event_id)->where('bet_type', '!=', 'SESSION')->update(["result_declare" => 0]);
                     //$betnew=MyBets::where('match_id',$match->event_id)->where('bet_type','!=','SESSION')->where('result_declare',0)->where("user_id", $userid)->groupby('user_id')->get();
@@ -8000,11 +8005,11 @@ class SettingController extends Controller
                     $updc->exposure = $getc->exposure + $exposer;
                     $updc->available_balance_for_D_W = $getc->available_balance_for_D_W - $exposer;
                     $upd_can = $updc->update();
-                    if ($upd)
-                        echo "cnacell";
-                    else
-                        echo '1111';
-                    exit;
+//                    if ($upd)
+//                        echo "cnacell";
+//                    else
+//                        echo '1111';
+//                    exit;
 
                     //}
 
@@ -8146,9 +8151,8 @@ class SettingController extends Controller
                 }
             }
 
-
         }
-        //return response()->json(array('success'=> 'success'));
+        return array('success'=> 'success');
     }
 
     public function saveMatchStatus(Request $request)

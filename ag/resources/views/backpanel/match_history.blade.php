@@ -45,7 +45,7 @@ use App\Sport;
         <div class="inner-title player-right justify-content-between py-2">
             <h2>Match History</h2>
         </div>
-        
+
         <!-- Match History Tab  -->
             <div class="match_history_tabs" id="matchHistoryData" style="margin-bottom: 15px;">
                 <ul class="nav nav-tabs" role="tablist">
@@ -135,18 +135,18 @@ $(document).ready(function(){
         type: "POST",
         data: {
             _token: _token,
-        },  
+        },
         beforeSend:function(){
             $('#site_bet_loading1').show();
         },
         complete: function(){
             $('#site_bet_loading1').hide();
         },
-        success: function(data) 
+        success: function(data)
         {
-            $('#cData').html(data); 
-            $('#tennis').hide(); 
-            $('#soccer').hide();          
+            $('#cData').html(data);
+            $('#tennis').hide();
+            $('#soccer').hide();
         },
     });
 });
@@ -171,8 +171,8 @@ var _token = $("input[name='_token']").val();
                 $('#site_bet_loading1').hide();
             },
             success: function(response) { //alert(response);
-                //location.reload();
-                toastr.success('RollBack Successfully!');                
+                location.reload();
+                toastr.success('RollBack Successfully!');
             },
         });
     }
@@ -192,7 +192,7 @@ var _token = $("input[name='_token']").val();
             complete: function(){
                 $('#site_bet_loading1').hide();
             },
-            success: function(data) 
+            success: function(data)
             {
                 var dt=data.split("~~");
                 if(dt[1]=='cricket'){
@@ -202,18 +202,18 @@ var _token = $("input[name='_token']").val();
                     $('#tennis').hide();
                 }
                 if(dt[1]=='tennis'){
-                    $('#tData').html(dt[0]); 
+                    $('#tData').html(dt[0]);
                     $('#tennis').show();
                     $('#soccer').hide();
                     $('#cricket').hide();
                 }
                 if(dt[1]=='soccer'){
-                    $('#sData').html(dt[0]); 
+                    $('#sData').html(dt[0]);
                     $('#soccer').show();
                     $('#tennis').hide();
                     $('#cricket').hide();
                 }
-                             
+
             },
         });
     }
