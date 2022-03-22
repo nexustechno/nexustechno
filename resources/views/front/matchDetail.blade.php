@@ -256,7 +256,7 @@
                                             $eventid = $match->event_id;
                                             $sprtid = $match->sports_id;
                                             ?>
-                                            @if(Session::get('playerUser') && $inplay === 'True')
+                                            @if($inplay === 'True')
                                                 <iframe
                                                     src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=1"
                                                     height="270" title="YouTube video player" frameborder="0"
@@ -330,7 +330,7 @@
                             $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
                         }
                         ?>
-                        @if(!empty($logindata) && $inplay == 'True')
+                        @if($inplay == 'True')
                             <div class="match-innerbg-detail soccerbg live_score_card_{{ $match->sports_id }}">
                                 @if($match->sports_id == 4)
                                     <iframe id="LiveScoreCard"
@@ -426,7 +426,7 @@
                                                     <div class="tab-content">
                                                         <div class="tab-pane active" id="tabs-1" role="tabpanel">
 
-                                                            @if(Session::get('playerUser') && $inplay == 'True')
+                                                            @if($inplay == 'True')
                                                                 <iframe
                                                                     src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=1"
                                                                     height="270" title="YouTube video player"
