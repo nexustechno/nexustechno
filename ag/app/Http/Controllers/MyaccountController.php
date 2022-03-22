@@ -152,6 +152,9 @@ class MyaccountController extends Controller
                         ->where('bet_type', $log->bet_type)
                         ->orderBy('created_at')
                         ->first();
+                    if(empty($bet)){
+                        continue;
+                    }
 
                     $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
                 } else {
@@ -165,6 +168,9 @@ class MyaccountController extends Controller
                         ->whereBetween('created_at', [$fromdate, $todate])
                         ->orderBy('created_at')
                         ->first();
+                    if(empty($bet)){
+                        continue;
+                    }
 
                     $fnc_rslt = FancyResult::where('eventid', $match->event_id)->where('fancy_name', $bet->team_name)->first();
 

@@ -91,7 +91,7 @@
                 </ul>
 
                 <div class="player-right">
-                    @if($loginuser->agent_level != 'SL')
+{{--                    @if($loginuser->agent_level != 'SL')--}}
                         @if($loginuser->agent_level != 'DL')
                             <a class="add_player grey-gradient-bg" data-toggle="modal" data-target="#myAddAgent">
                                 <?php  $url = $_SERVER['REQUEST_URI']; ?>
@@ -101,7 +101,7 @@
                         <a class="add_player grey-gradient-bg" data-toggle="modal" data-target="#myAddPlayer">
                             <img src="{{ URL::to('asset/img/user-add.png') }}">Add Player
                         </a>
-                    @endif
+{{--                    @endif--}}
                     <a class="refreshbtn grey-gradient-bg" id="refreshpage">
                         <img src="{{ URL::to('asset/img/refresh.png') }}">
                     </a>
