@@ -10611,29 +10611,34 @@ class FrontController extends Controller
 
                     if ($data->bet_type == 'SESSION') {
 
-                        if ($data->bet_side == 'back') {
-                            if ($data->bet_odds <= $fancydata->result) {
-                                $sumAmt+= $data->bet_profit;
-                                $html .= '<span class="text-success">
+                        if($fancydata->result == 'cancel'){
+                            $html .= '<span class="text-danger">0</span> ';
+                        }else {
+
+                            if ($data->bet_side == 'back') {
+                                if ($data->bet_odds <= $fancydata->result) {
+                                    $sumAmt += $data->bet_profit;
+                                    $html .= '<span class="text-success">
 									' . $data->bet_profit . '
 									</span> ';
-                            } else {
-                                $sumAmt-= $data->exposureAmt;
-                                $html .= '<span class="text-danger">
+                                } else {
+                                    $sumAmt -= $data->exposureAmt;
+                                    $html .= '<span class="text-danger">
 									' . $data->exposureAmt . '
 									</span> ';
-                            }
-                        } else if ($data->bet_side == 'lay') {
-                            if ($data->bet_odds > $fancydata->result) {
-                                $sumAmt+= $data->bet_profit;
-                                $html .= '<span class="text-success">
+                                }
+                            } else if ($data->bet_side == 'lay') {
+                                if ($data->bet_odds > $fancydata->result) {
+                                    $sumAmt += $data->bet_profit;
+                                    $html .= '<span class="text-success">
 									' . $data->bet_profit . '
 									</span> ';
-                            } else {
-                                $sumAmt-= $data->exposureAmt;
-                                $html .= '<span class="text-danger">
+                                } else {
+                                    $sumAmt -= $data->exposureAmt;
+                                    $html .= '<span class="text-danger">
 									' . $data->exposureAmt . '
 									</span> ';
+                                }
                             }
                         }
                     }
@@ -10679,25 +10684,25 @@ class FrontController extends Controller
 
     public function betHistory(Request $request)
     {
-        $past_date = date('Y-m-d', strtotime('today - 30 days'));
-        $today_date = date("Y-m-d");
-
-
-        //$todate = $request->todate;
-        $fromdate = date("Y-m-d", strtotime($request->fromdate));
-        $todate1 = $request->todate;
-        $todate = date("Y-m-d", strtotime($todate1 . "+1 day"));
-
-        //echo $fromdate; echo "/"; echo $todate; exit;
-
         $getUserCheck = Session::get('playerUser');
         if (!empty($getUserCheck)) {
             $loginUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
         }
+        if($request->has('tdate')){
+            $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])->whereDate('created_at', date('Y-m-d',strtotime($request->tdate)))->latest()->get();
+            $casinoBets = CasinoBet::where(['user_id' => $loginUser->id])->whereNotNull('winner')->whereDate('created_at', date('Y-m-d',strtotime($request->tdate)))->latest()->get();
+        }else if($request->has('ydate')){
+            $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])->where('created_at', date('Y-m-d',strtotime($request->ydate)))->latest()->get();
+            $casinoBets = CasinoBet::where(['user_id' => $loginUser->id])->whereNotNull('winner')->where('created_at', date('Y-m-d',strtotime($request->ydate)))->latest()->get();
+        }else {
+            $past_date = date('Y-m-d', strtotime('today - 30 days'));
+            $fromdate = date("Y-m-d", strtotime($request->fromdate));
+            $todate1 = $request->todate;
+            $todate = date("Y-m-d", strtotime($todate1 . "+1 day"));
 
-        $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])->whereBetween('created_at', [$fromdate, $todate])->whereBetween('created_at', [$past_date, $todate])->latest()->get();
-        $casinoBets = CasinoBet::where(['user_id' => $loginUser->id])->whereNotNull('winner')->whereBetween('created_at',[$fromdate,$todate])->whereBetween('created_at', [$past_date, $todate])->latest()->get();
-
+            $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])->whereBetween('created_at', [$fromdate, $todate])->whereBetween('created_at', [$past_date, $todate])->latest()->get();
+            $casinoBets = CasinoBet::where(['user_id' => $loginUser->id])->whereNotNull('winner')->whereBetween('created_at', [$fromdate, $todate])->whereBetween('created_at', [$past_date, $todate])->latest()->get();
+        }
         $html = '';
 
         foreach ($getresult as $data) {
@@ -10743,17 +10748,22 @@ class FrontController extends Controller
             }
             if ($data->bet_type == 'SESSION') {
                 if (!empty($fancydata)) {
-                    if ($data->bet_side == 'back') {
-                        if ($data->bet_odds <= $fancydata->result) {
-                            $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                        } else {
-                            $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                        }
-                    } else if ($data->bet_side == 'lay') {
-                        if ($data->bet_odds > $fancydata->result) {
-                            $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                        } else {
-                            $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
+
+                    if($fancydata->result == 'cancel'){
+                        $html .= '<td class="text-color-red text-right">0</td>';
+                    }else {
+                        if ($data->bet_side == 'back') {
+                            if ($data->bet_odds <= $fancydata->result) {
+                                $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
+                            } else {
+                                $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
+                            }
+                        } else if ($data->bet_side == 'lay') {
+                            if ($data->bet_odds > $fancydata->result) {
+                                $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
+                            } else {
+                                $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
+                            }
                         }
                     }
                 }
@@ -10783,7 +10793,7 @@ class FrontController extends Controller
                         <a class="text-color-blue-light">' . $bet->id . '</a>
                     </td>
                     <td>' . $loginUser->user_name . '</td>
-                    <td>CASINO<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $casino->casino_title . ' </b> <i class="fas fa-caret-right text-color-grey"></i> ODDS </td>
+                    <td>CASINO<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $casino->casino_title . ' </b> <i class="fas fa-caret-right text-color-grey"></i>'.$bet->roundid.' <i class="fas fa-caret-right text-color-grey"></i> ODDS </td>
                     <td class="text-right">' . $bet->team_name . ' </td>';
 
                 if ($bet->bet_side == 'lay') {
@@ -10829,8 +10839,11 @@ class FrontController extends Controller
         if (!empty($getUserCheck)) {
             $loginUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
         }
+
+//        dd($tdate);
+
         $getresult = MyBets::where(['user_id' => $loginUser->id, 'result_declare' => 1])
-            ->whereDate('created_at', $tdate)
+            ->where('created_at', $tdate)
             ->latest()->get();
 
         $html = '';

@@ -905,12 +905,12 @@
         width: 75%;
     }
 
+
     .custom-table {
-        display: inline-table;
+        display: inline-block;
         width: 100%;
         overflow-x: auto;
     }
-
     .inplay-tableblock table.table tr td {
         padding: .5rem .75rem !important;
     }
@@ -1390,7 +1390,7 @@
     }
 
     .custom-table {
-        display: inline-table;
+        display: inline-block;
         width: 100%;
         overflow-x: auto;
     }

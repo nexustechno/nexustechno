@@ -523,7 +523,7 @@ $('#bet-today').click(function(){
     var tdate = new Date().toJSON().slice(0, 10);
     $.ajax({
         type: "post",
-        url: '{{route("betToday")}}',
+        url: '{{route("betHistory")}}',
         data: {"_token": "{{ csrf_token() }}", "tdate":tdate},
         beforeSend:function(){
             $('#site_bet_loading1').show();
@@ -545,7 +545,7 @@ $('#betYest').click(function(){
     var ydate = d.toISOString().split('T')[0];
     $.ajax({
         type: "post",
-        url: '{{route("betYest")}}',
+        url: '{{route("betHistory")}}',
         data: {"_token": "{{ csrf_token() }}", "ydate":ydate},
         beforeSend:function(){
             $('#site_bet_loading1').show();

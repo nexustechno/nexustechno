@@ -375,29 +375,33 @@ class MyaccountController extends Controller
                     $fancydata = FancyResult::where(['eventid' => $mid, 'fancy_name' => $data->team_name])->first();
                     if ($data->bet_type == 'SESSION') {
 
-                        if ($data->bet_side == 'back') {
-                            if ($data->bet_odds <= $fancydata->result) {
-                                $sumAmt += $data->bet_profit;
-                                $html .= '<span class="text-success">
+                        if($fancydata->result =='cancel'){
+                            $html .= '<span class="text-danger">0</span> ';
+                        }else {
+                            if ($data->bet_side == 'back') {
+                                if ($data->bet_odds <= $fancydata->result) {
+                                    $sumAmt += $data->bet_profit;
+                                    $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
-                            } else {
-                                $sumAmt -= $data->exposureAmt;
-                                $html .= '<span class="text-danger">
+                                } else {
+                                    $sumAmt -= $data->exposureAmt;
+                                    $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
-                            }
-                        } else if ($data->bet_side == 'lay') {
-                            if ($data->bet_odds > $fancydata->result) {
-                                $sumAmt += $data->bet_profit;
-                                $html .= '<span class="text-success">
+                                }
+                            } else if ($data->bet_side == 'lay') {
+                                if ($data->bet_odds > $fancydata->result) {
+                                    $sumAmt += $data->bet_profit;
+                                    $html .= '<span class="text-success">
 									' . $sumAmt = $data->bet_profit . '
 									</span> ';
-                            } else {
-                                $sumAmt -= $data->exposureAmt;
-                                $html .= '<span class="text-danger">
+                                } else {
+                                    $sumAmt -= $data->exposureAmt;
+                                    $html .= '<span class="text-danger">
 									' . $sumAmt = $data->exposureAmt . '
 									</span> ';
+                                }
                             }
                         }
                     }
@@ -2667,13 +2671,13 @@ class MyaccountController extends Controller
                     <td class="text-right">' . $data->bet_odds . '</td>';
             if ($data->bet_type == 'ODDS') {
 
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
                 }
             }
@@ -2681,29 +2685,34 @@ class MyaccountController extends Controller
 
                 if (!empty($fancydata)) {
 
-                    if ($data->bet_side == 'back') {
-                        if ($data->bet_odds <= $fancydata->result) {
-                            $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                        } else {
-                            $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                        }
-                    } else if ($data->bet_side == 'lay') {
-                        if ($data->bet_odds > $fancydata->result) {
-                            $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                        } else {
-                            $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
+                    if($fancydata->result == 'cancel'){
+                        $html .= '<td class="text-color-red text-right">0</td>';
+                    }else {
+
+                        if ($data->bet_side == 'back') {
+                            if ($data->bet_odds <= $fancydata->result) {
+                                $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
+                            } else {
+                                $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
+                            }
+                        } else if ($data->bet_side == 'lay') {
+                            if ($data->bet_odds > $fancydata->result) {
+                                $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
+                            } else {
+                                $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
+                            }
                         }
                     }
                 }
             }
             if ($data->bet_type == 'BOOKMAKER') {
-                if ($matchdata->winner == $data->team_name && $data->bet_side == 'back') {
+                if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'back') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'back') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner == $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) == strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-red text-right">(' . $data->exposureAmt . ')</td>';
-                } else if ($matchdata->winner != $data->team_name && $data->bet_side == 'lay') {
+                } else if (strtolower($matchdata->winner) != strtolower($data->team_name) && $data->bet_side == 'lay') {
                     $html .= '<td class="text-color-green text-right">(' . $data->bet_profit . ')</td>';
                 }
             }

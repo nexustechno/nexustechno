@@ -72,6 +72,29 @@ class ApiController extends Controller
 
                 Website::where("id",$website->id)->update(['currency'=>$request->currency]);
 
+                $update= [];
+                $update['odds_limit'] = $request->odds_limit;
+                $update['min_bet_odds_limit'] = $request->min_bet_odds_limit;
+                $update['max_bet_odds_limit'] = $request->max_bet_odds_limit;
+                $update['min_bookmaker_limit'] = $request->min_bookmaker_limit;
+                $update['max_bookmaker_limit'] = $request->max_bookmaker_limit;
+                $update['min_fancy_limit'] = $request->min_fancy_limit;
+                $update['max_fancy_limit'] = $request->max_fancy_limit;
+
+                Match::where("sports_id",4)->update($update);
+
+                $update = [];
+                $update['odds_limit'] = $request->tennis_odds_limit;
+                $update['min_bet_odds_limit'] = $request->tennis_min_bet_odds_limit;
+                $update['max_bet_odds_limit'] = $request->tennis_max_bet_odds_limit;
+                Match::where("sports_id",2)->update($update);
+
+                $update = [];
+                $update['odds_limit'] = $request->soccer_odds_limit;
+                $update['min_bet_odds_limit'] = $request->soccer_min_bet_odds_limit;
+                $update['max_bet_odds_limit'] = $request->soccer_max_bet_odds_limit;
+                Match::where("sports_id",1)->update($update);
+
                 DB::commit();
             }catch (\Exception $e){
                 DB::rollBack();
@@ -300,7 +323,7 @@ class ApiController extends Controller
             ], 200);
         }else {
 
-            $res = $settingController->updateMatchRollbackResult($match->id);
+            $res = $settingController->updateMatchWinnerResult($match->id,$request->winner);
 
             if ($res['message'] == 'Success') {
                 return response()->json([
@@ -334,5 +357,33 @@ class ApiController extends Controller
             'message' => 'Matches List',
             'data' => $data
         ],200);
+    }
+
+    public function addMatch(Request $request){
+        $matchList = Match::where('event_id',$request->event_id)->where('match_id',$request->match_id)->get();
+        if(count($matchList)>0)
+        {
+            return response()->json(array('status'=> 'error','message'=>'Match already added!'));
+        }
+
+        $data = [];
+        $data['match_name'] = $request->match_name;
+        $data['match_id'] = $request->match_id;
+        $data['match_date'] = $request->match_date;
+        $data['event_id'] = $request->event_id;
+        $data['sports_id'] = $request->sports_id;
+        $data['leage_name'] = '';
+        $data['is_draw'] = $request->is_draw;
+        $data['bookmaker'] = $request->bookmaker;
+        $data['fancy'] = $request->fancy;
+        $data['odds_limit'] = $request->odds_limit;
+        $data['min_bet_odds_limit'] = $request->min_bet_odds_limit;
+        $data['max_bet_odds_limit'] = $request->max_bet_odds_limit;
+        $data['min_bookmaker_limit'] = $request->min_bookmaker_limit;
+        $data['max_bookmaker_limit'] = $request->max_bookmaker_limit;
+        $data['min_fancy_limit'] = $request->min_fancy_limit;
+        $data['max_fancy_limit'] = $request->max_fancy_limit;
+        $match=Match::create($data);
+        return response()->json(array('status'=> 'success','message'=>'Match added successfully!'));
     }
 }

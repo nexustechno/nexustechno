@@ -26,6 +26,7 @@ Route::get("match/fancy/{id}",'API\ApiController@getFancy');
 Route::get("matches/{type}",'API\ApiController@getMatches');
 Route::get("matches/{type}/history",'API\ApiController@getMatchesHistory');
 Route::post("matches/declare/result",'API\ApiController@declareMatchResult');
+Route::post("add/match",'API\ApiController@addMatch');
 
 Route::get("fancy/matches/history",'API\ApiController@getFancyMatchHistory');
 Route::get("fancy/history/{id}",'API\ApiController@getFancyHistory');
