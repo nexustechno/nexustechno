@@ -25,6 +25,7 @@ if ($getUserCheck) {
     <meta property="og:description" content="Place your data here">
     <link rel="shortcut icon" href="{{ asset('ag/asset/front/img')}}/{{$website->favicon}}" type="image/x-icon">
     <title>{{$website->title}}</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <link href="{{ asset('asset/front/css/all.css') }}" rel="stylesheet">
     <link href="{{ asset('asset/front/css/color-theme.css') }}" rel="stylesheet">
