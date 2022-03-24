@@ -72,28 +72,6 @@ class ApiController extends Controller
 
                 Website::where("id",$website->id)->update(['currency'=>$request->currency]);
 
-                $update= [];
-                $update['odds_limit'] = $request->odds_limit;
-                $update['min_bet_odds_limit'] = $request->min_bet_odds_limit;
-                $update['max_bet_odds_limit'] = $request->max_bet_odds_limit;
-                $update['min_bookmaker_limit'] = $request->min_bookmaker_limit;
-                $update['max_bookmaker_limit'] = $request->max_bookmaker_limit;
-                $update['min_fancy_limit'] = $request->min_fancy_limit;
-                $update['max_fancy_limit'] = $request->max_fancy_limit;
-
-                Match::where("sports_id",4)->update($update);
-
-                $update = [];
-                $update['odds_limit'] = $request->tennis_odds_limit;
-                $update['min_bet_odds_limit'] = $request->tennis_min_bet_odds_limit;
-                $update['max_bet_odds_limit'] = $request->tennis_max_bet_odds_limit;
-                Match::where("sports_id",2)->update($update);
-
-                $update = [];
-                $update['odds_limit'] = $request->soccer_odds_limit;
-                $update['min_bet_odds_limit'] = $request->soccer_min_bet_odds_limit;
-                $update['max_bet_odds_limit'] = $request->soccer_max_bet_odds_limit;
-                Match::where("sports_id",1)->update($update);
 
                 DB::commit();
             }catch (\Exception $e){
@@ -115,6 +93,29 @@ class ApiController extends Controller
             $website->admin_status = 0;
             $website->save();
         }
+
+        $update= [];
+        $update['odds_limit'] = $request->odds_limit;
+        $update['min_bet_odds_limit'] = $request->min_bet_odds_limit;
+        $update['max_bet_odds_limit'] = $request->max_bet_odds_limit;
+        $update['min_bookmaker_limit'] = $request->min_bookmaker_limit;
+        $update['max_bookmaker_limit'] = $request->max_bookmaker_limit;
+        $update['min_fancy_limit'] = $request->min_fancy_limit;
+        $update['max_fancy_limit'] = $request->max_fancy_limit;
+
+        Match::where("sports_id",4)->update($update);
+
+        $update = [];
+        $update['odds_limit'] = $request->tennis_odds_limit;
+        $update['min_bet_odds_limit'] = $request->tennis_min_bet_odds_limit;
+        $update['max_bet_odds_limit'] = $request->tennis_max_bet_odds_limit;
+        Match::where("sports_id",2)->update($update);
+
+        $update = [];
+        $update['odds_limit'] = $request->soccer_odds_limit;
+        $update['min_bet_odds_limit'] = $request->soccer_min_bet_odds_limit;
+        $update['max_bet_odds_limit'] = $request->soccer_max_bet_odds_limit;
+        Match::where("sports_id",1)->update($update);
 
         return response()->json([
            'status' => 'success',
