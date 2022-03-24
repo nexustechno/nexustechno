@@ -179,7 +179,7 @@ class MyaccountController extends Controller
                         $f_result = $fnc_rslt->result;
                     }
 
-                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
+                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' .$match->match_name . ' / ' . $bet->team_name . ' / ' . $bet->bet_type . ' / ' . $f_result . '</a></span>';
                 }
             } elseif ($data->casino_id > 0) {
                 $casino = Casino::find($data->casino_id);
