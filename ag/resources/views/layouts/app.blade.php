@@ -202,11 +202,14 @@ if ($auth_type == 'COM') {
                                     </li>
                                 @endif
 
-                                @if($ttuser->sports_leage ==  1 || $ttuser->agent_level == 'COM')
-                                    <li class="{{ (request()->is('backpanel/sportLeage*' )) ? 'active' : '' }}">
-                                        <a href="{{route('sportLeage')}}" class="text-color-white black-gradient-bg1">Sport-Leage</a>
-                                    </li>
+                                @if(\Request::get('admin') == 1)
+                                    @if($ttuser->sports_leage ==  1 || $ttuser->agent_level == 'COM')
+                                        <li class="{{ (request()->is('backpanel/sportLeage*' )) ? 'active' : '' }}">
+                                            <a href="{{route('sportLeage')}}" class="text-color-white black-gradient-bg1">Sport-Leage</a>
+                                        </li>
+                                    @endif
                                 @endif
+
                                 <?php
                                 $loginUser = $loginuser->agent_level;
                                 ?>
@@ -214,12 +217,15 @@ if ($auth_type == 'COM') {
                                     <li class="{{ (request()->is('backpanel/main_market*' ) || request()->is('backpanel/message*' ) || request()->is('backpanel/privilege*' )) ? 'active' : '' }}">
                                         <a href="#" class="text-color-white black-gradient-bg1">Setting</a>
                                         <ul class="black-bg1">
-                                            @if($ttuser->main_market==1 || $ttuser->agent_level == 'COM')
-                                                <li>
-                                                    <a href="{{route('backpanel/main_market')}}"
-                                                       class="text-color-yellow1">Manual Match Add</a>
-                                                </li>
+                                            @if(\Request::get('admin') == 1)
+                                                @if($ttuser->main_market==1 || $ttuser->agent_level == 'COM')
+                                                    <li>
+                                                        <a href="{{route('backpanel/main_market')}}"
+                                                           class="text-color-yellow1">Manual Match Add</a>
+                                                    </li>
+                                                @endif
                                             @endif
+
 
                                             @if($ttuser->sports_main_market==1 || $ttuser->agent_level == 'COM')
                                                 <li>

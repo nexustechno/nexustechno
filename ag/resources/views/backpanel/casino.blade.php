@@ -41,23 +41,29 @@
     <div class="container">
         <div class="inner-title player-right justify-content-between py-2">
             <h2>Casino</h2>
-            <div class="btn-wrapadd">
-                <a href="{{route('addCasino')}}" class="add_player grey-gradient-bg text-color-black">Add Casino</a>
-            </div>
+            @if(\Request::get('admin') == 1)
+                <div class="btn-wrapadd">
+                    <a href="{{route('addCasino')}}" class="add_player grey-gradient-bg text-color-black">Add Casino</a>
+                </div>
+            @endif
         </div>
         <div class="list-games-block">
-            <table id="example" class="display nowrap" style="width:100%">
+            <table id="example1" class="display nowrap" style="width:100%">
                 <thead>
                     <tr>
                         <th class="light-grey-bg">Sr.No.</th>
                         <th class="light-grey-bg">Casino Title</th>
-                        <th class="light-grey-bg">Casino Name</th>
                         <th class="light-grey-bg">Image</th>
+                        @if(\Request::get('admin') == 1)
+                        <th class="light-grey-bg">Casino Name</th>
                         <th class="light-grey-bg">Link</th>
+                        @endif
                         <th class="light-grey-bg">Active/Inactive</th>
                         <th class="light-grey-bg">Min</th>
                         <th class="light-grey-bg">Max</th>
+                        @if(\Request::get('admin') == 1)
                         <th class="light-grey-bg" width="20%">Action</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -73,16 +79,20 @@
                     <tr>
                         <td class="white-bg">{{$count}}</td>
                         <td class="white-bg">{{$casinoes->casino_title}}</td>
-                        <td class="white-bg">{{$casinoes->casino_name}}</td>
                         <td class="white-bg"><img src="{{ URL::to('public/asset/upload') }}/{{$casinoes->casino_image}}" width="100px;" height="100px;"></td>
+                        @if(\Request::get('admin') == 1)
+                        <td class="white-bg">{{$casinoes->casino_name}}</td>
                         <td class="white-bg">{{$casinoes->casino_link}}</td>
+                        @endif
                         <td class="white-bg"><input type="checkbox" {{$Status}} id="checkactive{{$casinoes->id}}" class="chkstatusactive" data-fid="{{$casinoes->id}}" value="1"></td>
                         <td class="white-bg"><input type="text" id="casinomin{{$casinoes->id}}" name="min" class="form-control txtcasinomin allowNumeric" data-fid="{{$casinoes->id}}" value="{{$casinoes->min_casino}}"></td>
                         <td class="white-bg"><input type="text" id="casinomax{{$casinoes->id}}" name="max" class="form-control txtcasinomax allowNumeric" data-fid="{{$casinoes->id}}" value="{{$casinoes->max_casino}}"></td>
+                        @if(\Request::get('admin') == 1)
                         <td class="white-bg">
                             <a href="{{ route('update.casino',$casinoes->id) }}" class="btn-list black-bg2 text-color-white">Edit</a>
                             <a href="{{ route('delete.casino',$casinoes->id) }}" class="btn-list black-bg2 text-color-white">Delete</a>
                         </td>
+                        @endif
                     </tr>
                     <?php $count++; ?>
                    @endforeach
