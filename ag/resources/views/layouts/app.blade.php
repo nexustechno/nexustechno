@@ -15,7 +15,14 @@ $page2 = $page[0];
 
 $settings = ""; $balance = 0;
 $loginuser = Auth::user();
-$ttuser = User::where('id', $loginuser->id)->first();
+$sessionLoginUser = Session::get('SLAminUser');
+
+if(!empty($sessionLoginUser)){
+    $loginuser = $sessionLoginUser;
+    $ttuser = User::where('id', $sessionLoginUser->id)->first();
+}else{
+    $ttuser = User::where('id', $loginuser->id)->first();
+}
 $auth_id = $loginuser->id;
 $auth_type = $loginuser->agent_level;
 if ($auth_type == 'COM') {
