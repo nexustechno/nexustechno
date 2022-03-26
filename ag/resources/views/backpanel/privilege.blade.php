@@ -59,15 +59,15 @@
             <div class="list-games-block privilege_table">
                 <div class="privileges_wrap mb-2 mt-2">
                     <h5>Privileges</h5>
-                    <div class="previllage_content">                       
+                    <div class="previllage_content">
                         <div class="previlage_items white-bg">
                             <i class="fas fa-check"></i>
                             <span>Downline List</span>
                         </div>
-                        <div class="previlage_items white-bg">
+                        {{-- <div class="previlage_items white-bg">
                             <i class="fas fa-check"></i>
                             <span>Manual Match Add</span>
-                        </div>
+                        </div> --}}
                         <div class="previlage_items white-bg">
                             <i class="fas fa-check"></i>
                             <span>Sports Main Market</span>
@@ -116,10 +116,10 @@
                             <i class="fas fa-check"></i>
                             <span>Agent Banking</span>
                         </div>
-                        <div class="previlage_items white-bg">
+                        {{-- <div class="previlage_items white-bg">
                             <i class="fas fa-check"></i>
                             <span>Sports Leage</span>
-                        </div>                       
+                        </div> --}}
                         <div class="previlage_items white-bg">
                             <i class="fas fa-check"></i>
                             <span>Add Balance</span>
@@ -141,7 +141,7 @@
                             <th class="light-grey-bg">Action</th>
                             <th class="light-grey-bg">User Name</th>
                             <th class="light-grey-bg">Downline List</th>
-                            <th class="light-grey-bg">Manual Match Add</th>
+                            {{-- <th class="light-grey-bg">Manual Match Add</th> --}}
                             <th class="light-grey-bg">Sports Main Market</th>
                             <th class="light-grey-bg">Manage Fancy</th>
                             <th class="light-grey-bg">Fancy History</th>
@@ -154,7 +154,7 @@
                             <th class="light-grey-bg">Risk Management</th>
                             <th class="light-grey-bg">Player Banking</th>
                             <th class="light-grey-bg">Agent Banking</th>
-                            <th class="light-grey-bg">Sports Leage</th>
+                            {{-- <th class="light-grey-bg">Sports Leage</th> --}}
                             <th class="light-grey-bg">Add Balance</th>
                             <th class="light-grey-bg">Message</th>
                             <th class="light-grey-bg">Casino Manage</th>
@@ -167,12 +167,12 @@
                             <td class="white-bg">{{$count}}</td>
                             <td class="white-bg">
                                 <a href="#" class="default_btn green-bg text-color-white" onclick="openpopup('{{$user->id}}');" data-toggle="modal" data-target="#myChangePassword">P</a>
-                                
+
                                 <input type="button"class="default_btn red-bg delete-confirm text-color-white" value="D" onclick="deleteprvlg('{{$user->id}}');">
                             </td>
                             <td class="white-bg">{{$user->user_name}}</td>
                             <td class="white-bg"><input type="checkbox" name="list_client" id="list_client{{$user->id}}" onclick="changestatus('{{$user->id}}','list_client');" {{ $user->list_client == '1' ? 'checked' : '' }}></td>
-                            <td class="white-bg"><input type="checkbox" name="main_market" id="main_market{{$user->id}}" onclick="changestatus('{{$user->id}}','main_market');" {{ $user->main_market == '1' ? 'checked' : '' }}></td>
+                            {{-- <td class="white-bg"><input type="checkbox" name="main_market" id="main_market{{$user->id}}" onclick="changestatus('{{$user->id}}','main_market');" {{ $user->main_market == '1' ? 'checked' : '' }}></td> --}}
                             <td class="white-bg"><input type="checkbox" name="sports_main_market" id="sports_main_market{{$user->id}}" onclick="changestatus('{{$user->id}}','sports_main_market');" {{ $user->sports_main_market == '1' ? 'checked' : '' }}></td>
                             <td class="white-bg"><input type="checkbox" name="manage_fancy" id="manage_fancy{{$user->id}}" onclick="changestatus('{{$user->id}}','manage_fancy');" {{ $user->manage_fancy == '1' ? 'checked' : '' }}></td>
                             <td class="white-bg"><input type="checkbox" name="fancy_history" id="fancy_history{{$user->id}}" onclick="changestatus('{{$user->id}}','fancy_history');" {{ $user->fancy_history == '1' ? 'checked' : '' }}></td>
@@ -185,7 +185,7 @@
                             <td class="white-bg"><input type="checkbox" name="risk_management" id="risk_management{{$user->id}}" onclick="changestatus('{{$user->id}}','risk_management');" {{ $user->risk_management == '1' ? 'checked' : '' }}></td>
                             <td class="white-bg"><input type="checkbox" name="player_banking" id="player_banking{{$user->id}}" onclick="changestatus('{{$user->id}}','player_banking');" {{ $user->player_banking == '1' ? 'checked' : '' }}></td>
                             <td class="white-bg"><input type="checkbox" name="agent_banking" id="agent_banking{{$user->id}}" onclick="changestatus('{{$user->id}}','agent_banking');" {{ $user->agent_banking == '1' ? 'checked' : '' }}></td>
-                            <td class="white-bg"><input type="checkbox" name="sports_leage" id="sports_leage{{$user->id}}" onclick="changestatus('{{$user->id}}','sports_leage');" {{ $user->sports_leage == '1' ? 'checked' : '' }}></td>
+                            {{-- <td class="white-bg"><input type="checkbox" name="sports_leage" id="sports_leage{{$user->id}}" onclick="changestatus('{{$user->id}}','sports_leage');" {{ $user->sports_leage == '1' ? 'checked' : '' }}></td> --}}
                             <td class="white-bg"><input type="checkbox" name="add_balance" id="add_balance{{$user->id}}" onclick="changestatus('{{$user->id}}','add_balance');" {{ $user->add_balance == '1' ? 'checked' : '' }}></td>
                             <td class="white-bg"><input type="checkbox" name="message" id="message{{$user->id}}" onclick="changestatus('{{$user->id}}','message');" {{ $user->message == '1' ? 'checked' : '' }}></td>
                             <td class="white-bg"><input type="checkbox" name="casino_manage" id="casino_manage{{$user->id}}" onclick="changestatus('{{$user->id}}','casino_manage');" {{ $user->casino_manage == '1' ? 'checked' : '' }}></td>
@@ -251,7 +251,7 @@
                     <select class="form-control white-bg" name="agent_level" id="agent_level" style="display:none">
                         <option value="SL">Simple Admin(SL)</option>
                     </select>
-                    @csrf                    
+                    @csrf
                     <div class="form-modal addform-modal">
                         <div class="addform-block">
                             <div>
@@ -298,7 +298,7 @@ function deleteprvlg(val){
             url: '{{route("deleteprvlg")}}',
             data: {
                 _token: _token,
-                val:val,                   
+                val:val,
             },
             beforeSend:function(){
                 $('#site_bet_loading1').show();
@@ -306,7 +306,7 @@ function deleteprvlg(val){
             complete: function(){
                 $('#site_bet_loading1').hide();
             },
-            success: function(data) {                    
+            success: function(data) {
                 if (data.result == 'success'){
                     location.reload();
                     toastr.success('Privilege user deleted successfully!');
@@ -318,7 +318,7 @@ function deleteprvlg(val){
 function openpopup(val){
     $('#user_id').val(val);
 }
-$('.changepassSubmit').click(function() { 
+$('.changepassSubmit').click(function() {
     var _token = $("input[name='_token']").val();
     var userId = $('#user_id').val();
     var passwordprivi = $('#passwordprivi').val();
@@ -326,7 +326,7 @@ $('.changepassSubmit').click(function() {
     var transaction_code = $('#transprivi').val();
     $('#errchngpass').html('');
     $('#errchngcpass').html('');
-    $('#transpass').html('');       
+    $('#transpass').html('');
     var retu = 1;
     if (passwordprivi == '') {
         toastr.error('Password can not be blank!');
@@ -429,7 +429,7 @@ $('#agentSubmit').click(function() {
     $('#errln').html('');
     $('#errcm').html('');
     $('#errtim').html('');
-    if (errsub == 'Username is not available') {            
+    if (errsub == 'Username is not available') {
         $('#errsub').html('Username is not available');
         return false;
     }
@@ -437,7 +437,7 @@ $('#agentSubmit').click(function() {
         $('#errage').html('This Field is required');
         return false;
     }
-    if (user_name == '') {            
+    if (user_name == '') {
         toastr.error('Username can not be blank!');
         return false;
     }
@@ -460,7 +460,7 @@ $('#agentSubmit').click(function() {
     if (confirm_password == '') {
         toastr.error('Confirm password can not be blank!');
         return false;
-    }          
+    }
 });
 function changestatus(id, nameatt) {
     var gstatus = '';
