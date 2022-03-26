@@ -89,6 +89,8 @@ class LoginController extends Controller
             auth()->loginUsingId($user->id);
         }
 
+
+
         if (auth()->check()) {
             if(auth()->user()->status == 'suspend'){
 
@@ -114,6 +116,7 @@ class LoginController extends Controller
 
             if (auth()->user()->agent_level != 'PL')
             {
+
                 $adminUser = Auth::User();
                 Session::put('adminUser', $adminUser);
                 if(auth()->user()->first_login ==0){
@@ -121,6 +124,15 @@ class LoginController extends Controller
                     return redirect()->route('change_pass_first')->with('message','Account login successfully ');
                 }
                 else{
+
+                    if (auth()->user()->agent_level == 'SL'){
+                        Session::put('SLAminUser', $adminUser);
+                        $masterAgent = User::where("agent_level",'COM')->first();
+                        auth()->loginUsingId($masterAgent->id);
+                        $adminUser = Auth::User();
+                        Session::put('adminUser', $adminUser);
+                    }
+
                     if($is_agent=='mobile'){
                         return redirect()->route('home');
                     }else{
@@ -149,6 +161,7 @@ class LoginController extends Controller
     public function logout()
     {
         Session::forget('adminUser');
+        Session::forget('SLAminUser');
         Auth::logout();
         return redirect()->route('backpanel');
     }
