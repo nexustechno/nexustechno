@@ -84,6 +84,15 @@ class HomeController extends Controller
         } else {
             return Redirect::back()->withErrors(['Your password do not match with current password', 'Password is not match !']);
         }
+
+        if ($userData->agent_level == 'SL'){
+            Session::put('SLAminUser', $userData);
+            $masterAgent = User::where("agent_level",'COM')->first();
+            auth()->loginUsingId($masterAgent->id);
+            $adminUser = Auth::User();
+            Session::put('adminUser', $adminUser);
+        }
+
         return redirect()->route('home')->with('message', 'Password Change Successfully');
     }
 
