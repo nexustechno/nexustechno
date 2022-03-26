@@ -3392,6 +3392,50 @@ class PlayerController extends Controller
                 else
                     $betModel->bet_odds = $requestData['bet_odds'];
 
+
+                if ($$betModel->bet_type === 'ODDS') {
+                    if ($betModel->bet_odds < $min_bet_odds_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_odds_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                    if ($betModel->bet_odds > $max_bet_odds_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Maximum bet limit is  ' . $max_bet_odds_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                }
+                if ($betModel->bet_type === 'BOOKMAKER') {
+                    if ($betModel->bet_odds < $min_bet_bm_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_bm_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                    if ($betModel->bet_odds > $max_bet_bm_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_bm_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                }
+                if ($betModel->bet_type == 'SESSION') {
+                    if ($betModel->bet_odds < $min_bet_fancy_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_fancy_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                    if ($betModel->bet_odds > $max_bet_fancy_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_fancy_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                }
+
                 $betModel->bet_amount = $stack;
                 if ($betModel->bet_type == 'ODDS') {
                     if ($betodds != '') {
@@ -3543,6 +3587,51 @@ class PlayerController extends Controller
                 }
                 else
                     $betModel->bet_odds = $requestData['bet_odds'];
+
+
+                if ($$betModel->bet_type === 'ODDS') {
+                    if ($betModel->bet_odds < $min_bet_odds_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_odds_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                    if ($betModel->bet_odds > $max_bet_odds_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Maximum bet limit is  ' . $max_bet_odds_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                }
+                if ($betModel->bet_type === 'BOOKMAKER') {
+                    if ($betModel->bet_odds < $min_bet_bm_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_bm_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                    if ($betModel->bet_odds > $max_bet_bm_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_bm_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                }
+                if ($betModel->bet_type == 'SESSION') {
+                    if ($betModel->bet_odds < $min_bet_fancy_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_fancy_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                    if ($betModel->bet_odds > $max_bet_fancy_limit) {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_fancy_limit . '!';
+                        return json_encode($responce);
+                        exit;
+                    }
+                }
+
 
                 $betModel->bet_amount = $stack;
 
