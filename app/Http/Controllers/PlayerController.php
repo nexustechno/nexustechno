@@ -3393,7 +3393,7 @@ class PlayerController extends Controller
                     $betModel->bet_odds = $requestData['bet_odds'];
 
 
-                if ($$betModel->bet_type === 'ODDS') {
+                if ($betModel->bet_type === 'ODDS') {
                     if ($betModel->bet_odds < $min_bet_odds_limit) {
                         $responce['status'] = 'false';
                         $responce['msg'] = 'Minimum bet limit is ' . $min_bet_odds_limit . '!';
@@ -3589,7 +3589,7 @@ class PlayerController extends Controller
                     $betModel->bet_odds = $requestData['bet_odds'];
 
 
-                if ($$betModel->bet_type === 'ODDS') {
+                if ($betModel->bet_type === 'ODDS') {
                     if ($betModel->bet_odds < $min_bet_odds_limit) {
                         $responce['status'] = 'false';
                         $responce['msg'] = 'Minimum bet limit is ' . $min_bet_odds_limit . '!';
@@ -3613,7 +3613,7 @@ class PlayerController extends Controller
                     if ($betModel->bet_odds > $max_bet_bm_limit) {
                         $responce['status'] = 'false';
                         $responce['msg'] = 'Maximum bet limit is ' . $max_bet_bm_limit . '!';
-                        return json_encode($responce);
+                        return json_encode($responce);s
                         exit;
                     }
                 }
