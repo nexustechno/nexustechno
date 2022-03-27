@@ -3613,7 +3613,7 @@ class PlayerController extends Controller
                     if ($betModel->bet_odds > $max_bet_bm_limit) {
                         $responce['status'] = 'false';
                         $responce['msg'] = 'Maximum bet limit is ' . $max_bet_bm_limit . '!';
-                        return json_encode($responce);s
+                        return json_encode($responce);
                         exit;
                     }
                 }
