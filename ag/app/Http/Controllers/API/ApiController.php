@@ -361,9 +361,13 @@ class ApiController extends Controller
     }
 
     public function addMatch(Request $request){
-        $matchList = Match::where('event_id',$request->event_id)->where('match_id',$request->match_id)->get();
-        if(count($matchList)>0)
+        $matchList = Match::where('event_id',$request->event_id)->where('match_id',$request->match_id)->first();
+        if(!empty($matchList) && $matchList->status == 1)
         {
+            if($request->is_store == 0){
+                Match::where('event_id',$request->event_id)->where('match_id',$request->match_id)->update(['status'=>0]);
+            }
+
             return response()->json(array('status'=> 'error','message'=>'Match already added!'));
         }
 
@@ -384,7 +388,13 @@ class ApiController extends Controller
         $data['max_bookmaker_limit'] = $request->max_bookmaker_limit;
         $data['min_fancy_limit'] = $request->min_fancy_limit;
         $data['max_fancy_limit'] = $request->max_fancy_limit;
-        $match=Match::create($data);
+        $data['status'] = 1;
+
+        if(!empty($matchList) && $matchList->status == 0){
+            Match::where('event_id',$request->event_id)->where('match_id',$request->match_id)->update($data);
+        }else {
+            Match::create($data);
+        }
         return response()->json(array('status'=> 'success','message'=>'Match added successfully!'));
     }
 }

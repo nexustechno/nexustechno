@@ -1,7 +1,7 @@
 <template>
 
     <table v-if="!loading && bookmaker.length > 0" class="table custom-table inplay-table-1 w1-table cricket-table1" id="inplay-tableblock-bookmaker">
-        <tbody v-if="match.t2!=undefined">
+        <tbody v-if="match.marketId!=undefined">
         <tr>
             <td colspan="7" class="text-color-grey fancybet-block">
                 <div class="dark-blue-bg-1 text-color-white">
@@ -46,30 +46,29 @@
             <td><a class="layall"><img :src="pinkbg1" style="width: 100%; height: 25px;"> <span>Lay</span></a></td>
             <td colspan="2"></td>
         </tr>
-        <tr v-if="bookmaker[0].s == 'SUSPENDED'" class="fancy-suspend-tr team1_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
+        <tr v-if="bookmaker[0].status == 'SUSPENDED'" class="fancy-suspend-tr team1_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
         <tr class="white-bg tr_bm_team1">
-            <td class="padding3 77777777">{{ bookmaker[0].nat }}<br>
-                <div><span id="team1_betBM_count_old" :class="betTotalValue.team1_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="team1_BM_total">{{ betTotalValue.team1_BM_total }}</span>)</span> <span
-                    id="team1_betBM_count_new" class="tolose text-color-red" style="display: none;">(6.7)</span></div>
+            <td class="padding3 77777777">{{ bookmaker[0].runnerName }}<br>
+                <div><span id="team1_betBM_count_old" :class="betTotalValue.team1_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="team1_BM_total">{{ betTotalValue.team1_BM_total }}</span>)</span> <span id="team1_betBM_count_new" class="tolose text-color-red" style="display: none;">(6.7)</span></div>
             </td>
             <td class="td_team1_bm_back_2">
                 <div class="back-gradient text-color-black">
                     <div id="back_3" data-team="team1" class="BmBack light-blue-bg-2">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="cyan-bg" data-position="2" :data-val="bookmaker[0].b3"> {{ roundFloatVal(bookmaker[0].b3) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="cyan-bg" data-position="2" :data-val="getPriceValue(bookmaker[0].rate1,'minus',2)"> {{ getPriceValue(bookmaker[0].rate1,'minus',2) }}
                         <br> <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team1_bm_back_1">
                 <div class="back-gradient text-color-black">
                     <div id="back_2" data-team="team1" class="BmBack light-blue-bg-3">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)"  data-team="team1"  data-cls="cyan-bg" data-position="1" :data-val="bookmaker[0].b2"> {{ roundFloatVal(bookmaker[0].b2) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)"  data-team="team1"  data-cls="cyan-bg" data-position="1" :data-val="getPriceValue(bookmaker[0].rate1,'minus',1)"> {{ getPriceValue(bookmaker[0].rate1,'minus',1) }}
                         <br> <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team1_bm_back_0">
                 <div class="back-gradient text-color-black">
                     <div id="back_1" data-team="team1" class="BmBack">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="cyan-bg" data-position="0" :data-val="bookmaker[0].b1" class="cyan-bg"> {{ roundFloatVal(bookmaker[0].b1) }} <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="cyan-bg" data-position="0" :data-val="roundFloatVal(bookmaker[0].rate1)" class="cyan-bg"> {{ roundFloatVal(bookmaker[0].rate1) }} <br>
                         <span>100</span></a>
                     </div>
                 </div>
@@ -77,7 +76,7 @@
             <td class="td_team1_bm_lay_0">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_1" data-team="team1" class="BmLay pink-bg">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="pink-bg" data-position="0" :data-val="bookmaker[0].l1"> {{ roundFloatVal(bookmaker[0].l1) }} <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="pink-bg" data-position="0" :data-val="roundFloatVal(bookmaker[0].rate2)"> {{ roundFloatVal(bookmaker[0].rate2) }} <br>
                         <span>100</span></a>
                     </div>
                 </div>
@@ -85,14 +84,14 @@
             <td class="td_team1_bm_lay_1">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_2" data-team="team1" class="BmLay light-pink-bg-2">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="pink-bg" data-position="1" :data-val="bookmaker[0].l2"> {{ roundFloatVal(bookmaker[0].l2) }}  <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="pink-bg" data-position="1" :data-val="getPriceValue(bookmaker[0].rate2,'plus',1)"> {{ getPriceValue(bookmaker[0].rate2,'plus',1) }}  <br>
                         <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team1_bm_lay_2">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_3" data-team="team1" class="BmLay light-pink-bg-3">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="pink-bg" data-position="2" :data-val="bookmaker[0].l3"> {{ roundFloatVal(bookmaker[0].l3) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team1" data-cls="pink-bg" data-position="2" :data-val="getPriceValue(bookmaker[0].rate2,'plus',2)"> {{ getPriceValue(bookmaker[0].rate2,'plus',2) }}
                         <br> <span>100</span></a></div>
                 </div>
             </td>
@@ -100,30 +99,30 @@
         <tr class="mobileBack tr_team1_BM mobile_bet_model_div" id="mobile_tr">
             <td colspan="7" class="tr_team1_BM_td_mobile mobile_tr_common_class"></td>
         </tr>
-        <tr v-if="bookmaker[1].s == 'SUSPENDED'" class="fancy-suspend-tr team2_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
+        <tr v-if="bookmaker[1].status == 'SUSPENDED'" class="fancy-suspend-tr team2_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
         <tr class="white-bg tr_bm_team2">
-            <td class="padding3 77777777">{{ bookmaker[1].nat }}<br>
+            <td class="padding3 77777777">{{ bookmaker[1].runnerName }}<br>
                 <div><span id="team2_betBM_count_old" :class="betTotalValue.team2_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="team2_BM_total">{{ roundFloatVal(betTotalValue.team2_BM_total) }}</span>)</span> <span
                     id="team2_betBM_count_new" class="tolose text-color-red" style="display: none;">(6.7)</span></div>
             </td>
             <td class="td_team2_bm_back_2">
                 <div class="back-gradient text-color-black">
                     <div id="back_3" data-team="team2" class="BmBack light-blue-bg-2">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="cyan-bg" data-position="2" :data-val="bookmaker[1].b3"> {{ roundFloatVal(bookmaker[1].b3) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="cyan-bg" data-position="2" :data-val="getPriceValue(bookmaker[1].rate1,'minus',2)"> {{ getPriceValue(bookmaker[1].rate1,'minus',2) }}
                             <br> <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team2_bm_back_1">
                 <div class="back-gradient text-color-black">
                     <div id="back_2" data-team="team2" class="BmBack light-blue-bg-3">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2"  data-cls="cyan-bg" data-position="1" :data-val="bookmaker[1].b2"> {{ roundFloatVal(bookmaker[1].b2) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2"  data-cls="cyan-bg" data-position="1" :data-val="getPriceValue(bookmaker[1].rate1,'minus',1)"> {{ getPriceValue(bookmaker[1].rate1,'minus',1) }}
                             <br> <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team2_bm_back_0">
                 <div class="back-gradient text-color-black">
                     <div id="back_1" data-team="team2" class="BmBack">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="cyan-bg" data-position="0" :data-val="bookmaker[1].b1" class="cyan-bg"> {{ roundFloatVal(bookmaker[1].b1) }} <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="cyan-bg" data-position="0" :data-val="roundFloatVal(bookmaker[1].rate1)" class="cyan-bg"> {{ roundFloatVal(bookmaker[1].rate1) }} <br>
                             <span>100</span></a>
                     </div>
                 </div>
@@ -131,7 +130,7 @@
             <td class="td_team2_bm_lay_0">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_1" data-team="team2" class="BmLay pink-bg">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="pink-bg" data-position="0" :data-val="bookmaker[1].l1"> {{ roundFloatVal(bookmaker[1].l1) }} <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="pink-bg" data-position="0" :data-val="roundFloatVal(bookmaker[1].rate2)"> {{ roundFloatVal(bookmaker[1].rate2) }} <br>
                             <span>100</span></a>
                     </div>
                 </div>
@@ -139,14 +138,14 @@
             <td class="td_team2_bm_lay_1">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_2" data-team="team2" class="BmLay light-pink-bg-2">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="pink-bg" data-position="1" :data-val="bookmaker[1].l2"> {{ roundFloatVal(bookmaker[1].l2) }}  <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="pink-bg" data-position="1" :data-val="getPriceValue(bookmaker[1].rate2,'plus',1)"> {{ getPriceValue(bookmaker[1].rate2,'plus',1) }}  <br>
                             <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team2_bm_lay_2">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_3" data-team="team2" class="BmLay light-pink-bg-3">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="pink-bg" data-position="2" :data-val="bookmaker[1].l3"> {{ roundFloatVal(bookmaker[1].l3) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team2" data-cls="pink-bg" data-position="2" :data-val="getPriceValue(bookmaker[1].rate2,'plus',2)"> {{ getPriceValue(bookmaker[1].rate2,'plus',2) }}
                             <br> <span>100</span></a></div>
                 </div>
             </td>
@@ -154,9 +153,9 @@
         <tr class="mobileBack tr_team2_BM mobile_bet_model_div" id="mobile_tr">
             <td colspan="7" class="tr_team2_BM_td_mobile mobile_tr_common_class"></td>
         </tr>
-        <tr v-if="bookmaker[2]!=undefined && bookmaker[2].s == 'SUSPENDED'" class="fancy-suspend-tr team3_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
+        <tr v-if="bookmaker[2]!=undefined && bookmaker[2].status == 'SUSPENDED'" class="fancy-suspend-tr team3_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
         <tr v-if="bookmaker[2]!=undefined" class="white-bg tr_bm_team3">
-            <td class="padding3 77777777">{{ bookmaker[2].nat }}<br>
+            <td class="padding3 77777777">{{ bookmaker[2].runnerName }}<br>
                 <div><span id="draw_betBM_count_old" :class="betTotalValue.draw_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="draw_BM_total">{{roundFloatVal(betTotalValue.draw_BM_total)}}</span>)</span>
                     <span id="draw_betBM_count_new" class="tolose text-color-red" style="display: none;">(6.7)</span>
                 </div>
@@ -164,21 +163,21 @@
             <td class="td_team3_bm_back_2">
                 <div class="back-gradient text-color-black">
                     <div id="back_3" data-team="team3" class="BmBack light-blue-bg-2">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="cyan-bg" data-position="2" :data-val="bookmaker[2].b3"> {{ roundFloatVal(bookmaker[2].b3) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="cyan-bg" data-position="2" :data-val="getPriceValue(bookmaker[2].rate1,'minus',2)"> {{ getPriceValue(bookmaker[2].rate1,'minus',2) }}
                             <br> <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team3_bm_back_1">
                 <div class="back-gradient text-color-black">
                     <div id="back_2" data-team="team3" class="BmBack light-blue-bg-3">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3"  data-cls="cyan-bg" data-position="1" :data-val="bookmaker[2].b2"> {{ roundFloatVal(bookmaker[2].b2) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3"  data-cls="cyan-bg" data-position="1" :data-val="getPriceValue(bookmaker[2].rate1,'minus',1)"> {{ getPriceValue(bookmaker[2].rate1,'minus',1) }}
                             <br> <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team3_bm_back_0">
                 <div class="back-gradient text-color-black">
                     <div id="back_1" data-team="team3" class="BmBack">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="cyan-bg" data-position="0" :data-val="bookmaker[2].b1" class="cyan-bg"> {{ roundFloatVal(bookmaker[2].b1) }} <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="cyan-bg" data-position="0" :data-val="roundFloatVal(bookmaker[2].rate1)" class="cyan-bg"> {{ roundFloatVal(bookmaker[2].rate1) }} <br>
                             <span>100</span></a>
                     </div>
                 </div>
@@ -186,7 +185,7 @@
             <td class="td_team3_bm_lay_0">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_1" data-team="team3" class="BmLay pink-bg">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="pink-bg" data-position="0" :data-val="bookmaker[2].l1"> {{ roundFloatVal(bookmaker[2].l1) }} <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="pink-bg" data-position="0" :data-val="roundFloatVal(bookmaker[2].rate2)"> {{ roundFloatVal(bookmaker[2].rate2) }} <br>
                             <span>100</span></a>
                     </div>
                 </div>
@@ -194,14 +193,14 @@
             <td class="td_team3_bm_lay_1">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_2" data-team="team3" class="BmLay light-pink-bg-2">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="pink-bg" data-position="1" :data-val="bookmaker[2].l2"> {{ roundFloatVal(bookmaker[2].l2) }}  <br>
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="pink-bg" data-position="1" :data-val="getPriceValue(bookmaker[2].rate2,'plus',1)"> {{ getPriceValue(bookmaker[2].rate2,'plus',1) }}  <br>
                             <span>100</span></a></div>
                 </div>
             </td>
             <td class="td_team3_bm_lay_2">
                 <div class="lay-gradient text-color-black">
                     <div id="lay_3" data-team="team3" class="BmLay light-pink-bg-3">
-                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="pink-bg" data-position="2" :data-val="bookmaker[2].l3"> {{ roundFloatVal(bookmaker[2].l3) }}
+                        <a data-bettype="BOOKMAKER" onclick="opnForm(this)" data-team="team3" data-cls="pink-bg" data-position="2" :data-val="getPriceValue(bookmaker[2].rate2,'plus',2)"> {{ getPriceValue(bookmaker[2].rate2,'plus',2) }}
                             <br> <span>100</span></a></div>
                 </div>
             </td>
@@ -238,26 +237,32 @@
         },
         mounted() {
             window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
-                this.bookmaker = [];
-                this.match = data.records;
-
-                if(data.records.t2[0]!=undefined && data.records.t2[0].bm1!=undefined) {
-                    for (var i = 0; i < data.records.t1[0].length; i++) {
-                        for (var j = 0; j < data.records.t2[0].bm1.length; j++) {
-                            if (data.records.t1[0][i].nat == data.records.t2[0].bm1[j].nat) {
-                                this.bookmaker.push(data.records.t2[0].bm1[j]);
-                            }
-                        }
-                    }
-                }
+                this.match = data.records[0];
+                this.bookmaker = data.records[0].bookmaker.runners;
                 this.loading = false;
                 // console.log("match ",data.records)
             });
         },
         methods: {
-            roundFloatVal(num) {
-                var m = Number((Math.abs(num) * 100).toPrecision(15));
-                return Math.round(m) / 100 * Math.sign(num);
+            getPriceValue(price,type,val){
+                if(price!='' && price!=undefined) {
+                    if(type == 'plus'){
+                        return this.roundFloatVal(price) + val;
+                    }else{
+                        return this.roundFloatVal(price) - val;
+                    }
+                }
+
+                return 0;
+            },
+            roundFloatVal(price) {
+                if(price!='' && price!=undefined) {
+                    var num2 = price.split(".");
+                    var num = num2[1];
+                    var m = Number((Math.abs(num) * 100).toPrecision(15));
+                    return Math.round(m) / 100 * Math.sign(num);
+                }
+                return 0;
             },
             nFormatter(num, digits) {
                 var si = [

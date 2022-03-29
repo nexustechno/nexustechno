@@ -1,6 +1,6 @@
 <template>
     <div v-if="!loading" class="fancy-section">
-        <div v-if="match.t3!=undefined" id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
+        <div v-if="match.fancy!=undefined" id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
             <h4>
                 <span class="blue-bg-3 text-color-white"> <img :src="clockgreenicon"> <b> Fancy Bet </b> </span>
                 <a data-toggle="modal" data-target="#rulesFancyBetsModal"> <img :src="infoicon"> </a>
@@ -29,12 +29,12 @@
             </div>
         </div>
 
-        <p v-if="match.t3!=undefined" class="fancyBetSpecialBet">
+        <p v-if="match.fancy!=undefined" class="fancyBetSpecialBet">
             <i class="fas fa-thumbtack"></i>
             Fancy Bet
         </p>
 
-        <table v-if="match.t3!=undefined" class="table custom-table inplay-table w1-table " id="inplay-tableblock-fancy" style="margin-top:0px;">
+        <table v-if="match.fancy!=undefined" class="table custom-table inplay-table w1-table " id="inplay-tableblock-fancy" style="margin-top:0px;">
             <tbody>
             <tr class="bets-fancy desktop-ui-tr white-bg">
                 <td colspan="3">
@@ -90,40 +90,40 @@
                 </td>
                 <td></td>
             </tr>
-            <template v-for="(fancy, index) in match.t3" >
-                <tr :key="fancy.sid" v-if="fancy.gstatus=='Ball Running' || fancy.gstatus=='SUSPENDED'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
+            <template v-for="(fancy, index) in match.fancy" >
+                <tr :key="fancy.sid" v-if="fancy.GameStatus=='Ball Running' || fancy.GameStatus=='SUSPENDED'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
                     <td colspan="3"></td>
                     <td colspan="2" class="fancy-suspend-td-1">
                         <div class="fancy-suspend-1 black-bg-5 text-color-white">
-                            <span class="text-uppercase">{{fancy.gstatus}}</span>
+                            <span class="text-uppercase">{{fancy.GameStatus}}</span>
                         </div>
                     </td>
                 </tr>
                 <tr class="white-bg desktop-ui-tr" :class="'tr_fancy_'+index">
-                    <td colspan="3"><b>{{ fancy.nat }}</b>
+                    <td colspan="3"><b>{{ fancy.RunnerName }}</b>
                         <div>
-                            <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.nat" :data-target="'#runPosition'+index">
+                            <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.RunnerName" :data-target="'#runPosition'+index">
                                 <span :class="'fancy_total'+index">
-                                    <span class="fancy-total-amount tolose text-color-red" :id="'Fancy_Total_'+index" :class="'Fancy_Total_'+index">{{ getFancyBetValue(fancy.sid) }}</span>
+                                    <span class="fancy-total-amount tolose text-color-red" :id="'Fancy_Total_'+index" :class="'Fancy_Total_'+index">{{ getFancyBetValue(fancy.SelectionId) }}</span>
                                     <span class="new-fancy-total collapse" :id="'New_Fancy_Total_'+index">0</span>
                                 </span>
                             </a>
                         </div>
 
                     </td>
-                    <td class="pink-bg back1btn text-center FancyLay" :class="'td_fancy_lay_'+index" :data-team="fancy.nat" :id="'td_fancy_lay_'+index" onClick="colorclick(this.id)">
-                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.nat" data-cls="pink-bg" :data-volume="Math.round(fancy.ls1)" :data-val="Math.round(fancy.l1)">{{ Math.round(fancy.l1) }}<br> <span>{{ Math.round(fancy.ls1) }}</span></a></td>
-                    <td class="lay1btn cyan-bg text-center FancyBack" :class="'td_fancy_back_'+index" :data-team="fancy.nat" :id="'td_fancy_back_'+index" onClick="colorclickback(this.id)">
-                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.nat" data-cls="cyan-bg" :data-volume="Math.round(fancy.bs1)" :data-val="Math.round(fancy.b1)">{{ Math.round(fancy.b1) }}<br> <span>{{ Math.round(fancy.bs1) }}</span></a>
+                    <td class="pink-bg back1btn text-center FancyLay" :class="'td_fancy_lay_'+index" :data-team="fancy.RunnerName" :id="'td_fancy_lay_'+index" onClick="colorclick(this.id)">
+                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.RunnerName" data-cls="pink-bg" :data-volume="Math.round(fancy.LaySize1)" :data-val="Math.round(fancy.LayPrice1)">{{ Math.round(fancy.LayPrice1) }}<br> <span>{{ Math.round(fancy.LaySize1) }}</span></a></td>
+                    <td class="lay1btn cyan-bg text-center FancyBack" :class="'td_fancy_back_'+index" :data-team="fancy.RunnerName" :id="'td_fancy_back_'+index" onClick="colorclickback(this.id)">
+                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.RunnerName" data-cls="cyan-bg" :data-volume="Math.round(fancy.BackSize1)" :data-val="Math.round(fancy.BackPrice1)">{{ Math.round(fancy.BackPrice1) }}<br> <span>{{ Math.round(fancy.BackSize1) }}</span></a>
                     </td>
                     <td class="zeroopa1" colspan="1"> <span>Min/Max</span> <br> {{min_bet_fancy_limit}} / {{max_bet_fancy_limit}}</td>
                 </tr>
                 <tr class="white-bg light-bg-tr-fancy mobile-ui-tr collapse light-bg-tr-fancy" :class="'tr_fancy_'+index">
                     <td colspan="3"><b>{{ fancy.nat }}</b>
                         <div>
-                            <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.nat" :data-target="'#runPosition'+index">
+                            <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.RunnerName" :data-target="'#runPosition'+index">
                                  <span :class="'fancy_total'+index">
-                                    <span class="fancy-total-amount tolose text-color-red" :id="'Fancy_Total_'+index" :class="'Fancy_Total_'+index">{{ getFancyBetValue(fancy.sid) }}</span>
+                                    <span class="fancy-total-amount tolose text-color-red" :id="'Fancy_Total_'+index" :class="'Fancy_Total_'+index">{{ getFancyBetValue(fancy.SelectionId) }}</span>
                                     <span class="new-fancy-total collapse" :id="'New_Fancy_Total_'+index">0</span>
                                 </span>
                             </a>
@@ -144,18 +144,18 @@
                 </tr>
                 <tr class="white-bg white-bg-tr-fancy mobile-ui-tr collapse" :class="'tr_fancy_'+index">
                     <td colspan="3"></td>
-                    <td class="pink-bg back1btn text-center FancyLay" :class="'td_fancy_lay_'+index" :data-team="fancy.nat" :id="'td_fancy_lay_'+index" onClick="colorclick(this.id)">
-                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.nat" data-cls="pink-bg" :data-volume="Math.round(fancy.ls1)" :data-val="Math.round(fancy.l1)">{{ Math.round(fancy.l1) }}<br> <span>{{ Math.round(fancy.ls1) }}</span></a></td>
-                    <td class="lay1btn cyan-bg text-center FancyBack" :class="'td_fancy_back_'+index" :data-team="fancy.nat" :id="'td_fancy_back_'+index" onClick="colorclickback(this.id)">
-                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.nat" data-cls="cyan-bg" :data-volume="Math.round(fancy.bs1)" :data-val="Math.round(fancy.b1)">{{ Math.round(fancy.b1) }}<br> <span>{{ Math.round(fancy.bs1) }}</span></a>
+                    <td class="pink-bg back1btn text-center FancyLay" :class="'td_fancy_lay_'+index" :data-team="fancy.RunnerName" :id="'td_fancy_lay_'+index" onClick="colorclick(this.id)">
+                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.RunnerName" data-cls="pink-bg" :data-volume="Math.round(fancy.LaySize1)" :data-val="Math.round(fancy.LayPrice1)">{{ Math.round(fancy.LayPrice1) }}<br> <span>{{ Math.round(fancy.LaySize1) }}</span></a></td>
+                    <td class="lay1btn cyan-bg text-center FancyBack" :class="'td_fancy_back_'+index" :data-team="fancy.RunnerName" :id="'td_fancy_back_'+index" onClick="colorclickback(this.id)">
+                        <a data-bettype="SESSION" onclick="opnForm(this)" :data-position="index" :data-team="fancy.RunnerName" data-cls="cyan-bg" :data-volume="Math.round(fancy.BackSize1)" :data-val="Math.round(fancy.BackPrice1)">{{ Math.round(fancy.BackPrice1) }}<br> <span>{{ Math.round(fancy.BackSize1) }}</span></a>
                     </td>
                     <td class="zeroopa1" colspan="1"> <span>Min/Max</span> <br> {{min_bet_fancy_limit}} / {{max_bet_fancy_limit}}</td>
                 </tr>
-                <tr v-if="getFancyStatus(fancy.gstatus,index)" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 mobile-ui-tr team_session_fancy">
+                <tr v-if="getFancyStatus(fancy.GameStatus,index)" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 mobile-ui-tr team_session_fancy">
                     <td colspan="3"></td>
                     <td colspan="2" class="fancy-suspend-td-1">
                         <div class="fancy-suspend-1 black-bg-5 text-color-white">
-                            <span class="text-uppercase">{{fancy.gstatus}}</span>
+                            <span class="text-uppercase">{{fancy.GameStatus}}</span>
                         </div>
                     </td>
                 </tr>
@@ -197,12 +197,12 @@
 
                 // $(".mobileBack td.mobile_tr_common_class").html("");
 
-                if(data.records.t3!=undefined) {
-                    var records = data.records;
-                    records.t3 = this.sortedArray(data.records.t3);
+                if(data.records[0].fancy!=undefined) {
+                    var records = data.records[0];
+                    records.fancy = this.sortedArray(data.records[0].fancy);
                     this.match = records;
                 }else{
-                    this.match = data.records;
+                    this.match = data.records[0];
                 }
                 // console.log("match ",data.records)
             });
@@ -225,9 +225,9 @@
             },
             sortedArray: function(arrays) {
                 function compare(a, b) {
-                    if (a.sid < b.sid)
+                    if (a.SelectionId < b.SelectionId)
                         return -1;
-                    if (a.sid > b.sid)
+                    if (a.SelectionId > b.SelectionId)
                         return 1;
                     return 0;
                 }

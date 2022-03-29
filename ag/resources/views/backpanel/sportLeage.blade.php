@@ -1,6 +1,5 @@
 @extends('layouts.app')
-@section('content')
-
+@push('page_css')
     <style type="text/css">
         .betloaderimage1 {
             top: 50%;
@@ -29,6 +28,8 @@
         }
 
     </style>
+@endpush
+@section('content')
     <div id="site_bet_loading1" class="betloaderimage1 loader-style1" style="display: none">
         <ul class="loading1">
             <li>
@@ -49,21 +50,15 @@
                     <form id="frmsp" name="frmsp" class="timeblock-box">
                         <div class="datediv2">
                             <label for="">Sports</label>
-                            <select name="sports" id="sports" class="form-control" onchange="getallMatch();"
-                                style="display:inline-block">
+                            <select name="sports" id="sports" class="form-control" style="display:inline-block">
                                 <option value="">-Select Sport-</option>
-                                @foreach ($sport as $sports)
-                                    <option value="{{ $sports->sId }}">{{ $sports->sport_name }}</option>
-                                @endforeach
+                                <option value="cricket">Cricket</option>
+                                <option value="tennis">Tennis</option>
+                                <option value="soccer">Soccer</option>
                             </select>
                         </div>
-                        {{-- <div class="datediv2">
-                            <label for="">Leage</label>
-                            <select name="leage" id="leage" onchange="getLeageData();" class="form-control"
-                                style="display:inline-block">
-                                <option value="">Select Leage</option>
-                            </select>
-                        </div> --}}
+
+                        <button type="button" onclick="checkAll()" class="btn btn-success btn-sm">Check All</button>
                     </form>
                 </div>
                 <div id="site_statistics_loading" class="loaderimage"></div>
@@ -77,90 +72,128 @@
                             <th class="text-left">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="append_tablebody">
+                    <tbody id="addNEwRowBody">
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
+@endsection
 
-    <script>
-        $(document).ready(function() {
-            $('#frmsp').each(function() {
-                this.reset()
+@push('third_party_scripts')
+
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="{{ asset('js/laravel-echo-server.js') }}"></script>
+
+    <script type="text/javascript">
+        var sports_events = @json($sports_events);
+        var htmlRender = false;
+        $(document).ready(function () {
+
+            $("#sports").on('change', function () {
+                $("#addNEwRowBody").html('<tr role="row" class="even"><td class="notLink text-center" colspan="5">Please wait........</td><tr>'
+                );
+                htmlRender = false;
+                window.Echo.leave('matches')
+                getMatchDataFromEcho()
             });
         });
 
-        function getallMatch(sId) {
-            $("#append_tablebody").html("");
-            var _token = $("input[name='_token']").val();
-            var sId = $('#sports').val();
-            $.ajax({
-                type: "post",
-                url: '{{ route('getallMatch') }}',
-                data: {
-                    _token: _token,
-                    sId: sId
-                },
-                beforeSend: function() {
-                    $('#site_bet_loading1').show();
-                },
-                complete: function() {
-                    $('#site_bet_loading1').hide();
-                },
-                success: function(data) {
-                    $("#append_tablebody").html(data);
+        function checkAll() {
+            $('input[type=checkbox]').each(function () {
+                if(this.checked){}else{
+                    $(this).trigger('click');
                 }
             });
         }
 
-        function getLeageData(sId) {
-            var _token = $("input[name='_token']").val();
-            var sId = $('#sports').val();
-            var leage = $('#leage').val();
-            $.ajax({
-                type: "post",
-                url: '{{ route('getLeageData') }}',
-                data: {
-                    _token: _token,
-                    sId: sId,
-                    leage: leage
-                },
-                beforeSend: function() {
-                    $('#site_bet_loading1').show();
-                },
-                complete: function() {
-                    $('#site_bet_loading1').hide();
-                },
-                success: function(data) {
-                    $("#append_tablebody").html(data);
+        function getMatchDataFromEcho(){
+            var sports = $('#sports').val();
+            const channel = window.Echo.channel('matches').listen('.' + sports, (data) => {
+
+                var sports_id = 0;
+                if(sports == 'cricket'){
+                    sports_id = 4;
+                }else if(sports == 'tennis'){
+                    sports_id = 2;
+                }else if(sports == 'soccer'){
+                    sports_id = 1;
                 }
+
+                var htmldata = '';
+                if(htmlRender == false) {
+                    for (var i = 0; i < data.records.events.length; i++) {
+
+                        var checked = '';
+                        if (jQuery.inArray((data.records.events[i].id).toString(), sports_events) != -1) {
+                            checked = 'checked';
+                        }
+
+                        var isDraw = 0;
+                        if(data.records.events[i].markets[0].numberOfRunners >= 3){
+                            isDraw = 1;
+                        }
+
+                        var bookmaker = 0;
+                        if(data.records.events[i].hasSportsBookMarkets == true || data.records.events[i].hasInPlayBookMakerMarkets == true){
+                            bookmaker = 1;
+                        }
+
+                        var fancy = 0;
+                        if(data.records.events[i].hasFancyBetMarkets == true || data.records.events[i].hasInPlayFancyBetMarkets == true){
+                            fancy = 1;
+                        }
+
+
+                        // if (data.records.events[i].id.charAt(0) == 3)
+                        {
+                            htmldata += '<tr role="row" class="white-bg">' +
+                                '<td class="notLink text-left">' + data.records.events[i].markets[0].marketId + '</td> ' +
+                                '<td class="notLink text-left">' + data.records.events[i].id + '</td>' +
+                                '<td class="notLink text-left">' + data.records.events[i].name +'</td>' +
+                                '<td class="notLink text-left">' + data.records.events[i].openDate +'</td>' +
+                                '<td class="text-center">' +
+                                '<input type="checkbox" ' + checked + ' name="sportLeage" data-sports_id="'+sports_id+'" data-isDraw="'+isDraw+'" data-fancy="'+fancy+'" data-bookmaker="'+bookmaker+'" data-matchId="'+data.records.events[i].markets[0].marketId + '" data-eventId="' + data.records.events[i].id + '" data-matchName="' + data.records.events[i].name +'" data-game="' + sports + '" data-matchDate="' + data.records.events[i].openDate + '" onclick="onClickSportsLeage(this)">' +
+                                '</td>' +
+                                '</tr>'
+                        }
+                    }
+                    $("#addNEwRowBody").html(htmldata);
+                }
+
+                htmlRender = true;
             });
         }
 
-        function addMatch(val) {
-            var event_id = $(val).data("eventid");
-            var match_name = $(val).data("event");
-            var match_id = $(val).data("marketid");
-            var match_date = $(val).data("matchdate");
-            var sports_id = $(val).data("sid");
-            var leage = $(val).data("leage");
-            var draw = $(val).data("draw");
-            var bookmaker = $(val).data("bookmaker");
-            var fancy = $(val).data("fancy");
-            var _token = $("input[name='_token']").val();
+        function onClickSportsLeage(obj) {
+            if ($(obj).prop('checked') == true) {
+                var isStore = 1;
+            } else {
+                var isStore = 0;
+            }
+
+            var matchId = $(obj).attr('data-matchId');
+            var eventId = $(obj).attr('data-eventId');
+            var matchName = $(obj).attr('data-matchName');
+            var game = $(obj).attr('data-game');
+            var matchDate = $(obj).attr('data-matchDate');
+            var isDraw = $(obj).attr('data-isDraw');
+            var fancy = $(obj).attr('data-fancy');
+            var bookmaker = $(obj).attr('data-bookmaker');
+            var sports_id = $(obj).attr('data-sports_id');
+            console.log(matchName);
             $.ajax({
                 type: "post",
                 url: "{{ route('addMatchFromAPI') }}",
                 data: {
-                    _token: _token,
-                    match_name: match_name,
-                    match_id: match_id,
-                    match_date: match_date,
-                    event_id: event_id,
+                    _token: "{{ csrf_token() }}",
+                    match_name: matchName,
+                    match_id: matchId,
+                    match_date: matchDate,
+                    event_id: eventId,
                     sports_id: sports_id,
-                    leage: leage,
-                    is_draw:draw,
+                    leage: '',
+                    is_draw:isDraw,
                     bookmaker:bookmaker,
                     fancy:fancy,
                 },
@@ -180,5 +213,10 @@
                 }
             });
         }
+        $(document).ready(function() {
+            $('#frmsp').each(function() {
+                this.reset()
+            });
+        });
     </script>
-@endsection
+@endpush

@@ -55,7 +55,7 @@ class NexusApi
                         $type= 'soccer';
                     }
 
-                    $url = 'https://nexusapi.xyz/api/v1/websites/match/' . $eventId."/".$type."/".$broadcast."/".$match->match_id;
+                    $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId."/".$type."/".$broadcast."/".$match->match_id;
                     $res = $client->request('GET', $url);
                     $response = $res->getBody()->getContents();
                 }

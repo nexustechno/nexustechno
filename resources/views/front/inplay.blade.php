@@ -233,6 +233,13 @@
 @push('page_scripts')
     @include('front.common-script-for-list')
 
+    <script>
+        setInterval(function() {
+            $(".backbtn").removeClass("spark");
+            $(".laybtn").removeClass("sparkLay");
+        }, 500);
+    </script>
+
     <script type="text/javascript">
         $('.todaytitle').click(function () {
             $(this).find('i').toggleClass('fas fa-plus fas fa-minus')

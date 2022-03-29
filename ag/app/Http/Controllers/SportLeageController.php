@@ -11,7 +11,8 @@ class SportLeageController extends Controller
     public function index()
     {
     	$sport = Sport::get();
-        return view('backpanel/sportLeage',compact('sport'));
+        $sports_events = Match::whereNull('winner')->pluck('event_id');
+        return view('backpanel/sportLeage',compact('sport','sports_events'));
     }
     public function getallMatch(Request $request)
     {

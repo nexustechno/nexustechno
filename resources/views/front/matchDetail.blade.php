@@ -492,17 +492,17 @@
                         </div>
                         <div id="app">
 
-                            @if($match->sports_id=='4')
+                            <tennissoccerodds bet_total="{{json_encode($bet_total)}}"
+                                              pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                              pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
+                                              pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
+                                              bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
+                                              max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
+                                              min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
+                                              bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                              :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
 
-                                <cricketodds bet_total="{{json_encode($bet_total)}}"
-                                             pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                             pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                             pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                             bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                             max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
-                                             min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
-                                             bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                             :event_id="'{{ $match->event_id }}'"></cricketodds>
+                            @if($match->sports_id=='4')
 
                                 <cricketoddsbookmarks bet_total="{{json_encode($bet_total)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
@@ -524,16 +524,6 @@
                                                   bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                   :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
 
-                            @else
-                                <tennissoccerodds bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
-                                                  pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                                  pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                                  pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                                  bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                                  max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
-                                                  min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
-                                                  bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                  :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
                             @endif
                         </div>
                         <div class="mb-5"></div>
