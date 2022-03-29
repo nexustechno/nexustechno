@@ -166,12 +166,13 @@ class FrontController extends Controller
     {
         $getUserCheck = Session::get('playerUser');
 
+        $logindata = '';
         if (!empty($getUserCheck)) {
             $logindata = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
             $getUser = $logindata;
             $userId = $getUser->id;
         }else{
-            return redirect()->back()->with('error', 'Please login');
+//            return redirect()->back()->with('error', 'Please login');
         }
 
         if ($logindata) {
@@ -210,20 +211,22 @@ class FrontController extends Controller
         }
 
         $total_todays_bet = 0;
-
+        $my_placed_bets_all = [];
+        $placed_bet_match_list = [];
         //DB::enableQueryLog();
-        $placed_bet_match_list = DB::table('my_bets')
-            ->select('my_bets.match_id', 'match.match_name', 'match.id')
-            ->join('match', 'match.event_id', '=', 'my_bets.match_id')
-            ->where('my_bets.user_id', $userId)->where('my_bets.isDeleted', 0)->where('my_bets.result_declare', 0)
-            ->whereNull('match.winner')
-            ->groupBy("my_bets.match_id")
-            ->orderby('id', 'DESC')
-            ->get();
-        //dd(DB::getQueryLog());
+        if(isset($userId)) {
+            $placed_bet_match_list = DB::table('my_bets')
+                ->select('my_bets.match_id', 'match.match_name', 'match.id')
+                ->join('match', 'match.event_id', '=', 'my_bets.match_id')
+                ->where('my_bets.user_id', $userId)->where('my_bets.isDeleted', 0)->where('my_bets.result_declare', 0)
+                ->whereNull('match.winner')
+                ->groupBy("my_bets.match_id")
+                ->orderby('id', 'DESC')
+                ->get();
+            //dd(DB::getQueryLog());
 
-        $my_placed_bets_all = MyBets::where('user_id', $userId)->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-
+            $my_placed_bets_all = MyBets::where('user_id', $userId)->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
+        }
         $match_name_bet = array();
 
         //odds data
@@ -237,9 +240,12 @@ class FrontController extends Controller
         $oddsLimit['min_bet_odds_limit'] = $matchList->min_bet_odds_limit;
         $oddsLimit['max_bet_odds_limit'] = $matchList->max_bet_odds_limit;
 
-        {
 
-            $userId = $getUser->id;
+        $team1_bet_total = 0;
+        $team2_bet_total = 0;
+        $team_draw_bet_total = 0;
+        if(isset($userId))
+        {
             $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', 'ODDS')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
             $team2_bet_total = 0;
             $team1_bet_total = 0;
@@ -349,179 +355,185 @@ class FrontController extends Controller
         $team1_bet_total = 0;
         $team_draw_bet_total = 0;
 
-        $userId = $getUser->id;
-        $my_placed_bets_bm = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('bet_type', 'BOOKMAKER')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
 
-        if (sizeof($my_placed_bets_bm) > 0) {
-            foreach ($my_placed_bets_bm as $bet) {
-                $abc = json_decode($bet->extra, true);
-                if (!empty($abc)) {
-                    if (count($abc) >= 2) {
-                        if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
-                            //bet on draw
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_profit;
-                                }
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->bet_profit;
-                                }
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
-                            //bet on team1
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total - $bet->bet_profit;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                }
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
-                            //bet on team2
-                            if ($bet->bet_side == 'back') {
-                                $team2_bet_total = $team2_bet_total + $bet->bet_profit;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team2_bet_total = $team2_bet_total - $bet->bet_profit;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                }
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                            }
-                        }
-                    } else if (count($abc) == 1) {
-                        if (array_key_exists("teamname1", $abc)) {
-                            //bet on team2
-                            if ($bet->bet_side == 'back') {
-                                $team2_bet_total = $team2_bet_total + $bet->bet_profit;
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team2_bet_total = $team2_bet_total - $bet->bet_profit;
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                            }
-                        } else {
-                            //bet on team1
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total - $bet->bet_profit;
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        if(isset($userId)) {
+            $my_placed_bets_bm = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('bet_type', 'BOOKMAKER')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
 
-        $bet_total['team1_BM_total']    = round($team1_bet_total,2);
-        $bet_total['team2_BM_total']    = round($team2_bet_total,2);
-        $bet_total['draw_BM_total']     = round($team_draw_bet_total,2);
-
-        if($match->sports_id == 4) {
-            $match_data[0]['fancy'] = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($eventId, $matchId, $match->sports_id);
-
-            if (isset($match_data[0]['fancy']) && isset($match_data[0]['fancy'][0]) && isset($match_data[0]['fancy'][0]['RunnerName'])) {
-                foreach ($match_data[0]['fancy'] as $key => $value) {
-                    $final_exposer = 0;
-                    $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('team_name', $value['RunnerName'])->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
-
-                    $abc = sizeof($my_placed_bets);
-                    if (sizeof($my_placed_bets) > 0) {
-                        $run_arr = array();
-                        foreach ($my_placed_bets as $bet) {
-                            $down_position = $bet->bet_odds - 1;
-                            if (!in_array($down_position, $run_arr)) {
-                                $run_arr[] = $down_position;
-                            }
-                            $level_position = $bet->bet_odds;
-                            if (!in_array($level_position, $run_arr)) {
-                                $run_arr[] = $level_position;
-                            }
-                            $up_position = $bet->bet_odds + 1;
-                            if (!in_array($up_position, $run_arr)) {
-                                $run_arr[] = $up_position;
-                            }
-                        }
-                        array_unique($run_arr);
-                        sort($run_arr);
-
-                        $min_val = min($run_arr);
-                        $max_val = max($run_arr);
-
-                        $newArr = array();
-
-                        for ($z = $min_val; $z <= $max_val; ++$z) {
-                            $new = $z;
-                            $newArr[] = $new;
-                        }
-
-                        $run_arr = array();
-                        $run_arr = $newArr;
-
-                        $bet_chk = '';
-                        for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
-                            $bet_deduct_amt = 0;
-                            $placed_bet_type = '';
-                            foreach ($my_placed_bets as $bet) {
+            if (sizeof($my_placed_bets_bm) > 0) {
+                foreach ($my_placed_bets_bm as $bet) {
+                    $abc = json_decode($bet->extra, true);
+                    if (!empty($abc)) {
+                        if (count($abc) >= 2) {
+                            if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
+                                //bet on draw
                                 if ($bet->bet_side == 'back') {
-                                    if ($bet->bet_odds == $run_arr[$kk]) {
-
-                                        $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-                                    } else if ($bet->bet_odds < $run_arr[$kk]) {
-
-                                        $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
-                                    } else if ($bet->bet_odds > $run_arr[$kk]) {
-
-                                        $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
+                                    if (count($abc) >= 2) {
+                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_profit;
                                     }
-                                } else if ($bet->bet_side == 'lay') {
-                                    if ($bet->bet_odds == $run_arr[$kk]) {
-
-                                        $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
-                                    } else if ($bet->bet_odds < $run_arr[$kk]) {
-
-                                        $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
-                                    } else if ($bet->bet_odds > $run_arr[$kk]) {
-
-                                        $bet_deduct_amt = $bet_deduct_amt + $bet->bet_amount;
+                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
+                                }
+                                if ($bet->bet_side == 'lay') {
+                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
+                                    if (count($abc) >= 2) {
+                                        $team_draw_bet_total = $team_draw_bet_total - $bet->bet_profit;
                                     }
+                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
+                                }
+                            } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
+                                //bet on team1
+                                if ($bet->bet_side == 'back') {
+                                    $team1_bet_total = $team1_bet_total + $bet->bet_profit;
+                                    if (count($abc) >= 2) {
+                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
+                                    }
+                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
+                                }
+                                if ($bet->bet_side == 'lay') {
+                                    $team1_bet_total = $team1_bet_total - $bet->bet_profit;
+                                    if (count($abc) >= 2) {
+                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
+                                    }
+                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
+                                }
+                            } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
+                                //bet on team2
+                                if ($bet->bet_side == 'back') {
+                                    $team2_bet_total = $team2_bet_total + $bet->bet_profit;
+                                    if (count($abc) >= 2) {
+                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
+                                    }
+                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
+                                }
+                                if ($bet->bet_side == 'lay') {
+                                    $team2_bet_total = $team2_bet_total - $bet->bet_profit;
+                                    if (count($abc) >= 2) {
+                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
+                                    }
+                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
                                 }
                             }
-                            if ($final_exposer == "")
-                                $final_exposer = $bet_deduct_amt;
-                            else {
-                                if ($final_exposer > $bet_deduct_amt) {
-                                    $final_exposer = $bet_deduct_amt;
+                        } else if (count($abc) == 1) {
+                            if (array_key_exists("teamname1", $abc)) {
+                                //bet on team2
+                                if ($bet->bet_side == 'back') {
+                                    $team2_bet_total = $team2_bet_total + $bet->bet_profit;
+                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
+                                }
+                                if ($bet->bet_side == 'lay') {
+                                    $team2_bet_total = $team2_bet_total - $bet->bet_profit;
+                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
+                                }
+                            } else {
+                                //bet on team1
+                                if ($bet->bet_side == 'back') {
+                                    $team1_bet_total = $team1_bet_total + $bet->bet_profit;
+                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
+                                }
+                                if ($bet->bet_side == 'lay') {
+                                    $team1_bet_total = $team1_bet_total - $bet->bet_profit;
+                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
                                 }
                             }
                         }
                     }
+                }
+            }
 
-                    if ($final_exposer != 0) {
-                        $bet_total['fancy_' . $value['SelectionId']] = round(abs($final_exposer), 2);
+            $bet_total['team1_BM_total'] = round($team1_bet_total, 2);
+            $bet_total['team2_BM_total'] = round($team2_bet_total, 2);
+            $bet_total['draw_BM_total'] = round($team_draw_bet_total, 2);
+
+            if ($match->sports_id == 4) {
+                $match_data[0]['fancy'] = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($eventId, $matchId, $match->sports_id);
+
+                if (isset($match_data[0]['fancy']) && isset($match_data[0]['fancy'][0]) && isset($match_data[0]['fancy'][0]['RunnerName'])) {
+                    foreach ($match_data[0]['fancy'] as $key => $value) {
+                        $final_exposer = 0;
+                        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('team_name', $value['RunnerName'])->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+
+                        $abc = sizeof($my_placed_bets);
+                        if (sizeof($my_placed_bets) > 0) {
+                            $run_arr = array();
+                            foreach ($my_placed_bets as $bet) {
+                                $down_position = $bet->bet_odds - 1;
+                                if (!in_array($down_position, $run_arr)) {
+                                    $run_arr[] = $down_position;
+                                }
+                                $level_position = $bet->bet_odds;
+                                if (!in_array($level_position, $run_arr)) {
+                                    $run_arr[] = $level_position;
+                                }
+                                $up_position = $bet->bet_odds + 1;
+                                if (!in_array($up_position, $run_arr)) {
+                                    $run_arr[] = $up_position;
+                                }
+                            }
+                            array_unique($run_arr);
+                            sort($run_arr);
+
+                            $min_val = min($run_arr);
+                            $max_val = max($run_arr);
+
+                            $newArr = array();
+
+                            for ($z = $min_val; $z <= $max_val; ++$z) {
+                                $new = $z;
+                                $newArr[] = $new;
+                            }
+
+                            $run_arr = array();
+                            $run_arr = $newArr;
+
+                            $bet_chk = '';
+                            for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
+                                $bet_deduct_amt = 0;
+                                $placed_bet_type = '';
+                                foreach ($my_placed_bets as $bet) {
+                                    if ($bet->bet_side == 'back') {
+                                        if ($bet->bet_odds == $run_arr[$kk]) {
+
+                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+
+                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+
+                                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                        }
+                                    } else if ($bet->bet_side == 'lay') {
+                                        if ($bet->bet_odds == $run_arr[$kk]) {
+
+                                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                        } else if ($bet->bet_odds < $run_arr[$kk]) {
+
+                                            $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                        } else if ($bet->bet_odds > $run_arr[$kk]) {
+
+                                            $bet_deduct_amt = $bet_deduct_amt + $bet->bet_amount;
+                                        }
+                                    }
+                                }
+                                if ($final_exposer == "")
+                                    $final_exposer = $bet_deduct_amt;
+                                else {
+                                    if ($final_exposer > $bet_deduct_amt) {
+                                        $final_exposer = $bet_deduct_amt;
+                                    }
+                                }
+                            }
+                        }
+
+                        if ($final_exposer != 0) {
+                            $bet_total['fancy_' . $value['SelectionId']] = round(abs($final_exposer), 2);
+                        }
                     }
                 }
             }
+        }else{
+            $bet_total['team1_BM_total'] = 0;
+            $bet_total['team2_BM_total'] = 0;
+            $bet_total['draw_BM_total'] = 0;
         }
 
         return view('front.matchDetail', compact('match', 'match_data', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
