@@ -130,13 +130,11 @@
         },
         methods:{
             setRecords(data){
-                console.log(data);
+                // console.log(data);
                 var records = data.events;
                 for(var i=0;i<records.length;i++){
                     if(this.isVisible(records[i],i)){
-
                         if(this.matches[i]!=undefined) {
-
                             for (var j=0;j<records[i].markets[0].selections.length;j++){
                                 if (records[i].markets[0].selections.length > 0 && records[i].markets[0].selections[j]!=undefined && records[i].markets[0].selections[j].availableToBack!=undefined && records[i].markets[0].selections[j].availableToBack[0]!=undefined && this.matches[i].markets[0].selections.length > 0 && this.matches[i].markets[0].selections[j]!=undefined && this.matches[i].markets[0].selections[j].availableToBack!=undefined && this.matches[i].markets[0].selections[j].availableToBack[0]!=undefined && this.matches[i].markets[0].selections[j].availableToBack[0].price != records[i].markets[0].selections[j].availableToBack[0].price) {
                                     $(".col1-back-lay" + records[i].id + " .backbtn").addClass('spark');
