@@ -130,23 +130,23 @@
 
                     for(var i=0;i<this.match[0].runners.length;i++){
                         //team1 spark changes
-                        if(newRecords[0].runners[i].ex.availableToBack[2]!=undefined && this.match[0].runners[i].ex.availableToBack[2]!=undefined && (this.match[0].runners[i].ex.availableToBack[2].price!=newRecords[0].runners[i].ex.availableToBack[2])){
+                        if(newRecords[0].runners[i].ex.availableToBack[2]!=undefined && this.match[0].runners[i].ex.availableToBack[2]!=undefined && (this.match[0].runners[i].ex.availableToBack[2].price!=newRecords[0].runners[i].ex.availableToBack[2].price)){
                             $(".td_team"+(i+1)+"_back_2").addClass('spark');
                         }
-                        if(newRecords[0].runners[i].ex.availableToBack[1]!=undefined && this.match[0].runners[i].ex.availableToBack[1]!=undefined && (this.match[0].runners[i].ex.availableToBack[1].price!=newRecords[0].runners[i].ex.availableToBack[1])){
+                        if(newRecords[0].runners[i].ex.availableToBack[1]!=undefined && this.match[0].runners[i].ex.availableToBack[1]!=undefined && (this.match[0].runners[i].ex.availableToBack[1].price!=newRecords[0].runners[i].ex.availableToBack[1].price)){
                             $(".td_team"+(i+1)+"_back_1").addClass('spark');
                         }
-                        if(newRecords[0].runners[i].ex.availableToBack[0]!=undefined && this.match[0].runners[i].ex.availableToBack[0]!=undefined && (this.match[0].runners[i].ex.availableToBack[0].price!=newRecords[0].runners[i].ex.availableToBack[0])){
+                        if(newRecords[0].runners[i].ex.availableToBack[0]!=undefined && this.match[0].runners[i].ex.availableToBack[0]!=undefined && (this.match[0].runners[i].ex.availableToBack[0].price!=newRecords[0].runners[i].ex.availableToBack[0].price)){
                             $(".td_team"+(i+1)+"_back_0").addClass('spark');
                         }
 
-                        if(newRecords[0].runners[i].ex.availableToLay[2]!=undefined && this.match[0].runners[i].ex.availableToLay[2]!=undefined && (this.match[0].runners[i].ex.availableToLay[2].price!=newRecords[0].runners[i].ex.availableToLay[2])){
+                        if(newRecords[0].runners[i].ex.availableToLay[2]!=undefined && this.match[0].runners[i].ex.availableToLay[2]!=undefined && (this.match[0].runners[i].ex.availableToLay[2].price!=newRecords[0].runners[i].ex.availableToLay[2].price)){
                             $(".td_team"+(i+1)+"_lay_2").addClass('sparkLay');
                         }
-                        if(newRecords[0].runners[i].ex.availableToLay[1]!=undefined && this.match[0].runners[i].ex.availableToLay[1]!=undefined && (this.match[0].runners[i].ex.availableToLay[1].price!=newRecords[0].runners[i].ex.availableToLay[1])){
+                        if(newRecords[0].runners[i].ex.availableToLay[1]!=undefined && this.match[0].runners[i].ex.availableToLay[1]!=undefined && (this.match[0].runners[i].ex.availableToLay[1].price!=newRecords[0].runners[i].ex.availableToLay[1].price)){
                             $(".td_team"+(i+1)+"_lay_1").addClass('sparkLay');
                         }
-                        if(newRecords[0].runners[i].ex.availableToLay[0]!=undefined && this.match[0].runners[i].ex.availableToLay[0]!=undefined && (this.match[0].runners[i].ex.availableToLay[0].price!=newRecords[0].runners[i].ex.availableToLay[0])){
+                        if(newRecords[0].runners[i].ex.availableToLay[0]!=undefined && this.match[0].runners[i].ex.availableToLay[0]!=undefined && (this.match[0].runners[i].ex.availableToLay[0].price!=newRecords[0].runners[i].ex.availableToLay[0].price)){
                             $(".td_team"+(i+1)+"_lay_0").addClass('sparkLay');
                         }
                     }
