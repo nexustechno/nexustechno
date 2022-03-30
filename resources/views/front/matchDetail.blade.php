@@ -1978,7 +1978,7 @@
                     }
                     call_display_bet_list(match_sel);
 
-                }, 10000);
+                }, 1000);
 
                 // setInterval(function () {
                 //     loadDetailPageContent();
@@ -5661,13 +5661,15 @@
             });
         }
 
-        setTimeout(() => {
-            var match_sel = $('#select_bet_on_match').val();
-            if (match_sel == "" || match_sel == null)
-                match_sel = '{{$match->event_id}}~~' + 'All';
+        if (getUser != '') {
+            setTimeout(() => {
+                var match_sel = $('#select_bet_on_match').val();
+                if (match_sel == "" || match_sel == null)
+                    match_sel = '{{$match->event_id}}~~' + 'All';
 
-            call_display_bet_list(match_sel);
-        }, 10);
+                call_display_bet_list(match_sel);
+            }, 10);
+        }
 
         function saveBetcall(confirmBet) {
             var bet_type = $('#betTypeAdd').val();

@@ -123,7 +123,7 @@
         },
         mounted() {
             window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
-
+                console.log(data);
                 var newRecords = data.records;
 
                 if(this.match[0]!=undefined){

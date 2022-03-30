@@ -130,6 +130,7 @@
         },
         methods:{
             setRecords(data){
+                console.log(data);
                 var records = data.events;
                 for(var i=0;i<records.length;i++){
                     if(this.isVisible(records[i],i)){

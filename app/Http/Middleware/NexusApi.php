@@ -45,19 +45,21 @@ class NexusApi
                 $match = Match::where("event_id",$eventId)->first();
 
                 if(!empty($match)) {
-                    $client = new Client();
-                    $type= '';
-                    if($match->sports_id == 4){
-                        $type= 'cricket';
-                    }else if($match->sports_id == 2){
-                        $type= 'tennis';
-                    }else if($match->sports_id == 1){
-                        $type= 'soccer';
-                    }
+                    if($eventId > 0 && $match->match_id) {
+                        $client = new Client();
+                        $type = '';
+                        if ($match->sports_id == 4) {
+                            $type = 'cricket';
+                        } else if ($match->sports_id == 2) {
+                            $type = 'tennis';
+                        } else if ($match->sports_id == 1) {
+                            $type = 'soccer';
+                        }
 
-                    $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId."/".$type."/".$broadcast."/".$match->match_id;
-                    $res = $client->request('GET', $url);
-                    $response = $res->getBody()->getContents();
+                        $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
+                        $res = $client->request('GET', $url);
+                        $response = $res->getBody()->getContents();
+                    }
                 }
             }
         }

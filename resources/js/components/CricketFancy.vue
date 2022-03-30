@@ -1,6 +1,6 @@
 <template>
     <div v-if="!loading" class="fancy-section">
-        <div v-if="match.fancy!=undefined" id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
+        <div v-if="match.fancy!=undefined && match.fancy.length > 0" id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
             <h4>
                 <span class="blue-bg-3 text-color-white"> <img :src="clockgreenicon"> <b> Fancy Bet </b> </span>
                 <a data-toggle="modal" data-target="#rulesFancyBetsModal"> <img :src="infoicon"> </a>
@@ -29,12 +29,12 @@
             </div>
         </div>
 
-        <p v-if="match.fancy!=undefined" class="fancyBetSpecialBet">
+        <p v-if="match.fancy!=undefined && match.fancy.length > 0" class="fancyBetSpecialBet">
             <i class="fas fa-thumbtack"></i>
             Fancy Bet
         </p>
 
-        <table v-if="match.fancy!=undefined" class="table custom-table inplay-table w1-table " id="inplay-tableblock-fancy" style="margin-top:0px;">
+        <table v-if="match.fancy!=undefined && match.fancy.length > 0" class="table custom-table inplay-table w1-table " id="inplay-tableblock-fancy" style="margin-top:0px;">
             <tbody>
             <tr class="bets-fancy desktop-ui-tr white-bg">
                 <td colspan="3">
@@ -199,7 +199,11 @@
 
                 if(data.records[0].fancy!=undefined) {
                     var records = data.records[0];
-                    records.fancy = this.sortedArray(data.records[0].fancy);
+                    if(data.records[0].fancy.length > 0 && data.records[0].fancy[0].SelectionId != undefined) {
+                        records.fancy = this.sortedArray(data.records[0].fancy);
+                    }else {
+                        records.fancy = [];
+                    }
                     this.match = records;
                 }else{
                     this.match = data.records[0];
