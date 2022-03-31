@@ -226,6 +226,7 @@ class RestApi extends Controller
 		$data = json_decode($alldata->getBody(), true);
 		return $data;
 	}
+
 	public function getSingleMatchData($eventId,$matchId,$matchtype){
 		if($matchtype == 4)
 		{ //cricket

@@ -240,7 +240,6 @@ class FrontController extends Controller
         $oddsLimit['min_bet_odds_limit'] = $matchList->min_bet_odds_limit;
         $oddsLimit['max_bet_odds_limit'] = $matchList->max_bet_odds_limit;
 
-
         $team1_bet_total = 0;
         $team2_bet_total = 0;
         $team_draw_bet_total = 0;
@@ -354,7 +353,6 @@ class FrontController extends Controller
         $team2_bet_total = 0;
         $team1_bet_total = 0;
         $team_draw_bet_total = 0;
-
 
         if(isset($userId)) {
             $my_placed_bets_bm = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('bet_type', 'BOOKMAKER')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
@@ -530,7 +528,8 @@ class FrontController extends Controller
                     }
                 }
             }
-        }else{
+        }
+        else{
             $bet_total['team1_BM_total'] = 0;
             $bet_total['team2_BM_total'] = 0;
             $bet_total['draw_BM_total'] = 0;

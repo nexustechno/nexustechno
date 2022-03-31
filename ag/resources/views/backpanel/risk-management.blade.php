@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('content')
+@push('page_css')
     <style type="text/css">
         .betloaderimage1 {
             top: 50%;
@@ -27,6 +27,8 @@
             font-size: 11px;
         }
     </style>
+@endpush
+@section('content')
     <div id="site_bet_loading1" class="betloaderimage1 loader-style1" style="display: none">
         <ul class="loading1">
             <li>
@@ -73,6 +75,58 @@
         </div>
     </section>
 
+@endsection
+
+@push('third_party_scripts')
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="{{ asset('js/laravel-echo-server.js') }}"></script>
+
+    <script type="text/javascript">
+
+        function loadData(record){
+            if (record.markets != undefined && record.markets[0] != undefined && record.markets[0].selections != undefined) {
+                var selections = record.markets[0].selections;
+                var inPlay = record.markets[0].inPlay;
+
+                var eventId = record.id;
+
+                if (inPlay == 1) {
+                    $(".in-play-status-" + eventId).removeClass('collapse');
+                } else {
+                    $(".in-play-status-" + eventId).addClass('collapse');
+                }
+
+                if (selections.length > 0 && selections[0] != undefined) {
+                    var team = 1;
+                    for (var j = selections.length - 1; j >= 0; j--) {
+                        if(selections[j].availableToBack[0]!=undefined && selections[j].availableToBack[0].price!=undefined) {
+                            $(".team" + team + "-" + eventId + " .button_content .backbtn").html(selections[j].availableToBack[0].price);
+                        }
+                        if(selections[j].availableToLay[0]!=undefined && selections[j].availableToLay[0].price!=undefined) {
+                            $(".team" + team + "-" + eventId + " .button_content .laybtn").html(selections[j].availableToLay[0].price);
+                        }
+                        team++;
+                    }
+                }
+            }
+        }
+
+        window.Echo.channel('matches').listen('.tennis', (data) => {
+            for (var i = 0; i < data.records.events.length; i++) {
+                loadData(data.records.events[i]);
+            }
+        });
+        window.Echo.channel('matches').listen('.cricket', (data) => {
+            for (var i = 0; i < data.records.events.length; i++) {
+                loadData(data.records.events[i]);
+            }
+        });
+        window.Echo.channel('matches').listen('.soccer', (data) => {
+            for (var i = 0; i < data.records.events.length; i++) {
+                loadData(data.records.events[i]);
+            }
+        });
+    </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -80,9 +134,8 @@
             $("." + gettab).addClass("active");
             $('#site_bet_loading1').show();
             getriskdetail();
-            // getriskdetailTwo();
             setInterval(function () {
-                getriskdetail();
+                // getriskdetail();
             }, 2000);
 
             function getriskdetail() {
@@ -104,33 +157,6 @@
                     }
                 });
             }
-
-            function getriskdetailTwo() {
-                var _token = $("input[name='_token']").val();
-                $.ajax({
-                    type: "POST",
-                    url: '{{route("getriskdetailTwo")}}',
-                    data: {_token: _token},
-                    /*beforeSend:function(){
-                        $('#site_bet_loading1').show();
-                    },
-                    complete: function(){
-                        $('#site_bet_loading1').hide();
-                    },*/
-                    success: function (data) {
-                        //$("#loaddata").html(data);
-                        var dt = data.split('~~');
-                        var i = 0;
-                        for (i = 0; i < dt.length; i++) {
-                            if (dt[i] != '')
-                                $('#collapseOne' + i).html(dt[i]);
-                            else
-                                $('#collapseOne' + i).html('<div class="panel panel-default panel_content beige-bg-1"><h6>No match found.</h6></div>');
-                        }
-                    }
-                });
-
-            }
         });
     </script>
-@endsection
+@endpush

@@ -184,9 +184,6 @@
 </script>
 
 <style>
-    body {
-        overflow: hidden;
-    }
 
     .fir-col3.pinimg img {
         width: 100%;

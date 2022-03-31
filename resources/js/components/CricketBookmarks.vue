@@ -102,7 +102,7 @@
         <tr v-if="bookmaker[1].status == 'SUSPENDED'" class="fancy-suspend-tr team2_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
         <tr class="white-bg tr_bm_team2">
             <td class="padding3 77777777">{{ bookmaker[1].runnerName }}<br>
-                <div><span id="team2_betBM_count_old" :class="betTotalValue.team2_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="team2_BM_total">{{ roundFloatVal(betTotalValue.team2_BM_total) }}</span>)</span> <span
+                <div><span id="team2_betBM_count_old" :class="betTotalValue.team2_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="team2_BM_total">{{ betTotalValue.team2_BM_total }}</span>)</span> <span
                     id="team2_betBM_count_new" class="tolose text-color-red" style="display: none;">(6.7)</span></div>
             </td>
             <td class="td_team2_bm_back_2">
@@ -156,7 +156,7 @@
         <tr v-if="bookmaker[2]!=undefined && bookmaker[2].status == 'SUSPENDED'" class="fancy-suspend-tr team3_bm_fancy"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
         <tr v-if="bookmaker[2]!=undefined" class="white-bg tr_bm_team3">
             <td class="padding3 77777777">{{ bookmaker[2].runnerName }}<br>
-                <div><span id="draw_betBM_count_old" :class="betTotalValue.draw_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="draw_BM_total">{{roundFloatVal(betTotalValue.draw_BM_total)}}</span>)</span>
+                <div><span id="draw_betBM_count_old" :class="betTotalValue.draw_BM_total < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span id="draw_BM_total">{{betTotalValue.draw_BM_total}}</span>)</span>
                     <span id="draw_betBM_count_new" class="tolose text-color-red" style="display: none;">(6.7)</span>
                 </div>
             </td>

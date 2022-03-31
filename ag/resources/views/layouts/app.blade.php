@@ -71,6 +71,9 @@ if ($auth_type == 'COM') {
             transform: translate(-50%, 0px) !important;
             z-index: 9999 !important;
         }
+        body {
+            overflow: auto !important;
+        }
     </style>
 
     @stack('page_css')
@@ -401,7 +404,7 @@ if ($auth_type == 'COM') {
 <script src="{{ asset('asset/js/datatables/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('asset/js/script.js') }}"></script>
 @stack('page_scripts')
-@stack('third_party_scripts')
+
 <script>
     function autologout() {
         $.ajax({
@@ -537,7 +540,7 @@ if ($auth_type == 'COM') {
     });
 </script>
 
-
+@stack('third_party_scripts')
 </body>
 </html>
 

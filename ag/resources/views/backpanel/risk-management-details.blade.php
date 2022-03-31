@@ -1,16 +1,6 @@
 @extends('layouts.app')
-@section('content')
-    <?php $loginUser = Auth::user();
-    use App\Match;
-    use App\User;
-    use App\UserHirarchy;
-    use App\MyBets;
-    ?>
 
-{{--    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">--}}
-{{--    <script src="https://unpkg.com/video.js/dist/video.js"></script>--}}
-{{--    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>--}}
-
+@push('page_css')
     <style type="text/css">
         .betloaderimage1 {
             top: 50%;
@@ -38,14 +28,16 @@
             font-size: 11px;
         }
     </style>
-    <div id="site_bet_loading1" class="betloaderimage1 loader-style1" style="display: none">
-        <ul class="loading1">
-            <li>
-                <img src="/asset/front/img/loaderajaxbet.gif">
-            </li>
-            <li>Loading...</li>
-        </ul>
-    </div>
+@endpush
+
+@section('content')
+    <?php $loginUser = Auth::user();
+    use App\Match;
+    use App\User;
+    use App\UserHirarchy;
+    use App\MyBets;
+    ?>
+
 
     <section class="risk_management_details_wrapper white-bg ">
         <div class="container">
@@ -60,9 +52,9 @@
             <div class="row">
                 <div class="col-md-12 p-0">
                     <div class="riskmanage_content">
-                        <div class="riskmanage_head green-bg-1">
+                        <div class="riskmanage_head p-0 green-bg-1">
                             <div class="btn-group">
-                                <button type="button"
+                                <button type="button" style="border-radius: 0"
                                         class="btn yellow-gradient-bg text-color-black btn-sm dropdown-toggle"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     User lock
@@ -124,7 +116,7 @@
                                 </ul>
                             </div>
 
-                            <h4 class="text-color-white">{{$matchList->match_name}}</h4>
+                            <h4 class="text-color-white">{{$matchList->match_name}} [{{ $matchList->match_date }}]</h4>
 
                         </div>
 
@@ -132,173 +124,97 @@
                             <div class="row">
                                 <div class="col-7 col-xs-12 p-0">
                                     <div class="risk_matchodds_left">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                <tr>
-                                                    <th class="r_match_title">
-                                                        Match Odds <span class="allow_bets"></span>
-                                                    </th>
-                                                    <th width="8.33333333%" class=""></th>
-                                                    @if($loginUser->agent_level=='COM')
-                                                        @if($matchList->suspend_m==1)
-                                                            <th width="8.33333333%" class="p-0"><a
-                                                                    data-status="suspend_m" data-suspend="0"
-                                                                    class="chkaction yellow-gradient-bg text-color-black"
-                                                                    href="javascript:void(0);">Suspend</a></th>
-                                                        @else
-                                                            <th width="8.33333333%" class="p-0"><a
-                                                                    data-status="suspend_m" data-suspend="1"
-                                                                    class="chkaction yellow-gradient-bg text-color-black"
-                                                                    href="javascript:void(0);">Unsuspend</a></th>
-                                                        @endif
-                                                    @else
-                                                        <th width="8.33333333%" class="p-0"></th>
-                                                    @endif
-                                                    <th width="8.33333333%"
-                                                        class="cyan-bg text-color-white text-center btnbl bet_type_uppercase">
-                                                        Back
-                                                    </th>
-                                                    <th width="8.33333333%"
-                                                        class="pink-bg text-color-white text-center btnbl bet_type_uppercase">
-                                                        Lay
-                                                    </th>
-                                                    <th width="8.33333333%" class=""></th>
-                                                    <th width="8.33333333%" class=""></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody id="inplay-tableblock" class="inplay-tableblock">
-                                                <tr class="rf_tr">
-                                                    <td colspan="7">
-                                                        <div id="site_statistics_loading" class="loaderimage"></div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-{{--                                        @if($matchList->bookmaker==1)--}}
-                                            <div class="table-responsive noData bookmakerHide">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                    <tr>
-                                                        <th class="r_match_title">
-                                                            Bookmaker <span class="allow_bets"></span>
-                                                        </th>
-                                                        <th width="8.33333333%" class=""></th>
-                                                        @if($loginUser->agent_level=='COM')
-                                                            @if($matchList->suspend_b==1)
-                                                                <th width="8.33333333%" class="p-0"><a
-                                                                        data-status="suspend_b" data-suspend="0"
-                                                                        class="chkaction yellow-gradient-bg  text-color-black"
-                                                                        href="javascript:void(0);">Suspend</a></th>
-                                                            @else
-                                                                <th width="8.33333333%" class="p-0"><a
-                                                                        data-status="suspend_b" data-suspend="1"
-                                                                        class="chkaction yellow-gradient-bg  text-color-black"
-                                                                        href="javascript:void(0);">Unsuspend</a></th>
-                                                            @endif
-                                                        @else
-                                                            <th width="8.33333333%" class="p-0"></th>
-                                                        @endif
-                                                        <th width="8.33333333%"
-                                                            class="cyan-bg text-color-white text-center btnbl bet_type_uppercase">
-                                                            Back
-                                                        </th>
-                                                        <th width="8.33333333%"
-                                                            class="pink-bg text-color-white text-center btnbl bet_type_uppercase">
-                                                            Lay
-                                                        </th>
-                                                        <th width="8.33333333%" class=""></th>
-                                                        <th width="8.33333333%" class=""></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody id="inplay-tableblock-bookmaker"
-                                                           class="inplay-tableblock-bookmaker">
-                                                    <tr class="rf_tr">
-                                                        <td colspan="7">
-                                                            <div id="site_statistics_loading" class="loaderimage"></div>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-{{--                                        @endif--}}
+                                        <div id="app">
 
-{{--                                        @if($matchList->fancy==1)--}}
-                                            <div class="table-responsive noData">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                    <tr>
-                                                        <th class="r_match_title">Sessions</th>
-                                                        <th width="8.33333333%" class=""></th>
-                                                        @if($loginUser->agent_level=='COM')
-                                                            @if($matchList->suspend_f==1)
-                                                                <th width="8.33333333%" class="p-0"><a
-                                                                        data-status="suspend_f" data-suspend="0"
-                                                                        class="chkaction yellow-gradient-bg  text-color-black"
-                                                                        href="javascript:void(0);">Suspend</a></th>
-                                                            @else
-                                                                <th width="8.33333333%" class="p-0"><a
-                                                                        data-status="suspend_f" data-suspend="1"
-                                                                        class="chkaction yellow-gradient-bg  text-color-black"
-                                                                        href="javascript:void(0);">Unsuspend</a></th>
-                                                            @endif
-                                                        @else
-                                                            <th width="8.33333333%" class="p-0"></th>
-                                                        @endif
-                                                        <th width="8.33333333%"
-                                                            class="pink-bg text-color-white text-center btnbl bet_type_uppercase">
-                                                            No
-                                                        </th>
-                                                        <th width="8.33333333%"
-                                                            class="cyan-bg text-color-white text-center btnbl bet_type_uppercase">
-                                                            Yes
-                                                        </th>
-                                                        <th width="8.33333333%" class=""></th>
-                                                        <th width="8.33333333%" class=""></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody id="inplay-tableblock-fancy" class="inplay-tableblock-fancy">
-                                                    <tr class="rf_tr">
-                                                        <td colspan="7">
-                                                            <div id="site_statistics_loading" class="loaderimage"></div>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-{{--                                        @endif--}}
+                                            <tennissoccerodds bet_total="{{json_encode($bet_total)}}"
+                                                              pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                                              pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
+                                                              pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
+                                                              bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
+                                                              max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
+                                                              min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
+                                                              bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                              :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
+
+                                            @if($match->sports_id=='4')
+
+                                                <cricketoddsbookmarks bet_total="{{json_encode($bet_total)}}"
+                                                                      pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                                                      pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
+                                                                      pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
+                                                                      bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
+                                                                      min_bookmaker_limit="{{ $oddsLimit['min_bookmaker_limit'] }}"
+                                                                      max_bookmaker_limit="{{ $oddsLimit['max_bookmaker_limit'] }}"
+                                                                      bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                                      :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
+
+                                                <cricketoddsfancy bet_total="{{json_encode($bet_total)}}"
+                                                                  pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
+                                                                  bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
+                                                                  clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
+                                                                  infoicon="{{ asset('asset/front/img/info-icon.png') }}"
+                                                                  min_bet_fancy_limit="{{$oddsLimit['min_fancy_limit']}}"
+                                                                  max_bet_fancy_limit="{{ $oddsLimit['max_fancy_limit'] }}"
+                                                                  bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                                  :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
+
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="col-5 col-xs-12 p-0 risk_live_right">
 
-                                    <div class="match-innerbg-detail soccerbg">
-                                        <iframe style="width: 100%;height: 213px;" id="LiveScoreCard" src="https://betproexch.com/Common/LiveScoreCard?id=<?php echo $matchList->match_id;?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                    </div>
-
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading darkblue-bg" role="tab">
-                                            <h2 class="panel-title">
-                                                <a class="text-color-white" role="button" data-toggle="collapse"
-                                                   data-parent="#accordion" href="#risk1" aria-expanded="true"
-                                                   aria-controls="risk1">
-                                                    <div class="w-100">Live TV
-                                                        <span class="float-right pr-2"><i class="fas fa-tv"></i></span>
-                                                    </div>
-                                                </a>
-                                            </h2>
+                                    @if($inplay == 'True')
+                                        <div class="match-innerbg-detail soccerbg live_score_card_{{ $match->sports_id }}">
+                                            @if($match->sports_id == 4)
+                                                <iframe id="LiveScoreCard"
+                                                        src="https://richexchange.live/nexus/scorboard.php?date=<?php echo date('d-m-Y', strtotime($match['match_date'])) ?>&time=<?php echo date('H:i:s', strtotime($match['match_date'])) ?>&event_id=<?php echo $match->event_id;?>&match_type=cricket"
+                                                        title="YouTube video player" frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                            @elseif($match->sports_id == 2)
+                                                <iframe id="LiveScoreCard"
+                                                        src="https://richexchange.live/nexus/scorboard.php?event_id=<?php echo $match->event_id;?>&match_type=tennis"
+                                                        title="YouTube video player" frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                            @elseif($match->sports_id == 1)
+                                                <iframe id="LiveScoreCard"
+                                                        src="https://richexchange.live/nexus/scorboard.php?event_id=<?php echo $match->event_id;?>&match_type=soccer"
+                                                        title="YouTube video player" frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen></iframe>
+                                            @endif
                                         </div>
-                                        <div id="risk1" class="panel-collapse tv_tabs_block" role="tabpanel">
-                                            <div class="tab-content">
-                                                <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                                                    @if($inplay == 'True')
-                                                        <iframe src="https://skys365.com/nexus/nexus.php?eventid=<?php echo $matchList->event_id;?>" height="270" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" id="iframe"></iframe>
-                                                    @endif
+
+
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading darkblue-bg" role="tab">
+                                                <h2 class="panel-title">
+                                                    <a class="text-color-white" role="button" data-toggle="collapse"
+                                                       data-parent="#accordion" href="#risk1" aria-expanded="true"
+                                                       aria-controls="risk1">
+                                                        <div class="w-100">Live TV
+                                                            <span class="float-right pr-2"><i class="fas fa-tv"></i></span>
+                                                        </div>
+                                                    </a>
+                                                </h2>
+                                            </div>
+                                            <div id="risk1" class="panel-collapse tv_tabs_block" role="tabpanel">
+                                                <div class="tab-content">
+                                                    <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                                        <iframe
+                                                            src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=1"
+                                                            height="270" title="YouTube video player"
+                                                            frameborder="0"
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            id="iframe"></iframe>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif
 
 
                                     <div class="panel panel-default">
@@ -852,9 +768,14 @@
         </div>
     </div>
 
-
     <input type="hidden" name="_token" id="_token" value="{!! csrf_token() !!}">
+@endsection
 
+
+@push('third_party_scripts')
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="{{ asset('js/laravel-echo-server.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         var _token = $("input[name='_token']").val();
         $(document).ready(function () {
@@ -1041,9 +962,9 @@
 
             $('#site_bet_loading1').show();
 
-            getMatchOddsData();
+            // getMatchOddsData();
             setInterval(function () {
-                getMatchOddsData();
+                // getMatchOddsData();
                 matchDeclareRedirect();
             }, 1000);
         });
@@ -1087,9 +1008,9 @@
                                 if (data.boomaker == '') {
                                     $('.bookmakerHide').css('display', 'none');
                                 } else {
-                                    $("#inplay-tableblock-bookmaker").html(data.boomaker);
+                                    // $("#inplay-tableblock-bookmaker").html(data.boomaker);
                                 }
-                                $("#inplay-tableblock-fancy").html(data.fancy);
+                                // $("#inplay-tableblock-fancy").html(data.fancy);
                             }
                         }
                     }
@@ -1196,5 +1117,9 @@
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        function opnForm() {}
+        function colorclick() {}
+        function colorclickback() {}
     </script>
-@endsection
+@endpush
