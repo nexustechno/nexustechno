@@ -77,7 +77,7 @@ class NexusApi
 
             if(!empty($eventId)){
                 $client = new Client();
-                $url = 'https://nexusapi.xyz/api/v1/websites/match/' . $eventId."/casino/".$broadcast."/".$eventId;
+                $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId . "/casino" . $broadcast . "/" . $eventId;
                 $res = $client->request('GET', $url);
                 $response = $res->getBody()->getContents();
             }
