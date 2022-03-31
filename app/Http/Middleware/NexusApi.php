@@ -57,6 +57,8 @@ class NexusApi
                         }
 
                         $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
+
+//                        dd($url);
                         $res = $client->request('GET', $url);
                         $response = $res->getBody()->getContents();
                     }

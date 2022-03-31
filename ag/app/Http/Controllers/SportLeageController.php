@@ -121,7 +121,8 @@ class SportLeageController extends Controller
 		$matchList = Match::where('event_id',$request->event_id)->where('match_id',$request->match_id)->get();
 		if(count($matchList)>0)
 		{
-            return response()->json(array('result'=> 'error','message'=>'Match already added!'));
+            Match::where('event_id',$request->event_id)->delete();
+            return response()->json(array('result'=> 'success','message'=>'Match remove successfully!'));
 		}
 		else
 		{
