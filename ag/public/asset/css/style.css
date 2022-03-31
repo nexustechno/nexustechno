@@ -6390,3 +6390,7 @@ a:not([href]):not([tabindex]) {
     padding: 0px;
     font-weight: 700;
 }
+
+.minmax-txt.minmaxmobile {
+    display: contents;
+}
