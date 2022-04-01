@@ -212,7 +212,7 @@
                                                 <div class="tab-content">
                                                     <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                                         <iframe
-                                                            src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=1"
+                                                            src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $match->event_id;?>&sports_id=1"
                                                             height="270" title="YouTube video player"
                                                             frameborder="0"
                                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
