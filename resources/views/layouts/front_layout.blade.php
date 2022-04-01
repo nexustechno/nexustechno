@@ -8,10 +8,9 @@ use App\UserStake;
 use App\setting;
 use App\User;
 $getUserCheck = Session::get('playerUser');
-if ($getUserCheck) {
-    $mntnc = setting::first();
-    $msg = $mntnc->maintanence_msg;
-}
+
+$mntnc = setting::first();
+$msg = $mntnc->maintanence_msg;
 ?>
 @if($website->status == 1)
 

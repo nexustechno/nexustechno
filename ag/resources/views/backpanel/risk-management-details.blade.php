@@ -122,6 +122,7 @@
 
                         <div class="riskmanage_body_content">
                             <div class="row">
+                                @if($matchDataFound)
                                 <div class="col-7 col-xs-12 p-0">
                                     <div class="risk_matchodds_left">
                                         <div id="app">
@@ -162,7 +163,13 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                @else
+                                    <div class="col-7 col-xs-12 p-0">
+                                        <div class="risk_matchodds_left p-5 text-center mt-5">
+                                            <h6 class="alert alert-warning">No match data available!</h6>
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="col-5 col-xs-12 p-0 risk_live_right">
 
                                     @if($inplay == 'True')
@@ -299,7 +306,7 @@
                                     </div>
 
                                     @if($matchList->sports_id=='4')
-{{--                                        @if($matchList->bookmaker==1)--}}
+                                        @if($matchList->bookmaker==1)
                                             <div class="panel panel-default">
                                                 <div class="panel-heading darkblue-bg" role="tab">
                                                     <h2 class="panel-title">
@@ -375,8 +382,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-{{--                                        @endif--}}
-{{--                                        @if($matchList->fancy==1)--}}
+                                        @endif
+                                        @if($matchList->fancy==1)
                                             <div class="panel panel-default">
                                                 <div class="panel-heading darkblue-bg" role="tab">
                                                     <h2 class="panel-title">
@@ -453,7 +460,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-{{--                                        @endif--}}
+                                        @endif
                                     @endif
 
                                     <?php

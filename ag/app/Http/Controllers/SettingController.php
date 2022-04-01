@@ -3203,6 +3203,12 @@ class SettingController extends Controller
 
         $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($matchList->event_id, $matchList->match_id, $matchList->sports_id);
         $inplay = 'False';
+
+        $matchDataFound = false;
+        if(isset($match_data[0])){
+            $matchDataFound = true;
+        }
+
         if(isset($match_data[0]) && isset($match_data[0]['inPlay'])) {
             $inplay = $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
         }
@@ -3943,7 +3949,7 @@ class SettingController extends Controller
         $oddsLimit['min_fancy_limit'] = $matchList->min_fancy_limit;
         $oddsLimit['max_fancy_limit'] = $matchList->max_fancy_limit;
 
-        return view('backpanel/risk-management-details', compact('inplay', 'match','matchList','oddsLimit','bet_total', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
+        return view('backpanel/risk-management-details', compact('inplay','matchDataFound', 'match','matchList','oddsLimit','bet_total', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
     }
 
     public function risk_management_book_bm_book(Request $request)
