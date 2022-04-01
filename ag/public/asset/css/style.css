@@ -6394,3 +6394,13 @@ a:not([href]):not([tabindex]) {
 .minmax-txt.minmaxmobile {
     display: contents;
 }
+
+#inplay-tableblock .table.inplay-table tr td:nth-child(n+2) {
+    width: 9.5%;
+    text-align: center;
+}
+
+.back1btn span, .lay1btn span {
+    font-weight: 400;
+    font-size: 11px;
+}
