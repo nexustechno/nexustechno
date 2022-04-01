@@ -210,6 +210,24 @@
                 }
                 // console.log("match ",data.records)
             });
+
+            window.Echo.channel('premium-detail').listen('.' + this.event_id, (data) => {
+
+                console.log(data.records);
+
+                // if(data.records[0].fancy!=undefined) {
+                //     var records = data.records[0];
+                //     if(data.records[0].fancy.length > 0 && data.records[0].fancy[0].SelectionId != undefined) {
+                //         records.fancy = this.sortedArray(data.records[0].fancy);
+                //     }else {
+                //         records.fancy = [];
+                //     }
+                //     this.match = records;
+                // }else{
+                //     this.match = data.records[0];
+                // }
+                // console.log("match ",data.records)
+            });
         },
         methods: {
             getFancyStatus(gstatus,index){

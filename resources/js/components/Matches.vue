@@ -191,41 +191,40 @@
                 var inPlay = 0;
                 if(match.markets[0]!=undefined) {
                     inPlay = match.markets[0].inPlay;
-                }
 
-                if(this.filtertype!=undefined){
-                    if (this.matchesArray[gameId] != undefined && this.matchesArray[gameId] != null)
-                    {
-                        // console.log("checking ",this.matchesArray[gameId])
 
-                        if(this.filtertype!='inplay') {
-                            // var eventNameString = eventName.split('/');
-                            // var eventNameString2 = eventNameString[1].split(this.year);
-                            var mDate = openDate;
+                    if (this.filtertype != undefined) {
+                        if (this.matchesArray[gameId] != undefined && this.matchesArray[gameId] != null) {
+                            // console.log("checking ",this.matchesArray[gameId])
 
-                            var date = new Date(mDate.trim());
-                            var ye2 = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
-                            var mo2 = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
-                            var da2 = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
-                            var matchDate = `${da2}-${mo2}-${ye2}`;
+                            if (this.filtertype != 'inplay') {
+                                // var eventNameString = eventName.split('/');
+                                // var eventNameString2 = eventNameString[1].split(this.year);
+                                var mDate = openDate;
+
+                                var date = new Date(mDate.trim());
+                                var ye2 = new Intl.DateTimeFormat('en', {year: 'numeric'}).format(date);
+                                var mo2 = new Intl.DateTimeFormat('en', {month: '2-digit'}).format(date);
+                                var da2 = new Intl.DateTimeFormat('en', {day: '2-digit'}).format(date);
+                                var matchDate = `${da2}-${mo2}-${ye2}`;
+                            }
+
+                            if (this.filtertype == 'inplay' && inPlay == 1) {
+                                valReturn = true;
+                            }
+
+                            if (this.filtertype == 'today' && matchDate == this.todaydate && inPlay != 1) {
+                                valReturn = true;
+                            }
+
+                            if (this.filtertype == 'tomorrow' && matchDate == this.tomorrowdate && inPlay != 1) {
+                                valReturn = true;
+                            }
                         }
-
-                        if (this.filtertype == 'inplay' && inPlay == 1) {
-                            valReturn =  true;
+                    } else {
+                        if (this.matchesArray[gameId] != undefined && this.matchesArray[gameId] != null) {
+                            valReturn = true;
                         }
-
-                        if (this.filtertype == 'today' && matchDate == this.todaydate && inPlay != 1) {
-                            valReturn =  true;
-                        }
-
-                        if (this.filtertype == 'tomorrow' && matchDate == this.tomorrowdate && inPlay != 1) {
-                            valReturn =  true;
-                        }
-                    }
-                }
-                else {
-                    if (this.matchesArray[gameId] != undefined && this.matchesArray[gameId] != null) {
-                        valReturn =  true;
                     }
                 }
 
