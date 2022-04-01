@@ -3360,13 +3360,13 @@ input.dt-button:focus:not(.disabled) {
     position: absolute;
     width: 100%;
     z-index: 5;
-    height: 41px;
+    height: 45px;
     background-color: rgba(36, 58, 72, .4);
 }
 
 .fancy-suspend-td-1 .fancy-suspend-1 span {
     font-size: 12px;
-    line-height: 41px;
+    line-height: 45px;
     font-weight: 400;
     display: block;
     text-align: center;
@@ -6243,7 +6243,12 @@ table {
     align-items: center;
     justify-content: center;
     flex-flow: column;
+    font-weight: bold;
 }
+#inplay-tableblock-fancy tr td.FancyLay, #inplay-tableblock-fancy tr td.FancyBack{
+    font-weight: bold;
+}
+
 #inplay-tableblock .table.inplay-table tr td .back1btn, #inplay-tableblock .table.inplay-table tr td .lay1btn {
     width: 100%;
     height: 44px;
@@ -6258,7 +6263,7 @@ a:not([href]):not([tabindex]) {
     border-bottom: 1px solid #7e97a7;
     border-left: 1px solid #ddd;
 }
-.table tbody td {
+.cricket-table .table tbody td {
     font-weight: 600;
     font-size: 13px;
 }
@@ -6354,9 +6359,9 @@ a:not([href]):not([tabindex]) {
     white-space: nowrap;
 }
 
-#inplay-tableblock-fancy.table tr td {
-    position: inherit;
-}
+/*#inplay-tableblock-fancy.table tr td {*/
+/*    position: inherit;*/
+/*}*/
 /*.inplay-table.table td {*/
 /*    padding: 0.3rem 0.7rem;*/
 /*}*/
@@ -6400,7 +6405,7 @@ a:not([href]):not([tabindex]) {
     text-align: center;
 }
 
-.back1btn span, .lay1btn span {
+.back1btn span, .lay1btn span, .BmBack span, .BmLay span  {
     font-weight: 400;
     font-size: 11px;
 }

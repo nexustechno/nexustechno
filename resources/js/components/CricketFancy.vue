@@ -119,7 +119,7 @@
                     <td class="zeroopa1" colspan="1"> <span>Min/Max</span> <br> {{min_bet_fancy_limit}} / {{max_bet_fancy_limit}}</td>
                 </tr>
                 <tr class="white-bg light-bg-tr-fancy mobile-ui-tr collapse light-bg-tr-fancy" :class="'tr_fancy_'+index">
-                    <td colspan="3"><b>{{ fancy.nat }}</b>
+                    <td colspan="3"><b>{{ fancy.RunnerName }}</b>
                         <div>
                             <a class="openfancymodel_dynamic fancy-calculation-exposer" :data-fancy-name="fancy.RunnerName" :data-target="'#runPosition'+index">
                                  <span :class="'fancy_total'+index">
@@ -183,6 +183,7 @@
         data() {
             return {
                 match: [],
+                fancyType:'general',
                 loading:true
             };
         },
@@ -211,23 +212,23 @@
                 // console.log("match ",data.records)
             });
 
-            window.Echo.channel('premium-detail').listen('.' + this.event_id, (data) => {
-
-                console.log(data.records);
-
-                // if(data.records[0].fancy!=undefined) {
-                //     var records = data.records[0];
-                //     if(data.records[0].fancy.length > 0 && data.records[0].fancy[0].SelectionId != undefined) {
-                //         records.fancy = this.sortedArray(data.records[0].fancy);
-                //     }else {
-                //         records.fancy = [];
-                //     }
-                //     this.match = records;
-                // }else{
-                //     this.match = data.records[0];
-                // }
-                // console.log("match ",data.records)
-            });
+            // window.Echo.channel('premium-detail').listen('.' + this.event_id, (data) => {
+            //
+            //     console.log(data.records);
+            //
+            //     // if(data.records[0].fancy!=undefined) {
+            //     //     var records = data.records[0];
+            //     //     if(data.records[0].fancy.length > 0 && data.records[0].fancy[0].SelectionId != undefined) {
+            //     //         records.fancy = this.sortedArray(data.records[0].fancy);
+            //     //     }else {
+            //     //         records.fancy = [];
+            //     //     }
+            //     //     this.match = records;
+            //     // }else{
+            //     //     this.match = data.records[0];
+            //     // }
+            //     // console.log("match ",data.records)
+            // });
         },
         methods: {
             getFancyStatus(gstatus,index){
