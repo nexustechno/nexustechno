@@ -126,6 +126,7 @@ class SportLeageController extends Controller
 		}
 		else
 		{
+
 			$data = $request->all();
 			$data['sports_id'] = $request->sports_id;
             $data['leage_name'] = $request->leage;

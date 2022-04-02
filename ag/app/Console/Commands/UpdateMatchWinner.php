@@ -59,13 +59,15 @@ class UpdateMatchWinner extends Command
                         foreach ($apiResultData[0]['runners'] as $key => $team) {
                             if ($team['status'] == 'WINNER') {
                                 $settingController->updateMatchWinnerResult($match->id, $team['runnerName']);
-                                $match->updated_at = date('Y-m-d H:i:s');
-                                $match->save();
                                 $this->info($match->match_name . " => WINNER TEAM IS :::::  " . $team['runnerName']);
                             }else{
                                 $this->info($team['runnerName'] . " => ".$team['status']);
                             }
                         }
+
+                        $match->updated_at = date('Y-m-d H:i:s');
+                        $match->save();
+
                     } else {
                         $match->updated_at = date('Y-m-d H:i:s');
                         $match->save();

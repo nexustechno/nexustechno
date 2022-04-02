@@ -102,7 +102,9 @@
         function checkAll() {
             $('input[type=checkbox]').each(function () {
                 if(this.checked){}else{
-                    $(this).trigger('click');
+                    $(this).checked = true;
+                    onClickSportsLeage(this);
+                    // $(this).trigger('click');
                 }
             });
         }
