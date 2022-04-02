@@ -141,7 +141,7 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     <style>
         iframe, video {
             width: 480px;
-            height: 270px;
+            height: 270px !important;
         }
         @media only screen and (max-width: 480px) {
             iframe, video {
