@@ -161,7 +161,7 @@ if ($iframe == 'iframe') {
     ?>
 
     <div class="bgimage"  id="poster">
-        <img src="https://ss247.life/api/GIF2022.gif"/>
+        <img src="./GIF2022.gif"/>
     </div>
     <video id="video" class="zoomed_mode video-js vjs hide" controls muted autoplay playsinline disablepictureinpicture controlslist="nodownload" ></video>
 
