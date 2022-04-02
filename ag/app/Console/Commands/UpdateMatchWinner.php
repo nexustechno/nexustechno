@@ -56,19 +56,14 @@ class UpdateMatchWinner extends Command
 
                     if (!empty($apiResultData) && isset($apiResultData[0]) && isset($apiResultData[0]['runners']) && isset($apiResultData[0]['runners'][0]) && $apiResultData[0]['runners']!=null) {
 
-                        $teams = explode(" v ", $match->match_name);
-                        if (count($apiResultData[0]['runners']) >= 3) {
-                            $teams[] = "The Draw";
-                        }
-
                         foreach ($apiResultData[0]['runners'] as $key => $team) {
                             if ($team['status'] == 'WINNER') {
-                                $settingController->updateMatchWinnerResult($match->id, $teams[$key]);
+                                $settingController->updateMatchWinnerResult($match->id, $team['runnerName']);
                                 $match->updated_at = date('Y-m-d H:i:s');
                                 $match->save();
-                                $this->info($match->match_name . " => WINNER TEAM IS :::::  " . $teams[$key]);
+                                $this->info($match->match_name . " => WINNER TEAM IS :::::  " . $team['runnerName']);
                             }else{
-                                $this->info($teams[$key] . " => ".$team['status']);
+                                $this->info($team['runnerName'] . " => ".$team['status']);
                             }
                         }
                     } else {

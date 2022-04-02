@@ -266,9 +266,7 @@ class RestApi extends Controller
 
 	public function getMatchResultData($matchId,$matchtype=4){
 
-//        $url='http://65.1.65.188:3000/getresult/'.$matchId;
-//        $url='http://172.104.179.219:3000/getdata/'.$matchId;
-        $url='https://api2.ditelitinfo.com/api/v5/getOddsListMultiple?marketid='.$matchId;
+        $url='http://104.199.199.1/pre_api/results.php?betfair_id='.$matchId;
 
         try {
             $client = new Client();
