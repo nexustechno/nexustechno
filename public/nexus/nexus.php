@@ -35,7 +35,7 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     if ($match_data['result'][0]['type'] == 6) {
         $iframe = 'iframe';
     } else if ($match_data['result'][0]['type'] == 3) {
-        $iframe = 'video';
+        $iframe = 'iframe';
     }
 
     if (isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
@@ -46,6 +46,8 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
         $tvLink1 = $match_data['result'][0]['link2'];
     }
 }
+
+echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($iframe);die();
 ?>
 <html>
 <head>
