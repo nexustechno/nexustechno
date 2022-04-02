@@ -103,7 +103,7 @@
                 </td>
                 <td></td>
             </tr>
-            <template v-for="(fancy, index) in match.fancy" >
+            <template v-for="(fancy, index) in match.fancy">
                 <tr :key="fancy.sid" v-if="fancy.GameStatus=='Ball Running' || fancy.GameStatus=='SUSPENDED'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
                     <td colspan="3"></td>
                     <td colspan="2" class="fancy-suspend-td-1">
@@ -197,7 +197,7 @@
             return {
                 match: [],
                 fancyType:'general',
-                loading:true
+                loading:true,
             };
         },
         computed:{
@@ -253,7 +253,17 @@
                     return 0;
                 }
 
-                return arrays.sort(compare);
+                var fancies =  arrays.sort(compare);
+                const duplciates = [];
+                return  fancies.filter((c, index) => {
+
+                    if(duplciates.indexOf(c.RunnerName) == -1){
+                        duplciates.push(c.RunnerName);
+                        return true;
+                    }else{
+                        return false;
+                    }
+                });
             },
             nFormatter(num, digits) {
                 var si = [
