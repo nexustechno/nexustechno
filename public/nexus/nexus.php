@@ -45,8 +45,6 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     if (isset($match_data['result'][0]['link2']) && !empty($match_data['result'][0]['link2'])) {
         $tvLink1 = $match_data['result'][0]['link2'];
     }
-
-    $tvLink1 = 'https://play-live.qn32.com/live/1038/playlist.m3u8';
 }
 ?>
 <html>
