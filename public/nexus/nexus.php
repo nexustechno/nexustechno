@@ -35,7 +35,7 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
     if ($match_data['result'][0]['type'] == 6) {
         $iframe = 'iframe';
     } else if ($match_data['result'][0]['type'] == 3) {
-        $iframe = 'iframe';
+        $iframe = 'video';
     }
 
     if (isset($match_data['result'][0]['link']) && !empty($match_data['result'][0]['link'])) {
@@ -46,8 +46,6 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
         $tvLink1 = $match_data['result'][0]['link2'];
     }
 }
-
-//echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($iframe);die();
 ?>
 <html>
 <head>
@@ -82,9 +80,9 @@ if ($iframe == 'iframe') {
 ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video.min.js"></script>
 <script>
-    (function (window, videojs) {
-        var player = window.player = videojs('my_video_1');
-    }(window, window.videojs));
+    // (function (window, videojs) {
+    //     var player = window.player = videojs('my_video_1');
+    // }(window, window.videojs));
 </script>
 
 </body>
