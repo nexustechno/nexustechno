@@ -492,7 +492,7 @@
                         </div>
                         <div id="app">
 
-                            <tennissoccerodds bet_total="{{json_encode($bet_total)}}"
+                            <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                               pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                               pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                               pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -504,7 +504,7 @@
 
                             @if($match->sports_id=='4')
 
-                                <cricketoddsbookmarks bet_total="{{json_encode($bet_total)}}"
+                                <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -514,7 +514,7 @@
                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                       :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
 
-                                <cricketoddsfancy bet_total="{{json_encode($bet_total)}}"
+                                <cricketoddsfancy sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                   pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                   bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                   clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
@@ -697,7 +697,7 @@
         </div>
         <div class="modal rulesfancy_betsmodal" id="rulesFancyBetsModal">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content p-0">
                     <div class="modal-header black-bg3">
                         <h4 class="modal-title text-color-yellow1">Rules of Fancy Bets</h4>
                         <button type="button" class="close" data-dismiss="modal"><img
@@ -1115,6 +1115,7 @@
 @endsection
 
 @push('third_party_scripts')
+    <script src="{{ asset('js/laravel-echo-server2.js') }}"></script>
     <script src="{{ asset('js/app.js') }}?v={{$vue_app_version}}"></script>
 @endpush
 

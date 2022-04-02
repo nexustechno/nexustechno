@@ -1,5 +1,5 @@
 import Echo from 'laravel-echo';
-window.Echo = new Echo({
+window.Echo2 = new Echo({
     broadcaster: 'socket.io',
-    host: "https://chatnexus.xyz:6001/"
+    host: "https://nexusapi.xyz:6001/"
 });

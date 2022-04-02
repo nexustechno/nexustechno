@@ -109,7 +109,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','team','bet_total'],
+        props: ['event_id', 'sports_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','team','bet_total'],
         data() {
             return {
                 match: [],
@@ -122,7 +122,14 @@
             }
         },
         mounted() {
-            window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
+
+            if(this.sports_id == 4) {
+                var LaravelEcho = window.Echo;
+            }else{
+                var LaravelEcho = window.Echo2;
+            }
+
+            LaravelEcho.channel('match-detail').listen('.' + this.event_id, (data) => {
                 console.log("data received");
                 var newRecords = data.records;
 

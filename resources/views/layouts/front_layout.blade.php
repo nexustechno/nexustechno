@@ -1131,11 +1131,8 @@ if (!$DEVICE) {
 </script>
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
 <script src="{{ asset('js/laravel-echo-server.js') }}"></script>
-
-@stack('third_party_scripts')
-
-@stack('page_scripts')
 
 <script type="text/javascript">
 
@@ -1211,6 +1208,10 @@ if (!$DEVICE) {
         // console.log("inplay soccerCount count ",inPlayCount);
     });
 </script>
+
+@stack('third_party_scripts')
+
+@stack('page_scripts')
 
 </body>
 </html>

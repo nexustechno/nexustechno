@@ -11,6 +11,6 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js').vue().js('resources/js/laravel-echo-server.js', 'public/js').version();;
+mix.js('resources/js/app.js', 'public/js').vue().js('resources/js/laravel-echo-server.js', 'public/js').js('resources/js/laravel-echo-server2.js', 'public/js').version();;
 
 

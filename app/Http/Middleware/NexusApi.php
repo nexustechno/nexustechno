@@ -50,13 +50,16 @@ class NexusApi
                         $type = '';
                         if ($match->sports_id == 4) {
                             $type = 'cricket';
+                            $baseUrl = 'https://chatnexus.xyz/api/v1';
                         } else if ($match->sports_id == 2) {
                             $type = 'tennis';
+                            $baseUrl = 'https://nexusapi.xyz/api/v1';
                         } else if ($match->sports_id == 1) {
                             $type = 'soccer';
+                            $baseUrl = 'https://nexusapi.xyz/api/v1';
                         }
 
-                        $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
+                        $url = $baseUrl.'/websites/match/' . $eventId . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
 
 //                        dd($url);
                         $res = $client->request('GET', $url);
@@ -79,9 +82,11 @@ class NexusApi
 
             if(!empty($eventId)){
                 $client = new Client();
-                $url = 'https://chatnexus.xyz/api/v1/websites/match/' . $eventId . "/casino/" . $broadcast . "/" . $eventId;
+                $baseUrl = 'https://nexusapi.xyz/api/v1';
+                $url = $baseUrl.'/websites/match/' . $eventId . "/casino/" . $broadcast . "/" . $eventId;
                 $res = $client->request('GET', $url);
                 $response = $res->getBody()->getContents();
+
             }
         }
 

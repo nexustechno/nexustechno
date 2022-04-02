@@ -222,7 +222,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'bar_image', 'pinkbg1', 'pinbg', 'pinbg1', 'bluebg1', 'min_bookmaker_limit', 'max_bookmaker_limit', 'min_bet_fancy_limit', 'max_bet_fancy_limit','bet_total'],
+        props: ['event_id', 'sports_id', 'bar_image', 'pinkbg1', 'pinbg', 'pinbg1', 'bluebg1', 'min_bookmaker_limit', 'max_bookmaker_limit', 'min_bet_fancy_limit', 'max_bet_fancy_limit','bet_total'],
         data() {
             return {
                 match: [],
@@ -236,7 +236,12 @@
             }
         },
         mounted() {
-            window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
+            if(this.sports_id == 4) {
+                var LaravelEcho = window.Echo;
+            }else{
+                var LaravelEcho = window.Echo2;
+            }
+            LaravelEcho.channel('match-detail').listen('.' + this.event_id, (data) => {
                 this.match = data.records[0];
                 this.bookmaker = data.records[0].bookmaker.runners;
                 this.loading = false;
@@ -246,10 +251,15 @@
         methods: {
             getPriceValue(price,type,val){
                 if(price!='' && price!=undefined) {
-                    if(type == 'plus'){
-                        return this.roundFloatVal(price) + val;
+                    var val2 = this.roundFloatVal(price);
+                    if(val2 > 0) {
+                        if (type == 'plus') {
+                            return val2 + val;
+                        } else {
+                            return val2 - val;
+                        }
                     }else{
-                        return this.roundFloatVal(price) - val;
+                        return val2;
                     }
                 }
 

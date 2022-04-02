@@ -127,7 +127,7 @@
                                     <div class="risk_matchodds_left">
                                         <div id="app">
 
-                                            <tennissoccerodds bet_total="{{json_encode($bet_total)}}"
+                                            <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                               pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                               pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                               pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -139,7 +139,7 @@
 
                                             @if($match->sports_id=='4')
 
-                                                <cricketoddsbookmarks bet_total="{{json_encode($bet_total)}}"
+                                                <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                                       pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -149,7 +149,7 @@
                                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                                       :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
 
-                                                <cricketoddsfancy bet_total="{{json_encode($bet_total)}}"
+                                                <cricketoddsfancy sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                   pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                                   bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                                   clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
@@ -782,6 +782,7 @@
 @push('third_party_scripts')
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="{{ asset('js/laravel-echo-server.js') }}"></script>
+    <script src="{{ asset('js/laravel-echo-server2.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         var _token = $("input[name='_token']").val();

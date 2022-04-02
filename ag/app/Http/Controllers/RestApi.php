@@ -296,10 +296,10 @@ class RestApi extends Controller
             $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId;
         } else if($matchtype== 2)
         { //tennis
-            $url='https://chatnexus.xyz/api/v1/match/tennis/detail/'.$matchId;
+            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId;
         } else if($matchtype== 1)
         { //soccer
-            $url='https://chatnexus.xyz/api/v1/match/soccer/detail/'.$matchId;
+            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId;
         }
 
         try {
@@ -327,10 +327,10 @@ class RestApi extends Controller
             $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId."/odds";
         } else if($matchtype== 2)
         { //tennis
-            $url='https://chatnexus.xyz/api/v1/match/tennis/detail/'.$matchId."/odds";
+            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId."/odds";
         } else if($matchtype== 1)
         { //soccer
-            $url='https://chatnexus.xyz/api/v1/match/soccer/detail/'.$matchId."/odds";
+            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/odds";
         }
 
         try {
@@ -361,10 +361,10 @@ class RestApi extends Controller
             $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId."/fancy";
         } else if($matchtype== 2)
         { //tennis
-            $url='https://chatnexus.xyz/api/v1/match/tennis/detail/'.$matchId."/fancy";
+            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId."/fancy";
         } else if($matchtype== 1)
         { //soccer
-            $url='https://chatnexus.xyz/api/v1/match/soccer/detail/'.$matchId."/fancy";
+            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/fancy";
         }
 
         try {
@@ -392,10 +392,10 @@ class RestApi extends Controller
             $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId."/bookmaker";
         } else if($matchtype== 2)
         { //tennis
-            $url='https://chatnexus.xyz/api/v1/match/tennis/detail/'.$matchId."/bookmaker";
+            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId."/bookmaker";
         } else if($matchtype== 1)
         { //soccer
-            $url='https://chatnexus.xyz/api/v1/match/soccer/detail/'.$matchId."/bookmaker";
+            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/bookmaker";
         }
 
         try {

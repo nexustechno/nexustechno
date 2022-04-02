@@ -189,6 +189,7 @@
 </div>
 @endsection
 @push('third_party_scripts')
+    <script src="{{ asset('js/laravel-echo-server2.js') }}"></script>
     <script src="{{ asset('js/app.js') }}?v={{$vue_app_version}}"></script>
 
     <script>

@@ -227,6 +227,11 @@
 <script>
     import axios from 'axios';
     import FlipCountdown from 'vue2-flip-countdown'
+    // import Echo2 from 'laravel-echo';
+    // window.Echo2 = new Echo2({
+    //     broadcaster: 'socket.io',
+    //     host: "https://nexusapi.xyz:6001/"
+    // });
 
     export default {
         components: { FlipCountdown },
@@ -255,7 +260,7 @@
                 $(".flip-clock__piece .flip-clock__slot").css('display','none');
             },100);
 
-            window.Echo.channel('casino-detail').listen('.' + this.casino.casino_name, (data) => {
+            window.Echo2.channel('casino-detail').listen('.' + this.casino.casino_name, (data) => {
                 // console.log("data: ",data);
 
                 this.teams = [];
