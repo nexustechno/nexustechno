@@ -251,18 +251,18 @@
         methods: {
             getPriceValue(price,type,val){
                 if(price!='' && price!=undefined) {
-                    var val2 = this.roundFloatVal(price);
-                    if(val2 > 0) {
-                        if (type == 'plus') {
-                            return val2 + val;
-                        } else {
-                            return val2 - val;
+                    if (type == 'plus') {
+                        var val2 = this.roundFloatVal(price) + val;
+                        if(val2 > 0){
+                            return  val2;
                         }
-                    }else{
-                        return val2;
+                    } else {
+                        var val2 =  this.roundFloatVal(price) - val;
+                        if(val2 > 0){
+                            return  val2;
+                        }
                     }
                 }
-
                 return 0;
             },
             roundFloatVal(price) {

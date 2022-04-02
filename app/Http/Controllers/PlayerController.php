@@ -996,6 +996,8 @@ class PlayerController extends Controller
         $match_m = $matchList['suspend_m'];
         $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($event_id, $matchId, $matchtype);
 
+//        dd($match_data);
+
         $team1 = $team2 = $team3 = '';
         if ($match_data != 0) {
             $html_chk = '';
@@ -1007,15 +1009,17 @@ class PlayerController extends Controller
                 $team1 = 'Suspend';
                 $team2 = 'Suspend';
             } else {
-                if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '') {
+
+                if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '' || isset($match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'])) {
                     if ($betside == 'back')
                         $team3 = @$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'];
                     else
                         $team3 = @$match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'];
                 }
+
                 //check status
                 if (@$match_data[0]['status'] == 'OPEN') {
-                    if (isset($match_data[0]['runners'][0]['ex']['availableToBack'][2]['price'])) {
+                    if (isset($match_data[0]['runners'][0]['ex']['availableToBack'][0]['price']) || isset($match_data[0]['runners'][0]['ex']['availableToLay'][0]['price'])) {
                         if ($betside == 'back')
                             $team1 = @$match_data[0]['runners'][0]['ex']['availableToBack'][0]['price'];
                         else
@@ -1034,7 +1038,7 @@ class PlayerController extends Controller
                         $team1 = '';
                 }
                 if (@$match_data[0]['status'] == 'OPEN') {
-                    if (isset($match_data[0]['runners'][1]['ex']['availableToBack'][2]['price'])) {
+                    if (isset($match_data[0]['runners'][1]['ex']['availableToBack'][0]['price']) || isset($match_data[0]['runners'][1]['ex']['availableToLay'][0]['price'])) {
                         if ($betside == 'back')
                             $team2 = @$match_data[0]['runners'][1]['ex']['availableToBack'][0]['price'];
                         else
@@ -1054,6 +1058,9 @@ class PlayerController extends Controller
                 }
             }
         }
+
+//        dd($team1 . '~~' . $team2 . '~~' . $team3);
+
         return $team1 . '~~' . $team2 . '~~' . $team3;
     }
 
@@ -1692,6 +1699,7 @@ class PlayerController extends Controller
         }
         if ($requestData['bet_type'] === 'ODDS' && $requestData['bet_side'] == 'lay') {
             $main_odds = self::getMainOdds($requestData['match_id'], $requestData['bet_side']);
+
             if ($main_odds != '') {
                 $odd = explode("~~", $main_odds);
                 $team1_main_odds = $odd[0];
