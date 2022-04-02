@@ -29,7 +29,6 @@ class PreventBackHistory
      */
 
     public function handle($request, Closure $next)
-
     {
 
         $response = $next($request);

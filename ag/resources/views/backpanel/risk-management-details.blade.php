@@ -973,7 +973,7 @@
             // getMatchOddsData();
             setInterval(function () {
                 // getMatchOddsData();
-                matchDeclareRedirect();
+                // matchDeclareRedirect();
             }, 1000);
         });
 

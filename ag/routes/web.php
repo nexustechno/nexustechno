@@ -143,6 +143,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/getUser', 'HomeController@getUser')->name('getUser');
     Route::get('/changepasspage', 'HomeController@changepasspage')->name('changepasspage');
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/maintenance', function (){
+        return view('maintenance');
+    })->name('maintenance');
     Route::get('/dashboard/statistics', 'AgentController@dashboardStatistics')->name('dashboard.statistics');
     Route::get('changePass/{id}', 'HomeController@changePass')->name('changePass');
     Route::get('balanceoverview/{id}', 'HomeController@balanceoverview')->name('balanceoverview');
@@ -243,7 +246,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('casino/bet', 'CasinoController@allUserCasinoBet')->name('all_user_casino_bet');
 
     Route::get('casino/winner/{roundid}/cards/{casino_name}', 'CasinoCalculationController@getWinnerCards')->name('get.casino_bet.winner.cards');
-    
+
     Route::post('chkstatusactive', 'CasinoController@chkstatusactive')->name('chkstatusactive');
 ////Theme mangement
     Route::get('themeAll', 'ThemeController@index')->name('themeAll');

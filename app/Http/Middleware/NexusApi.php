@@ -4,6 +4,7 @@ use App\Match;
 use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Mockery\Exception;
 
 class NexusApi
 {
@@ -23,6 +24,15 @@ class NexusApi
 
     public function handle($request, Closure $next)
     {
+
+        try {
+            $website = app('website');
+            if($website->status == 0 && app('router')->current()->getName() != 'front'){
+                return redirect()->to('/');
+            }
+        }catch (\Exception $e){
+
+        }
 
         $prevRoue = app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName();
 
