@@ -50,7 +50,8 @@ if (isset($match_data['result']) && count($match_data['result']) > 0 && isset($m
 <html>
 <head>
     <title>LIVE TV</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video-js.css" rel="stylesheet">
+    <link href="https://vjs.zencdn.net/7.18.1/video-js.css" rel="stylesheet" />
+
     <style>
         iframe, video {
             width: 480px;
@@ -79,7 +80,8 @@ if ($iframe == 'iframe') {
     <?php
 }
 ?>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.0.0/video.min.js"></script>
+<script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
+
 <script>
     // (function (window, videojs) {
     //     var player = window.player = videojs('my_video_1');
