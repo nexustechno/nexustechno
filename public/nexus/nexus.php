@@ -83,9 +83,9 @@ if ($iframe == 'iframe') {
 <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
 
 <script>
-    // (function (window, videojs) {
-    //     var player = window.player = videojs('my_video_1');
-    // }(window, window.videojs));
+    (function (window, videojs) {
+        var player = window.player = videojs('my_video_1');
+    }(window, window.videojs));
 </script>
 
 </body>
