@@ -1,5 +1,5 @@
 <?php
-$gameType = $_GET['game'];
+    $gameType = $_GET['game'];
 ?>
 
 <!DOCTYPE html><html lang="en"><head>
