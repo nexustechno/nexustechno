@@ -16,6 +16,7 @@ $stream_url = $baseLink;
 <head>
     <title>LIVE TV</title>
     <link href="https://vjs.zencdn.net/7.18.1/video-js.css" rel="stylesheet" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <script src="./js/hls.js@1.0.4"></script>
     <script src="./js/hls.js@latest"></script>
