@@ -322,9 +322,9 @@
                                 $match_date = $match['match_date'];
                         }
 
-                        if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
+                        if ($match['sports_id'] == 4 && $inplay === 'True') {
                             $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                        } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
+                        } else if ($match['sports_id'] != 4 && $inplay == 1) {
                             $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
                         } else {
                             $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
@@ -467,9 +467,9 @@
                                             $match_date = $match['match_date'];
                                     }
 
-                                    if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
+                                    if ($match['sports_id'] == 4 && $inplay === 'True') {
                                         $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                                    } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
+                                    } else if ($match['sports_id'] != 4 && $inplay == 1) {
                                         $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
                                     } else {
                                         $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
@@ -491,7 +491,7 @@
                             </div>
                         </div>
                         <div id="app">
-
+                            @if(isset($match_data[0]))
                             <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                               pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                               pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
@@ -524,6 +524,9 @@
                                                   bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                   :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
 
+                            @endif
+                            @else
+                                <p class="text-center p-2">No data available!</p>
                             @endif
                         </div>
                         <div class="mb-5"></div>

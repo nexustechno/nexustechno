@@ -190,25 +190,28 @@ class FrontController extends Controller
 
         $matchId = $match->match_id;
 
-        if($match->match_id <= 0){
-            return redirect()->back()->with('error', 'No data found2!');
-        }
+//        if($match->match_id <= 0){
+//            return redirect()->back()->with('error', 'No data found2!');
+//        }
 
         $eventId = $match->event_id;
 
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($eventId, $matchId, $match->sports_id);
-
-        if (empty($match_data)) {
-            return redirect()->back()->with('error', 'No data found3!');
+        $match_data = [];
+        if($match->match_id > 0) {
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($eventId, $matchId, $match->sports_id);
         }
 
-        if (!isset($match_data[0]) || (isset($match_data[0]) && !isset($match_data[0]['runners']))) {
-            return redirect()->back()->with('error', 'No data found4!');
-        }
-
-        if ($match_data[0]['status'] == 'SUSPENDED') {
-            return redirect()->back()->with('error', 'No data found4!');
-        }
+//        if (empty($match_data)) {
+//            return redirect()->back()->with('error', 'No data found3!');
+//        }
+//
+//        if (!isset($match_data[0]) || (isset($match_data[0]) && !isset($match_data[0]['runners']))) {
+//            return redirect()->back()->with('error', 'No data found4!');
+//        }
+//
+//        if ($match_data[0]['status'] == 'SUSPENDED') {
+//            return redirect()->back()->with('error', 'No data found4!');
+//        }
 
         $total_todays_bet = 0;
         $my_placed_bets_all = [];
@@ -341,7 +344,7 @@ class FrontController extends Controller
 
         $match_updated_date = '';
 
-        $inplay = $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
+        $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
 
         $oddsLimit['min_bookmaker_limit'] = $matchList->min_bookmaker_limit;
         $oddsLimit['max_bookmaker_limit'] = $matchList->max_bookmaker_limit;
@@ -442,7 +445,7 @@ class FrontController extends Controller
             $bet_total['team2_BM_total'] = round($team2_bet_total, 2);
             $bet_total['draw_BM_total'] = round($team_draw_bet_total, 2);
 
-            if ($match->sports_id == 4) {
+            if ($match->sports_id == 4 && isset($match_data[0])) {
                 $match_data[0]['fancy'] = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($eventId, $matchId, $match->sports_id);
 
                 if (isset($match_data[0]['fancy']) && isset($match_data[0]['fancy'][0]) && isset($match_data[0]['fancy'][0]['RunnerName'])) {

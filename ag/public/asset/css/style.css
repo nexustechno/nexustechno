@@ -6409,3 +6409,7 @@ a:not([href]):not([tabindex]) {
     font-weight: 400;
     font-size: 11px;
 }
+
+#LiveScoreCard {
+    width: 100%;
+}
