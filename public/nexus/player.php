@@ -7,7 +7,7 @@
         var GAME_TYPE = "<?php echo $gameType; ?>";
         var WebSocketOriginal = WebSocket;
         WebSocket = function(url, protocols) {
-            var new_url = "ws://35.200.179.192/h5liveproxy";
+            var new_url = "wss://tv.fireflybet.in/websocket/?port=3032";
             var ws = new WebSocketOriginal(new_url, protocols);
             ws.addEventListener("open", function() {
                 ws.send(url + "&gameId=" + GAME_TYPE);
