@@ -426,23 +426,24 @@
                     this.cards.push([this.data.t1[0].C5,this.data.t1[0].C6,this.data.t1[0].C7,this.data.t1[0].C8,this.data.t1[0].C9])
                 }
                 else if (this.casino.casino_name == 'ab1' || this.casino.casino_name == 'ab2'){
-                    var playersCardsString = this.data.t1[0].Cards;
-                    var playersCards = playersCardsString.split(",");
-                    var playerCardAArray = [];
-                    var playerCardBArray = [];
-                    for(var x=1;x<playersCards.length;x++){
-                        if(playersCards[x]!=1){
-                            if (x === 0 || x % 2 === 0) {
-                                playerCardAArray.push(playersCards[x]);
-                            }
-                            else {
-                                playerCardBArray.push(playersCards[x]);
-                            }
-                        }
-                    }
+                    // console.log(this.data);
+                    var playersCardsString = this.data.t3[0];
+                    // var playersCards = playersCardsString.split(",");
+                    var playerCardAArray = playersCardsString['aall'].split(",");
+                    var playerCardBArray = playersCardsString['ball'].split(",");
+                    // for(var x=1;x<playersCards.length;x++){
+                    //     if(playersCards[x]!=1){
+                    //         if (x === 0 || x % 2 === 0) {
+                    //             playerCardAArray.push(playersCards[x]);
+                    //         }
+                    //         else {
+                    //             playerCardBArray.push(playersCards[x]);
+                    //         }
+                    //     }
+                    // }
                     this.cards.push(playerCardAArray);
                     this.cards.push(playerCardBArray);
-                    this.cards.push([playersCards[0]]);
+                    // this.cards.push([playersCards[0]]);
                 }
                 else if (this.casino.casino_name == '32a' || this.casino.casino_name == '32b'){
                     var playersCardsString = this.data.t1[0].desc;
