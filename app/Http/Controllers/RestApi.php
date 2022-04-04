@@ -279,7 +279,10 @@ class RestApi extends Controller
 		   ]);
 			$data = json_decode($alldata->getBody(), true);
 
-			return $data['data'];
+			if(isset($data['data']))
+			    return $data['data'];
+			else
+			    return [];
 		}
 		catch (\Guzzle\Http\Exception\ConnectException $e) {
 			return 0;

@@ -5,7 +5,7 @@
                 <div class="game-name">
                     <span>{{ casino.casino_title }}</span>
                     <span class="rules_underline" data-toggle="modal" data-target="#exampleModal2">Rules</span>
-                    <span class="float-right round"> Round ID: <span class="roundId" :data-status="data.t2[0].gstatus" :data-round-id="fullRoundId">{{roundId}}</span> | Min: <span>{{casino.min_casino}}</span> | Max: <span>{{casino.max_casino}}</span></span>
+                    <span class="float-right round"> Round ID: <span class="roundId" :data-status="gstatus" :data-round-id="fullRoundId">{{roundId}}</span> | Min: <span>{{casino.min_casino}}</span> | Max: <span>{{casino.max_casino}}</span></span>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
                         marginwidth="0" marginheight="0"></iframe>
             </div>
             <div class="casinocards">
-                <div class="casinocards-container" v-if="casino.casino_name == 'teen20'">
+                <div class="casinocards-container" v-if="casino.casino_name == 'teen20' || casino.casino_name == 'odtp'">
                     <span class="text-color-white">PLAYER A</span>
                     <div class="card_con" id="casinoCarda">
                         <span v-for="(card,index) in cards[0]" :key="index" class="text-color-white"><img :src="basepath+'/'+card+'.png'"></span>
@@ -172,7 +172,7 @@
                         <span style="cursor: pointer;" v-if="result.result== 11" @click="getResult(result.mid)" class="ball-runs last-result playera">A</span>
                     </template>
                 </p>
-                <p id="last-result" class="text-right" v-if="casino.casino_name  == 'ab1' || casino.casino_name  == 'ab2'">
+                <p id="last-result" class="text-right" v-if="casino.casino_name  == 'ab1' || casino.casino_name  == 'ab2' || casino.casino_name  == 'odtp'">
                     <template v-for="(result,index) in results">
                         <span style="cursor: pointer;" v-if="result.result== 2" @click="getResult(result.mid)" class="ball-runs last-result playerb">B</span>
                         <span style="cursor: pointer;" v-if="result.result== 1" @click="getResult(result.mid)" class="ball-runs last-result playera">A</span>
@@ -241,6 +241,7 @@
                 data: {},
                 results: {},
                 roundId: 0,
+                gstatus:'',
                 fullRoundId: 0,
                 cards: [],
                 teams: [],
@@ -263,15 +264,24 @@
             window.Echo2.channel('casino-detail').listen('.' + this.casino.casino_name, (data) => {
                 // console.log("data: ",data);
 
-                this.teams = [];
+
                 this.cards = [];
                 var playerACards = '';
                 var playerBCards = '';
                 this.data = data.data;
                 this.results = data.results;
-                var mid = this.data.t1[0].mid;
+                if (this.casino.casino_name == 'odtp'){
 
-
+                    var mid = 0;
+                    if(this.data.bf!=null && this.data.bf[0]!=undefined && this.data.bf[0].marketId!=undefined) {
+                        var mid = this.data.bf[0].marketId;
+                        this.gstatus = this.data.bf[0].gstatus;
+                    }
+                }else {
+                    this.teams = [];
+                    var mid = this.data.t1[0].mid;
+                    this.gstatus = this.data.t2[0].gstatus;
+                }
                 if (this.casino.casino_name == 'teen20') {
 
                     var playerA = this.data.t2[0];
@@ -370,8 +380,31 @@
                     this.teams.push(playerB);
                 }
                 else if (this.casino.casino_name == 'odtp'){
-                    this.teams.push(this.data.bf[0]);
-                    this.teams.push(this.data.bf[1]);
+
+                    if(this.data.bf!=null && this.data.bf[0]!=undefined && this.data.bf[0].marketId!=undefined) {
+                        this.teams = [];
+                        var playerA = this.data.bf[0];
+                        playerA.sid = playerA.sectionId;
+
+                        var playerB = this.data.bf[1];
+                        playerB.sid = playerB.sectionId;
+
+
+                        this.teams.push(playerA);
+                        this.teams.push(playerB);
+                    }else{
+                        if(this.teams.length > 0){
+                            this.teams[0].b1 = 0;
+                            this.teams[0].bs1 = 0;
+                            this.teams[0].l1 = 0;
+                            this.teams[0].ls1 = 0;
+
+                            this.teams[1].b1 = 0;
+                            this.teams[1].bs1 = 0;
+                            this.teams[1].l1 = 0;
+                            this.teams[1].ls1 = 0;
+                        }
+                    }
                 }
                 else if (this.casino.casino_name == 'aaa'){
                     this.teams.push(this.data.t2[0]);
@@ -424,6 +457,10 @@
                     this.cards.push([this.data.t1[0].C3,this.data.t1[0].C4])
 
                     this.cards.push([this.data.t1[0].C5,this.data.t1[0].C6,this.data.t1[0].C7,this.data.t1[0].C8,this.data.t1[0].C9])
+                }
+                else if (this.casino.casino_name == 'odtp'){
+                    this.cards.push([this.data.bf[0].C1, this.data.bf[0].C2, this.data.bf[0].C3])
+                    this.cards.push([this.data.bf[1].C1, this.data.bf[1].C2, this.data.bf[1].C3])
                 }
                 else if (this.casino.casino_name == 'ab1' || this.casino.casino_name == 'ab2'){
                     // console.log(this.data);

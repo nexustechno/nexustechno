@@ -193,10 +193,6 @@ class RestrictionController extends Controller
             $users = User::where('parentid', $crumb->id)->where("agent_level", "!=", "PL")->orderBy('user_name')->paginate(10);
         }
 
-        $admin = $getuser->id;
-
-        $website = UsersAccount::getWebsite();
-
         $html = '';
         $html1 = '';
         $html2 = '';
@@ -332,8 +328,7 @@ class RestrictionController extends Controller
                     $html .= '<td class="white-bg ' . $class . '">(' . number_format(abs($refPL), 2, '.', '') . ')</td>
                     <td class=" ' . $cuClass . ' white-bg">(' . number_format(abs($calData[3]), 2, '.', '') . ')</td>
 
-                    <td class="white-bg" style="display: table-cell;">
-                    ';
+                    <td class="white-bg" style="display: table-cell;">';
 
                     if ($row->status == 'active') {
                         $html .= '<span class="status-active light-green-bg text-color-green"><span class="round-circle green-bg"></span>' . ucfirst(trans($row->status)) . '</span>';

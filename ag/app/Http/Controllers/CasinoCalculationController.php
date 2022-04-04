@@ -326,7 +326,7 @@ class CasinoCalculationController extends Controller
 
         $resultArray = [];
         foreach ($last10Results as $result){
-            $resultArray[$result['mid']] = $result['result'];
+            $resultArray[$result['mid']] = intval($result['result']);
         }
 
         $admin_profit = 0; $admin_loss = 0;
@@ -393,13 +393,13 @@ class CasinoCalculationController extends Controller
                 }
             }
             else if($bet->casino_name == '20poker') {
-                if ($resultArray[$bet->roundid] == 11){
+                if ($resultArray[$bet->roundid] == 11 || $resultArray[$bet->roundid] == "11"){
                     $winner = 'Player A';
-                }else if($resultArray[$bet->roundid] == 21){
+                }else if($resultArray[$bet->roundid] == 21 || $resultArray[$bet->roundid] == "21"){
                     $winner = 'Player B';
                 }
             }
-            else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2') {
+            else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2' || $bet->casino_name == 'odtp') {
                 if ($resultArray[$bet->roundid] == 1){
                     $winner = 'Player A';
                 }else{
@@ -504,7 +504,8 @@ class CasinoCalculationController extends Controller
 
                 $admin_loss+=$profit;
             }
-            else{
+            else
+            {
                 $upd->remain_bal  =  $upd->remain_bal - $lose;
 
                 UsersAccount::create([
@@ -564,6 +565,8 @@ class CasinoCalculationController extends Controller
                     }
                 }
             }
+
+//            dd($bet->toArray(),$winner);
 
             CasinoBet::where('casino_name',$bet->casino_name)->where("roundid",$bet->roundid)->update(['winner'=>$winner]);
         }

@@ -30,16 +30,16 @@ class CasinoCalculationController extends Controller
                 $profitAmt = $bet['exposureAmt'];
                 $profitAmt = ($profitAmt * (-1));
                 if (!isset($response['ODDS'][$bet['team_sid']])) {
-                    $response['ODDS'][$bet['team_sid']] = $profitAmt;
+                    $response['ODDS'][$bet['team_sid']] = round($profitAmt,2);
                 } else {
-                    $response['ODDS'][$bet['team_sid']] += $profitAmt;
+                    $response['ODDS'][$bet['team_sid']] += round($profitAmt,2);
                 }
 
                 foreach ($extra as $team){
                     if (!isset($response['ODDS'][$team])) {
-                        $response['ODDS'][$team] = $bet['stake_value'];
+                        $response['ODDS'][$team] = round($bet['stake_value'],2);
                     } else {
-                        $response['ODDS'][$team] += $bet['stake_value'];
+                        $response['ODDS'][$team] += round($bet['stake_value'],2);
                     }
                 }
             }
@@ -47,16 +47,16 @@ class CasinoCalculationController extends Controller
                 $profitAmt = $bet['casino_profit']; ////nnn
                 $bet_amt = ($bet['stake_value'] * (-1));
                 if (!isset($response['ODDS'][$bet['team_sid']])) {
-                    $response['ODDS'][$bet['team_sid']] = $profitAmt;
+                    $response['ODDS'][$bet['team_sid']] = round($profitAmt,2);
                 } else {
-                    $response['ODDS'][$bet['team_sid']] += $profitAmt;
+                    $response['ODDS'][$bet['team_sid']] += round($profitAmt,2);
                 }
 
                 foreach ($extra as $team){
                     if (!isset($response['ODDS'][$team])) {
-                        $response['ODDS'][$team] = $bet_amt;
+                        $response['ODDS'][$team] = round($bet_amt,2);
                     } else {
-                        $response['ODDS'][$team] += $bet_amt;
+                        $response['ODDS'][$team] += round($bet_amt,2);
                     }
                 }
             }
@@ -178,16 +178,16 @@ class CasinoCalculationController extends Controller
 //                dd($casinoExposer['ODDS'][$request->team_sid] , $profitAmt);
 
             if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
-                $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
+                $casinoExposer['ODDS'][$request->team_sid] = round($profitAmt,2);
             } else {
-                $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
+                $casinoExposer['ODDS'][$request->team_sid] += round($profitAmt,2);
             }
 
             foreach ($other_team_name as $team) {
                 if (!isset($casinoExposer['ODDS'][$team])) {
-                    $casinoExposer['ODDS'][$team] = $stake_value;
+                    $casinoExposer['ODDS'][$team] = round($stake_value,2);
                 } else {
-                    $casinoExposer['ODDS'][$team] += $stake_value;
+                    $casinoExposer['ODDS'][$team] += round($stake_value,2);
                 }
             }
         }
@@ -195,16 +195,16 @@ class CasinoCalculationController extends Controller
             $profitAmt = $profit;
             $bet_amt = ($stake_value * (-1));
             if (!isset($casinoExposer['ODDS'][$request->team_sid])) {
-                $casinoExposer['ODDS'][$request->team_sid] = $profitAmt;
+                $casinoExposer['ODDS'][$request->team_sid] = round($profitAmt,2);
             } else {
-                $casinoExposer['ODDS'][$request->team_sid] += $profitAmt;
+                $casinoExposer['ODDS'][$request->team_sid] += round($profitAmt,2);
             }
 
             foreach ($other_team_name as $team) {
                 if (!isset($casinoExposer['ODDS'][$team])) {
-                    $casinoExposer['ODDS'][$team] = $bet_amt;
+                    $casinoExposer['ODDS'][$team] = round($bet_amt,2);
                 } else {
-                    $casinoExposer['ODDS'][$team] += $bet_amt;
+                    $casinoExposer['ODDS'][$team] += round($bet_amt,2);
                 }
             }
         }
@@ -326,7 +326,7 @@ class CasinoCalculationController extends Controller
 
         $resultArray = [];
         foreach ($last10Results as $result){
-            $resultArray[$result['mid']] = $result['result'];
+            $resultArray[$result['mid']] = intval($result['result']);
         }
 
         $admin_profit = 0; $admin_loss = 0;
@@ -393,13 +393,13 @@ class CasinoCalculationController extends Controller
                 }
             }
             else if($bet->casino_name == '20poker') {
-                if ($resultArray[$bet->roundid] == 11){
+                if ($resultArray[$bet->roundid] == 11 || $resultArray[$bet->roundid] == "11"){
                     $winner = 'Player A';
-                }else if($resultArray[$bet->roundid] == 21){
+                }else if($resultArray[$bet->roundid] == 21 || $resultArray[$bet->roundid] == "21"){
                     $winner = 'Player B';
                 }
             }
-            else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2') {
+            else if($bet->casino_name == 'ab1' || $bet->casino_name == 'ab2' || $bet->casino_name == 'odtp') {
                 if ($resultArray[$bet->roundid] == 1){
                     $winner = 'Player A';
                 }else{
@@ -504,7 +504,8 @@ class CasinoCalculationController extends Controller
 
                 $admin_loss+=$profit;
             }
-            else{
+            else
+                {
                 $upd->remain_bal  =  $upd->remain_bal - $lose;
 
                 UsersAccount::create([
@@ -564,6 +565,8 @@ class CasinoCalculationController extends Controller
                     }
                 }
             }
+
+//            dd($bet->toArray(),$winner);
 
             CasinoBet::where('casino_name',$bet->casino_name)->where("roundid",$bet->roundid)->update(['winner'=>$winner]);
         }

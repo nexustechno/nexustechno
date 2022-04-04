@@ -1136,6 +1136,9 @@ if (!$DEVICE) {
 
 <script type="text/javascript">
 
+
+
+
     var matchesToBeDisplay = {!! json_encode($matchesToBeDisplay) !!};
 
     // console.log(matchesToBeDisplay);
@@ -1207,8 +1210,8 @@ if (!$DEVICE) {
         $('ul#homeSubmenu_1').html(soccerLeftMenuHtml);
         // console.log("inplay soccerCount count ",inPlayCount);
     });
-</script>
 
+</script>
 @stack('third_party_scripts')
 
 @stack('page_scripts')

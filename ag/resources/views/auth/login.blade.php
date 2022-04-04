@@ -1,13 +1,13 @@
 <!doctype html>
 <?php
-$main_url=explode(".",$_SERVER['HTTP_HOST']);
-use App\Website;
+//$main_url=explode(".",$_SERVER['HTTP_HOST']);
+//use App\Website;
 /*if($main_url[0] =='www'){
     $main_url_admin = 'betexchange';
 }else{
     $main_url_admin = $main_url[1];
 }*/
-$website = Website::where('title',$main_url[1])->first();
+//$website = Website::where('title',$main_url[1])->first();
 $getUser = Auth::user();
 ?>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">

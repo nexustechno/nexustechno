@@ -35,8 +35,6 @@ class AgentController extends Controller
         $posTotal = 0;
         $negTotal = 0;
         $cumulative_pl = 0;
-        $website = UsersAccount::getWebsite();
-        $loginuser = Auth::user();
 
         if (!empty($hirUser)) {
             $getuserArray = explode(',', $hirUser->sub_user);
