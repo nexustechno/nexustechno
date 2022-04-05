@@ -14,7 +14,7 @@ $match_type = $_GET['match_type'];
 //elseif($match_type == 'soccer'){
 //    $iFrameUrl = "https://www.shivexch.com/soccer_scoree/index.html?eventid=" . $eventId;
 //}
-
+$eventId2 = '';
 if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer') {
     $url = "http://marketsarket.in:3002/scoreurl/".$eventId;
     $ch = curl_init();
@@ -27,7 +27,6 @@ if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer
     if(isset($_GET['debug'])){
         echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($arr);die();
     }
-
     if(isset($arr['score'])){
         $explode = explode("/",$arr['score']);
         $eventId2 = end($explode);
@@ -40,7 +39,7 @@ if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer
     $height = '110px;';
     $iFrameUrl = "https://bfscore.onlyscore.live/?id=" . $eventId;
 }
-
+if(!empty($eventId2)){
 ?>
 <html>
 <head>
@@ -51,3 +50,6 @@ if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer
 <iframe style="width: 100%; height: <?php echo $height; ?>" src="<?php echo $iFrameUrl; ?>" title="Iframe Example"></iframe>
 </body>
 </html>
+<?php
+}
+?>
