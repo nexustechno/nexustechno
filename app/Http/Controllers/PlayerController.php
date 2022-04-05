@@ -989,269 +989,585 @@ class PlayerController extends Controller
 
     public function getMainOdds($matchid, $betside)
     {
-        $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
-        $matchId = $matchList['match_id'];
-        $event_id = $matchList['event_id'];
-        $matchtype = $matchList['sports_id'];
-        $match_m = $matchList['suspend_m'];
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($event_id, $matchId, $matchtype);
+        $API_SERVER = app('API_SERVER');
+
+        if($API_SERVER == 1){
+            $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
+            $matchId = $matchList['match_id'];
+            $event_id = $matchList['event_id'];
+            $matchtype = $matchList['sports_id'];
+            $match_m = $matchList['suspend_m'];
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($event_id, $matchId, $matchtype);
+
+            $team1 = $team2 = $team3 = '';
+            if ($match_data != 0) {
+                $html_chk = '';
+                if ($match_m == '0') {
+                    if ($matchtype == 4) {
+                        if ($match_data['t1'][0][2]) {
+                            $team3 = 'Suspend';
+                        }
+                    } else {
+                        if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '') {
+                            $team3 = 'Suspend';
+                        }
+                    }
+
+                    $team1 = 'Suspend';
+                    $team2 = 'Suspend';
+                } else {
+                    if ($matchtype == 4) {
+                        if (@$match_data['t1'][0][2]['b1'] != '') {
+                            if ($betside == 'back')
+                                $team3 = @$match_data['t1'][0][2]['b1'];
+                            else
+                                $team3 = @$match_data['t1'][0][2]['l1'];
+                        }
+
+                        //check status
+                        if (@$match_data['t1'][0][0]['mstatus'] == 'OPEN') {
+                            if (isset($match_data['t1'][0][0]['b1'])) {
+                                if ($betside == 'back')
+                                    $team1 = @$match_data['t1'][0][0]['b1'];
+                                else
+                                    $team1 = @$match_data['t1'][0][0]['l1'];
+                            } else {
+                                if ($betside == 'back')
+                                    $team1 = '';
+                                else
+                                    $team1 = '';
+                            }
+                        } else {
+                            if ($betside == 'back')
+                                $team1 = '';
+                            else
+                                $team1 = '';
+                        }
+
+                        if (@$match_data['t1'][0][1]['mstatus'] == 'OPEN') {
+                            if (isset($match_data['t1'][0][1]['b1'])) {
+                                if ($betside == 'back')
+                                    $team2 = @$match_data['t1'][0][1]['b1'];
+                                else
+                                    $team2 = @$match_data['t1'][0][1]['l1'];
+                            } else {
+                                if ($betside == 'back')
+                                    $team2 = '';
+                                else
+                                    $team2 = '';
+                            }
+                        } else {
+                            if ($betside == 'back')
+                                $team2 = '';
+                            else
+                                $team2 = '';
+                        }
+
+
+                    } else {
+                        if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '') {
+                            if ($betside == 'back')
+                                $team3 = @$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'];
+                            else
+                                $team3 = @$match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'];
+                        }
+                        //check status
+                        if (@$match_data[0]['status'] == 'OPEN') {
+                            if (isset($match_data[0]['runners'][0]['ex']['availableToBack'][2]['price'])) {
+                                if ($betside == 'back')
+                                    $team1 = @$match_data[0]['runners'][0]['ex']['availableToBack'][0]['price'];
+                                else
+                                    $team1 = @$match_data[0]['runners'][0]['ex']['availableToLay'][0]['price'];
+                            } else {
+                                if ($betside == 'back')
+                                    $team1 = '';
+                                else
+                                    $team1 = '';
+                            }
+                        } else {
+                            if ($betside == 'back')
+                                $team1 = '';
+                            else
+                                $team1 = '';
+                        }
+                        if (@$match_data[0]['status'] == 'OPEN') {
+                            if (isset($match_data[0]['runners'][1]['ex']['availableToBack'][2]['price'])) {
+                                if ($betside == 'back')
+                                    $team2 = @$match_data[0]['runners'][1]['ex']['availableToBack'][0]['price'];
+                                else
+                                    $team2 = @$match_data[0]['runners'][1]['ex']['availableToLay'][0]['price'];
+                            } else {
+                                if ($betside == 'back')
+                                    $team2 = '';
+                                else
+                                    $team2 = '';
+                            }
+                        } else {
+                            if ($betside == 'back')
+                                $team2 = '';
+                            else
+                                $team2 = '';
+                        }
+                    }
+                }
+            }
+            return $team1 . '~~' . $team2 . '~~' . $team3;
+        }
+        else {
+            $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
+            $matchId = $matchList['match_id'];
+            $event_id = $matchList['event_id'];
+            $matchtype = $matchList['sports_id'];
+            $match_m = $matchList['suspend_m'];
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($event_id, $matchId, $matchtype);
 
 //        dd($match_data);
 
-        $team1 = $team2 = $team3 = '';
-        if ($match_data != 0) {
-            $html_chk = '';
-            if ($match_m == '0') {
-                if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '') {
-                    $team3 = 'Suspend';
-                }
+            $team1 = $team2 = $team3 = '';
+            if ($match_data != 0) {
+                $html_chk = '';
+                if ($match_m == '0') {
+                    if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '') {
+                        $team3 = 'Suspend';
+                    }
 
-                $team1 = 'Suspend';
-                $team2 = 'Suspend';
-            } else {
+                    $team1 = 'Suspend';
+                    $team2 = 'Suspend';
+                } else {
 
-                if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '' || isset($match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'])) {
-                    if ($betside == 'back')
-                        $team3 = @$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'];
-                    else
-                        $team3 = @$match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'];
-                }
-
-                //check status
-                if (@$match_data[0]['status'] == 'OPEN') {
-                    if (isset($match_data[0]['runners'][0]['ex']['availableToBack'][0]['price']) || isset($match_data[0]['runners'][0]['ex']['availableToLay'][0]['price'])) {
+                    if (@$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'] != '' || isset($match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'])) {
                         if ($betside == 'back')
-                            $team1 = @$match_data[0]['runners'][0]['ex']['availableToBack'][0]['price'];
+                            $team3 = @$match_data[0]['runners'][2]['ex']['availableToBack'][0]['price'];
                         else
-                            $team1 = @$match_data[0]['runners'][0]['ex']['availableToLay'][0]['price'];
+                            $team3 = @$match_data[0]['runners'][2]['ex']['availableToLay'][0]['price'];
+                    }
+
+                    //check status
+                    if (@$match_data[0]['status'] == 'OPEN') {
+                        if (isset($match_data[0]['runners'][0]['ex']['availableToBack'][0]['price']) || isset($match_data[0]['runners'][0]['ex']['availableToLay'][0]['price'])) {
+                            if ($betside == 'back')
+                                $team1 = @$match_data[0]['runners'][0]['ex']['availableToBack'][0]['price'];
+                            else
+                                $team1 = @$match_data[0]['runners'][0]['ex']['availableToLay'][0]['price'];
+                        } else {
+                            if ($betside == 'back')
+                                $team1 = '';
+                            else
+                                $team1 = '';
+                        }
                     } else {
                         if ($betside == 'back')
                             $team1 = '';
                         else
                             $team1 = '';
                     }
-                }
-                else {
-                    if ($betside == 'back')
-                        $team1 = '';
-                    else
-                        $team1 = '';
-                }
-                if (@$match_data[0]['status'] == 'OPEN') {
-                    if (isset($match_data[0]['runners'][1]['ex']['availableToBack'][0]['price']) || isset($match_data[0]['runners'][1]['ex']['availableToLay'][0]['price'])) {
-                        if ($betside == 'back')
-                            $team2 = @$match_data[0]['runners'][1]['ex']['availableToBack'][0]['price'];
-                        else
-                            $team2 = @$match_data[0]['runners'][1]['ex']['availableToLay'][0]['price'];
+                    if (@$match_data[0]['status'] == 'OPEN') {
+                        if (isset($match_data[0]['runners'][1]['ex']['availableToBack'][0]['price']) || isset($match_data[0]['runners'][1]['ex']['availableToLay'][0]['price'])) {
+                            if ($betside == 'back')
+                                $team2 = @$match_data[0]['runners'][1]['ex']['availableToBack'][0]['price'];
+                            else
+                                $team2 = @$match_data[0]['runners'][1]['ex']['availableToLay'][0]['price'];
+                        } else {
+                            if ($betside == 'back')
+                                $team2 = '';
+                            else
+                                $team2 = '';
+                        }
                     } else {
                         if ($betside == 'back')
                             $team2 = '';
                         else
                             $team2 = '';
                     }
-                }
-                else {
-                    if ($betside == 'back')
-                        $team2 = '';
-                    else
-                        $team2 = '';
                 }
             }
-        }
 
 //        dd($team1 . '~~' . $team2 . '~~' . $team3);
 
-        return $team1 . '~~' . $team2 . '~~' . $team3;
+            return $team1 . '~~' . $team2 . '~~' . $team3;
+        }
     }
 
     public function getMainBMOdds($matchid, $teamname, $position, $betside, $odds)
     {
-        $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
-        $event_id = $matchList['event_id'];
-        $matchtype = $matchList['sports_id'];
-        $match_m = $matchList['suspend_b'];
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchBookmakerData($event_id, $matchid, $matchtype);
+        $API_SERVER = app('API_SERVER');
+        if($API_SERVER == 1){
+            $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
+            $event_id = $matchList['event_id'];
+            $matchtype = $matchList['sports_id'];
+            $match_m = $matchList['suspend_b'];
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($event_id, $matchid, $matchtype);
 
-        $team1 = $team2 = $team3 = '';
-        if (isset($match_data[0])) {
-            $html_chk = '';
-            if ($match_m == '1') {
-                if (@$match_data[0]['runners'][0]['status'] != 'ACTIVE' && strtolower(@$match_data[0]['runners'][0]['runnerName']) == strtolower($teamname)) {
-                    return 'Suspend';
-                } else if (@$match_data[0]['runners'][1]['status'] != 'ACTIVE' && strtolower(@$match_data[0]['runners'][1]['runnerName']) == strtolower($teamname)) {
-                    return 'Suspend';
-                } else if (isset($match_data[0]['runners'][2]) && @$match_data[0]['runners'][2]['status'] != 'ACTIVE' && strtolower(@$match_data[0]['runners'][2]['runnerName']) == strtolower($teamname)) {
-                    return 'Suspend';
-                } else {
-                    if (@$match_data[0]['runners'][0]['status'] == 'ACTIVE' && strtolower(@$match_data[0]['runners'][0]['runnerName']) == strtolower($teamname)) {
-                        if ($betside == 'lay') {
-                            $orgOdds = explode(".",$match_data[0]['runners'][0]['rate2']);
-                            $orgOdd = floatval($orgOdds[1]);
-                            if ($position == 0) {
-                                if (round($orgOdd) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+            $team1 = $team2 = $team3 = '';
+            if ($match_data != 0) {
+                $html_chk = '';
+                if ($match_m == '1') {
+                    if (@$match_data['t2'][0]['bm1']['0']['s'] != 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['0']['nat']) == strtolower($teamname)) {
+                        return 'Suspend';
+                    } else if (@$match_data['t2'][0]['bm1']['1']['s'] != 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['1']['nat']) == strtolower($teamname)) {
+                        return 'Suspend';
+                    } else if (@$match_data['t2'][0]['bm1']['2']['s'] != 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['2']['nat']) == strtolower($teamname)) {
+                        return 'Suspend';
+                    } else {
+                        if (@$match_data['t2'][0]['bm1']['0']['s'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['0']['nat']) == strtolower($teamname)) {
+                            if ($betside == 'lay') {
+                                if ($position == 0) {
+                                    if (round($match_data['t2'][0]['bm1']['0']['l1']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($match_data['t2'][0]['bm1']['0']['l2']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($match_data['t2'][0]['bm1']['0']['l3']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
-                            } else if ($position == 1) {
-                                if (round($orgOdd+1) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 2) {
-                                if (round($orgOdd+2) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            }
-                        } elseif ($betside == 'back') {
-                            $orgOdds = explode(".",$match_data[0]['runners'][0]['rate1']);
-                            $orgOdd = floatval($orgOdds[1]);
-                            if ($position == 0) {
-                                if (round($orgOdd) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 1) {
-                                if (round($orgOdd-1) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 2) {
-                                if (round($orgOdd-2) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+                            } elseif ($betside == 'back') {
+                                if ($position == 0) {
+                                    if (round($match_data['t2'][0]['bm1']['0']['b1']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($match_data['t2'][0]['bm1']['0']['b2']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($match_data['t2'][0]['bm1']['0']['b3']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
                             }
-                        }
-                    } else if (@$match_data[0]['runners'][1]['status'] == 'ACTIVE' && strtolower(@$match_data[0]['runners'][1]['runnerName']) == strtolower($teamname)) {
-                        if ($betside == 'lay') {
-                            $orgOdds = explode(".",$match_data[0]['runners'][1]['rate2']);
-                            $orgOdd = floatval($orgOdds[1]);
-                            if ($position == 0) {
-                                if (round($orgOdd) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+                        } else if (@$match_data['t2'][0]['bm1']['1']['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['1']['nat']) == strtolower($teamname)) {
+                            if ($betside == 'lay') {
+                                if ($position == 0) {
+                                    if (round($match_data['t2'][0]['bm1']['1']['l1']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($match_data['t2'][0]['bm1']['1']['l2']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($match_data['t2'][0]['bm1']['1']['l3']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
-                            } else if ($position == 1) {
-                                if (round($orgOdd+1) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 2) {
-                                if (round($orgOdd+2) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            }
-                        } elseif ($betside == 'back') {
-                            $orgOdds = explode(".",$match_data[0]['runners'][1]['rate1']);
-                            $orgOdd = floatval($orgOdds[1]);
-                            if ($position == 0) {
-                                if (round($orgOdd) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 1) {
-                                if (round($orgOdd-1) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 2) {
-                                if (round($orgOdd-2) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+                            } elseif ($betside == 'back') {
+                                if ($position == 0) {
+                                    if (round($match_data['t2'][0]['bm1']['1']['b1']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($match_data['t2'][0]['bm1']['1']['b2']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($match_data['t2'][0]['bm1']['1']['b3']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
                             }
-                        }
-                    } else if (isset($match_data[0]['runners'][2]) && @$match_data[0]['runners'][2]['status'] == 'ACTIVE' && strtolower(@$match_data[0]['runners'][2]['runnerName']) == strtolower($teamname)) {
-                        if ($betside == 'lay') {
-                            $orgOdds = explode(".",$match_data[0]['runners'][2]['rate2']);
-                            $orgOdd = floatval($orgOdds[1]);
-                            if ($position == 0) {
-                                if (round($orgOdd) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+                        } else if (@$match_data['t2'][0]['bm1']['2']['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['bm1']['2']['nat']) == strtolower($teamname)) {
+                            if ($betside == 'lay') {
+                                if ($position == 0) {
+                                    if (round($match_data['t2'][0]['bm1']['2']['l1']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($match_data['t2'][0]['bm1']['2']['l2']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($match_data['t2'][0]['bm1']['2']['l3']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
-                            } else if ($position == 1) {
-                                if (round($orgOdd+1) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 2) {
-                                if (round($orgOdd+2) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            }
-                        } elseif ($betside == 'back') {
-                            $orgOdds = explode(".",$match_data[0]['runners'][2]['rate1']);
-                            $orgOdd = floatval($orgOdds[1]);
-                            if ($position == 0) {
-                                if (round($orgOdd) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 1) {
-                                if (round($orgOdd-1) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            } else if ($position == 2) {
-                                if (round($orgOdd-2) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+                            } elseif ($betside == 'back') {
+                                if ($position == 0) {
+                                    if (round($match_data['t2'][0]['bm1']['2']['b1']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($match_data['t2'][0]['bm1']['2']['b2']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($match_data['t2'][0]['bm1']['2']['b3']) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            } else
-                return 'Suspend';
+                } else
+                    return 'Suspend';
+            }
+        }
+        else {
+            $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
+            $event_id = $matchList['event_id'];
+            $matchtype = $matchList['sports_id'];
+            $match_m = $matchList['suspend_b'];
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchBookmakerData($event_id, $matchid, $matchtype);
+
+            $team1 = $team2 = $team3 = '';
+            if (isset($match_data[0])) {
+                $html_chk = '';
+                if ($match_m == '1') {
+                    if (@$match_data[0]['runners'][0]['status'] != 'ACTIVE' && strtolower(@$match_data[0]['runners'][0]['runnerName']) == strtolower($teamname)) {
+                        return 'Suspend';
+                    } else if (@$match_data[0]['runners'][1]['status'] != 'ACTIVE' && strtolower(@$match_data[0]['runners'][1]['runnerName']) == strtolower($teamname)) {
+                        return 'Suspend';
+                    } else if (isset($match_data[0]['runners'][2]) && @$match_data[0]['runners'][2]['status'] != 'ACTIVE' && strtolower(@$match_data[0]['runners'][2]['runnerName']) == strtolower($teamname)) {
+                        return 'Suspend';
+                    } else {
+                        if (@$match_data[0]['runners'][0]['status'] == 'ACTIVE' && strtolower(@$match_data[0]['runners'][0]['runnerName']) == strtolower($teamname)) {
+                            if ($betside == 'lay') {
+                                $orgOdds = explode(".", $match_data[0]['runners'][0]['rate2']);
+                                $orgOdd = floatval($orgOdds[1]);
+                                if ($position == 0) {
+                                    if (round($orgOdd) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($orgOdd + 1) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($orgOdd + 2) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            } elseif ($betside == 'back') {
+                                $orgOdds = explode(".", $match_data[0]['runners'][0]['rate1']);
+                                $orgOdd = floatval($orgOdds[1]);
+                                if ($position == 0) {
+                                    if (round($orgOdd) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($orgOdd - 1) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($orgOdd - 2) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            }
+                        } else if (@$match_data[0]['runners'][1]['status'] == 'ACTIVE' && strtolower(@$match_data[0]['runners'][1]['runnerName']) == strtolower($teamname)) {
+                            if ($betside == 'lay') {
+                                $orgOdds = explode(".", $match_data[0]['runners'][1]['rate2']);
+                                $orgOdd = floatval($orgOdds[1]);
+                                if ($position == 0) {
+                                    if (round($orgOdd) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($orgOdd + 1) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($orgOdd + 2) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            } elseif ($betside == 'back') {
+                                $orgOdds = explode(".", $match_data[0]['runners'][1]['rate1']);
+                                $orgOdd = floatval($orgOdds[1]);
+                                if ($position == 0) {
+                                    if (round($orgOdd) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($orgOdd - 1) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($orgOdd - 2) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            }
+                        } else if (isset($match_data[0]['runners'][2]) && @$match_data[0]['runners'][2]['status'] == 'ACTIVE' && strtolower(@$match_data[0]['runners'][2]['runnerName']) == strtolower($teamname)) {
+                            if ($betside == 'lay') {
+                                $orgOdds = explode(".", $match_data[0]['runners'][2]['rate2']);
+                                $orgOdd = floatval($orgOdds[1]);
+                                if ($position == 0) {
+                                    if (round($orgOdd) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($orgOdd + 1) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($orgOdd + 2) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            } elseif ($betside == 'back') {
+                                $orgOdds = explode(".", $match_data[0]['runners'][2]['rate1']);
+                                $orgOdd = floatval($orgOdds[1]);
+                                if ($position == 0) {
+                                    if (round($orgOdd) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 1) {
+                                    if (round($orgOdd - 1) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                } else if ($position == 2) {
+                                    if (round($orgOdd - 2) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else
+                    return 'Suspend';
+            }
         }
     }
 
     public function getMainFancyOdds($matchid, $teamname, $betside, $odds)
     {
-        $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
-        $event_id = $matchList['event_id'];
-        $matchtype = $matchList['sports_id'];
-        $match_f = $matchList['suspend_f'];
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($event_id, $matchid, $matchtype);
-        $team1 = $team2 = $team3 = '';
-        $nat = array();
-        $gstatus = array();
-        $b = array();
-        $l = array();
-        $bs = array();
-        $ls = array();
-        $min = array();
-        $max = array();
-        $sid = array();
-        if ($match_data != 0) {
-            if ($match_f == '1' && isset($match_data[0]) && isset($match_data[0])) {
-                foreach ($match_data[0] as $key => $value) {
-                    $sid_val = '';
-                    foreach ($value as $key1 => $value1) {
-                        if ($key1 == 'SelectionId') {
-                            $sid_val = $value1;
-                            $sid[] = $value1;
+        $API_SERVER = app('API_SERVER');
+
+        if($API_SERVER){
+            $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
+            $event_id = $matchList['event_id'];
+            $matchtype = $matchList['sports_id'];
+            $match_f = $matchList['suspend_f'];
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($event_id, $matchid, $matchtype);
+            $team1 = $team2 = $team3 = '';
+            $nat = array();
+            $gstatus = array();
+            $b = array();
+            $l = array();
+            $bs = array();
+            $ls = array();
+            $min = array();
+            $max = array();
+            $sid = array();
+            if ($match_data != 0) {
+                if ($match_f == '1') {
+                    foreach ($match_data['t3'] as $key => $value) {
+                        $sid_val = '';
+                        foreach ($value as $key1 => $value1) {
+                            if ($key1 == 'sid') {
+                                $sid_val = $value1;
+                                $sid[] = $value1;
+                            }
+                            if ($key1 == 'nat')
+                                $nat[$sid_val] = $value1;
+                            if ($key1 == 'gstatus') {
+                                $gstatus[$sid_val] = $value1;
+                            }
+                            if ($key1 == 'b1')
+                                $b[$sid_val] = $value1;
+                            if ($key1 == 'l1')
+                                $l[$sid_val] = $value1;
+                            if ($key1 == 'bs1')
+                                $bs[$sid_val] = $value1;
+                            if ($key1 == 'ls1')
+                                $ls[$sid_val] = $value1;
+                            if ($key1 == 'min')
+                                $min[$sid_val] = $value1;
+                            if ($key1 == 'max')
+                                $max[$sid_val] = $value1;
                         }
-                        if ($key1 == 'RunnerName')
-                            $nat[$sid_val] = $value1;
-                        if ($key1 == 'GameStatus') {
-                            $gstatus[$sid_val] = $value1;
-                        }
-                        if ($key1 == 'BackPrice1')
-                            $b[$sid_val] = $value1;
-                        if ($key1 == 'LayPrice1')
-                            $l[$sid_val] = $value1;
                     }
-                }
-                sort($sid);
-                $check_fancy = 0;
-                for ($i = 0; $i < sizeof($sid); $i++) {
-                    if ($nat[$sid[$i]] == $teamname) {
-                        if ($gstatus[$sid[$i]] != "") {
-                            return 'Suspend';
-                        } else {
-                            if ($betside == 'lay') {
-                                if (round($l[$sid[$i]]) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
+                    sort($sid);
+                    $check_fancy = 0;
+                    for ($i = 0; $i < sizeof($sid); $i++) {
+                        if ($nat[$sid[$i]] == $teamname) {
+                            if ($gstatus[$sid[$i]] != "") {
+                                return 'Suspend';
+                            } else {
+                                if ($betside == 'lay') {
+                                    if (round($l[$sid[$i]]) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                                if ($betside == 'back') {
+                                    if (round($b[$sid[$i]]) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
                                 }
                             }
-                            if ($betside == 'back') {
-                                if (round($b[$sid[$i]]) != $odds) {
-                                    return 'Unmatch Bet Total Not Allowed!';
-                                }
-                            }
+                            $check_fancy = 1;
                         }
-                        $check_fancy = 1;
+                    }
+                    if ($check_fancy == 0) {
+                        return 'Suspend';
                     }
                 }
-                if ($check_fancy == 0) {
-                    return 'Suspend';
+            }
+        }
+        else {
+            $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
+            $event_id = $matchList['event_id'];
+            $matchtype = $matchList['sports_id'];
+            $match_f = $matchList['suspend_f'];
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($event_id, $matchid, $matchtype);
+            $team1 = $team2 = $team3 = '';
+            $nat = array();
+            $gstatus = array();
+            $b = array();
+            $l = array();
+            $bs = array();
+            $ls = array();
+            $min = array();
+            $max = array();
+            $sid = array();
+            if ($match_data != 0) {
+                if ($match_f == '1' && isset($match_data[0]) && isset($match_data[0])) {
+                    foreach ($match_data[0] as $key => $value) {
+                        $sid_val = '';
+                        foreach ($value as $key1 => $value1) {
+                            if ($key1 == 'SelectionId') {
+                                $sid_val = $value1;
+                                $sid[] = $value1;
+                            }
+                            if ($key1 == 'RunnerName')
+                                $nat[$sid_val] = $value1;
+                            if ($key1 == 'GameStatus') {
+                                $gstatus[$sid_val] = $value1;
+                            }
+                            if ($key1 == 'BackPrice1')
+                                $b[$sid_val] = $value1;
+                            if ($key1 == 'LayPrice1')
+                                $l[$sid_val] = $value1;
+                        }
+                    }
+                    sort($sid);
+                    $check_fancy = 0;
+                    for ($i = 0; $i < sizeof($sid); $i++) {
+                        if ($nat[$sid[$i]] == $teamname) {
+                            if ($gstatus[$sid[$i]] != "") {
+                                return 'Suspend';
+                            } else {
+                                if ($betside == 'lay') {
+                                    if (round($l[$sid[$i]]) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                                if ($betside == 'back') {
+                                    if (round($b[$sid[$i]]) != $odds) {
+                                        return 'Unmatch Bet Total Not Allowed!';
+                                    }
+                                }
+                            }
+                            $check_fancy = 1;
+                        }
+                    }
+                    if ($check_fancy == 0) {
+                        return 'Suspend';
+                    }
                 }
             }
         }

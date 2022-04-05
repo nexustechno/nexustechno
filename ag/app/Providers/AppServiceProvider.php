@@ -40,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('website', function($app) {
             return $this->website;
         });
+        $this->app->singleton('API_SERVER', function($app) {
+            return 1;
+        });
 
         // Sharing is caring
         View::share('website', $this->website);

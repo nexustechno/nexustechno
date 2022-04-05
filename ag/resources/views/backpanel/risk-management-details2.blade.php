@@ -123,56 +123,46 @@
                         <div class="riskmanage_body_content">
                             <div class="row">
                                 @if($matchDataFound)
-                                    <div class="col-7 col-xs-12 p-0">
-                                        <div class="risk_matchodds_left">
-                                            <div id="app">
+                                <div class="col-7 col-xs-12 p-0">
+                                    <div class="risk_matchodds_left">
+                                        <div id="app">
 
-                                                @if($match->sports_id=='4')
+                                            <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                              pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                                              pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
+                                                              pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
+                                                              bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
+                                                              max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
+                                                              min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
+                                                              bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                              :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
 
-                                                    <cricketodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
-                                                                 pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                                                 pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                                                 pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                                                 bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                                                 max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
-                                                                 min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
-                                                                 bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                                 :event_id="'{{ $match->event_id }}'"></cricketodds>
+                                            @if($match->sports_id=='4')
 
-                                                    <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
-                                                                          pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                                                          pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                                                          pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                                                          bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                                                          min_bookmaker_limit="{{ $oddsLimit['min_bookmaker_limit'] }}"
-                                                                          max_bookmaker_limit="{{ $oddsLimit['max_bookmaker_limit'] }}"
-                                                                          bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                                          :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
-
-                                                    <cricketoddsfancy sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
-                                                                      pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
-                                                                      bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
-                                                                      clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
-                                                                      infoicon="{{ asset('asset/front/img/info-icon.png') }}"
-                                                                      min_bet_fancy_limit="{{$oddsLimit['min_fancy_limit']}}"
-                                                                      max_bet_fancy_limit="{{ $oddsLimit['max_fancy_limit'] }}"
-                                                                      bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                                      :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
-
-                                                @else
-                                                    <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
+                                                <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                                       pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
                                                                       bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                                                      max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
-                                                                      min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
+                                                                      min_bookmaker_limit="{{ $oddsLimit['min_bookmaker_limit'] }}"
+                                                                      max_bookmaker_limit="{{ $oddsLimit['max_bookmaker_limit'] }}"
                                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                                      :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
-                                                @endif
-                                            </div>
+                                                                      :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
+
+                                                <cricketoddsfancy sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                                  pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
+                                                                  bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
+                                                                  clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
+                                                                  infoicon="{{ asset('asset/front/img/info-icon.png') }}"
+                                                                  min_bet_fancy_limit="{{$oddsLimit['min_fancy_limit']}}"
+                                                                  max_bet_fancy_limit="{{ $oddsLimit['max_fancy_limit'] }}"
+                                                                  bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                                  :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
+
+                                            @endif
                                         </div>
                                     </div>
+                                </div>
                                 @else
                                     <div class="col-7 col-xs-12 p-0">
                                         <div class="risk_matchodds_left p-5 text-center mt-5">
@@ -254,13 +244,13 @@
                                                            style="border-radius: 3px;">
                                                 </form>
                                             </div>
-                                            {{--                                            @if($loginUser->agent_level=='COM')--}}
-                                            {{--                                                <div class="col-md-4 col-xs-4">--}}
-                                            {{--                                                    <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
-                                            {{--                                                            data-target="#Reject-Multiple-Bet">Reject All Bets--}}
-                                            {{--                                                    </button>--}}
-                                            {{--                                                </div>--}}
-                                            {{--                                            @endif--}}
+{{--                                            @if($loginUser->agent_level=='COM')--}}
+{{--                                                <div class="col-md-4 col-xs-4">--}}
+{{--                                                    <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
+{{--                                                            data-target="#Reject-Multiple-Bet">Reject All Bets--}}
+{{--                                                    </button>--}}
+{{--                                                </div>--}}
+{{--                                            @endif--}}
                                         </div>
                                         <div id="risk3" class="panel-collapse collapse show" role="tabpanel">
                                             <div class="row unmatch_wrap">
@@ -336,13 +326,13 @@
                                                                    style="border-radius: 3px;">
                                                         </form>
                                                     </div>
-                                                    {{--                                                    @if($loginUser->agent_level=='COM')--}}
-                                                    {{--                                                        <div class="col-md-4 col-xs-4">--}}
-                                                    {{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
-                                                    {{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
-                                                    {{--                                                            </button>--}}
-                                                    {{--                                                        </div>--}}
-                                                    {{--                                                    @endif--}}
+{{--                                                    @if($loginUser->agent_level=='COM')--}}
+{{--                                                        <div class="col-md-4 col-xs-4">--}}
+{{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
+{{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
+{{--                                                            </button>--}}
+{{--                                                        </div>--}}
+{{--                                                    @endif--}}
                                                 </div>
                                                 <div id="risk4" class="panel-collapse collapse show" role="tabpanel">
                                                     <div class="row unmatch_wrap">
@@ -413,13 +403,13 @@
                                                                    style="border-radius: 3px;">
                                                         </form>
                                                     </div>
-                                                    {{--                                                    @if($loginUser->agent_level=='COM')--}}
-                                                    {{--                                                        <div class="col-md-4 col-xs-4">--}}
-                                                    {{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
-                                                    {{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
-                                                    {{--                                                            </button>--}}
-                                                    {{--                                                        </div>--}}
-                                                    {{--                                                    @endif--}}
+{{--                                                    @if($loginUser->agent_level=='COM')--}}
+{{--                                                        <div class="col-md-4 col-xs-4">--}}
+{{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
+{{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
+{{--                                                            </button>--}}
+{{--                                                        </div>--}}
+{{--                                                    @endif--}}
                                                 </div>
                                                 <div id="risk3" class="panel-collapse collapse show" role="tabpanel">
                                                     <div class="row unmatch_wrap">
@@ -513,12 +503,12 @@
                                                                     <th class="text-center ng-binding">{{$matchname[1]}}</th>
                                                                     @if($adminBookUserTeamDrawEnable == true )
                                                                         <th class="text-center ng-binding">The Draw</th>
-                                                                @endif
+                                                                    @endif
                                                                 <!-- ngIf: MDLlist.runner3Name!=null -->
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody id="adminBookUser" style="overflow-y: auto !important; max-height: 200px !important; background-color: rgba(0, 0, 0, 0);">
-                                                                <?php echo $adminBookUser; ?>
+                                                                    <?php echo $adminBookUser; ?>
                                                                 </tbody>
                                                             </table>
                                                         </div>
@@ -556,7 +546,7 @@
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody id="adminBookUserBM" style="overflow-y: auto !important; max-height: 200px !important; background-color: rgba(0, 0, 0, 0);">
-                                                                    <?php echo $adminBookUserBM; ?>
+                                                                        <?php echo $adminBookUserBM; ?>
                                                                     </tbody>
                                                                 </table>
                                                             </div>

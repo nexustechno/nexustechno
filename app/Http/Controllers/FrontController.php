@@ -198,8 +198,17 @@ class FrontController extends Controller
 
         $match_data = [];
         if($match->match_id > 0) {
-            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($eventId, $matchId, $match->sports_id);
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($eventId, $matchId, $match->sports_id);
         }
+
+//        dd($match_data);
+
+        $server = 0;
+        if(isset($match_data['server'])){
+            $server = $match_data['server'];
+        }
+
+//        dd($match_data);
 
 //        if (empty($match_data)) {
 //            return redirect()->back()->with('error', 'No data found3!');
@@ -344,7 +353,38 @@ class FrontController extends Controller
 
         $match_updated_date = '';
 
-        $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
+        $team = [];
+        if($server == 1){
+            $page = 'front.matchDetail';
+            $team = explode(" v ", strtolower($matchname));
+            $section = '';
+            $match_updated_date = '';
+            if ($matchList->sports_id == '1') { //soccer
+                $section = '3';
+                $match_updated_date = strtotime($match_data[0]['updateTime']);
+            } elseif ($matchList->sports_id == '2') { //tennis
+                $section = '2';
+                $match_updated_date = strtotime($match_data[0]['updateTime']);
+            } elseif ($matchList->sports_id == '4') { //cricket
+                $section = 4;
+                $match_updated_date = $match_data['starttime'];
+            }
+
+            $inplay = 'False';
+
+            if($section == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True'){
+                $inplay = 'True';
+            }else if (isset($match_data[0]['inplay']) != '') {
+                $inplay = $match_data[0]['inplay'];
+                if ($inplay == 1)
+                    $inplay = 'True';
+                else
+                    $inplay = 'false';
+            }
+        }else {
+            $page = 'front.matchDetail2';
+            $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
+        }
 
         $oddsLimit['min_bookmaker_limit'] = $matchList->min_bookmaker_limit;
         $oddsLimit['max_bookmaker_limit'] = $matchList->max_bookmaker_limit;
@@ -445,15 +485,32 @@ class FrontController extends Controller
             $bet_total['team2_BM_total'] = round($team2_bet_total, 2);
             $bet_total['draw_BM_total'] = round($team_draw_bet_total, 2);
 
-            if ($match->sports_id == 4 && isset($match_data[0])) {
-                $match_data[0]['fancy'] = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($eventId, $matchId, $match->sports_id);
+            if ($match->sports_id == 4) {
+                 if($server == 1){
+                     if(isset($match_data['t3'])) {
+                         $fancyArray = $match_data['t3'];
+                     }
+                 }else{
+                     if(isset($match_data[0])) {
+                         $fancyArray = app('App\Http\Controllers\RestApi')->getSingleMatchFancyData($eventId, $matchId, $match->sports_id);
+                     }
+                 }
 
-                if (isset($match_data[0]['fancy']) && isset($match_data[0]['fancy'][0]) && isset($match_data[0]['fancy'][0]['RunnerName'])) {
-                    foreach ($match_data[0]['fancy'] as $key => $value) {
+                if (isset($fancyArray)) {
+                    foreach ($fancyArray as $key => $value) {
+
+                        if($server == 1) {
+                            $fancyName = $value['nat'];
+                            $sId = $value['sid'];
+                        }else{
+                            $fancyName = $value['RunnerName'];
+                            $sId = $value['SelectionId'];
+                        }
+
                         $final_exposer = 0;
-                        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('team_name', $value['RunnerName'])->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+                        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('team_name', $fancyName)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
 
-                        $abc = sizeof($my_placed_bets);
+//                        $abc = sizeof($my_placed_bets);
                         if (sizeof($my_placed_bets) > 0) {
                             $run_arr = array();
                             foreach ($my_placed_bets as $bet) {
@@ -526,7 +583,7 @@ class FrontController extends Controller
                         }
 
                         if ($final_exposer != 0) {
-                            $bet_total['fancy_' . $value['SelectionId']] = round(abs($final_exposer), 2);
+                            $bet_total['fancy_' . $sId] = round(abs($final_exposer), 2);
                         }
                     }
                 }
@@ -538,7 +595,7 @@ class FrontController extends Controller
             $bet_total['draw_BM_total'] = 0;
         }
 
-        return view('front.matchDetail', compact('match', 'match_data', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
+        return view($page, compact('match','team', 'server','match_data', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
     }
 
     public function fancyUserCalculation(Request $request){
@@ -9822,6 +9879,7 @@ class FrontController extends Controller
                 ->where('match_id', $mid)
                 ->where('bet_type', $btyp)
                 ->where('team_name', $tnm)
+                ->where('isDeleted', 0)
 //                ->groupBy('team_name',$tnm)
 //                ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
@@ -9832,6 +9890,7 @@ class FrontController extends Controller
                 ->where('result_declare', 1)
                 ->where('match_id', $mid)
                 ->where('bet_type', $btyp)
+                ->where('isDeleted', 0)
 //                ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
         }

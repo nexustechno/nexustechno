@@ -248,6 +248,7 @@ class MyaccountController extends Controller
                 ->where('match_id', $mid)
                 ->where('bet_type', $btyp)
                 ->where('team_name', $tnm)
+                ->where('isDeleted', 0)
                 //->groupBy('team_name',$tnm)
                 ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
@@ -258,6 +259,7 @@ class MyaccountController extends Controller
                 ->where('result_declare', 1)
                 ->where('match_id', $mid)
                 ->where('bet_type', $btyp)
+                ->where('isDeleted', 0)
                 ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
         }

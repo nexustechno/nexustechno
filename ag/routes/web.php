@@ -134,7 +134,7 @@ Route::group(['middleware' => 'prevent-back-history'], function () {
 
 Auth::routes();
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['backendnexusapi','auth']], function () {
     Route::get('profitloss-downline', 'MyaccountController@profitlossdownline')->name('profitloss-downline');
     Route::get('profitloss-market', 'MyaccountController@profitlossmarket')->name('profitloss-market');
     Route::get('/account/statement', 'MyaccountController@accountstatement')->name('account.statement');
@@ -177,7 +177,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('risk-management-data', 'SettingController@riskDetailsFormattedData')->name('risk-management-data');
     Route::post('getriskdetails', 'SettingController@getriskdetails')->name('getriskdetails');
     Route::post('getriskdetailTwo', 'SettingController@getriskdetailTwo')->name('getriskdetailTwo');
-    Route::get('risk-management-details/{id}', 'SettingController@risk_management_details')->name('backpanel/risk-management-details');
+    Route::get('risk-management-details/{id}', 'SettingController@risk_management_details')->name('backpanel.risk-management-details');
     Route::post('risk_management_details_ajax/{matchId}', 'SettingController@risk_management_details_ajax')->name('risk_management_details_ajax');
     Route::post('risk_management_matchCallForFancyNBM/{matchId}', 'SettingController@risk_management_matchCallForFancyNBM')->name('risk_management_matchCallForFancyNBM');
     Route::post('risk_management_odds_bet', 'SettingController@risk_management_odds_bet')->name('risk_management_odds_bet');
@@ -242,7 +242,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('casino/{id}/delete', 'CasinoController@delete')->name('delete.casino');
     Route::post('casino', 'CasinoController@insertCasino')->name('insertCasino');
     Route::get('live/casino', 'CasinoController@listCasino')->name('listCasino');
-    Route::get('live/casino/{casino_name}', 'CasinoController@casinoDetail')->name('casinoDetail');
+    Route::get('live/casino/{name}', 'CasinoController@casinoDetail')->name('casinoDetail');
     Route::post('casino/bet', 'CasinoController@allUserCasinoBet')->name('all_user_casino_bet');
 
     Route::get('casino/winner/{roundid}/cards/{casino_name}', 'CasinoCalculationController@getWinnerCards')->name('get.casino_bet.winner.cards');

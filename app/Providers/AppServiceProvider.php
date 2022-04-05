@@ -38,6 +38,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('website', function($app) {
             return $this->website;
         });
+        $this->app->singleton('API_SERVER', function($app) {
+            return 1;
+        });
         $matchesToBeDisplay = Match::where('status', 1)->where('winner', NULL)->pluck('event_id');
 
         // Sharing is caring

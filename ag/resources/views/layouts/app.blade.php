@@ -212,13 +212,13 @@ if ($auth_type == 'COM') {
                                     </li>
                                 @endif
 
-{{--                                @if(\Request::get('admin') == 1)--}}
+                                @if(\Request::get('admin') == 1)
                                     @if($ttuser->sports_leage ==  1 || $ttuser->agent_level == 'COM')
                                         <li class="{{ (request()->is('backpanel/sportLeage*' )) ? 'active' : '' }}">
                                             <a href="{{route('sportLeage')}}" class="text-color-white black-gradient-bg1">Sport-Leage</a>
                                         </li>
                                     @endif
-{{--                                @endif--}}
+                                @endif
 
                                 <?php
                                 $loginUser = $loginuser->agent_level;

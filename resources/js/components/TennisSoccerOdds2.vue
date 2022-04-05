@@ -25,7 +25,7 @@
                 <tr :key="runner.selectionId" v-if="match[0].status == 'CLOSED' || match[0].status == 'SUSPENDED' || runner.status == 'CLOSED' || runner.status == 'SUSPENDED'" class="fancy-suspend-tr 222222" :class="'team'+(index+1)+'_fancy'"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>CLOSED</span></div></td></tr>
                 <tr :id="'team'+(index+1)" class="white-bg " :class="'tr_team'+(index+1)">
                     <td v-if="index < 2">
-                        <img :src="bar_image"> <b :class="'team'+(index+1)">{{ team[index] }}</b>
+                        <img :src="bar_image"> <b :class="'team'+(index+1)">{{ runner.runnerName }}</b>
                         <div>
                             <span :id="'team'+(index+1)+'_bet_count_old'" :class="betTotalValue['team'+(index+1)+'_bet_total'] < 0 ? 'tolose text-color-red':'towin text-color-green'">(<span :id="'team'+(index+1)+'_total'">{{betTotalValue['team'+(index+1)+'_bet_total']}}</span>)</span>
                             <span :id="'team'+(index+1)+'_bet_count_new'" class="towin text-color-green" style="display: none;">0.00</span>
@@ -38,29 +38,48 @@
                             <span id="draw_bet_count_new" class="tolose text-color-red" style="display: none;">0.00</span>
                         </div>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="light-blue-bg-2 opnForm ODDSBack" :class="'td_team'+(index+1)+'_back_2'">
+                    <td :data-team="'team'+(index+1)" class="light-blue-bg-2 opnForm ODDSBack" :class="'td_team'+(index+1)+'_back_2'" v-if="runner.ex.availableToBack[2]!=undefined">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToBack[2].price" data-cls="cyan-bg"
                            class="back1btn text-color-black"> {{ runner.ex.availableToBack[2].price }} <br><span>{{ runner.ex.availableToBack[2].size }}</span></a>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="link(target, link)ght-blue-bg-3 ODDSBack" :class="'td_team'+(index+1)+'_back_1'">
+                    <td class="light-blue-bg-2" :class="'td_team'+(index+1)+'_back_2'" v-else>
+                        <a class="back1btn text-color-black">  <br><span></span></a>
+                    </td>
+                    <td :data-team="'team'+(index+1)" class="light-blue-bg-3 ODDSBack" :class="'td_team'+(index+1)+'_back_1'" v-if="runner.ex.availableToBack[1]!=undefined">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" data-cls="cyan-bg" :data-val="runner.ex.availableToBack[1].price"
                            class="back1btn text-color-black"> {{ runner.ex.availableToBack[1].price }}<br><span>{{ runner.ex.availableToBack[1].size }}</span></a>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="cyan-bg ODDSBack" :class="'td_team'+(index+1)+'_back_0'">
+                    <td class="light-blue-bg-3" :class="'td_team'+(index+1)+'_back_1'" v-else>
+                        <a class="back1btn text-color-black">  <br><span></span></a>
+                    </td>
+                    <td :data-team="'team'+(index+1)" class="cyan-bg ODDSBack" :class="'td_team'+(index+1)+'_back_0'" v-if="runner.ex.availableToBack[0]!=undefined">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToBack[0].price" data-cls="cyan-bg"
                            class="back1btn text-color-black"> {{ runner.ex.availableToBack[0].price }} <br><span>{{ runner.ex.availableToBack[0].size }}</span></a>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="pink-bg ODDSLay" :class="'td_team'+(index+1)+'_lay_0'">
+                    <td class="cyan-bg" :class="'td_team'+(index+1)+'_back_0'" v-else>
+                        <a class="back1btn text-color-black">  <br><span></span></a>
+                    </td>
+
+                    <td :data-team="'team'+(index+1)" class="pink-bg ODDSLay" :class="'td_team'+(index+1)+'_lay_0'" v-if="runner.ex.availableToLay[0]!=undefined">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToLay[0].price" data-cls="pink-bg"
                            class="lay1btn text-color-black"> {{ runner.ex.availableToLay[0].price }} <br><span>{{ runner.ex.availableToLay[0].size }}</span></a>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="light-pink-bg-2 ODDSLay" :class="'td_team'+(index+1)+'_lay_1'">
+                    <td class="pink-bg" :class="'td_team'+(index+1)+'_lay_0'" v-else>
+                        <a class="lay1btn text-color-black">  <br><span></span></a>
+                    </td>
+                    <td :data-team="'team'+(index+1)" class="light-pink-bg-2 ODDSLay" :class="'td_team'+(index+1)+'_lay_1'" v-if="runner.ex.availableToLay[1]!=undefined">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToLay[1].price" data-cls="pink-bg"
                            class="lay1btn text-color-black"> {{ runner.ex.availableToLay[1].price }} <br><span>{{ runner.ex.availableToLay[1].size }}</span></a>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="light-pink-bg-3 ODDSLay" :class="'td_team'+(index+1)+'_lay_2'">
+                    <td class="light-pink-bg-2" :class="'td_team'+(index+1)+'_lay_1'" v-else>
+                        <a class="lay1btn text-color-black">  <br><span></span></a>
+                    </td>
+                    <td :data-team="'team'+(index+1)" class="light-pink-bg-3 ODDSLay" :class="'td_team'+(index+1)+'_lay_2'" v-if="runner.ex.availableToLay[2]!=undefined">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToLay[2].price" data-cls="pink-bg"
                            class="lay1btn text-color-black"> {{ runner.ex.availableToLay[2].price }} <br><span>{{ runner.ex.availableToLay[2].size }}</span></a>
+                    </td>
+                    <td class="light-pink-bg-3" :class="'td_team'+(index+1)+'_lay_2'" v-else>
+                        <a class="lay1btn text-color-black">  <br><span></span></a>
                     </td>
                 </tr>
                 <tr id="mobile_tr" class="mobileBack mobile_bet_model_div" :class="'tr_team'+(index+1)">
@@ -90,7 +109,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','team','bet_total','sports_id'],
+        props: ['event_id', 'sports_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','team','bet_total'],
         data() {
             return {
                 match: [],
@@ -111,30 +130,30 @@
             }
 
             LaravelEcho.channel('match-detail').listen('.' + this.event_id, (data) => {
-
+                console.log("data received");
                 var newRecords = data.records;
 
                 if(this.match[0]!=undefined){
 
                     for(var i=0;i<this.match[0].runners.length;i++){
                         //team1 spark changes
-                        if((this.match[0].runners[i].ex.availableToBack[2].price!=newRecords[0].runners[i].ex.availableToBack[2])){
+                        if(newRecords[0].runners[i].ex.availableToBack[2]!=undefined && this.match[0].runners[i].ex.availableToBack[2]!=undefined && (this.match[0].runners[i].ex.availableToBack[2].price!=newRecords[0].runners[i].ex.availableToBack[2].price)){
                             $(".td_team"+(i+1)+"_back_2").addClass('spark');
                         }
-                        if((this.match[0].runners[i].ex.availableToBack[1].price!=newRecords[0].runners[i].ex.availableToBack[1])){
+                        if(newRecords[0].runners[i].ex.availableToBack[1]!=undefined && this.match[0].runners[i].ex.availableToBack[1]!=undefined && (this.match[0].runners[i].ex.availableToBack[1].price!=newRecords[0].runners[i].ex.availableToBack[1].price)){
                             $(".td_team"+(i+1)+"_back_1").addClass('spark');
                         }
-                        if((this.match[0].runners[i].ex.availableToBack[0].price!=newRecords[0].runners[i].ex.availableToBack[0])){
+                        if(newRecords[0].runners[i].ex.availableToBack[0]!=undefined && this.match[0].runners[i].ex.availableToBack[0]!=undefined && (this.match[0].runners[i].ex.availableToBack[0].price!=newRecords[0].runners[i].ex.availableToBack[0].price)){
                             $(".td_team"+(i+1)+"_back_0").addClass('spark');
                         }
 
-                        if((this.match[0].runners[i].ex.availableToLay[2].price!=newRecords[0].runners[i].ex.availableToLay[2])){
+                        if(newRecords[0].runners[i].ex.availableToLay[2]!=undefined && this.match[0].runners[i].ex.availableToLay[2]!=undefined && (this.match[0].runners[i].ex.availableToLay[2].price!=newRecords[0].runners[i].ex.availableToLay[2].price)){
                             $(".td_team"+(i+1)+"_lay_2").addClass('sparkLay');
                         }
-                        if((this.match[0].runners[i].ex.availableToLay[1].price!=newRecords[0].runners[i].ex.availableToLay[1])){
+                        if(newRecords[0].runners[i].ex.availableToLay[1]!=undefined && this.match[0].runners[i].ex.availableToLay[1]!=undefined && (this.match[0].runners[i].ex.availableToLay[1].price!=newRecords[0].runners[i].ex.availableToLay[1].price)){
                             $(".td_team"+(i+1)+"_lay_1").addClass('sparkLay');
                         }
-                        if((this.match[0].runners[i].ex.availableToLay[0].price!=newRecords[0].runners[i].ex.availableToLay[0])){
+                        if(newRecords[0].runners[i].ex.availableToLay[0]!=undefined && this.match[0].runners[i].ex.availableToLay[0]!=undefined && (this.match[0].runners[i].ex.availableToLay[0].price!=newRecords[0].runners[i].ex.availableToLay[0].price)){
                             $(".td_team"+(i+1)+"_lay_0").addClass('sparkLay');
                         }
                     }
@@ -172,9 +191,6 @@
 </script>
 
 <style>
-    body {
-        overflow: hidden;
-    }
 
     .fir-col3.pinimg img {
         width: 100%;

@@ -1136,9 +1136,6 @@ if (!$DEVICE) {
 
 <script type="text/javascript">
 
-
-
-
     var matchesToBeDisplay = {!! json_encode($matchesToBeDisplay) !!};
 
     // console.log(matchesToBeDisplay);
@@ -1161,15 +1158,28 @@ if (!$DEVICE) {
     window.Echo.channel('matches').listen('.cricket', (data) => {
         var inPlayCount = 0;
         var cricketLeftMenuHtml = '';
-        for (var i = 0; i < data.records.events.length; i++) {
 
-            if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
-                if (data.records.events[i].markets[0]!=undefined && data.records.events[i].markets[0].inPlay!=undefined && data.records.events[i].markets[0].inPlay == 1) {
-                    inPlayCount++;
+        if(data.server == 1) {
+            for (var i = 0; i < data.records.length; i++) {
+                if (matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
+                    if (data.records[i].inPlay == 'True') {
+                        inPlayCount++;
+                    }
+                    var eventNameString = data.records[i].eventName.split('/');
+                    cricketLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
                 }
+            }
+        }else {
+            for (var i = 0; i < data.records.events.length; i++) {
 
-                // var eventNameString = data.records[i].eventName.split('/');
-                cricketLeftMenuHtml += '<li><a href="/matchDetail/' + data.records.events[i].id + '" class="text-color-black2">' + data.records.events[i].name + '</a></li>'
+                if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
+                    if (data.records.events[i].markets[0] != undefined && data.records.events[i].markets[0].inPlay != undefined && data.records.events[i].markets[0].inPlay == 1) {
+                        inPlayCount++;
+                    }
+
+                    // var eventNameString = data.records[i].eventName.split('/');
+                    cricketLeftMenuHtml += '<li><a href="/matchDetail/' + data.records.events[i].id + '" class="text-color-black2">' + data.records.events[i].name + '</a></li>'
+                }
             }
         }
         localStorage.setItem('cricketCount', inPlayCount);
@@ -1179,13 +1189,25 @@ if (!$DEVICE) {
     }).listen('.tennis', (data) => {
         var inPlayCount = 0;
         var tennisLeftMenuHtml = '';
-        for (var i = 0; i < data.records.events.length; i++) {
-            if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
-                if (data.records.events[i].markets[0]!=undefined && data.records.events[i].markets[0].inPlay!=undefined && data.records.events[i].markets[0].inPlay == 1) {
-                    inPlayCount++;
+        if(data.server == 1) {
+            for (var i = 0; i < data.records.length; i++) {
+                if (matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
+                    if (data.records[i].inPlay == 'True') {
+                        inPlayCount++;
+                    }
+                    var eventNameString = data.records[i].eventName.split('/');
+                    tennisLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
                 }
-                // var eventNameString = data.records[i].eventName.split('/');
-                tennisLeftMenuHtml += '<li><a href="/matchDetail/' + data.records.events[i].id + '" class="text-color-black2">' + data.records.events[i].name + '</a></li>'
+            }
+        }else {
+            for (var i = 0; i < data.records.events.length; i++) {
+                if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
+                    if (data.records.events[i].markets[0] != undefined && data.records.events[i].markets[0].inPlay != undefined && data.records.events[i].markets[0].inPlay == 1) {
+                        inPlayCount++;
+                    }
+                    // var eventNameString = data.records[i].eventName.split('/');
+                    tennisLeftMenuHtml += '<li><a href="/matchDetail/' + data.records.events[i].id + '" class="text-color-black2">' + data.records.events[i].name + '</a></li>'
+                }
             }
         }
         localStorage.setItem('tennisCount', inPlayCount);
@@ -1195,14 +1217,26 @@ if (!$DEVICE) {
     }).listen('.soccer', (data) => {
         var inPlayCount = 0;
         var soccerLeftMenuHtml = '';
-        for (var i = 0; i < data.records.events.length; i++) {
-            if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
-                if (data.records.events[i].markets[0]!=undefined && data.records.events[i].markets[0].inPlay!=undefined && data.records.events[i].markets[0].inPlay == 1) {
-                    inPlayCount++;
+        if(data.server == 1) {
+            for (var i = 0; i < data.records.length; i++) {
+                if (matchesToBeDisplay.indexOf(data.records[i].gameId) >= 0) {
+                    if (data.records[i].inPlay == 'True') {
+                        inPlayCount++;
+                    }
+                    var eventNameString = data.records[i].eventName.split('/');
+                    soccerLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
                 }
+            }
+        }else {
+            for (var i = 0; i < data.records.events.length; i++) {
+                if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
+                    if (data.records.events[i].markets[0] != undefined && data.records.events[i].markets[0].inPlay != undefined && data.records.events[i].markets[0].inPlay == 1) {
+                        inPlayCount++;
+                    }
 
-                // var eventNameString = data.records[i].eventName.split('/');
-                soccerLeftMenuHtml += '<li><a href="/matchDetail/' + data.records.events[i].id + '" class="text-color-black2">' + data.records.events[i].name + '</a></li>'
+                    // var eventNameString = data.records[i].eventName.split('/');
+                    soccerLeftMenuHtml += '<li><a href="/matchDetail/' + data.records.events[i].id + '" class="text-color-black2">' + data.records.events[i].name + '</a></li>'
+                }
             }
         }
         localStorage.setItem('soccerCount', inPlayCount);

@@ -124,47 +124,78 @@
 
                 var htmldata = '';
                 if(htmlRender == false) {
-                    for (var i = 0; i < data.records.events.length; i++) {
-                        // console.log(data.records.events[i]);
 
-                        if(data.records.events[i].markets[0]!=undefined) {
+                    if(data.server == 1) {
+                        for (var i = 0; i < data.records.length; i++) {
+
                             var checked = '';
-                            if (jQuery.inArray((data.records.events[i].id).toString(), sports_events) != -1) {
-                                checked = 'checked';
+                            if (jQuery.inArray(data.records[i].gameId, sports_events) != -1) {
+                                var checked = 'checked';
                             }
 
                             var isDraw = 0;
-                            if (data.records.events[i].markets[0] != undefined && data.records.events[i].markets[0].numberOfRunners >= 3) {
+                            if (data.records[i].back12 > 0 && data.records[i].lay12 > 0) {
                                 isDraw = 1;
                             }
 
                             var bookmaker = 0;
-                            if (data.records.events[i].hasSportsBookMarkets == true || data.records.events[i].hasInPlayBookMakerMarkets == true) {
+                            if (data.records[i].m1 == 'True') {
                                 bookmaker = 1;
                             }
 
                             var fancy = 0;
-                            if (data.records.events[i].hasFancyBetMarkets == true || data.records.events[i].hasInPlayFancyBetMarkets == true) {
+                            if (data.records[i].f == 'True') {
                                 fancy = 1;
                             }
 
-
-                            if (data.records.events[i].markets[0] != undefined) {
-                                var marketId = data.records.events[i].markets[0].marketId;
-                            } else {
-                                var marketId = data.records.events[i].id;
+                            var eventNameString = data.records[i].eventName.split('/');
+                            if (data.records[i].gameId.charAt(0) == 3) {
+                                htmldata += '<tr role="row" class="even">' +
+                                    '<td class="notLink">' + data.records[i].marketId + '</td> ' +
+                                    '<td class="notLink">' + data.records[i].gameId + '</td>' +
+                                    '<td class="notLink">' + eventNameString[0] + '</td>' +
+                                    '<td class="notLink">' + eventNameString[1] + '</td>' +
+                                    '<td class="text-center">' +
+                                    '<input type="checkbox" ' + checked + ' name="sportLeage" data-sports_id="' + sports_id + '" data-isDraw="' + isDraw + '" data-fancy="' + fancy + '" data-bookmaker="' + bookmaker + '" data-matchId="' + data.records[i].marketId + '" data-eventId="' + data.records[i].gameId + '" data-matchName="' + eventNameString[0] + '" data-game="' + sports + '" data-matchDate="' + eventNameString[1] + '" onclick="onClickSportsLeage(this)">' +
+                                    '</td>' +
+                                    '</tr>'
                             }
+                        }
+                    }else {
+                        for (var i = 0; i < data.records.events.length; i++) {
+                            if (data.records.events[i].markets[0] != undefined) {
+                                var checked = '';
+                                if (jQuery.inArray(data.records.events[i].id, sports_events) != -1) {
+                                    var checked = 'checked';
+                                }
 
-                            htmldata += '<tr role="row" class="white-bg">' +
-                                '<td class="notLink text-left">' + marketId + '</td> ' +
-                                '<td class="notLink text-left">' + data.records.events[i].id + '</td>' +
-                                '<td class="notLink text-left">' + data.records.events[i].name + '</td>' +
-                                '<td class="notLink text-left">' + data.records.events[i].openDate + '</td>' +
-                                '<td class="text-center">' +
-                                '<input type="checkbox" ' + checked + ' name="sportLeage" data-sports_id="' + sports_id + '" data-isDraw="' + isDraw + '" data-fancy="' + fancy + '" data-bookmaker="' + bookmaker + '" data-matchId="' + marketId + '" data-eventId="' + data.records.events[i].id + '" data-matchName="' + data.records.events[i].name + '" data-game="' + sports + '" data-matchDate="' + data.records.events[i].openDate + '" onclick="onClickSportsLeage(this)">' +
-                                '</td>' +
-                                '</tr>'
+                                var isDraw = 0;
+                                if (data.records.events[i].markets[0].numberOfRunners >= 3) {
+                                    isDraw = 1;
+                                }
 
+                                var bookmaker = 0;
+                                if (data.records.events[i].hasSportsBookMarkets == true || data.records.events[i].hasInPlayBookMakerMarkets == true) {
+                                    bookmaker = 1;
+                                }
+
+                                var fancy = 0;
+                                if (data.records.events[i].hasFancyBetMarkets == true || data.records.events[i].hasInPlayFancyBetMarkets == true) {
+                                    fancy = 1;
+                                }
+
+
+                                htmldata += '<tr role="row" class="even">' +
+                                    '<td class="notLink">' + data.records.events[i].markets[0].marketId + '</td> ' +
+                                    '<td class="notLink">' + data.records.events[i].id + '</td>' +
+                                    '<td class="notLink">' + data.records.events[i].name + '</td>' +
+                                    '<td class="notLink">' + data.records.events[i].openDate + '</td>' +
+                                    '<td class="text-center">' +
+                                    '<input type="checkbox" ' + checked + ' name="sportLeage" data-sports_id="' + sports_id + '" data-isDraw="' + isDraw + '" data-fancy="' + fancy + '" data-bookmaker="' + bookmaker + '" data-matchId="' + data.records.events[i].markets[0].marketId + '" data-eventId="' + data.records.events[i].id + '" data-matchName="' + data.records.events[i].name + '" data-game="' + sports + '" data-matchDate="' + data.records.events[i].openDate + '" onclick="onClickSportsLeage(this)">' +
+                                    '</td>' +
+                                    '</tr>'
+
+                            }
                         }
                     }
                     $("#addNEwRowBody").html(htmldata);

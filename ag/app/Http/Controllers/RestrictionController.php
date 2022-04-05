@@ -234,8 +234,14 @@ class RestrictionController extends Controller
 //            $cumulative_pl_cli = $cumuPL_n - $cumulative_pl_loss;
                 //$cumulative_pl_cli=$cumulative_pl_profit-$cumulative_pl_loss; /// nnnn 18-10-2021
 
-                $depParent = AgentController::userBalance($row->id);
-                $calData = explode("~", $depParent);
+//                $depParent = AgentController::userBalance($row->id);
+//                $calData = explode("~", $depParent);
+
+                $calData = [];
+                $calData[0] = 0;
+                $calData[1] = 0;
+                $calData[2] = 0;
+                $calData[3] = 0;
 
                 $cumulative_pl_cli+=$calData[3];
 

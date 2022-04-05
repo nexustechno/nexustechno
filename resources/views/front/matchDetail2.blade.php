@@ -322,9 +322,9 @@
                                 $match_date = $match['match_date'];
                         }
 
-                        if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
+                        if ($match['sports_id'] == 4 && $inplay === 'True') {
                             $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                        } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
+                        } else if ($match['sports_id'] != 4 && $inplay == 1) {
                             $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
                         } else {
                             $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
@@ -467,9 +467,9 @@
                                             $match_date = $match['match_date'];
                                     }
 
-                                    if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
+                                    if ($match['sports_id'] == 4 && $inplay === 'True') {
                                         $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                                    } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
+                                    } else if ($match['sports_id'] != 4 && $inplay == 1) {
                                         $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
                                     } else {
                                         $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
@@ -491,18 +491,18 @@
                             </div>
                         </div>
                         <div id="app">
+                            @if(isset($match_data[0]))
+                            <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                              pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                              pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
+                                              pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
+                                              bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
+                                              max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
+                                              min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
+                                              bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                              :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
 
                             @if($match->sports_id=='4')
-
-                                <cricketodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
-                                             pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                             pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                             pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                             bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                             max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
-                                             min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
-                                             bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                             :event_id="'{{ $match->event_id }}'"></cricketodds>
 
                                 <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
@@ -524,16 +524,9 @@
                                                   bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                   :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
 
+                            @endif
                             @else
-                                <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
-                                                  pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                                  pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                                  pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                                  bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                                  max_bet_odds_limit="{{ $oddsLimit['max_bet_odds_limit'] }}"
-                                                  min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
-                                                  bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                  :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
+                                <p class="text-center p-2">No data available!</p>
                             @endif
                         </div>
                         <div class="mb-5"></div>
@@ -707,7 +700,7 @@
         </div>
         <div class="modal rulesfancy_betsmodal" id="rulesFancyBetsModal">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content p-0">
                     <div class="modal-header black-bg3">
                         <h4 class="modal-title text-color-yellow1">Rules of Fancy Bets</h4>
                         <button type="button" class="close" data-dismiss="modal"><img
@@ -1989,7 +1982,7 @@
                     }
                     call_display_bet_list(match_sel);
 
-                }, 10000);
+                }, 1000);
 
                 // setInterval(function () {
                 //     loadDetailPageContent();
@@ -5672,13 +5665,15 @@
             });
         }
 
-        setTimeout(() => {
-            var match_sel = $('#select_bet_on_match').val();
-            if (match_sel == "" || match_sel == null)
-                match_sel = '{{$match->event_id}}~~' + 'All';
+        if (getUser != '') {
+            setTimeout(() => {
+                var match_sel = $('#select_bet_on_match').val();
+                if (match_sel == "" || match_sel == null)
+                    match_sel = '{{$match->event_id}}~~' + 'All';
 
-            call_display_bet_list(match_sel);
-        }, 10);
+                call_display_bet_list(match_sel);
+            }, 10);
+        }
 
         function saveBetcall(confirmBet) {
             var bet_type = $('#betTypeAdd').val();

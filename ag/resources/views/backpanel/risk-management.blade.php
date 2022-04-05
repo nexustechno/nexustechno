@@ -83,47 +83,92 @@
 
     <script type="text/javascript">
 
-        function loadData(record){
-            if (record.markets != undefined && record.markets[0] != undefined && record.markets[0].selections != undefined) {
-                var selections = record.markets[0].selections;
-                var inPlay = record.markets[0].inPlay;
+        function loadData(server,record){
+            if(server == 1){
 
-                var eventId = record.id;
+                var inPlay = record.inPlay;
+                var eventId = record.gameId;
 
-                if (inPlay == 1) {
+                if (inPlay == 'True') {
                     $(".in-play-status-" + eventId).removeClass('collapse');
                 } else {
                     $(".in-play-status-" + eventId).addClass('collapse');
                 }
 
-                if (selections.length > 0 && selections[0] != undefined) {
-                    var team = 1;
-                    for (var j = selections.length - 1; j >= 0; j--) {
-                        if(selections[j].availableToBack[0]!=undefined && selections[j].availableToBack[0].price!=undefined) {
-                            $(".team" + team + "-" + eventId + " .button_content .backbtn").html(selections[j].availableToBack[0].price);
+                var team = 1;
+                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back1);
+                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay1);
+
+                var team = 2;
+                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back11);
+                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay11);
+
+                var team = 3;
+                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back12);
+                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay12);
+            }else {
+                if (record.markets != undefined && record.markets[0] != undefined && record.markets[0].selections != undefined) {
+                    var selections = record.markets[0].selections;
+                    var inPlay = record.markets[0].inPlay;
+
+                    var eventId = record.id;
+
+                    if (inPlay == 1) {
+                        $(".in-play-status-" + eventId).removeClass('collapse');
+                    } else {
+                        $(".in-play-status-" + eventId).addClass('collapse');
+                    }
+
+                    if (selections.length > 0 && selections[0] != undefined) {
+                        var team = 1;
+                        for (var j = selections.length - 1; j >= 0; j--) {
+                            if (selections[j].availableToBack[0] != undefined && selections[j].availableToBack[0].price != undefined) {
+                                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(selections[j].availableToBack[0].price);
+                            }
+                            if (selections[j].availableToLay[0] != undefined && selections[j].availableToLay[0].price != undefined) {
+                                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(selections[j].availableToLay[0].price);
+                            }
+                            team++;
                         }
-                        if(selections[j].availableToLay[0]!=undefined && selections[j].availableToLay[0].price!=undefined) {
-                            $(".team" + team + "-" + eventId + " .button_content .laybtn").html(selections[j].availableToLay[0].price);
-                        }
-                        team++;
                     }
                 }
             }
         }
 
         window.Echo.channel('matches').listen('.tennis', (data) => {
-            for (var i = 0; i < data.records.events.length; i++) {
-                loadData(data.records.events[i]);
+            // console.log(data);
+            if(data.server == 1){
+                for (var i = 0; i < data.records.length; i++) {
+                    loadData(data.server,data.records[i]);
+                }
+            }else {
+                for (var i = 0; i < data.records.events.length; i++) {
+                    loadData(data.server,data.records.events[i]);
+                }
             }
         });
         window.Echo.channel('matches').listen('.cricket', (data) => {
-            for (var i = 0; i < data.records.events.length; i++) {
-                loadData(data.records.events[i]);
+            // console.log(data);
+            if(data.server == 1){
+                for (var i = 0; i < data.records.length; i++) {
+                    loadData(data.server,data.records[i]);
+                }
+            }else {
+                for (var i = 0; i < data.records.events.length; i++) {
+                    loadData(data.server,data.records.events[i]);
+                }
             }
         });
         window.Echo.channel('matches').listen('.soccer', (data) => {
-            for (var i = 0; i < data.records.events.length; i++) {
-                loadData(data.records.events[i]);
+            // console.log(data);
+            if(data.server == 1){
+                for (var i = 0; i < data.records.length; i++) {
+                    loadData(data.server,data.records[i]);
+                }
+            }else {
+                for (var i = 0; i < data.records.events.length; i++) {
+                    loadData(data.server,data.records.events[i]);
+                }
             }
         });
     </script>

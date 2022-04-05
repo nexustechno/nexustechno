@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ExposerDeductLog;
 use App\UsersAccount;
+use http\Client;
 use Illuminate\Http\Request;
 use App\setting;
 use App\User;
@@ -3174,6 +3175,7 @@ class SettingController extends Controller
 
     public function risk_management_details($id)
     {
+
         $managetv = ManageTv::latest()->first();
         //$loginUser = Auth::user();
 
@@ -3199,18 +3201,59 @@ class SettingController extends Controller
         $matchList = Match::where('id', $id)->first();
         $match = $matchList;
 
-//        echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($matchList->toArray());die();
+        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($matchList->event_id, $matchList->match_id, $matchList->sports_id);
 
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchOddsData($matchList->event_id, $matchList->match_id, $matchList->sports_id);
-        $inplay = 'False';
-
-        $matchDataFound = false;
-        if(isset($match_data[0])){
-            $matchDataFound = true;
+        $server = 0;
+        if(isset($match_data['server'])){
+            $server = $match_data['server'];
         }
 
-        if(isset($match_data[0]) && isset($match_data[0]['inPlay'])) {
-            $inplay = $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
+        $team = [];
+        $matchDataFound = false;
+        if($server == 1){
+            $matchname = $match->match_name;
+            $team = explode(" v ", strtolower($matchname));
+            $page = 'backpanel.risk-management-details';
+            $inplay = 'False';
+            if ($matchList->sports_id == '1') { //soccer
+                $section = '3';
+                $match_updated_date = strtotime($match_data[0]['updateTime']);
+            } elseif ($matchList->sports_id == '2') { //tennis
+                $section = '2';
+                $match_updated_date = strtotime($match_data[0]['updateTime']);
+            } elseif ($matchList->sports_id == '4') { //cricket
+                $section = 4;
+                $match_updated_date = $match_data['starttime'];
+            }
+            if($section == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True'){
+                $inplay = 'True';
+            }else if (isset($match_data[0]['inplay']) != '') {
+
+                $inplay = $match_data[0]['inplay'];
+                if ($inplay == 1)
+                    $inplay = 'True';
+                else
+                    $inplay = 'false';
+            }
+
+            if($section == 4){
+
+                if(isset($match_data['t1'])){
+                    $matchDataFound = true;
+                }
+            }else{
+
+                if(isset($match_data[0])){
+                    $matchDataFound = true;
+                }
+            }
+        }else {
+            $page = 'backpanel.risk-management-details2';
+            $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
+
+            if(isset($match_data[0])){
+                $matchDataFound = true;
+            }
         }
 
         $list = User::where('parentid', $loginUser->id)->orderBy('user_name')->get();
@@ -3949,7 +3992,9 @@ class SettingController extends Controller
         $oddsLimit['min_fancy_limit'] = $matchList->min_fancy_limit;
         $oddsLimit['max_fancy_limit'] = $matchList->max_fancy_limit;
 
-        return view('backpanel/risk-management-details', compact('inplay','matchDataFound', 'match','matchList','oddsLimit','bet_total', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
+//        dd($page);
+
+        return view($page, compact('inplay','server','matchDataFound', 'team','match','matchList','oddsLimit','bet_total', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
     }
 
     public function risk_management_book_bm_book(Request $request)
