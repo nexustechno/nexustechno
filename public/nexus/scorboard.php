@@ -24,6 +24,9 @@ if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer
 
     $arr = json_decode($res,true);
 
+    if(isset($_GET['debug'])){
+        echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($arr);die();
+    }
 
     if(isset($arr['score'])){
         $explode = explode("/",$arr['score']);
