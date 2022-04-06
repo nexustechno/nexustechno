@@ -1982,7 +1982,8 @@
     .loginleft-block {
         width: 100%;
         position: relative;
-        height: 250px;
+        height: 280px;
+        min-height: 280px;
         /*background-image: url(../img/login-headerbg.png);*/
         background-repeat: no-repeat;
         background-size: 100% 100%;

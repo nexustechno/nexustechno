@@ -169,11 +169,14 @@ class FrontController extends Controller
         $logindata = '';
         if (!empty($getUserCheck)) {
             $logindata = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-            $getUser = $logindata;
-            $userId = $getUser->id;
-        }else{
-//            return redirect()->back()->with('error', 'Please login');
         }
+
+        if(!isset($logindata) || (isset($logindata) && empty($logindata))){
+            return redirect()->back()->with('error', 'Please login');
+        }
+
+        $getUser = $logindata;
+        $userId = $getUser->id;
 
         if ($logindata) {
             $stkdata = UserStake::where('user_id', $logindata->id)->first();
@@ -200,8 +203,6 @@ class FrontController extends Controller
         if($match->match_id > 0) {
             $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($eventId, $matchId, $match->sports_id);
         }
-
-//        dd($match_data);
 
         $server = 0;
         if(isset($match_data['server'])){
@@ -353,6 +354,8 @@ class FrontController extends Controller
 
         $match_updated_date = '';
 
+//        dd($match_data['t1'][0][0]);
+        $match_data_found = false;
         $team = [];
         if($server == 1){
             $page = 'front.matchDetail';
@@ -361,20 +364,30 @@ class FrontController extends Controller
             $match_updated_date = '';
             if ($matchList->sports_id == '1') { //soccer
                 $section = '3';
-                $match_updated_date = strtotime($match_data[0]['updateTime']);
             } elseif ($matchList->sports_id == '2') { //tennis
                 $section = '2';
-                $match_updated_date = strtotime($match_data[0]['updateTime']);
             } elseif ($matchList->sports_id == '4') { //cricket
                 $section = 4;
+            }
+
+            if(isset($match_data[0])) {
+                $match_updated_date = strtotime($match_data[0]['updateTime']);
+            }
+
+            if(isset($match_data['starttime'])) {
                 $match_updated_date = $match_data['starttime'];
             }
 
             $inplay = 'False';
 
-            if($section == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True'){
+            if(isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay']){
+                $match_data_found = true;
+            }
+
+            if(isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True'){
                 $inplay = 'True';
             }else if (isset($match_data[0]['inplay']) != '') {
+                $match_data_found = true;
                 $inplay = $match_data[0]['inplay'];
                 if ($inplay == 1)
                     $inplay = 'True';
@@ -384,6 +397,9 @@ class FrontController extends Controller
         }else {
             $page = 'front.matchDetail2';
             $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
+            if(isset($match_data[0]) && isset($match_data[0]['inPlay'])){
+                $match_data_found = true;
+            }
         }
 
         $oddsLimit['min_bookmaker_limit'] = $matchList->min_bookmaker_limit;
@@ -595,7 +611,7 @@ class FrontController extends Controller
             $bet_total['draw_BM_total'] = 0;
         }
 
-        return view($page, compact('match','team', 'server','match_data', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
+        return view($page, compact('match','team','match_data_found', 'server','match_data', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
     }
 
     public function fancyUserCalculation(Request $request){

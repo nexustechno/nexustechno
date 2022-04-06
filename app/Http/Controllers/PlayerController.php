@@ -493,7 +493,8 @@ class PlayerController extends Controller
                                 $response['ODDS'][$extra['teamname4']]['ODDS_profitLost'] += $bet['bet_amount'];
                             }
                         }
-                    } else {
+                    }
+                    else {
                         $profitAmt = $bet['bet_profit']; ////nnn
                         $bet_amt = ($bet['bet_amount'] * (-1));
                         if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
@@ -563,7 +564,8 @@ class PlayerController extends Controller
                                 $response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'] += $bet['bet_amount'];
                             }
                         }
-                    } else {
+                    }
+                    else {
                         $bet_amt = ($bet['bet_amount'] * (-1));
                         if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
                             $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
@@ -620,6 +622,259 @@ class PlayerController extends Controller
             }
         }
         return $response;
+    }
+
+    public static function getOddsAndBookmakerExposer($id,$eventId=0,$conditionalParameters = []){
+        $query = MyBets::select('my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.*')->join('match', 'match.event_id', '=', 'my_bets.match_id')
+            ->where('my_bets.result_declare', 0)
+            ->where('my_bets.user_id', $id)
+            ->where('my_bets.isDeleted', 0)
+            ->whereNull('match.winner')
+            ->where('my_bets.bet_type', '!=', 'SESSION')
+            ->orderBy('my_bets.id', 'Desc')
+            ->groupby('my_bets.match_id');
+
+        if($eventId!=0){
+            if(isset($conditionalParameters['match_id'])){
+                $query->where("my_bets.match_id",$conditionalParameters['match_id'], $eventId);
+            }else {
+                $query->where("my_bets.match_id", $eventId);
+            }
+        }
+
+        $sportsModel = $query->get();
+
+        $exposerArray = [
+            'exposer' => 0
+        ];
+
+        foreach ($sportsModel as $bet) {
+            $exAmtArr = self::getExAmountCricketAndTennis('', $bet->event_id, $id);
+
+            if (isset($exAmtArr['ODDS'])) {
+                $arr = array();
+                foreach ($exAmtArr['ODDS'] as $key => $profitLos) {
+                    if ($profitLos['ODDS_profitLost'] < 0) {
+                        $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                    }
+                }
+                if (is_array($arr) && count($arr) > 0) {
+                    $exposerArray['exposer'] += max($arr);
+                }
+
+                $exposerArray['ODDS'] = $exAmtArr['ODDS'];
+            }
+
+            if (isset($exAmtArr['BOOKMAKER'])) {
+                $arrB = array();
+                foreach ($exAmtArr['BOOKMAKER'] as $key => $profitLos) {
+                    if ($profitLos['BOOKMAKER_profitLost'] < 0) {
+                        $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                    }
+                }
+
+                $exposerArray['BOOKMAKER'] = $exAmtArr['BOOKMAKER'];
+
+                if (is_array($arrB) && count($arrB) > 0) {
+                    $exposerArray['exposer'] += max($arrB);
+                }
+            }
+        }
+
+//        dd($exposerArray);
+
+        if(isset($conditionalParameters['bet_type'])){
+            $response = self::getOddsAndBookmakerExposer($id,$eventId);
+
+//            dd($response);
+
+            $bet = [];
+            $bet['bet_type'] = $conditionalParameters['bet_type'];
+            $bet['bet_side'] = $conditionalParameters['bet_side'];
+            $bet['team_name'] = $conditionalParameters['team_name'];
+            $bet['exposureAmt'] = $conditionalParameters['exposureAmt'];
+            $bet['bet_amount'] = $conditionalParameters['bet_amount'];
+            $bet['bet_profit'] = $conditionalParameters['bet_profit'];
+            $extra = json_decode($conditionalParameters['extra'], true);
+
+//            dd($bet['bet_type']);
+
+            switch ($bet['bet_type']) {
+                case "ODDS":
+                {
+                    if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = $bet['exposureAmt'];
+                        $profitAmt = ($profitAmt * (-1));
+                        if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
+                            $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
+                        } else {
+                            $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                        }
+                        if (isset($extra['teamname1']) && !empty($extra['teamname1'])) {
+                            if (!isset($response['ODDS'][$extra['teamname1']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname1']]['ODDS_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['ODDS'][$extra['teamname1']]['ODDS_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                        if (isset($extra['teamname2']) && !empty($extra['teamname2'])) {
+                            if (!isset($response['ODDS'][$extra['teamname2']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname2']]['ODDS_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['ODDS'][$extra['teamname2']]['ODDS_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                        if (isset($extra['teamname3']) && !empty($extra['teamname3'])) {
+                            if (!isset($response['ODDS'][$extra['teamname3']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname3']]['ODDS_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['ODDS'][$extra['teamname3']]['ODDS_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                        if (isset($extra['teamname4']) && !empty($extra['teamname4'])) {
+                            if (!isset($response['ODDS'][$extra['teamname4']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname4']]['ODDS_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['ODDS'][$extra['teamname4']]['ODDS_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                    }
+                    else {
+                        $profitAmt = $bet['bet_profit']; ////nnn
+                        $bet_amt = ($bet['bet_amount'] * (-1));
+                        if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
+                            $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
+                        } else {
+                            $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] += $profitAmt;
+                        }
+                        if (isset($extra['teamname1']) && !empty($extra['teamname1'])) {
+                            if (!isset($response['ODDS'][$extra['teamname1']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname1']]['ODDS_profitLost'] = $bet_amt;
+                            } else {
+                                $response['ODDS'][$extra['teamname1']]['ODDS_profitLost'] += $bet_amt;
+                            }
+                        }
+                        if (isset($extra['teamname2']) && !empty($extra['teamname2'])) {
+                            if (!isset($response['ODDS'][$extra['teamname2']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname2']]['ODDS_profitLost'] = $bet_amt;
+                            } else {
+                                $response['ODDS'][$extra['teamname2']]['ODDS_profitLost'] += $bet_amt;
+                            }
+                        }
+                        if (isset($extra['teamname3']) && !empty($extra['teamname3'])) {
+                            if (!isset($response['ODDS'][$extra['teamname3']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname3']]['ODDS_profitLost'] = $bet_amt;
+                            } else {
+                                $response['ODDS'][$extra['teamname3']]['ODDS_profitLost'] += $bet_amt;
+                            }
+                        }
+                        if (isset($extra['teamname4']) && !empty($extra['teamname4'])) {
+                            if (!isset($response['ODDS'][$extra['teamname4']]['ODDS_profitLost'])) {
+                                $response['ODDS'][$extra['teamname4']]['ODDS_profitLost'] = $bet_amt;
+                            } else {
+                                $response['ODDS'][$extra['teamname4']]['ODDS_profitLost'] += $bet_amt;
+                            }
+                        }
+                    }
+
+//                    dd($response);
+
+                    $arr = array();
+                    foreach ($response['ODDS'] as $key => $profitLos) {
+                        if ($profitLos['ODDS_profitLost'] < 0) {
+                            $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                        }
+                    }
+
+                    if (is_array($arr) && count($arr) > 0) {
+                        $response['exposer'] += max($arr);
+                    }
+
+                    $exposerArray['ODDS'] = $response['ODDS'];
+                    $exposerArray['exposer'] += $response['exposer'];
+                    break;
+                }
+                case 'BOOKMAKER':
+                {
+                    $profitAmt = $bet['bet_profit'];
+
+                    if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = ($profitAmt * (-1));
+                        if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
+                            $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
+                        } else {
+                            $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] += $profitAmt;
+                        }
+                        if (isset($extra['teamname1']) && !empty($extra['teamname1'])) {
+                            if (!isset($response['BOOKMAKER'][$extra['teamname1']]['BOOKMAKER_profitLost'])) {
+                                $response['BOOKMAKER'][$extra['teamname1']]['BOOKMAKER_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['BOOKMAKER'][$extra['teamname1']]['BOOKMAKER_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                        if (isset($extra['teamname2']) && !empty($extra['teamname2'])) {
+                            if (!isset($response['BOOKMAKER'][$extra['teamname2']]['BOOKMAKER_profitLost'])) {
+                                $response['BOOKMAKER'][$extra['teamname2']]['BOOKMAKER_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['BOOKMAKER'][$extra['teamname2']]['BOOKMAKER_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                        if (isset($extra['teamname3']) && !empty($extra['teamname3'])) {
+                            if (!isset($response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'])) {
+                                $response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'] = $bet['bet_amount'];
+                            } else {
+                                $response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'] += $bet['bet_amount'];
+                            }
+                        }
+                    }
+                    else {
+                        $bet_amt = ($bet['bet_amount'] * (-1));
+                        if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
+                            $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
+                        } else {
+                            $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] += $profitAmt;
+                        }
+                        if (isset($extra['teamname1']) && !empty($extra['teamname1'])) {
+                            if (!isset($response['BOOKMAKER'][$extra['teamname1']]['BOOKMAKER_profitLost'])) {
+                                $response['BOOKMAKER'][$extra['teamname1']]['BOOKMAKER_profitLost'] = $bet_amt;
+                            } else {
+                                $response['BOOKMAKER'][$extra['teamname1']]['BOOKMAKER_profitLost'] += $bet_amt;
+                            }
+                        }
+                        if (isset($extra['teamname2']) && !empty($extra['teamname2'])) {
+                            if (!isset($response['BOOKMAKER'][$extra['teamname2']]['BOOKMAKER_profitLost'])) {
+                                $response['BOOKMAKER'][$extra['teamname2']]['BOOKMAKER_profitLost'] = $bet_amt;
+                            } else {
+                                $response['BOOKMAKER'][$extra['teamname2']]['BOOKMAKER_profitLost'] += $bet_amt;
+                            }
+                        }
+                        if (isset($extra['teamname3']) && !empty($extra['teamname3'])) {
+                            if (!isset($response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'])) {
+                                $response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'] = $bet_amt;
+                            } else {
+                                $response['BOOKMAKER'][$extra['teamname3']]['BOOKMAKER_profitLost'] += $bet_amt;
+                            }
+                        }
+                    }
+
+                    $arrB = array();
+                    foreach ($response['BOOKMAKER'] as $key => $profitLos) {
+                        if ($profitLos['BOOKMAKER_profitLost'] < 0) {
+                            $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                        }
+                    }
+
+                    if (is_array($arrB) && count($arrB) > 0) {
+                        $response['exposer'] += max($arrB);
+                    }
+                    $exposerArray['BOOKMAKER'] = $response['BOOKMAKER'];
+                    $exposerArray['exposer'] += $response['exposer'];
+                    break;
+                }
+            }
+        }
+
+        return $exposerArray;
     }
 
     public static function getExAmount($sportID = '', $id = '')
@@ -816,7 +1071,10 @@ class PlayerController extends Controller
     }
 
     public function getUserExposer($userId){
-        $exposer = SELF::getExAmount('',$userId);
+
+        $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($userId);
+//        $exposer = SELF::getExAmount('',$userId);
+        $exposer = $oddsBookmakerExposerArr['exposer'];
         Log::info("exposer: " . $exposer . "\n");
 
         $total_fancy_expo = $this->getUserAllMatchFancyExposer($userId);
@@ -831,7 +1089,7 @@ class PlayerController extends Controller
         return ($exposer+$total_fancy_expo+$casinoExposer);
     }
 
-    public function SaveBalance($stack, $betType = '', $sessionBetTotalExposer = 0)
+    public function SaveBalance($stack)
     {
         $getUserCheck = Session::get('playerUser');
         if (!empty($getUserCheck)) {
@@ -844,6 +1102,7 @@ class PlayerController extends Controller
         Log::info(str_repeat("~=~", 30));
         $balance = SELF::getBlanceAmount();
         $exposer = $this->getUserExposer($userId);
+
 
         Log::info("main balance: " . $balance);
         Log::info("total exposer: " . $exposer);
@@ -1746,6 +2005,142 @@ class PlayerController extends Controller
 
     }
 
+    public function getSessionExposer($uid, $eventid=0, $fancyName='', $conditionalParameters = [])
+    {
+
+        $query = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')->where('user_id', $uid)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0);
+
+        if($eventid!=0) {
+            if(isset($conditionalParameters['match_id'])){
+                $query->where('match_id', $conditionalParameters['match_id'], $eventid);
+            }else{
+                $query->where('match_id', $eventid);
+            }
+        }
+        if(!empty($fancyName)) {
+            if(isset($conditionalParameters['team_name'])){
+                $query->where('team_name', $conditionalParameters['team_name'], $fancyName);
+            }else {
+                $query->where('team_name', $fancyName);
+            }
+        }
+
+        $my_placed_bets = $query->orderBy('created_at', 'asc')->get();
+
+        $new_obj = array();
+        $i = 0;
+        foreach ($my_placed_bets as $bet) {
+            $new_obj[$i]['user_id'] = $bet->user_id;
+            $new_obj[$i]['match_id'] = $bet->match_id;
+            $new_obj[$i]['bet_type'] = $bet->bet_type;
+            $new_obj[$i]['bet_side'] = $bet->bet_side;
+            $new_obj[$i]['bet_odds'] = $bet->bet_odds;
+            $new_obj[$i]['bet_oddsk'] = $bet->bet_oddsk;
+            $new_obj[$i]['bet_amount'] = $bet->bet_amount;
+            $new_obj[$i]['bet_profit'] = $bet->bet_profit;
+            $new_obj[$i]['team_name'] = $bet->team_name;
+            $new_obj[$i]['exposureAmt'] = $bet->exposureAmt;
+            $i++;
+        }
+
+        $deductamt=0; $position=0; $betside='';
+        if(isset($conditionalParameters['deductamt'])){
+            $deductamt = $conditionalParameters['deductamt'];
+        }
+        if(isset($conditionalParameters['position'])){
+            $position = $conditionalParameters['position'];
+        }
+        if(isset($conditionalParameters['betside'])){
+            $betside = $conditionalParameters['betside'];
+        }
+
+        if(!empty($betside)) {
+            $new_obj[$i]['user_id'] = $uid;
+            $new_obj[$i]['match_id'] = $eventid;
+            $new_obj[$i]['bet_type'] = 'SESSION';
+            $new_obj[$i]['bet_side'] = $betside;
+            $new_obj[$i]['bet_odds'] = $position;
+            $new_obj[$i]['bet_oddsk'] = 100;
+            $new_obj[$i]['bet_amount'] = $deductamt;
+            $new_obj[$i]['bet_profit'] = $deductamt;
+            $new_obj[$i]['team_name'] = $fancyName;
+            $new_obj[$i]['exposureAmt'] = $deductamt;
+        }
+
+        $final_exposer = 0;
+        if (!empty($new_obj)) {
+            $run_arr = array();
+
+            for ($i = 0; $i < count($new_obj); $i++) {
+                $down_position = $new_obj[$i]['bet_odds'] - 1;
+                if (!in_array($down_position, $run_arr)) {
+                    $run_arr[] = $down_position;
+                }
+                $level_position = $new_obj[$i]['bet_odds'];
+                if (!in_array($level_position, $run_arr)) {
+                    $run_arr[] = $level_position;
+                }
+                $up_position = $new_obj[$i]['bet_odds'] + 1;
+                if (!in_array($up_position, $run_arr)) {
+                    $run_arr[] = $up_position;
+                }
+            }
+            array_unique($run_arr);
+            sort($run_arr);
+
+            $min_val = min($run_arr);
+            $max_val = max($run_arr);
+
+            $newArr = array();
+
+            for ($i = 0; $i <= $max_val + 1000; ++$i) {
+                $new = $i;
+                $newArr[] = $new;
+            }
+
+            $run_arr = array();
+            $run_arr = $newArr;
+
+            $bet_chk = '';
+            $bet_model = '';
+            $final_exposer = 0;
+
+            for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
+                $bet_deduct_amt = 0;
+                $placed_bet_type = '';
+                //foreach($my_placed_bets as $bet)
+                for ($i = 0; $i < count($new_obj); $i++) {
+                    if ($new_obj[$i]['bet_side'] == 'back') {
+                        if ($new_obj[$i]['bet_odds'] == $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $new_obj[$i]['bet_profit'];
+                        } else if ($new_obj[$i]['bet_odds'] < $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $new_obj[$i]['bet_profit'];
+                        } else if ($new_obj[$i]['bet_odds'] > $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
+                        }
+                    } else if ($new_obj[$i]['bet_side'] == 'lay') {
+                        if ($new_obj[$i]['bet_odds'] == $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
+                        } else if ($new_obj[$i]['bet_odds'] < $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt - $new_obj[$i]['exposureAmt'];
+                        } else if ($new_obj[$i]['bet_odds'] > $run_arr[$kk]) {
+                            $bet_deduct_amt = $bet_deduct_amt + $new_obj[$i]['bet_amount'];
+                        }
+                    }
+                }
+                if ($final_exposer == "")
+                    $final_exposer = $bet_deduct_amt;
+                else {
+                    if ($final_exposer > $bet_deduct_amt)
+                        $final_exposer = $bet_deduct_amt;
+                }
+
+            }
+        }
+
+        return abs($final_exposer);
+    }
+
     public function getExAmount_Session($fancyName, $eventid, $uid, $deductamt, $position, $betside)
     {
 
@@ -1996,7 +2391,46 @@ class PlayerController extends Controller
 
     public function MyBetStore(Request $request)
     {
+
         $requestData = $request->all();
+
+        $getUserCheck = Session::get('playerUser');
+        if (!empty($getUserCheck)) {
+            $getUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
+        } else {
+            $responce['status'] = 'false';
+            $responce['msg'] = 'Session Logout, please login again';
+            return json_encode($responce);
+        }
+
+        $userId = $getUser->id;
+
+        $headerUserBalance = SELF::getBlanceAmount();
+
+        if ($headerUserBalance <= 0) {
+            $responce = [];
+            $responce['status'] = 'false';
+            $responce['msg'] = 'Insufficient Balance!';
+            return json_encode($responce);
+        }
+
+        $sportsModel = Match::where(['event_id' => $requestData['match_id']])->first();
+        $locked_user = json_decode($sportsModel->user_list);
+        $is_userlocked = $getUser->status;
+        if (!empty($locked_user)) {
+            if (in_array($userId, $locked_user)) {
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Bet Locked By Admin!';
+                return json_encode($responce);
+                exit;
+            }
+        }
+        if ($is_userlocked == 'locked') {
+            $responce['status'] = 'false';
+            $responce['msg'] = 'Bet Locked By Admin!';
+            return json_encode($responce);
+            exit;
+        }
 
         $main_odds = '';
         $team1_main_odds = '';
@@ -2023,7 +2457,6 @@ class PlayerController extends Controller
                 $team3_main_odds = $odd[2];
             }
         }
-        // bm odds check
         if ($requestData['bet_type'] === 'BOOKMAKER') {
             $main_odds = self::getMainBMOdds($requestData['match_id'], $requestData['team_name'], $requestData['bet_position'], $requestData['bet_side'], $requestData['bet_odds']);
 
@@ -2039,9 +2472,6 @@ class PlayerController extends Controller
                 exit;
             }
         }
-
-        // $requestData['bet_odds'] = 1;
-
         if ($requestData['bet_type'] === 'SESSION') {
             $main_odds = self::getMainFancyOdds($requestData['match_id'], $requestData['team_name'], $requestData['bet_side'], $requestData['bet_odds']);
 
@@ -2058,7 +2488,6 @@ class PlayerController extends Controller
             }
         }
 
-
         if (isset($requestData['team_name']) && !empty($requestData['team_name'])) {
             $requestData['team_name'] = urldecode($requestData['team_name']);
         }
@@ -2072,42 +2501,6 @@ class PlayerController extends Controller
             $requestData['teamname3'] = urldecode($requestData['teamname3']);
         }
 
-        $getUserCheck = Session::get('playerUser');
-        if (!empty($getUserCheck)) {
-            $getUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-        } else {
-            $responce['status'] = 'false';
-            $responce['msg'] = 'Session Logout, please login again';
-            return json_encode($responce);
-            exit;
-        }
-        $userId = $getUser->id;
-        $is_userlocked = $getUser->status;
-        $user = User::find($userId);
-        $stack = $requestData['stack'];
-        $sportsModel = Match::where(['event_id' => $requestData['match_id']])->first();
-        $locked_user = json_decode($sportsModel->user_list);
-        if (!empty($locked_user)) {
-            if (in_array($userId, $locked_user)) {
-                $responce['status'] = 'false';
-                $responce['msg'] = 'Bet Locked By Admin!';
-                return json_encode($responce);
-                exit;
-            }
-        }
-        if ($is_userlocked == 'locked') {
-            $responce['status'] = 'false';
-            $responce['msg'] = 'Bet Locked By Admin!';
-            return json_encode($responce);
-            exit;
-        }
-        //check if user placed bet on other match or not
-        $other_bet_placed = SELF::CheckForOtherMatchBet($requestData['match_id']);
-        $other_bet_placed_amount = SELF::CheckForOtherMatchBetAmount($requestData['match_id']);
-        $other_bet_session = SELF::getExAmountForSession($userId, '', $requestData['match_id']); /// nnnn 21-10-2021
-
-//        dd($other_bet_placed, $other_bet_placed_amount, $other_bet_session);
-
         $min_bet_odds_limit = $sportsModel->min_bet_odds_limit;
         $max_bet_odds_limit = $sportsModel->max_bet_odds_limit;
 
@@ -2119,1325 +2512,12 @@ class PlayerController extends Controller
 
         $max_odds_limit = $sportsModel->odds_limit;
 
+        $responce = [];
         if ($max_odds_limit < $requestData['bet_odds'] && $requestData['bet_type'] === 'ODDS') {
             $responce['status'] = 'false';
             $responce['msg'] = 'Odds Limit Exceed!';
             return json_encode($responce);
-            exit;
         }
-        $exArr = explode('-', $requestData['bet_type']);
-        $betTypeOld = $requestData['bet_type'];
-        $requestData['bet_type'] = $exArr[0];
-        $headerUserBalance = SELF::getBlanceAmount();
-        if ($headerUserBalance <= 0) {
-            $responce['status'] = 'false';
-            $responce['msg'] = 'Insufficient Balance!111';
-            return json_encode($responce);
-            exit;
-        }
-
-        $exposureAmt = SELF::getExAmount();
-        $exposureAmt_session = SELF::getExAmountForSession($userId, '', $requestData['match_id']); /// nnnn 21-10-2021
-        $exposureAmt_casino_resp = CasinoCalculationController::getCasinoExAmount($userId); /// nnnn 21-10-2021
-        $exposureAmt_casino =   $exposureAmt_casino_resp['exposer'];
-        $expAmt = $exposureAmt;
-        $betamount = $requestData['bet_amount'];
-        $headerUserBalance = SELF::getBlanceAmount();
-
-//        dd($exposureAmt);
-
-        if ($headerUserBalance <= 0) {
-            $responce['status'] = 'false';
-            $responce['msg'] = 'Insufficient Balance!222';
-            return json_encode($responce);
-            exit;
-        }
-        $isExBalEq = false;
-        if ($headerUserBalance == $exposureAmt) {
-            $isExBalEq = true;
-        }
-
-        $deduct_expo_amt = 0;
-        if ($requestData['bet_type'] === 'ODDS') {
-            if ($requestData['bet_side'] == 'lay') {
-                $betodds = '';
-                if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team1_main_odds)
-                        $betodds = $team1_main_odds;
-                } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team1_main_odds)
-                        $betodds = $team2_main_odds;
-                } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team1_main_odds)
-                        $betodds = $team2_main_odds;
-                } else {
-                    $responce['status'] = 'false';
-                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                    return json_encode($responce);
-                    exit;
-                }
-                if ($betodds != '')
-                    $deduct_expo_amt = ((($betodds - 1) * $stack));
-                else
-                    $deduct_expo_amt = ((($requestData['bet_odds'] - 1) * $stack));
-            } else {
-                $deduct_expo_amt = $stack;
-            }
-        }
-        if ($requestData['bet_type'] === 'BOOKMAKER') {
-            if ($requestData['bet_side'] == 'lay') {
-                $deduct_expo_amt = ((($requestData['bet_odds']) * $stack) / 100);
-            } else {
-                $deduct_expo_amt = $stack;
-            }
-        }
-        if ($requestData['bet_type'] === 'SESSION') {
-            if ($requestData['bet_side'] == 'lay') {
-                $deduct_expo_amt = ((($requestData['odds_volume']) * $stack)) / 100;
-            } else {
-                $deduct_expo_amt = $stack;
-            }
-        }
-
-        $finalExposerWithCurrentMatchSession = $exposureAmt + $deduct_expo_amt + $exposureAmt_session + $exposureAmt_casino;
-
-//        dd($finalExposerWithCurrentMatchSession,$exposureAmt_session);
-
-//        dd($headerUserBalance, $deduct_expo_amt, $exposureAmt_session, $finalExposerWithCurrentMatchSession,$exposureAmt);
-
-//        echo $headerUserBalance .'<'. $exposureAmt.'+'.$deduct_expo_amt.'+'.$exposureAmt_session;
-//        exit;
-
-        // dd($headerUserBalance, $finalExposerWithCurrentMatchSession,$exposureAmt, $exposureAmt_session);
-
-        if ($headerUserBalance < $finalExposerWithCurrentMatchSession) {
-            if ($headerUserBalance < ($exposureAmt + $deduct_expo_amt + $exposureAmt_session) && $exposureAmt <= 0 && $exposureAmt_session <= 0) {
-                $responce['status'] = 'false';
-                $responce['msg'] = 'Insufficient Balance!333';
-                return json_encode($responce);
-                exit;
-            }
-
-            $fval = $stack;
-            $team1_bet_count_new = 0;
-            $team2_bet_count_new = 0;
-            $finalValue = '';
-            $team3_bet_count_new = 0;
-            if ($requestData['bet_type'] === 'ODDS' && $requestData['bet_type'] != 'SESSION') {
-                $betodds = '';
-                if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
-                    if ($requestData['bet_side'] == 'lay') {
-                        if ($requestData['bet_odds'] >= $team1_main_odds)
-                            $betodds = $team1_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    } else {
-                        if ($requestData['bet_odds'] <= $team1_main_odds)
-                            $betodds = $team1_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                    if ($requestData['bet_side'] == 'lay') {
-                        if ($requestData['bet_odds'] >= $team2_main_odds)
-                            $betodds = $team2_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    } else {
-                        if ($requestData['bet_odds'] <= $team2_main_odds)
-                            $betodds = $team2_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                    if ($requestData['bet_side'] == 'lay') {
-                        if ($requestData['bet_odds'] >= $team3_main_odds)
-                            $betodds = $team3_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    } else {
-                        if ($requestData['bet_odds'] <= $team3_main_odds)
-                            $betodds = $team3_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                }
-                if ($betodds != '')
-                    $finalValue = ((($betodds - 1) * $stack));
-                else
-                    $finalValue = ((($requestData['bet_odds'] - 1) * $stack));
-            } else if ($requestData['bet_type'] === 'BOOKMAKER') {
-                $finalValue = (($requestData['bet_odds']) * $stack) / 100;
-            } else if ($requestData['bet_type'] === 'SESSION') {
-                $finalValue = (($requestData['odds_volume']) * $stack) / 100;
-            }
-            $heighest_negative_odds = '';
-            if ($requestData['bet_type'] === 'ODDS') {
-                if ($requestData['bet_side'] == 'back') {
-                    if ($requestData['team1'] == $requestData['team_name']) {
-                        $old_value = $requestData['team1_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value + $finalValue;
-                        }
-                        $team1_bet_count_new = round($finalValue, 2);
-                        $fval_new = '';
-
-                        $old_value_team2 = $requestData['team2_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 - $fval;
-                        }
-                        $team2_bet_count_new = $fval_new;
-
-                        $old_value_team3 = $requestData['team3_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 - $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team2'] == $requestData['team_name']) {
-                        $old_value = $requestData['team2_total'];
-                        if ($old_value != '') {
-                            $finalValue = ($old_value + $finalValue);
-                        }
-                        $team2_bet_count_new = round($finalValue, 2);
-                        $fval_new = '';
-
-                        $old_value_team1 = $requestData['team1_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 - $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team3 = $requestData['team3_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 - $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team3'] == $requestData['team_name']) {
-                        $old_value = $requestData['team3_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value + $finalValue;
-                        }
-                        $team3_bet_count_new = round($finalValue, 2);
-                        $fval_new = '';
-
-                        $old_value_team1 = $requestData['team1_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 - $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team2 = $requestData['team2_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 - $fval;
-                        }
-                        $team2_bet_count_new = $fval_new;
-                    }
-                }
-                if ($requestData['bet_side'] == 'lay') {
-                    if ($requestData['team1'] == $requestData['team_name']) {
-                        $old_value = $requestData['team1_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value - $finalValue;
-                        }
-                        $team1_bet_count_new = round($finalValue, 2);
-
-                        $fval_new = '';
-                        $old_value_team2 = $requestData['team2_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 + $fval;
-                        }
-                        $team2_bet_count_new = round($fval_new, 2);
-
-                        $old_value_team3 = $requestData['team3_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 + $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team2'] == $requestData['team_name']) {
-                        $old_value = $requestData['team2_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value - $finalValue;
-                        }
-                        $team2_bet_count_new = round($finalValue, 2);
-
-                        $fval_new = '';
-                        $old_value_team1 = $requestData['team1_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 + $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team3 = $requestData['team3_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 + $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team3'] == $requestData['team_name']) {
-                        $old_value = $requestData['team3_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value - $finalValue;
-                        }
-                        $team3_bet_count_new = round($finalValue, 2);
-
-                        $fval_new = '';
-                        $old_value_team1 = $requestData['team1_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 + $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team2 = $requestData['team2_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 + $fval;
-                        }
-                        $team2_bet_count_new = $fval_new;
-                    }
-                }
-                //calculate highest amount for exposure for odds
-                if ($team1_bet_count_new < 0 || $team2_bet_count_new < 0 || $team3_bet_count_new < 0) {
-                    $heighest_negative_odds = '';
-                    $heighest_negative_bm = '';
-                    if ($team1_bet_count_new < 0) {
-                        $check = 0;
-                        if ($team2_bet_count_new < 0) {
-                            if ($team2_bet_count_new < 0 && abs($team2_bet_count_new) > abs($team1_bet_count_new)) {   /* ///nnn $team2_bet_count_new<0 && put this condition as it showing insuf. balance - 15-9-2021 where we have bet on other match */
-                                $check = 1;
-                                $heighest_negative_odds = $team2_bet_count_new;
-                            } else {
-                                $check = 1;
-                                $heighest_negative_odds = $team1_bet_count_new;
-                            }
-                        }
-                        if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                            if (abs($team3_bet_count_new) > abs($team1_bet_count_new)) {
-                                $check = 1;
-                                $heighest_negative_odds = $team3_bet_count_new;
-                            } else {
-                                $check = 1;
-                                $heighest_negative_odds = $team1_bet_count_new;
-                            }
-                        }
-                        if ($check == 0) {
-                            $heighest_negative_odds = $team1_bet_count_new;
-                        }
-                    }
-                    if ($team2_bet_count_new < 0) {
-                        $check = 0;
-                        if ($team2_bet_count_new < 0) {
-                            if ($team1_bet_count_new < 0 && abs($team1_bet_count_new) > abs($team2_bet_count_new)) { /* ///nnn $team1_bet_count_new<0 && put this condition as it showing insuf. balance - 15-9-2021 where we have bet on other match */
-                                $check = 1;
-                                $heighest_negative_odds = $team1_bet_count_new;
-                            } else {
-                                $check = 1;
-                                $heighest_negative_odds = $team2_bet_count_new;
-                            }
-                        }
-                        if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                            if (abs($team3_bet_count_new) > abs($team2_bet_count_new)) {
-                                $check = 1;
-                                $heighest_negative_odds = $team3_bet_count_new;
-                            } else {
-                                $check = 1;
-                                $heighest_negative_odds = $team2_bet_count_new;
-                            }
-                        }
-                        if ($check == 0) {
-                            $heighest_negative_odds = $team2_bet_count_new;
-                        }
-                    }
-                    if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                        $check = 0;
-                        if ($team2_bet_count_new < 0) {
-                            if (abs($team2_bet_count_new) > abs($team3_bet_count_new)) {
-                                $check = 1;
-                                $heighest_negative_odds = $team2_bet_count_new;
-                            } else {
-                                $check = 1;
-                                $heighest_negative_odds = $team3_bet_count_new;
-                            }
-                        }
-                        if ($team1_bet_count_new < 0) {
-                            if (abs($team1_bet_count_new) > abs($team3_bet_count_new)) {
-                                $check = 1;
-                                $heighest_negative_odds = $team1_bet_count_new;
-                            } else {
-                                $check = 1;
-                                $heighest_negative_odds = $team3_bet_count_new;
-                            }
-                        }
-                        if ($check == 0) {
-                            $heighest_negative_odds = $team3_bet_count_new;
-                        }
-                    }
-
-                    //for bm highest
-                    if ($requestData['team1_BM_total'] < 0) {
-                        $check = 0;
-                        if ($requestData['team2_BM_total'] < 0) {
-                            if (abs($requestData['team2_BM_total']) > abs($requestData['team1_BM_total'])) {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team2_BM_total'];
-                            } else {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team1_BM_total'];
-                            }
-                        }
-                        if ($requestData['team3'] != '' && $requestData['team3_BM_total'] < 0) {
-                            if (abs($requestData['team3_BM_total']) > abs($requestData['team1_BM_total'])) {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team3_BM_total'];
-                            } else {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team1_BM_total'];
-                            }
-                        }
-                        if ($check == 0) {
-                            $heighest_negative_bm = $requestData['team1_BM_total'];
-                        }
-                    }
-                    if ($requestData['team2_BM_total'] < 0) {
-                        $check = 0;
-                        if ($requestData['team2_BM_total'] < 0) {
-                            if (abs($requestData['team1_BM_total']) > abs($requestData['team2_BM_total'])) {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team1_BM_total'];
-                            } else {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team2_BM_total'];
-                            }
-                        }
-                        if ($requestData['team3_BM_total'] < 0 && $requestData['team3'] != '') {
-                            if (abs($requestData['team3_BM_total']) > abs($requestData['team2_BM_total'])) {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team3_BM_total'];
-                            } else {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team2_BM_total'];
-                            }
-                        }
-                        if ($check == 0) {
-                            $heighest_negative_bm = $requestData['team2_BM_total'];
-                        }
-                    }
-                    if ($requestData['team3'] != '' && $requestData['team3_BM_total'] < 0) {
-                        $check = 0;
-                        if ($requestData['team2_BM_total'] < 0) {
-                            if (abs($requestData['team2_BM_total']) > abs($requestData['team3_BM_total'])) {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team2_BM_total'];
-                            } else {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team3_BM_total'];
-                            }
-                        }
-                        if ($requestData['team1_BM_total'] < 0) {
-                            if (abs($requestData['team1_BM_total']) > abs($requestData['team3_BM_total'])) {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team1_BM_total'];
-                            } else {
-                                $check = 1;
-                                $heighest_negative_bm = $requestData['team3_BM_total'];
-                            }
-                        }
-                        if ($check == 0) {
-                            $heighest_negative_bm = $requestData['team3_BM_total'];
-                        }
-                    }
-
-                    $total_negative_number = '';
-                    if ($heighest_negative_odds != '' && $heighest_negative_odds <= 0 && $heighest_negative_bm != '' && $heighest_negative_bm <= 0) {
-                        $total_negative_number = abs($heighest_negative_odds) + abs($heighest_negative_bm);
-                    } else if ($heighest_negative_odds != '' && $heighest_negative_odds <= 0 && $heighest_negative_bm == '') {
-                        $total_negative_number = $heighest_negative_odds;
-                    } else if ($heighest_negative_bm != '' && $heighest_negative_bm <= 0 && $heighest_negative_odds == '') {
-                        $total_negative_number = $heighest_negative_bm;
-                    }
-
-                    $fancy_exposer = 0;
-                    if ($requestData['fancy_total'] != 0) {
-                        $fancy_exposer = $requestData['fancy_total'];
-                        $total_negative_number = abs($total_negative_number) + abs($fancy_exposer);
-                    }
-
-//                    dd($headerUserBalance);
-
-                    if ($headerUserBalance < abs($total_negative_number)) //team3 condition remaining
-                    {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Insufficient Balance!4444';
-                        return json_encode($responce);
-                        exit;
-                    }
-
-                    if ($headerUserBalance < ($other_bet_placed_amount + abs($total_negative_number) + $other_bet_session)) //put this condition 27-8-2021
-                    {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Insufficient Balance!5555';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    /*if($other_bet_placed!='' && $other_bet_placed>0 && $headerUserBalance < (abs($total_negative_number)+$exposureAmt)) //put comment becuase its not calculating current exposure 21-8-2021
-					   {
-							$responce['status']='false';
-							$responce['msg']='Insufficient Balance!';
-							return json_encode($responce);
-							exit;
-					   }*/
-                    //end for highest amount for odds exposure
-                }
-            }
-            //for BM
-            $heighest_negative_bm = '';
-            if ($requestData['bet_type'] === 'BOOKMAKER') {
-                if ($requestData['bet_side'] == 'back') {
-                    if ($requestData['team1'] == $requestData['team_name']) {
-                        $old_value = $requestData['team1_BM_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value + $finalValue;
-                        }
-                        $team1_bet_count_new = round($finalValue, 2);
-                        $fval_new = '';
-
-                        $old_value_team2 = $requestData['team2_BM_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 - $fval;
-                        }
-                        $team2_bet_count_new = $fval_new;
-
-                        $old_value_team3 = $requestData['team3_BM_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 - $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team2'] == $requestData['team_name']) {
-                        $old_value = $requestData['team2_BM_total'];
-                        if ($old_value != '') {
-                            $finalValue = ($old_value + $finalValue);
-                        }
-                        $team2_bet_count_new = round($finalValue, 2);
-                        $fval_new = '';
-
-                        $old_value_team1 = $requestData['team1_BM_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 - $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team3 = $requestData['team3_BM_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 - $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team3'] == $requestData['team_name']) {
-                        $old_value = $requestData['team3_BM_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value + $finalValue;
-                        }
-                        $team3_bet_count_new = round($finalValue, 2);
-                        $fval_new = '';
-
-                        $old_value_team1 = $requestData['team1_BM_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 - $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team2 = $requestData['team2_BM_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 - $fval;
-                        }
-                        $team2_bet_count_new = $fval_new;
-                    }
-                }
-                if ($requestData['bet_side'] == 'lay') {
-                    if ($requestData['team1'] == $requestData['team_name']) {
-                        $old_value = $requestData['team1_BM_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value - $finalValue;
-                        }
-                        $team1_bet_count_new = round($finalValue, 2);
-
-                        $fval_new = '';
-                        $old_value_team2 = $requestData['team2_BM_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 + $fval;
-                        }
-                        $team2_bet_count_new = round($fval_new, 2);
-
-                        $old_value_team3 = $requestData['team3_BM_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 + $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team2'] == $requestData['team_name']) {
-                        $old_value = $requestData['team2_BM_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value - $finalValue;
-                        }
-                        $team2_bet_count_new = round($finalValue, 2);
-
-                        $fval_new = '';
-                        $old_value_team1 = $requestData['team1_BM_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 + $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team3 = $requestData['team3_BM_total'];
-                        if ($old_value_team3 != '') {
-                            $fval_new = $old_value_team3 + $fval;
-                        }
-                        $team3_bet_count_new = $fval_new;
-                    }
-                    if ($requestData['team3'] == $requestData['team_name']) {
-                        $old_value = $requestData['team3_BM_total'];
-                        if ($old_value != '') {
-                            $finalValue = $old_value - $finalValue;
-                        }
-                        $team3_bet_count_new = round($finalValue, 2);
-
-                        $fval_new = '';
-                        $old_value_team1 = $requestData['team1_BM_total'];
-                        if ($old_value_team1 != '') {
-                            $fval_new = $old_value_team1 + $fval;
-                        }
-                        $team1_bet_count_new = $fval_new;
-
-                        $old_value_team2 = $requestData['team2_BM_total'];
-                        if ($old_value_team2 != '') {
-                            $fval_new = $old_value_team2 + $fval;
-                        }
-                        $team2_bet_count_new = $fval_new;
-                    }
-                }
-
-                //calculate highest for odds
-                $heighest_negative_odds = '';
-                if ($requestData['team1_total'] < 0) {
-                    $check = 0;
-                    if ($requestData['team2_total'] < 0) {
-                        if (abs($requestData['team2_total']) > abs($requestData['team1_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        }
-                    }
-                    if ($requestData['team3'] != '' && $team3_bet_count_new < 0) {
-                        if (abs($requestData['team3_total']) > abs($requestData['team1_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_odds = $requestData['team1_total'];
-                    }
-                }
-                if ($requestData['team2_total'] < 0) {
-                    $check = 0;
-                    if ($requestData['team2_total'] < 0) {
-                        if ($requestData['team1_total'] < 0 && abs($requestData['team1_total']) > abs($requestData['team2_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        }
-                    }
-                    if ($requestData['team3_total'] < 0 && $requestData['team3'] != '') {
-                        if (abs($requestData['team3_total']) > abs($requestData['team2_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_odds = $requestData['team2_total'];
-                    }
-                }
-                if ($requestData['team3_total'] < 0 && $requestData['team3'] != '') {
-                    $check = 0;
-                    if ($requestData['team2_total'] < 0) {
-                        if (abs($requestData['team2_total']) > abs($requestData['team3_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        }
-                    }
-                    if ($requestData['team1_total'] < 0) {
-                        if (abs($requestData['team1_total']) > abs($requestData['team3_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_odds = $requestData['team3_total'];
-                    }
-                }
-                //calculate highest for BM
-
-                if ($team1_bet_count_new < 0) {
-                    $check = 0;
-                    if ($team2_bet_count_new < 0) {
-                        if ($team2_bet_count_new < 0 && abs($team2_bet_count_new) > abs($team1_bet_count_new)) { // put this condition on 15-9-2021 $team2_bet_count_new<0
-                            $check = 1;
-                            $heighest_negative_bm = $team2_bet_count_new;
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $team1_bet_count_new;
-                        }
-                    }
-                    if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                        if (abs($team3_bet_count_new) > abs($team1_bet_count_new)) {
-                            $check = 1;
-                            $heighest_negative_bm = $team3_bet_count_new;
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $team1_bet_count_new;
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_bm = $team1_bet_count_new;
-                    }
-                }
-                if ($team2_bet_count_new < 0) {
-                    $check = 0;
-                    if ($team2_bet_count_new < 0) {
-                        if ($team1_bet_count_new < 0 && abs($team1_bet_count_new) > abs($team2_bet_count_new)) { //$team1_bet_count_new <0 put this condition on 15-9-201
-                            $check = 1;
-                            $heighest_negative_bm = $team1_bet_count_new;
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $team2_bet_count_new;
-                        }
-                    }
-                    if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                        if (abs($team3_bet_count_new) > abs($team2_bet_count_new)) {
-                            $check = 1;
-                            $heighest_negative_bm = $team3_bet_count_new;
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $team2_bet_count_new;
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_bm = $team2_bet_count_new;
-                    }
-                }
-                if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                    $check = 0;
-                    if ($team2_bet_count_new < 0) {
-                        if ($team2_bet_count_new < 0 && abs($team2_bet_count_new) > abs($team3_bet_count_new)) { //put this condition on 15-9-2021 $team2_bet_count_new<0
-                            $check = 1;
-                            $heighest_negative_bm = $team2_bet_count_new;
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $team3_bet_count_new;
-                        }
-                    }
-                    if ($team1_bet_count_new < 0) {
-                        if ($team1_bet_count_new < 0 && abs($team1_bet_count_new) > abs($team3_bet_count_new)) { //put this condition on 15-9-2021 $team1_bet_count_new<0
-                            $check = 1;
-                            $heighest_negative_bm = $team1_bet_count_new;
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $team3_bet_count_new;
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_bm = $team3_bet_count_new;
-                    }
-                }
-
-                $total_negative_number = '';
-                if ($heighest_negative_odds != '' && $heighest_negative_odds <= 0 && $heighest_negative_bm != '' && $heighest_negative_bm <= 0) {
-                    $total_negative_number = abs($heighest_negative_odds) + abs($heighest_negative_bm);
-                } else if ($heighest_negative_odds != '' && $heighest_negative_odds <= 0 && $heighest_negative_bm == '') {
-                    $total_negative_number = $heighest_negative_odds;
-                } else if ($heighest_negative_bm != '' && $heighest_negative_bm <= 0 && $heighest_negative_odds == '') {
-                    $total_negative_number = $heighest_negative_bm;
-                }
-                //echo $requestData['fancy_total'].'total negative-'.$total_negative_number; echo "<br>";
-
-                $fancy_exposer = 0;
-                if ($requestData['fancy_total'] != 0) {
-                    $fancy_exposer = $requestData['fancy_total'];
-                    $total_negative_number = abs($total_negative_number) + abs($fancy_exposer);
-                }
-                if ($headerUserBalance < abs($total_negative_number)) //team3 condition remaining
-                {
-                    $responce['status'] = 'false';
-                    $responce['msg'] = 'Insufficient Balance!666';
-                    return json_encode($responce);
-                    exit;
-                }
-                /*echo 'fancy'.$fancy_exposer;
-				echo "<br>";
-				echo 'highest negative odds--'.$heighest_negative_odds;
-					   echo "<br>";
-					   echo 'team 1 total-'.$team1_bet_count_new;
-					   echo "<br>";
-					   echo 'team 2 total-'.$team2_bet_count_new;
-					   echo "<br>";
-					   echo 'team 3 total-'.$team3_bet_count_new;
-					   echo "<br>";
-
-					   echo $headerUserBalance;
-					   echo "<br>";
-					   echo 'other-'.$other_bet_placed;
-					   echo "<br>";
-					   echo 'total neg-'.$total_negative_number;
-					   echo "<br>";
-					   echo 'new-expo-'.$exposureAmt;
-					   echo "<br>";
-					   echo $other_bet_placed_amount; echo "<br>";
-					   echo abs($total_negative_number);
-					  exit;*/
-                //if($headerUserBalance <= ($other_bet_placed_amount+abs($total_negative_number))) //put this condition 21-8-2021
-                //if($headerUserBalance < ($exposureAmt+$other_bet_placed_amount+abs($total_negative_number))) //put this condition 26-8-2021 //REMOVED this condition on 16-9-2021
-                if ($headerUserBalance < ($other_bet_placed_amount + abs($total_negative_number) + $other_bet_session)) {
-                    $responce['status'] = 'false';
-                    $responce['msg'] = 'Insufficient Balance!777';
-                    return json_encode($responce);
-                    exit;
-                }
-
-            }
-
-            //for fancy
-            if ($requestData['bet_type'] === 'SESSION') {
-                //for highest negative odds
-                $heighest_negative_odds = '';
-                if ($requestData['team1_total'] < 0) {
-                    $check = 0;
-                    if ($requestData['team2_total'] < 0) {
-                        if (abs($requestData['team2_total']) > abs($requestData['team1_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        }
-                    }
-                    if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                        if (abs($team3_bet_count_new) > abs($requestData['team1_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_odds = $requestData['team1_total'];
-                    }
-                }
-                if ($requestData['team2_total'] < 0) {
-                    $check = 0;
-                    if ($requestData['team2_total'] < 0) {
-                        if ($requestData['team1_total'] < 0 && abs($requestData['team1_total']) > abs($requestData['team2_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        }
-                    }
-                    if ($requestData['team3_total'] < 0 && $requestData['team3'] != '') {
-                        if (abs($requestData['team3_total']) > abs($requestData['team2_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_odds = $requestData['team2_total'];
-                    }
-                }
-                if ($requestData['team3_total'] < 0 && $requestData['team3'] != '') {
-                    $check = 0;
-                    if ($requestData['team2_total'] < 0) {
-                        if (abs($requestData['team2_total']) > abs($requestData['team3_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team2_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        }
-                    }
-                    if ($requestData['team1_total'] < 0) {
-                        if ($requestData['team1_total'] < 0 && abs($requestData['team1_total']) > abs($requestData['team3_total'])) {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team1_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_odds = $requestData['team3_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_odds = $requestData['team3_total'];
-                    }
-                }
-                //for bm highest
-                if ($requestData['team1_BM_total'] < 0) {
-                    $check = 0;
-                    if ($requestData['team2_BM_total'] < 0) {
-                        if (abs($requestData['team2_BM_total']) > abs($requestData['team1_BM_total'])) {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team2_BM_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team1_BM_total'];
-                        }
-                    }
-                    if ($team3_bet_count_new < 0 && $requestData['team3'] != '') {
-                        if (abs($requestData['team3_BM_total']) > abs($requestData['team1_BM_total'])) {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team3_BM_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team1_BM_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_bm = $requestData['team1_BM_total'];
-                    }
-                }
-                if ($requestData['team2_BM_total'] < 0) {
-                    $check = 0;
-                    if ($requestData['team2_BM_total'] < 0) {
-                        if ($requestData['team1_BM_total'] < 0 && abs($requestData['team1_BM_total']) > abs($requestData['team2_BM_total'])) {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team1_BM_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team2_BM_total'];
-                        }
-                    }
-                    if ($requestData['team3_BM_total'] < 0 && $requestData['team3'] != '') {
-                        if (abs($requestData['team3_BM_total']) > abs($requestData['team2_BM_total'])) {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team3_BM_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team2_BM_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_bm = $requestData['team2_BM_total'];
-                    }
-                }
-                if ($requestData['team3_BM_total'] < 0 && $requestData['team3'] != '') {
-                    $check = 0;
-                    if ($requestData['team2_BM_total'] < 0) {
-                        if (abs($requestData['team2_BM_total']) > abs($requestData['team3_BM_total'])) {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team2_BM_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team3_BM_total'];
-                        }
-                    }
-                    if ($requestData['team1_BM_total'] < 0) {
-                        if (abs($requestData['team1_BM_total']) > abs($requestData['team3_BM_total'])) {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team1_BM_total'];
-                        } else {
-                            $check = 1;
-                            $heighest_negative_bm = $requestData['team3_BM_total'];
-                        }
-                    }
-                    if ($check == 0) {
-                        $heighest_negative_bm = $requestData['team3_BM_total'];
-                    }
-                }
-
-                $total_negative_number = '';
-                if ($heighest_negative_odds != '' && $heighest_negative_odds <= 0 && $heighest_negative_bm != '' && $heighest_negative_bm <= 0) {
-                    $total_negative_number = abs($heighest_negative_odds) + abs($heighest_negative_bm);
-                } else if ($heighest_negative_odds != '' && $heighest_negative_odds <= 0 && $heighest_negative_bm == '') {
-                    $total_negative_number = $heighest_negative_odds;
-                } else if ($heighest_negative_bm != '' && $heighest_negative_bm <= 0 && $heighest_negative_odds == '') {
-                    $total_negative_number = $heighest_negative_bm;
-                }
-
-                // dd($total_negative_number);
-
-                $fancy_exposer = 0;
-                /*if($requestData['fancy_total']!=0)
-				{
-					$fancy_exposer=$requestData['fancy_total'];
-					$total_negative_number=abs($total_negative_number)+abs($fancy_exposer);
-				}*/
-                $exposureAmt_session = SELF::getExAmountForSession($userId, $requestData['team_name'], $requestData['match_id']); /// nnnn 21-10-2021
-                $arr5 = [];
-                if ($requestData['fancy_total'] != 0) {
-                    $exposureAmt_SESSION = SELF::getExAmount_Session($requestData['team_name'], $requestData['match_id'], $userId, $deduct_expo_amt, $requestData['bet_odds'], $requestData['bet_side']);
-                    $arr5[] = $exposureAmt_SESSION;
-                    $fancy_exposer = $exposureAmt_session + $exposureAmt_SESSION;
-                    $total_negative_number = abs($total_negative_number) + abs($fancy_exposer);
-
-                }
-
-                // dd($arr5, $exposureAmt_session, $total_negative_number, $fancy_exposer);
-
-                // Log::info("fancy_exposer: ".$fancy_exposer);
-
-                if ($headerUserBalance < abs($total_negative_number)) //team3 condition remaining
-                {
-                    $responce['status'] = 'false';
-                    $responce['msg'] = 'Insufficient Balance!888';
-                    return json_encode($responce);
-                    exit;
-                }
-
-                //if($headerUserBalance < ($other_bet_placed_amount+abs($total_negative_number))) //put this condition 21-8-2021
-                //if($headerUserBalance < ($exposureAmt+$other_bet_placed_amount+abs($total_negative_number))) //put this condition 27-8-2021 //removed this condition on 16-9-2021
-                if ($headerUserBalance < ($other_bet_placed_amount + abs($total_negative_number) + $other_bet_session)) {
-                    $responce['status'] = 'false';
-                    $responce['msg'] = 'Insufficient Balance!999';
-                    return json_encode($responce);
-                    exit;
-                }
-            }
-        }
-        else {
-            $exAmtArr = self::getExAmountCricketAndTennis($requestData['match_id'], $userId);
-            if (isset($exAmtArr[$requestData['bet_type']][$requestData['team_name']][$requestData['bet_type'] . "_profitLost"])) {
-                $exArrs = array();
-                $betprofit = $exAmtArr[$requestData['bet_type']][$requestData['team_name']][$requestData['bet_type'] . "_profitLost"];
-                $exArrs[] = $betprofit;
-                if ($requestData['bet_type'] == 'BOOKMAKER') {
-                    $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) / 100);
-                } else {
-                    if ($requestData['bet_type'] === 'ODDS') {
-                        $betodds = '';
-                        if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
-                            if ($requestData['bet_side'] == 'lay') {
-                                if ($requestData['bet_odds'] >= $team1_main_odds)
-                                    $betodds = $team1_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            } else {
-                                if ($requestData['bet_odds'] <= $team1_main_odds)
-                                    $betodds = $team1_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                            if ($requestData['bet_side'] == 'lay') {
-                                if ($requestData['bet_odds'] >= $team2_main_odds)
-                                    $betodds = $team2_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            } else {
-                                if ($requestData['bet_odds'] <= $team2_main_odds)
-                                    $betodds = $team2_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                            if ($requestData['bet_side'] == 'lay') {
-                                if ($requestData['bet_odds'] >= $team3_main_odds)
-                                    $betodds = $team3_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            } else {
-                                if ($requestData['bet_odds'] <= $team3_main_odds)
-                                    $betodds = $team3_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        }
-                        if ($betodds != '')
-                            $betamount = (($betodds * $requestData['bet_amount']) - $requestData['bet_amount']);
-                        else
-                            $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) - $requestData['bet_amount']);
-                    } else
-                        $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) - $requestData['bet_amount']);
-                }
-                $betprofit1 = $betprofit2 = $betprofit3 = '';
-                if (isset($requestData['teamname1']) && isset($exAmtArr[$requestData['bet_type']][$requestData['teamname1']][$requestData['bet_type'] . "_profitLost"])) {
-                    $betprofit1 = $exAmtArr[$requestData['bet_type']][$requestData['teamname1']][$requestData['bet_type'] . "_profitLost"];
-                    $exArrs[] = $betprofit1;
-                }
-                if (isset($requestData['teamname2']) && !empty($requestData['teamname2']) && isset($exAmtArr[$requestData['bet_type']][$requestData['teamname2']][$requestData['bet_type'] . "_profitLost"])) {
-                    $betprofit2 = $exAmtArr[$requestData['bet_type']][$requestData['teamname2']][$requestData['bet_type'] . "_profitLost"];
-                    $exArrs[] = $betprofit2;
-                }
-                if (isset($requestData['teamname3']) && !empty($requestData['teamname3']) && isset($exAmtArr[$requestData['bet_type']][$requestData['teamname3']][$requestData['bet_type'] . "_profitLost"])) {
-                    $betprofit3 = $exAmtArr[$requestData['bet_type']][$requestData['teamname3']][$requestData['bet_type'] . "_profitLost"];
-                    $exArrs[] = $betprofit3;
-                }
-                $teamMaxEx = min($exArrs);
-                if ($requestData['bet_side'] == 'lay') {
-                    $newExArr = array();
-                    if ($betprofit > 0) {
-                        $amt = abs($betprofit) - abs($betamount);
-                        if ($amt > 0) {
-                            $amt = 0;
-                        }
-                        $newExArr['betTeam'] = $amt;
-                        if ($betprofit1 < 0) {
-                            if ($requestData['bet_amount'] < abs($betprofit1)) {
-                                $newExArr['betTeam1'] = $requestData['bet_amount'] - abs($betprofit1);
-                            } else {
-                                $newExArr['betTeam1'] = $requestData['bet_amount'] - abs($betprofit1);
-                            }
-                        }
-                        if ($betprofit2 < 0) {
-                            if ($requestData['bet_amount'] < abs($betprofit2)) {
-                                $newExArr['betTeam2'] = $requestData['bet_amount'] - abs($betprofit2);
-                            } else {
-                                $newExArr['betTeam2'] = $requestData['bet_amount'] - abs($betprofit2);
-                            }
-                        }
-                        if ($betprofit3 < 0) {
-                            if ($requestData['bet_amount'] < abs($betprofit3)) {
-                                $newExArr['betTeam3'] = $requestData['bet_amount'] - abs($betprofit3);
-                            } else {
-                                $newExArr['betTeam3'] = $requestData['bet_amount'] - abs($betprofit3);
-                            }
-                        }
-                    } else {
-                        $amt = abs($betamount) + abs($betprofit);
-                        $amt = ($exposureAmt + $betamount + $exposureAmt_session);
-                        if ($headerUserBalance < (abs($amt))) {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Insufficient Balance!10 10 10';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                    if (isset($requestData['teamname1']) && isset($exAmtArr[$requestData['bet_type']][$requestData['teamname1']][$requestData['bet_type'] . "_profitLost"])) {
-                        $betprofit1 = $exAmtArr[$requestData['bet_type']][$requestData['teamname1']][$requestData['bet_type'] . "_profitLost"];
-                        if ($betprofit1 >= 0) {
-                            $betamount = $requestData['bet_amount'];
-                            $amt = $betprofit1 - abs($betamount);
-                            $amt = 0;
-                            if ($headerUserBalance < ($exposureAmt + abs($amt) + $exposureAmt_session)) {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Insufficient Balance!11 11 11';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        }
-                    }
-                    if (isset($requestData['teamname2']) && !empty($requestData['teamname2']) && isset($exAmtArr[$requestData['bet_type']][$requestData['teamname2']][$requestData['bet_type'] . "_profitLost"])) {
-                        $betprofit2 = $exAmtArr[$requestData['bet_type']][$requestData['teamname2']][$requestData['bet_type'] . "_profitLost"];
-                        if ($betprofit2 >= 0) {
-                            $betamount = $requestData['bet_amount'];
-                            $amt = $betprofit2 - abs($betamount);
-                            $amt = 0;
-                            if ($amt < 0) {
-                                if ($headerUserBalance < ($exposureAmt + abs($amt) + $exposureAmt_session)) {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Insufficient Balance!12 12 12';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        }
-                    }
-                    if (isset($requestData['teamname3']) && !empty($requestData['teamname3']) && isset($exAmtArr[$requestData['bet_type']][$requestData['teamname3']][$requestData['bet_type'] . "_profitLost"])) {
-                        $betprofit3 = $exAmtArr[$requestData['bet_type']][$requestData['teamname3']][$requestData['bet_type'] . "_profitLost"];
-                        if ($betprofit3 >= 0) {
-                            $betamount = $requestData['bet_amount'];
-                            $amt = $betprofit3 - abs($betamount);
-                            $amt = 0;
-                            if ($headerUserBalance < ($exposureAmt + abs($amt) + $exposureAmt_session)) {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Insufficient Balance!13 13 13';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        }
-                    }
-                } else {
-                    $newExArr = array();
-                    if ($betprofit < 0) {
-                        $amt = abs($betamount) - abs($betprofit);
-                        if ($amt > 0) {
-                            $amt = 0;
-                        }
-                        $newExArr['betTeam'] = $amt;
-                        if ($betprofit1 < 0) {
-                            $newExArr['betTeam1'] = ($betprofit1 - $requestData['bet_amount']);
-                        }
-                        if ($betprofit2 < 0) {
-                            $newExArr['betTeam2'] = $betprofit2 - $requestData['bet_amount'];
-
-                        }
-                        if ($betprofit3 < 0) {
-                            $newExArr['betTeam3'] = $betprofit3 - $requestData['bet_amount'];
-                        }
-                    } else {
-                        $newExArr = array();
-                        $amt = abs($betamount) + abs($betprofit);
-                        if ($amt > 0) {
-                            $amt = 0;
-                        }
-                        $newExArr['betTeam'] = $amt;
-                        if ($betprofit1 < 0) {
-                            $newExArr['betTeam1'] = ($betprofit1 - $requestData['bet_amount']);
-                        }
-                        if ($betprofit2 < 0) {
-                            $newExArr['betTeam2'] = $betprofit2 - $requestData['bet_amount'];
-
-                        }
-                        if ($betprofit3 < 0) {
-                            $newExArr['betTeam3'] = $betprofit3 - $requestData['bet_amount'];
-                        }
-                    }
-                }
-            }
-            else {
-                if ($requestData['bet_side'] == 'lay') {
-                    if ($requestData['bet_type'] == 'BOOKMAKER') {
-                        $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) / 100);
-                    } else if ($requestData['bet_type'] == 'SESSION') {
-                        $betamount = (($requestData['odds_volume'] * $requestData['bet_amount']) / 100);
-                    } else {
-                        $betodds = '';
-                        if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
-                            if ($requestData['bet_side'] == 'lay') {
-                                if ($requestData['bet_odds'] >= $team1_main_odds)
-                                    $betodds = $team1_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            } else {
-                                if ($requestData['bet_odds'] <= $team1_main_odds)
-                                    $betodds = $team1_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                            if ($requestData['bet_side'] == 'lay') {
-                                if ($requestData['bet_odds'] >= $team2_main_odds)
-                                    $betodds = $team2_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            } else {
-                                if ($requestData['bet_odds'] <= $team2_main_odds)
-                                    $betodds = $team2_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                            if ($requestData['bet_side'] == 'lay') {
-                                if ($requestData['bet_odds'] >= $team3_main_odds)
-                                    $betodds = $team3_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            } else {
-                                if ($requestData['bet_odds'] <= $team3_main_odds)
-                                    $betodds = $team3_main_odds;
-                                else {
-                                    $responce['status'] = 'false';
-                                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                                    return json_encode($responce);
-                                    exit;
-                                }
-                            }
-                        }
-                        if ($betodds != '')
-                            $betamount = (($betodds * $requestData['bet_amount']) - $requestData['bet_amount']);
-                        else
-                            $betamount = (($requestData['bet_odds'] * $requestData['bet_amount']) - $requestData['bet_amount']);
-                    }
-                } else {
-                }
-            }
-        }
-
         if ($requestData['bet_type'] === 'ODDS') {
             if ($requestData['bet_amount'] < $min_bet_odds_limit) {
                 $responce['status'] = 'false';
@@ -3468,553 +2548,201 @@ class PlayerController extends Controller
         }
         if ($requestData['bet_type'] == 'SESSION') {
             if ($requestData['bet_amount'] < $min_bet_fancy_limit) {
+                $responce = [];
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Minimum bet limit is ' . $min_bet_fancy_limit . '!';
                 return json_encode($responce);
-                exit;
             }
             if ($requestData['bet_amount'] > $max_bet_fancy_limit) {
+                $responce = [];
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Maximum bet limit is ' . $max_bet_fancy_limit . '!';
                 return json_encode($responce);
-                exit;
             }
         }
-        $exposureAmt = SELF::getExAmount(); //for odds and bookmaker
-        $exposureAmt_session = SELF::getExAmountForSession($userId, $requestData['team_name'], $requestData['match_id']); /// nnnn 21-10-2021
+
+        $stack = $requestData['stack'];
+
         $deduct_expo_amt = 0;
-        $sessionBetTotalExposer = $exposureAmt_session;
-        $currentSessionBetTotalExposer = 0;
-        if ($requestData['bet_type'] == 'SESSION') {
-
-            if ($requestData['bet_side'] == 'lay') {
-                $betamount = $requestData['bet_amount'];
-                $bet_oddsK = $requestData['odds_volume'];
-                $deduct_expo_amt = (($betamount * $bet_oddsK) / 100);
-            } else {
-                $betamount = $requestData['bet_amount'];
-                $deduct_expo_amt = $betamount;
-            }
-            $exposureAmt_SESSION = SELF::getExAmount_Session($requestData['team_name'], $requestData['match_id'], $userId, $deduct_expo_amt, $requestData['bet_odds'], $requestData['bet_side']);
-            //echo $headerUserBalance.' <'. $exposureAmt.'+'.$exposureAmt_session.'+'.$exposureAmt_SESSION;
-            //exit;
-            //if($headerUserBalance < ($exposureAmt+$deduct_expo_amt))
-            $currentSessionBetTotalExposer = $exposureAmt_SESSION;
-
-            $sessionBetTotalExposer = $exposureAmt + $exposureAmt_session + $currentSessionBetTotalExposer + $exposureAmt_casino;
-            // dd($deduct_expo_amt, $headerUserBalance, $exposureAmt, $exposureAmt_session, $exposureAmt_SESSION);
-            if ($headerUserBalance < $sessionBetTotalExposer) {
-                $responce['status'] = 'false';
-                $responce['msg'] = 'Insufficient Balance!14 14 14';
-                return json_encode($responce);
-                exit;
-            }
-        }
-        //exit;
-        if ($requestData['bet_type'] === 'BOOKMAKER') {
-            if ($requestData['bet_side'] === 'lay') {
-                $deduct_expo_amt = (($requestData['bet_odds'] * $stack) / 100);
-            } else {
-                $betamount = $stack;
-                $deduct_expo_amt = $stack;
-            }
-        }
         if ($requestData['bet_type'] === 'ODDS') {
-            if ($requestData['bet_side'] === 'lay') {
-                $betodds = '';
+            $betodds = $requestData['bet_odds'];
+            if ($requestData['bet_side'] == 'lay') {
                 if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
                     if ($requestData['bet_odds'] >= $team1_main_odds)
                         $betodds = $team1_main_odds;
-                    else {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                        return json_encode($responce);
-                        exit;
-                    }
                 } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team2_main_odds)
+                    if ($requestData['bet_odds'] >= $team1_main_odds)
                         $betodds = $team2_main_odds;
-                    else {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                        return json_encode($responce);
-                        exit;
-                    }
                 } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team3_main_odds)
-                        $betodds = $team3_main_odds;
-                    else {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                        return json_encode($responce);
-                        exit;
-                    }
+                    if ($requestData['bet_odds'] >= $team1_main_odds)
+                        $betodds = $team2_main_odds;
+                } else {
+                    $responce['status'] = 'false';
+                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                    return json_encode($responce);
                 }
                 if ($betodds != '')
                     $deduct_expo_amt = ((($betodds - 1) * $stack));
                 else
                     $deduct_expo_amt = ((($requestData['bet_odds'] - 1) * $stack));
-            } else {
-                $betamount = $stack;
-                $deduct_expo_amt = $stack;
-            }
-        }
-        $isExBalEq = false;
-        if ($headerUserBalance == $exposureAmt) {
-            $isExBalEq = true;
-        }
-
-
-        //if($headerUserBalance < ($requestData['bet_odds']) && ($requestData['bet_type']=='ODDS' || $requestData['bet_type']=='BOOKMAKER'))//nnn 25-10-2021 its shwoing insufficient balance when odds value is greater than our odds limit
-
-//        dd($headerUserBalance);
-//        if ($headerUserBalance < ($requestData['bet_amount']) && ($requestData['bet_type'] == 'ODDS' || $requestData['bet_type'] == 'BOOKMAKER')) {
-//            $responce['status'] = 'false';
-//            $responce['msg'] = 'Insufficient Balance!15 15 15';
-//            return json_encode($responce);
-//            exit;
-//        }
-//        else
-        {
-            $getUserCheck = Session::get('playerUser');
-            if (!empty($getUserCheck)) {
-                $getUser = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
-            } else {
-                $responce['status'] = 'false';
-                $responce['msg'] = 'Session Logout, please login again';
-                return json_encode($responce);
-                exit;
-            }
-            $getUser = $getUser->id;
-
-            $exposureAmt = $exposureAmt + $deduct_expo_amt;
-
-            $betModel = new MyBets();
-            $betModel->sportID = $requestData['sportID'];
-            $betModel->user_id = $getUser;
-            $betModel->match_id = $requestData['match_id'];
-            $betModel->bet_type = $requestData['bet_type'];
-            $betModel->bet_side = $requestData['bet_side'];
-
-            if ($betModel->bet_type == 'ODDS') {
-                $betodds = '';
-                if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
-                    if ($requestData['bet_side'] == 'lay') {
-                        if ($requestData['bet_odds'] >= $team1_main_odds)
-                            $betodds = $team1_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    } else {
-                        if ($requestData['bet_odds'] <= $team1_main_odds)
-                            $betodds = $team1_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                }
-                else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                    if ($requestData['bet_side'] == 'lay') {
-                        if ($requestData['bet_odds'] >= $team2_main_odds)
-                            $betodds = $team2_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    } else {
-                        if ($requestData['bet_odds'] <= $team2_main_odds)
-                            $betodds = $team2_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                }
-                else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                    if ($requestData['bet_side'] == 'lay') {
-                        if ($requestData['bet_odds'] >= $team3_main_odds)
-                            $betodds = $team3_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    } else {
-                        if ($requestData['bet_odds'] <= $team3_main_odds)
-                            $betodds = $team3_main_odds;
-                        else {
-                            $responce['status'] = 'false';
-                            $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                            return json_encode($responce);
-                            exit;
-                        }
-                    }
-                }
-                if ($betodds != '')
-                    $betModel->bet_odds = $betodds;
-                else
-                    $betModel->bet_odds = $requestData['bet_odds'];
-
-
-                if ($betModel->bet_type === 'ODDS') {
-                    if ($betModel->bet_odds < $min_bet_odds_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_odds_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    if ($betModel->bet_odds > $max_bet_odds_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Maximum bet limit is  ' . $max_bet_odds_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                }
-                if ($betModel->bet_type === 'BOOKMAKER') {
-                    if ($betModel->bet_odds < $min_bet_bm_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_bm_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    if ($betModel->bet_odds > $max_bet_bm_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_bm_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                }
-                if ($betModel->bet_type == 'SESSION') {
-                    if ($betModel->bet_odds < $min_bet_fancy_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_fancy_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    if ($betModel->bet_odds > $max_bet_fancy_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_fancy_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                }
-
-                $betModel->bet_amount = $stack;
-                if ($betModel->bet_type == 'ODDS') {
-                    if ($betodds != '') {
-                        if ($requestData['bet_side'] === 'lay') {
-                            $deduct_expo_amt = ((($betodds - 1) * $stack));
-                            $betModel->bet_profit = round($stack, 2);
-                        } else {
-                            $deduct_expo_amt = ($requestData['bet_cal_amt'] * ($betodds - 1)) / ($requestData['bet_odds'] - 1);
-                            $betModel->bet_profit = round($deduct_expo_amt, 2);
-                            $betModel->bet_profit = ((($betodds - 1) * $stack));
-                            $deduct_expo_amt = $stack;
-                        }
-                    } else {
-                        if ($requestData['bet_side'] === 'lay') {
-//                            $deduct_expo_amt = $requestData['bet_cal_amt'];
-                            $deduct_expo_amt = ((($betModel->bet_odds - 1) * $stack));
-                            $betModel->bet_profit = $stack;
-                        } else {
-                            $betModel->bet_profit = ((($betModel->bet_odds - 1) * $stack));
-                            $deduct_expo_amt = $stack;
-                        }
-                    }
-                }
-                else {
-                    $prft = ((($betModel->bet_odds - 1) * $stack));;
-                    $betModel->bet_profit = round($prft, 2);
-                }
-
-                $betModel->team_name = $requestData['team_name'];
-                $teamNameArr = array();
-                if (isset($requestData['teamname1']) && !empty($requestData['teamname1'])) {
-                    $teamNameArr['teamname1'] = $requestData['teamname1'];
-                }
-                if (isset($requestData['teamname2']) && !empty($requestData['teamname2'])) {
-                    $teamNameArr['teamname2'] = $requestData['teamname2'];
-                }
-                if (isset($requestData['teamname3']) && !empty($requestData['teamname3'])) {
-                    $teamNameArr['teamname3'] = $requestData['teamname3'];
-                }
-
-                if (is_array($teamNameArr) && count($teamNameArr) > 0) {
-                    $betModel->extra = json_encode($teamNameArr);
-                }
-
-                $betModel->exposureAmt = $deduct_expo_amt;
-                $betModel->ip_address = resAll::ip();
-                $betModel->browser_details = $_SERVER['HTTP_USER_AGENT'];
-
-                $timezone = Carbon::now()->format('Y-m-d H:i:s');
-                $betModel->created_at = $timezone;
-                $betModel->updated_at = $timezone;
-                if ($betModel->save()) {
-                    $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
-
-                    $depTot = CreditReference::where('player_id', $betModel->user_id)->first();
-                    ExposerDeductLog::createLog([
-                        'user_id' => $betModel->user_id,
-                        'action' => 'Place Match Bet',
-                        'current_exposer' => $depTot->exposure,
-                        'new_exposer' => $save_exposer_balance,
-                        'exposer_deduct' => $deduct_expo_amt,
-                        'match_id' => $betModel->match_id,
-                        'bet_type' => $betModel->bet_type,
-                        'bet_amount' => $stack,
-                        'odds_value' => $betModel->bet_odds,
-                        'odds_volume' => 0,
-                        'profit' => $betModel->bet_profit,
-                        'lose' => $betModel->exposureAmt,
-                        'available_balance' => $depTot->available_balance_for_D_W
-                    ]);
-
-                    $responce['status'] = 'true';
-                    $responce['msg'] = 'Bet Added Successfully';
-                    $responce['sessionBetTotalExposer'] = $sessionBetTotalExposer;
-                    return json_encode($responce);
-                    exit;
-                }
             }
             else {
-                $betodds = '';
-                if ($betModel->bet_type == 'ODDS') {
-                    if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
-                        if ($requestData['bet_side'] == 'lay') {
-                            if ($requestData['bet_odds'] >= $team1_main_odds)
-                                $betodds = $team1_main_odds;
-                            else {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Unmatch Bet Total Not Allowed';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        } else {
-                            if ($requestData['bet_odds'] <= $team1_main_odds)
-                                $betodds = $team1_main_odds;
-                            else {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Unmatch Bet Total Not Allowed';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        }
-                    }
-                    else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                        if ($requestData['bet_side'] == 'lay') {
-                            if ($requestData['bet_odds'] >= $team2_main_odds)
-                                $betodds = $team2_main_odds;
-                            else {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Unmatch Bet Total Not Allowed';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        } else {
-                            if ($requestData['bet_odds'] <= $team2_main_odds)
-                                $betodds = $team2_main_odds;
-                            else {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Unmatch Bet Total Not Allowed';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        }
-                    }
-                    else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                        if ($requestData['bet_side'] == 'lay') {
-                            if ($requestData['bet_odds'] >= $team3_main_odds)
-                                $betodds = $team3_main_odds;
-                            else {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Unmatch Bet Total Not Allowed';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        } else {
-                            if ($requestData['bet_odds'] <= $team3_main_odds)
-                                $betodds = $team3_main_odds;
-                            else {
-                                $responce['status'] = 'false';
-                                $responce['msg'] = 'Unmatch Bet Total Not Allowed';
-                                return json_encode($responce);
-                                exit;
-                            }
-                        }
-                    }
-                    if ($betodds != '')
-                        $betModel->bet_odds = $betodds;
-                    else
-                        $betModel->bet_odds = $requestData['bet_odds'];
-                }
-                else
-                    $betModel->bet_odds = $requestData['bet_odds'];
+                $deduct_expo_amt = $stack;
+            }
 
-
-                if ($betModel->bet_type === 'ODDS') {
-                    if ($betModel->bet_odds < $min_bet_odds_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_odds_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    if ($betModel->bet_odds > $max_bet_odds_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Maximum bet limit is  ' . $max_bet_odds_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                }
-                if ($betModel->bet_type === 'BOOKMAKER') {
-                    if ($betModel->bet_odds < $min_bet_bm_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_bm_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    if ($betModel->bet_odds > $max_bet_bm_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_bm_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                }
-                if ($betModel->bet_type == 'SESSION') {
-                    if ($betModel->bet_odds < $min_bet_fancy_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Minimum bet limit is ' . $min_bet_fancy_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                    if ($betModel->bet_odds > $max_bet_fancy_limit) {
-                        $responce['status'] = 'false';
-                        $responce['msg'] = 'Maximum bet limit is ' . $max_bet_fancy_limit . '!';
-                        return json_encode($responce);
-                        exit;
-                    }
-                }
-
-
-                $betModel->bet_amount = $stack;
-
-                if ($betModel->bet_type == 'ODDS') {
-                    if ($betodds != '') {
-                        if ($requestData['bet_side'] === 'lay') {
-                            $deduct_expo_amt = ((($betodds - 1) * $stack));
-                            $betModel->bet_profit = round($stack, 2);
-                        } else {
-                            $betModel->bet_profit = round(((($betodds - 1) * $stack)), 2);
-                            $deduct_expo_amt = $stack;
-                        }
-                    } else {
-                        if ($requestData['bet_side'] === 'lay') {
-                            $deduct_expo_amt = ((($betModel->bet_odds - 1) * $stack));
-                            $betModel->bet_profit = round($stack, 2);
-                        } else {
-                            $betModel->bet_profit = round(((($betModel->bet_odds - 1) * $stack)), 2);
-                            $deduct_expo_amt = $stack;
-                        }
-                    }
-                }
-                else if ($requestData['bet_type'] == 'SESSION') {
-                    if ($requestData['bet_side'] === 'lay') {
-                        $betModel->bet_profit = round($stack, 2);
-                    } else {
-                        $betModel->bet_profit = round(($requestData['odds_volume'] * $stack) / 100, 2);
-                    }
-                } else {
-                    if ($requestData['bet_side'] === 'lay') {
-                        $betModel->bet_profit = round($stack, 2);
-                    } else {
-                        $betModel->bet_profit = round(($betModel->bet_odds * $stack) / 100, 2);
-                    }
-                }
-                $betModel->team_name = $requestData['team_name'];
-
-                if ($betModel->bet_type == 'SESSION')
-                    $betModel->bet_oddsk = $requestData['odds_volume'];
-
-                $teamNameArr = array();
-                if (isset($requestData['teamname1']) && !empty($requestData['teamname1'])) {
-                    $teamNameArr['teamname1'] = $requestData['teamname1'];
-                }
-                if (isset($requestData['teamname2']) && !empty($requestData['teamname2'])) {
-                    $teamNameArr['teamname2'] = $requestData['teamname2'];
-                }
-                if (isset($requestData['teamname3']) && !empty($requestData['teamname3'])) {
-                    $teamNameArr['teamname3'] = $requestData['teamname3'];
-                }
-                if (is_array($teamNameArr) && count($teamNameArr) > 0) {
-                    $betModel->extra = json_encode($teamNameArr);
-                }
-                if ($betModel->bet_type == 'BOOKMAKER') {
-                    $betModel->exposureAmt = $deduct_expo_amt;
-                } else if ($betModel->bet_type == 'SESSION') {
-                    if ($requestData['bet_side'] === 'lay') {
-                        $betModel->exposureAmt = $deduct_expo_amt;
-                    } else {
-                        $betModel->exposureAmt = $stack;
-                    }
-                } else {
-                    if ($betModel->bet_type == 'ODDS') {
-                        if ($betodds != '') {
-                            if ($requestData['bet_side'] === 'lay') {
-                            }
-                        } else
-                            $deduct_expo_amt = $requestData['bet_cal_amt'];
-
-                        $betModel->exposureAmt = $deduct_expo_amt;
-                    } else
-                        $betModel->exposureAmt = $requestData['bet_cal_amt'];
-                }
-
-                // dd($deduct_expo_amt);
-
-                $betModel->ip_address = resAll::ip();
-                $betModel->browser_details = $_SERVER['HTTP_USER_AGENT'];
-                $timezone = Carbon::now()->format('Y-m-d H:i:s');
-                $betModel->created_at = $timezone;
-                $betModel->updated_at = $timezone;
-                if ($betModel->save()) {
-                    $depTot = CreditReference::where('player_id', $betModel->user_id)->first();
-                    $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt, $betModel->bet_type, $sessionBetTotalExposer);
-                    $depTot1 = CreditReference::where('player_id', $betModel->user_id)->first();
-                    ExposerDeductLog::createLog([
-                        'user_id' => $betModel->user_id,
-                        'action' => 'Place Match Bet',
-                        'current_exposer' => $depTot->exposure,
-                        'new_exposer' => $depTot1->exposure,
-                        'exposer_deduct' => $deduct_expo_amt,
-                        'match_id' => $betModel->match_id,
-                        'bet_type' => $betModel->bet_type,
-                        'bet_amount' => $stack,
-                        'odds_value' => $betModel->bet_odds,
-                        'odds_volume' => 0,
-                        'profit' => $betModel->bet_profit,
-                        'lose' => $betModel->exposureAmt,
-                        'available_balance' => $depTot1->available_balance_for_D_W
-                    ]);
-
-                    $responce['status'] = 'true';
-                    $responce['msg'] = 'Bet Added Successfully.';
-                    $responce['currentSessionBetTotalExposer'] = $currentSessionBetTotalExposer;
-                    return json_encode($responce);
-                    exit;
-                }
+            if ($requestData['bet_side'] === 'lay') {
+                $bet_profit = round($stack, 2);
+            } else {
+                $bet_profit = ((($betodds - 1) * $stack));
             }
         }
+        if ($requestData['bet_type'] === 'BOOKMAKER') {
+            $betodds = $requestData['bet_odds'];
+            if ($requestData['bet_side'] == 'lay') {
+                $deduct_expo_amt = ((($requestData['bet_odds']) * $stack) / 100);
+            } else {
+                $deduct_expo_amt = $stack;
+            }
+
+            if ($requestData['bet_side'] === 'lay') {
+                $bet_profit = round($stack, 2);
+            } else {
+                $bet_profit = round(($betodds * $stack) / 100, 2);
+            }
+        }
+
+        // getting odds and bookmaker total exposer with current new bet
+        $extra = '';
+
+        $teamNameArr = array();
+        if (isset($requestData['teamname1']) && !empty($requestData['teamname1'])) {
+            $teamNameArr['teamname1'] = $requestData['teamname1'];
+        }
+        if (isset($requestData['teamname2']) && !empty($requestData['teamname2'])) {
+            $teamNameArr['teamname2'] = $requestData['teamname2'];
+        }
+        if (isset($requestData['teamname3']) && !empty($requestData['teamname3'])) {
+            $teamNameArr['teamname3'] = $requestData['teamname3'];
+        }
+
+        if (is_array($teamNameArr) && count($teamNameArr) > 0) {
+            $extra = json_encode($teamNameArr);
+        }
+
+        if ($requestData['bet_type'] === 'ODDS' || $requestData['bet_type'] === 'BOOKMAKER') {
+
+            $betRecord = [];
+            $betRecord['match_id'] =  "!=";
+            $betRecord['bet_type'] = $requestData['bet_type'];
+            $betRecord['bet_side'] = $requestData['bet_side'];
+            $betRecord['team_name'] = $requestData['team_name'];
+            $betRecord['exposureAmt'] = $deduct_expo_amt;
+            $betRecord['bet_amount'] = $requestData['bet_amount'];
+            $betRecord['bet_profit'] = $bet_profit;
+            $betRecord['extra'] = $extra;
+
+            $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($userId, $requestData['match_id'], $betRecord);
+
+            $oddsBookmakerExposer = $oddsBookmakerExposerArr['exposer'];
+        }
+        else{
+            $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($userId);
+            $oddsBookmakerExposer = $oddsBookmakerExposerArr['exposer'];
+        }
+
+        if ($requestData['bet_type'] === 'SESSION') {
+            $betodds = $requestData['odds_volume'];
+            if ($requestData['bet_side'] == 'lay') {
+                $deduct_expo_amt = ((($requestData['odds_volume']) * $stack)) / 100;
+            } else {
+                $deduct_expo_amt = $stack;
+            }
+
+            if ($requestData['bet_side'] === 'lay') {
+                $bet_profit = round($stack, 2);
+            } else {
+                $bet_profit = round(($betodds * $stack) / 100, 2);
+            }
+        }
+
+        // getting session total exposer with current new session bet
+        if ($requestData['bet_type'] === 'SESSION'){
+            $betRecord = [];
+            $betRecord['deductamt'] = $deduct_expo_amt;
+            $betRecord['position'] = $betodds;
+            $betRecord['betside'] = $requestData['bet_side'];
+
+            $sessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'], $betRecord);
+        }else{
+            $sessionExposer = self::getSessionExposer($userId);
+        }
+
+        // getting casino total exposer
+        $exposureAmt_casino_resp = CasinoCalculationController::getCasinoExAmount($userId); /// nnnn 21-10-2021
+        $exposureAmt_casino =   $exposureAmt_casino_resp['exposer'];
+
+        $finalExposerWithCurrentMatchSession = $exposureAmt_casino + $sessionExposer + $oddsBookmakerExposer;
+
+        dd($exposureAmt_casino, $sessionExposer, $oddsBookmakerExposer);
+
+        if ($headerUserBalance < $finalExposerWithCurrentMatchSession) {
+            $responce = [];
+            $responce['status'] = 'false';
+            $responce['msg'] = 'Insufficient Balance!!';
+            return json_encode($responce);
+        }
+
+        $timezone = Carbon::now()->format('Y-m-d H:i:s');
+
+        $betModel = new MyBets();
+        $betModel->sportID = $requestData['sportID'];
+        $betModel->user_id = $getUser->id;
+        $betModel->match_id = $requestData['match_id'];
+        $betModel->bet_type = $requestData['bet_type'];
+        $betModel->bet_side = $requestData['bet_side'];
+        $betModel->bet_odds = $betodds;
+        $betModel->bet_amount = $stack;
+        $betModel->bet_profit = $bet_profit;
+        $betModel->team_name = $requestData['team_name'];
+        if (!empty($extra)) {
+            $betModel->extra = $extra;
+        }
+        $betModel->exposureAmt = $deduct_expo_amt;
+        $betModel->ip_address = resAll::ip();
+        $betModel->browser_details = $_SERVER['HTTP_USER_AGENT'];
+        $betModel->created_at = $timezone;
+        $betModel->updated_at = $timezone;
+
+        if ($betModel->bet_type == 'SESSION') {
+            $betModel->bet_oddsk = $requestData['odds_volume'];
+        }
+
+        if ($betModel->save()) {
+            $depTot = CreditReference::where('player_id', $betModel->user_id)->first();
+            $save_exposer_balance = SELF::SaveBalance($deduct_expo_amt);
+            $depTot1 = CreditReference::where('player_id', $betModel->user_id)->first();
+            ExposerDeductLog::createLog([
+                'user_id' => $betModel->user_id,
+                'action' => 'Place Match Bet',
+                'current_exposer' => $depTot->exposure,
+                'new_exposer' => $depTot1->exposure,
+                'exposer_deduct' => $deduct_expo_amt,
+                'match_id' => $betModel->match_id,
+                'bet_type' => $betModel->bet_type,
+                'bet_amount' => $stack,
+                'odds_value' => $betModel->bet_odds,
+                'odds_volume' => 0,
+                'profit' => $betModel->bet_profit,
+                'lose' => $betModel->exposureAmt,
+                'available_balance' => $depTot1->available_balance_for_D_W
+            ]);
+            $responce = [];
+            $responce['status'] = 'true';
+            $responce['msg'] = 'Bet Added Successfully.';
+            $responce['currentSessionBetTotalExposer'] = 0;
+            return json_encode($responce);
+        }
+
         return json_encode($responce);
     }
 
