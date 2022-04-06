@@ -2683,7 +2683,7 @@ class PlayerController extends Controller
 
         $finalExposerWithCurrentMatchSession = $exposureAmt_casino + $sessionExposer + $oddsBookmakerExposer;
 
-        dd($exposureAmt_casino, $sessionExposer, $oddsBookmakerExposer);
+//        dd($exposureAmt_casino, $sessionExposer, $oddsBookmakerExposer);
 
         if ($headerUserBalance < $finalExposerWithCurrentMatchSession) {
             $responce = [];

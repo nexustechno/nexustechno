@@ -111,7 +111,7 @@
             </span>
         </div>
         </template>
-        <div class="text-center p-5" v-else>
+        <div class="text-center p-5" v-if="matches.length <= 0">
             <p class="m-0">No data found</p>
         </div>
     </div>
