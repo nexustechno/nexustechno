@@ -786,6 +786,8 @@ class PlayerController extends Controller
                         $response['exposer'] = max($arr);
                     }
 
+                    dd($response);
+
                     $exposerArray['ODDS'] = $response['ODDS'];
                     $exposerArray['exposer'] += $response['exposer'];
                     break;
