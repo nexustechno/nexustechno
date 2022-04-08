@@ -694,14 +694,14 @@ class PlayerController extends Controller
             $bet['bet_profit'] = $conditionalParameters['bet_profit'];
             $extra = json_decode($conditionalParameters['extra'], true);
 
-            dd($response);
-
             switch ($bet['bet_type']) {
                 case "ODDS":
                 {
                     if ($bet['bet_side'] == 'lay') {
                         $profitAmt = $bet['exposureAmt'];
                         $profitAmt = ($profitAmt * (-1));
+
+                        dd($response, $bet, $profitAmt);
 
                         if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
                             $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
