@@ -3214,21 +3214,34 @@ class SettingController extends Controller
             $matchname = $match->match_name;
             $team = explode(" v ", strtolower($matchname));
             $page = 'backpanel.risk-management-details';
-            $inplay = 'False';
+
             if ($matchList->sports_id == '1') { //soccer
                 $section = '3';
-                $match_updated_date = strtotime($match_data[0]['updateTime']);
             } elseif ($matchList->sports_id == '2') { //tennis
                 $section = '2';
-                $match_updated_date = strtotime($match_data[0]['updateTime']);
             } elseif ($matchList->sports_id == '4') { //cricket
                 $section = 4;
+            }
+
+
+            if(isset($match_data[0])) {
+                $match_updated_date = strtotime($match_data[0]['updateTime']);
+            }
+
+            if(isset($match_data['starttime'])) {
                 $match_updated_date = $match_data['starttime'];
             }
-            if($section == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True'){
+
+            $inplay = 'False';
+
+            if(isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay']){
+                $match_data_found = true;
+            }
+
+            if(isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True'){
                 $inplay = 'True';
             }else if (isset($match_data[0]['inplay']) != '') {
-
+                $match_data_found = true;
                 $inplay = $match_data[0]['inplay'];
                 if ($inplay == 1)
                     $inplay = 'True';

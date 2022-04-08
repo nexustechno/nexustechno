@@ -198,6 +198,7 @@ class RestrictionController extends Controller
         $html2 = '';
 //        $passexp = '';
 
+
         $cumulative_pl_cli = 0;
 
         if($users->count() > 0) {
@@ -263,13 +264,12 @@ class RestrictionController extends Controller
                       }
                   }*/
 
-                $credit_data = CreditReference::where('player_id', $row->id)->select('available_balance_for_D_W')->first();
-                $availableBalance = '';
+//                $credit_data = CreditReference::where('player_id', $row->id)->select('available_balance_for_D_W')->first();
+//                $availableBalance = '';
 //            $total_calculated_available_balance = 0;
 
-                if (!empty($credit_data)) {
-                    $availableBalance = $credit_data->available_balance_for_D_W;
-                }
+
+                $availableBalance = $credit_datamn->available_balance_for_D_W;
 
 //            $credit_data = CreditReference::where('player_id', $row->id)->select('remain_bal')->first();
 //            $remain_bal = '';
@@ -303,21 +303,16 @@ class RestrictionController extends Controller
                             <span class="' . $color . ' text-color-white">' . $row->agent_level . '</span>' . $row->user_name . ' [' . $row->first_name . ' ' . $row->last_name . ']
                         </a>';
 
-                    $credit_data = CreditReference::where('player_id', $row->id)->first();
-                    $credit = 0;
-                    if (!empty($credit_data['credit'])) {
-                        $credit = $credit_data['credit'];
-                    }
                     $total_calculated_available_balance = $availableBalance + $calData[0] + $calData[1];
                     $html .= '</td>
 
-                    <td class="white-bg"><a id="'.$row->id.'" data-credit="'.$credit.'"  class="openCreditpopup favor-set">'.$sum_credit.'</a></td>
+                    <td class="white-bg"><a id="'.$row->id.'" data-credit="'.$sum_credit.'"  class="openCreditpopup favor-set">'.$sum_credit.'</a></td>
                     <td class="white-bg">' . number_format($availableBalance, 2, '.', '') . '</td>
                     <td class="white-bg">' . number_format($calData[0], 2, '.', '') . '</td>
                     <td class="white-bg">' . number_format($calData[1], 2, '.', '') . '</td>
                     <td class="white-bg">' . number_format($total_calculated_available_balance, 2, '.', '') . '</td>';
                     $html .= '<td class="white-bg text-color-red" style="display:table-cell;">(' . number_format(abs($calData[2]), 2, '.', '') . ')</td>';
-                    $refPL = $credit - $total_calculated_available_balance;
+                    $refPL = $sum_credit - $total_calculated_available_balance;
                     if ($refPL < 0) {
                         $class = "text-color-green";
                     } else {
@@ -378,7 +373,7 @@ class RestrictionController extends Controller
         $adata = $this->backdata($crumb->id);
         $child = $this->childdata($getuser->id);
         sort($adata);
-
+//
         $child[] = $getuser->id;
 
         foreach ($adata as $bread) {

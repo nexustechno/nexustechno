@@ -9,6 +9,7 @@ use App\UserHirarchy;
 use App\UserExposureLog;
 use App\UsersAccount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Auth;
 use Carbon\Carbon;
@@ -43,38 +44,55 @@ class AgentController extends Controller
                 $q->where('agent_level','!=','PL');
             })->sum('available_balance_for_D_W');
 
-            foreach ($getuserArray as $value_data) {
-                $exposer = 0;
-                $userData = User::where('id', $value_data)->first();
-                if (!empty($userData->agent_level)) {
-                    if ($userData->agent_level != 'PL') {
-//                        $hirUser_bal += CreditReference::where('player_id', $value_data)->sum('available_balance_for_D_W');
-                    } else {
-                        $credit_dataclient = CreditReference::where('player_id', $value_data)->select('remain_bal', 'exposure')->first();
-                        if (!empty($credit_dataclient)) {
-                            $totalClientBal += $credit_dataclient->remain_bal;
-                            if ($credit_dataclient->exposure < 0) {
-                                $posTotal = abs($credit_dataclient->exposure);
-                            } else {
-                                $negTotal = $credit_dataclient->exposure;
-                            }
-                            $exposer = $posTotal + $negTotal;
-                        }
 
-                        // calculate cumulative PL
-                        $cumulative_pl_profit_get = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Profit')->where('bet_type', 'ODDS')->sum('profit');
-                        $cumulative_pl_profit = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Profit')->where('bet_type', '!=', 'ODDS')->sum('profit');
-                        $cumulative_pl_loss = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Loss')->sum('loss');
-                        $cumu_n = 0;
-                        $cumu_n = $cumulative_pl_profit_get * ($userData->commission) / 100;
-                        $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit - $cumu_n;
-                        $cumulative_pl2 = $cumuPL_n - $cumulative_pl_loss;
+            $totalClientBal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
+                $q->where('agent_level','PL');
+            })->sum('remain_bal');
 
-                        $totalExposure += $exposer;
-                        $cumulative_pl += $cumulative_pl2;
-                    }
-                }
+//            DB::connection()->enableQueryLog();
+            $totalExposure = CreditReference::whereIn('player_id', $getuserArray)->selectRaw('abs(exposure)')->whereHas('user', function ($q) {
+                $q->where('agent_level','PL');
+            })->sum('exposure');
+//            dd($totalExposure);
+
+            $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".implode(', ',$getuserArray).")) X");
+            if(isset($cumulative_pl_query->total_profit)) {
+                $cumulative_pl = $cumulative_pl_query->total_profit;
             }
+
+
+//            foreach ($getuserArray as $value_data) {
+//                $exposer = 0;
+//                $userData = User::where('id', $value_data)->first();
+//                if (!empty($userData->agent_level)) {
+//                    if ($userData->agent_level != 'PL') {
+////                        $hirUser_bal += CreditReference::where('player_id', $value_data)->sum('available_balance_for_D_W');
+//                    } else {
+////                        $credit_dataclient = CreditReference::where('player_id', $value_data)->select('remain_bal', 'exposure')->first();
+////                        if (!empty($credit_dataclient)) {
+//////                            $totalClientBal += $credit_dataclient->remain_bal;
+////                            if ($credit_dataclient->exposure < 0) {
+////                                $posTotal = abs($credit_dataclient->exposure);
+////                            } else {
+////                                $negTotal = $credit_dataclient->exposure;
+////                            }
+////                            $exposer = $posTotal + $negTotal;
+////                        }
+//
+//                        // calculate cumulative PL
+//                        $cumulative_pl_profit_get = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Profit')->where('bet_type', 'ODDS')->sum('profit');
+//                        $cumulative_pl_profit = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Profit')->where('bet_type', '!=', 'ODDS')->sum('profit');
+//                        $cumulative_pl_loss = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Loss')->sum('loss');
+//                        $cumu_n = 0;
+//                        $cumu_n = $cumulative_pl_profit_get * ($userData->commission) / 100;
+//                        $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit - $cumu_n;
+//                        $cumulative_pl2 = $cumuPL_n - $cumulative_pl_loss;
+//
+////                        $totalExposure += $exposer;
+//                        $cumulative_pl += $cumulative_pl2;
+//                    }
+//                }
+//            }
         }
 
         return $hirUser_bal . '~' . $totalClientBal . '~' . $totalExposure . '~' . $cumulative_pl;
@@ -93,61 +111,26 @@ class AgentController extends Controller
             $remain_bal = $settings['remain_bal'];
         }
 
-        $website = UsersAccount::getWebsite();
-
         $hirUser = UserHirarchy::where('agent_user', $loginuser->id)->first();
         $hirUser_bal = 0;
         $totalClientBal = 0;
         $totalExposure = 0;
-        $posTotal = 0;
-        $negTotal = 0;
 
-//        $settingController = app(SettingController::class);
-
-        $arr = [];
         if (!empty($hirUser)) {
             $getuserArray = explode(',', $hirUser->sub_user);
 
-            foreach ($getuserArray as $value_data) {
-                $userData = User::where('id', $value_data)->first();
-                $exposer = 0;
-                if (!empty($userData) && !empty($userData->agent_level)) {
-                    if ($userData->agent_level != 'PL') {
-                        $hirUser_bal += CreditReference::where('player_id', $value_data)->sum('available_balance_for_D_W');
-                    } else {
-                        $credit_dataclient = CreditReference::where('player_id', $value_data)->select('remain_bal', 'exposure')->first();
-                        if (!empty($credit_dataclient)) {
-                            $totalClientBal += $credit_dataclient->remain_bal;
-                            if ($credit_dataclient->exposure < 0) {
-                                $posTotal = abs($credit_dataclient->exposure);
-                            } else {
-                                $negTotal = $credit_dataclient->exposure;
-                            }
+            $hirUser_bal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
+                $q->where('agent_level','!=','PL');
+            })->sum('available_balance_for_D_W');
 
-                            $exposer = $posTotal + $negTotal;
+            $totalClientBal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
+                $q->where('agent_level','PL');
+            })->sum('remain_bal');
 
-                            $arr[$value_data] = $exposer;
-                            $arr[$value_data.'ref'] = $credit_dataclient->toArray();
-
-                            $totalExposure+= $exposer;
-                        }
-                    }
-
-                    // calculate cumulative PL
-//                    $cumulative_pl_profit_get = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Profit')->where('bet_type', 'ODDS')->sum('profit');
-//                    $cumulative_pl_profit = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Profit')->where('bet_type', '!=', 'ODDS')->sum('profit');
-//                    $cumulative_pl_loss = UserExposureLog::where('user_id', $value_data)->where('win_type', 'Loss')->sum('loss');
-//                    $cumu_n = 0;
-//                    $cumu_n = $cumulative_pl_profit_get * ($userData->commission) / 100;
-//                    $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit - $cumu_n;
-//                    $cumulative_pl += $cumuPL_n - $cumulative_pl_loss;
-                }
-            }
-
+            $totalExposure = CreditReference::whereIn('player_id', $getuserArray)->selectRaw('abs(exposure)')->whereHas('user', function ($q) {
+                $q->where('agent_level','PL');
+            })->sum('exposure');
         }
-
-//        dd($arr);
-
         return response()->json(array(
             'balance' => number_format($balance,2,'.',''),
             'remain_bal' => number_format($remain_bal,2,'.',''),

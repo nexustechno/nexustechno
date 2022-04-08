@@ -8779,13 +8779,16 @@ class FrontController extends Controller
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
                         ->where('match_id', $match->event_id)
-                        ->whereBetween('created_at', [$fromdate, $todate])
+//                        ->whereBetween('created_at', [$fromdate, $todate])
                         ->groupBy('bet_type')
                         ->where('bet_type', $log->bet_type)
                         ->orderBy('created_at')
                         ->first();
-
-                    $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
+                    if(!empty($bet)) {
+                        $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
+                    }else{
+                        $remark = "Match bet not found here, contact to administrator";
+                    }
                 }
                 else {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
@@ -8795,7 +8798,7 @@ class FrontController extends Controller
                         ->where('team_name', $log->fancy_name)
                         ->groupBy('team_name')
                         ->where('match_id', $match->event_id)
-                        ->whereBetween('created_at', [$fromdate, $todate])
+//                        ->whereBetween('created_at', [$fromdate, $todate])
                         ->orderBy('created_at')
                         ->first();
 
