@@ -694,7 +694,7 @@ class PlayerController extends Controller
             $bet['bet_profit'] = $conditionalParameters['bet_profit'];
             $extra = json_decode($conditionalParameters['extra'], true);
 
-//            dd($bet);
+            dd($response);
 
             switch ($bet['bet_type']) {
                 case "ODDS":
@@ -786,7 +786,7 @@ class PlayerController extends Controller
                         $response['exposer'] = max($arr);
                     }
 
-                    dd($response);
+
 
                     $exposerArray['ODDS'] = $response['ODDS'];
                     $exposerArray['exposer'] += $response['exposer'];
