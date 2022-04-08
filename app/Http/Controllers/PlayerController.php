@@ -681,12 +681,9 @@ class PlayerController extends Controller
             }
         }
 
-//        dd($exposerArray);
-
         if(isset($conditionalParameters['bet_type'])){
             $response = self::getOddsAndBookmakerExposer($id,$eventId);
-
-//            dd($response);
+//            dd($conditionalParameters);
 
             $bet = [];
             $bet['bet_type'] = $conditionalParameters['bet_type'];
@@ -697,7 +694,7 @@ class PlayerController extends Controller
             $bet['bet_profit'] = $conditionalParameters['bet_profit'];
             $extra = json_decode($conditionalParameters['extra'], true);
 
-//            dd($bet['bet_type']);
+//            dd($bet);
 
             switch ($bet['bet_type']) {
                 case "ODDS":
@@ -705,6 +702,7 @@ class PlayerController extends Controller
                     if ($bet['bet_side'] == 'lay') {
                         $profitAmt = $bet['exposureAmt'];
                         $profitAmt = ($profitAmt * (-1));
+
                         if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
                             $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
                         } else {
@@ -777,8 +775,6 @@ class PlayerController extends Controller
                         }
                     }
 
-//                    dd($response);
-
                     $arr = array();
                     foreach ($response['ODDS'] as $key => $profitLos) {
                         if ($profitLos['ODDS_profitLost'] < 0) {
@@ -787,7 +783,7 @@ class PlayerController extends Controller
                     }
 
                     if (is_array($arr) && count($arr) > 0) {
-                        $response['exposer'] += max($arr);
+                        $response['exposer'] = max($arr);
                     }
 
                     $exposerArray['ODDS'] = $response['ODDS'];
@@ -873,6 +869,8 @@ class PlayerController extends Controller
                 }
             }
         }
+
+//        dd($exposerArray);
 
         return $exposerArray;
     }
@@ -2630,7 +2628,6 @@ class PlayerController extends Controller
         }
 
         if ($requestData['bet_type'] === 'ODDS' || $requestData['bet_type'] === 'BOOKMAKER') {
-
             $betRecord = [];
             $betRecord['match_id'] =  "!=";
             $betRecord['bet_type'] = $requestData['bet_type'];
@@ -2683,7 +2680,7 @@ class PlayerController extends Controller
 
         $finalExposerWithCurrentMatchSession = $exposureAmt_casino + $sessionExposer + $oddsBookmakerExposer;
 
-//        dd($exposureAmt_casino, $sessionExposer, $oddsBookmakerExposer);
+//        dd($finalExposerWithCurrentMatchSession);
 
         if ($headerUserBalance < $finalExposerWithCurrentMatchSession) {
             $responce = [];
