@@ -701,8 +701,6 @@ class PlayerController extends Controller
                         $profitAmt = $bet['exposureAmt'];
                         $profitAmt = ($profitAmt * (-1));
 
-                        dd($response, $bet, $profitAmt);
-
                         if (!isset($response['ODDS'][$bet['team_name']]['ODDS_profitLost'])) {
                             $response['ODDS'][$bet['team_name']]['ODDS_profitLost'] = $profitAmt;
                         } else {
@@ -2571,11 +2569,11 @@ class PlayerController extends Controller
                     if ($requestData['bet_odds'] >= $team1_main_odds)
                         $betodds = $team1_main_odds;
                 } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team1_main_odds)
+                    if ($requestData['bet_odds'] >= $team2_main_odds)
                         $betodds = $team2_main_odds;
                 } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
-                    if ($requestData['bet_odds'] >= $team1_main_odds)
-                        $betodds = $team2_main_odds;
+                    if ($requestData['bet_odds'] >= $team3_main_odds)
+                        $betodds = $team3_main_odds;
                 } else {
                     $responce['status'] = 'false';
                     $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
