@@ -535,8 +535,9 @@ class PlayerController extends Controller
                 }
                 case 'BOOKMAKER':
                 {
-                    $profitAmt = $bet['bet_profit'];
+
                     if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = $bet['exposureAmt'];
                         $profitAmt = ($profitAmt * (-1));
                         if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
                             $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
@@ -566,6 +567,7 @@ class PlayerController extends Controller
                         }
                     }
                     else {
+                        $profitAmt = $bet['bet_profit']; ////nnn
                         $bet_amt = ($bet['bet_amount'] * (-1));
                         if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
                             $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
@@ -784,17 +786,14 @@ class PlayerController extends Controller
                         $response['exposer'] = max($arr);
                     }
 
-
-
                     $exposerArray['ODDS'] = $response['ODDS'];
                     $exposerArray['exposer'] += $response['exposer'];
                     break;
                 }
                 case 'BOOKMAKER':
                 {
-                    $profitAmt = $bet['bet_profit'];
-
                     if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = $bet['exposureAmt'];
                         $profitAmt = ($profitAmt * (-1));
                         if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
                             $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
@@ -824,6 +823,7 @@ class PlayerController extends Controller
                         }
                     }
                     else {
+                        $profitAmt = $bet['bet_profit']; ////nnn
                         $bet_amt = ($bet['bet_amount'] * (-1));
                         if (!isset($response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'])) {
                             $response['BOOKMAKER'][$bet['team_name']]['BOOKMAKER_profitLost'] = $profitAmt;
@@ -1100,7 +1100,6 @@ class PlayerController extends Controller
         Log::info(str_repeat("~=~", 30));
         $balance = SELF::getBlanceAmount();
         $exposer = $this->getUserExposer($userId);
-
 
         Log::info("main balance: " . $balance);
         Log::info("total exposer: " . $exposer);
@@ -2564,25 +2563,66 @@ class PlayerController extends Controller
         $deduct_expo_amt = 0;
         if ($requestData['bet_type'] === 'ODDS') {
             $betodds = $requestData['bet_odds'];
-            if ($requestData['bet_side'] == 'lay') {
-                if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
+            if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
+                if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_odds'] >= $team1_main_odds)
                         $betodds = $team1_main_odds;
-                } else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
+                    else {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        return json_encode($responce);
+                    }
+                } else {
+                    if ($requestData['bet_odds'] <= $team1_main_odds)
+                        $betodds = $team1_main_odds;
+                    else {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        return json_encode($responce);
+                    }
+                }
+            }
+            else if ($requestData['team2'] == $requestData['team_name'] && $team2_main_odds != '' && $team2_main_odds != 'Suspend') {
+                if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_odds'] >= $team2_main_odds)
                         $betodds = $team2_main_odds;
-                } else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
+                    else {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        return json_encode($responce);
+                    }
+                } else {
+                    if ($requestData['bet_odds'] <= $team2_main_odds)
+                        $betodds = $team2_main_odds;
+                    else {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        return json_encode($responce);
+                    }
+                }
+            }
+            else if ($requestData['team3'] == $requestData['team_name'] && $team3_main_odds != '' && $team3_main_odds != 'Suspend') {
+                if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_odds'] >= $team3_main_odds)
                         $betodds = $team3_main_odds;
+                    else {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        return json_encode($responce);
+                    }
                 } else {
-                    $responce['status'] = 'false';
-                    $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
-                    return json_encode($responce);
+                    if ($requestData['bet_odds'] <= $team3_main_odds)
+                        $betodds = $team3_main_odds;
+                    else {
+                        $responce['status'] = 'false';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        return json_encode($responce);
+                    }
                 }
-                if ($betodds != '')
-                    $deduct_expo_amt = ((($betodds - 1) * $stack));
-                else
-                    $deduct_expo_amt = ((($requestData['bet_odds'] - 1) * $stack));
+            }
+
+            if ($requestData['bet_side'] == 'lay') {
+                $deduct_expo_amt = ((($betodds - 1) * $stack));
             }
             else {
                 $deduct_expo_amt = $stack;
@@ -2597,7 +2637,7 @@ class PlayerController extends Controller
         if ($requestData['bet_type'] === 'BOOKMAKER') {
             $betodds = $requestData['bet_odds'];
             if ($requestData['bet_side'] == 'lay') {
-                $deduct_expo_amt = ((($requestData['bet_odds']) * $stack) / 100);
+                $deduct_expo_amt = (($betodds * $stack) / 100);
             } else {
                 $deduct_expo_amt = $stack;
             }
@@ -2626,7 +2666,7 @@ class PlayerController extends Controller
         if (is_array($teamNameArr) && count($teamNameArr) > 0) {
             $extra = json_encode($teamNameArr);
         }
-
+        $oddsBookmakerExposerArr = [];
         if ($requestData['bet_type'] === 'ODDS' || $requestData['bet_type'] === 'BOOKMAKER') {
             $betRecord = [];
             $betRecord['match_id'] =  "!=";
@@ -2639,6 +2679,8 @@ class PlayerController extends Controller
             $betRecord['extra'] = $extra;
 
             $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($userId, $requestData['match_id'], $betRecord);
+
+//            dd($betRecord, $oddsBookmakerExposerArr);
 
             $oddsBookmakerExposer = $oddsBookmakerExposerArr['exposer'];
         }
@@ -2662,6 +2704,7 @@ class PlayerController extends Controller
             }
         }
 
+        $currentSessionBetTotalExposer = 0;
         // getting session total exposer with current new session bet
         if ($requestData['bet_type'] === 'SESSION'){
             $betRecord = [];
@@ -2669,7 +2712,11 @@ class PlayerController extends Controller
             $betRecord['position'] = $betodds;
             $betRecord['betside'] = $requestData['bet_side'];
 
-            $sessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'], $betRecord);
+            $otherSessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'],['team_name'=>'!=']);
+            $currentSessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'], $betRecord);
+
+            $sessionExposer = $otherSessionExposer + $currentSessionExposer;
+            $currentSessionBetTotalExposer = $currentSessionExposer;
         }else{
             $sessionExposer = self::getSessionExposer($userId);
         }
@@ -2736,9 +2783,11 @@ class PlayerController extends Controller
             $responce = [];
             $responce['status'] = 'true';
             $responce['msg'] = 'Bet Added Successfully.';
-            $responce['currentSessionBetTotalExposer'] = 0;
+            $responce['currentSessionBetTotalExposer'] = $currentSessionBetTotalExposer;
+            $responce['oddsBookmakerExposerArr'] = $oddsBookmakerExposerArr;
             return json_encode($responce);
         }
+
 
         return json_encode($responce);
     }

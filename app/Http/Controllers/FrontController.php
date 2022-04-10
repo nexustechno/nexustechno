@@ -253,6 +253,9 @@ class FrontController extends Controller
         $oddsLimit['min_bet_odds_limit'] = $matchList->min_bet_odds_limit;
         $oddsLimit['max_bet_odds_limit'] = $matchList->max_bet_odds_limit;
 
+        $oddsBookmakerExposerArr = PlayerController::getOddsAndBookmakerExposer($userId,$event_id);
+//        dd($oddsBookmakerExposerArr);
+
         $team1_bet_total = 0;
         $team2_bet_total = 0;
         $team_draw_bet_total = 0;
@@ -394,7 +397,8 @@ class FrontController extends Controller
                 else
                     $inplay = 'false';
             }
-        }else {
+        }
+        else {
             $page = 'front.matchDetail2';
             $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
             if(isset($match_data[0]) && isset($match_data[0]['inPlay'])){
@@ -431,7 +435,7 @@ class FrontController extends Controller
                                     $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
                                 }
                                 if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
+                                    $team1_bet_total = $team1_bet_total + $bet->exposureAmt;
                                     if (count($abc) >= 2) {
                                         $team_draw_bet_total = $team_draw_bet_total - $bet->bet_profit;
                                     }
@@ -447,7 +451,7 @@ class FrontController extends Controller
                                     $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
                                 }
                                 if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total - $bet->bet_profit;
+                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
                                     if (count($abc) >= 2) {
                                         $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
                                     }
@@ -463,14 +467,15 @@ class FrontController extends Controller
                                     $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
                                 }
                                 if ($bet->bet_side == 'lay') {
-                                    $team2_bet_total = $team2_bet_total - $bet->bet_profit;
+                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
                                     if (count($abc) >= 2) {
                                         $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
                                     }
                                     $team1_bet_total = $team1_bet_total + $bet->bet_amount;
                                 }
                             }
-                        } else if (count($abc) == 1) {
+                        }
+                        else if (count($abc) == 1) {
                             if (array_key_exists("teamname1", $abc)) {
                                 //bet on team2
                                 if ($bet->bet_side == 'back') {
@@ -478,7 +483,7 @@ class FrontController extends Controller
                                     $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
                                 }
                                 if ($bet->bet_side == 'lay') {
-                                    $team2_bet_total = $team2_bet_total - $bet->bet_profit;
+                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
                                     $team1_bet_total = $team1_bet_total + $bet->bet_amount;
                                 }
                             } else {
@@ -488,7 +493,7 @@ class FrontController extends Controller
                                     $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
                                 }
                                 if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total - $bet->bet_profit;
+                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
                                     $team2_bet_total = $team2_bet_total + $bet->bet_amount;
                                 }
                             }

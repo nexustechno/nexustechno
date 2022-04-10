@@ -5919,6 +5919,7 @@
                     }
                 }
             }
+
             if (bet_type == 'ODDS') {
                 var chk = '<?php echo $chk; ?>';
                 if (chk == 1) {
@@ -6315,7 +6316,8 @@
                         x.className = x.className.replace("show", "");
                     }, 1000);
                 }
-            } else if (bet_type == 'BOOKMAKER') {
+            }
+            else if (bet_type == 'BOOKMAKER') {
                 var chkb = '<?php echo $chkb; ?>';
                 if (chkb == 1) {
 
@@ -6505,7 +6507,7 @@
                             data: "sportID={{$match->sports_id}}&match_id={{$match->event_id}}&_token={{csrf_token()}}&bet_profit=" + bet_profit + "&bet_type=" + bet_type + "&bet_side=" + bet_site + "&bet_odds=" + bet_amount + "&bet_amount=" + stack + "&team_name=" + team_name + parameter + '&stack=' + stack + '&bet_cal_amt=' + bet_cal_amt + '&team1_total=' + team1_total + '&team2_total=' + team2_total + '&team3_total=' + team3_total + '&team1=' + teamname1 + '&team2=' + teamname2 + '&team3=' + teamname3 + '&team1_BM_total=' + team1_BM_total + '&team2_BM_total=' + team2_BM_total + '&team3_BM_total=' + draw_BM_total + '&fancy_total=' + fancy_total + '&bet_position=' + bet_position,
                             success: function (data) {
                                 if (data.status.trim() == 'true') {
-
+                                    console.log("oddsBookmakerExposerArr, ",data.oddsBookmakerExposerArr);
                                     if (bet_type == 'BOOKMAKER') {
                                         $("#team1_betBM_count_new").hide();
                                         $('#team2_betBM_count_new').hide();
@@ -6619,7 +6621,8 @@
                         x.className = x.className.replace("show", "");
                     }, 1000);
                 }
-            } else {
+            }
+            else {
                 var chkf = '<?php echo $chkf; ?>';
                 if (chkf == 1) {
                     var parameter = "";
@@ -6830,7 +6833,6 @@
                                     } else {
                                         var finalValue = -(parseFloat(stack));
                                     }
-
 
                                     var currentSessionBetTotalExposer = data.currentSessionBetTotalExposer;
 
