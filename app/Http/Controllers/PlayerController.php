@@ -2744,7 +2744,6 @@ class PlayerController extends Controller
         $betModel->match_id = $requestData['match_id'];
         $betModel->bet_type = $requestData['bet_type'];
         $betModel->bet_side = $requestData['bet_side'];
-        $betModel->bet_odds = $betodds;
         $betModel->bet_amount = $stack;
         $betModel->bet_profit = $bet_profit;
         $betModel->team_name = $requestData['team_name'];
@@ -2759,6 +2758,9 @@ class PlayerController extends Controller
 
         if ($betModel->bet_type == 'SESSION') {
             $betModel->bet_oddsk = $requestData['odds_volume'];
+            $betModel->bet_odds = $requestData['bet_odds'];
+        }else{
+            $betModel->bet_odds = $betodds;
         }
 
         if ($betModel->save()) {
