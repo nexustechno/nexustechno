@@ -126,15 +126,40 @@ class SportLeageController extends Controller
 		}
 		else
 		{
+            $data = $request->all();
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($request->event_id, $request->match_id, $request->sports_id);
+            $server = 0;
+            if(isset($match_data['server'])){
+                $server = $match_data['server'];
+            }
+            $match_data_found = false;
+            if($server == 1){
+                if(isset($match_data['t1'])){
+                    $match_data_found = true;
+                }
 
-			$data = $request->all();
-			$data['sports_id'] = $request->sports_id;
-            $data['leage_name'] = $request->leage;
-            $data['is_draw'] = $request->is_draw;
-            $data['bookmaker'] = $request->bookmaker;
-            $data['fancy'] = $request->fancy;
-			$match=Match::create($data);
-            return response()->json(array('result'=> 'success','message'=>'Match added successfully!'));
+                if(isset($match_data[0])){
+                    $match_data_found = true;
+                }
+            }else{
+                if(isset($match_data[0])){
+                    $match_data_found = true;
+                }
+            }
+
+            if($match_data_found == true) {
+                $data['sports_id'] = $request->sports_id;
+                $data['leage_name'] = $request->leage;
+                $data['is_draw'] = $request->is_draw;
+                $data['bookmaker'] = $request->bookmaker;
+                $data['fancy'] = $request->fancy;
+                $data['match_date'] = date('Y-m-d h:i A',strtotime(trim(str_replace("(IST)","",$request->match_date))));
+//                dd($data);
+                $match = Match::create($data);
+                return response()->json(array('result' => 'success', 'message' => 'Match added successfully!'));
+            }else{
+                return response()->json(array('result' => 'error', 'message' => 'Match data not found!'));
+            }
 		}
 	}
 }

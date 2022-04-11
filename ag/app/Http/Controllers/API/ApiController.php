@@ -179,6 +179,7 @@ class ApiController extends Controller
             'data' => $fancyResult->toArray()
         ],200);
     }
+
     public function declareFancyResult(Request $request){
         Log::info("Result Declare");
         $id = $request->id;
@@ -374,7 +375,7 @@ class ApiController extends Controller
         $data = [];
         $data['match_name'] = $request->match_name;
         $data['match_id'] = $request->match_id;
-        $data['match_date'] = $request->match_date;
+        $data['match_date'] = date('Y-m-d h:i A',strtotime(trim(str_replace("(IST)","",$request->match_date))));
         $data['event_id'] = $request->event_id;
         $data['sports_id'] = $request->sports_id;
         $data['leage_name'] = '';

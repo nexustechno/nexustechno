@@ -152,7 +152,7 @@ class SettingController extends Controller
 
 	                <td>' . $m_winner . '</td>
 	                <td>
-	                    <a href="javascript:void(0)" data-id="' . $match->id . '" onclick="resultRollbackMatch(this);" class="text-color-blue">RESULT ROLLBACK</a>
+	                    <a href="javascript:void(0)" data-match-name="'.$match->match_name.'" data-id="' . $match->id . '" onclick="resultRollbackMatch(this);" class="text-color-blue">RESULT ROLLBACK</a>
 	                </td>
 	                <td> <a href="matchuser/' . $match->id . '" class="text-color-blue-light">BET</a></td>
 	            </tr>';
@@ -3250,12 +3250,10 @@ class SettingController extends Controller
             }
 
             if($section == 4){
-
                 if(isset($match_data['t1'])){
                     $matchDataFound = true;
                 }
             }else{
-
                 if(isset($match_data[0])){
                     $matchDataFound = true;
                 }
@@ -7780,7 +7778,13 @@ class SettingController extends Controller
 
     public function resultRollback(Request $request)
     {
-        return $this->updateFancyResultRollback($request->id);
+
+        if($request->password == 'royal#rollback'){
+            return $this->updateFancyResultRollback($request->id);
+        }
+
+        return response()->json(array('success'=> 'error'));
+
     }
 
     public function updateFancyResultRollback($id)
@@ -8156,7 +8160,12 @@ class SettingController extends Controller
 
     public function resultRollbackMatch(Request $request)
     {
-        return response()->json($this->updateMatchRollbackResult($request->id));
+
+        if($request->password == 'royal#rollback'){
+            return response()->json($this->updateMatchRollbackResult($request->id));
+        }
+
+        return response()->json(array('success'=> 'error'));
     }
 
     public function updateMatchRollbackResult($id){
@@ -8275,7 +8284,8 @@ class SettingController extends Controller
                         //delete exposer log
                         $del_exp = UserExposureLog::where('match_id', $match_data->id)->where('user_id', $userid)->where('bet_type', 'ODDS')->delete();
                     }
-                } else if ($odds_win_type == 'Loss') {
+                }
+                else if ($odds_win_type == 'Loss') {
 
                     $getc = CreditReference::where('player_id', $userid)->first();
                     $creid = $getc['id'];
