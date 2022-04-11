@@ -451,7 +451,7 @@ class RestrictionController extends Controller
                 $total_Player_exposer = 0;
 
                 $credit_data = CreditReference::where('player_id', $row->id)->select('available_balance_for_D_W', 'exposure')->first();
-                $availableBalance = '';
+                $availableBalance = 0;
                 $total_calculated_available_balance = 0;
                 if (!empty($credit_data)) {
                     $availableBalance = $credit_data->available_balance_for_D_W;
