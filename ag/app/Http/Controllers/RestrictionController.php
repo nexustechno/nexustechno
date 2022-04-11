@@ -185,11 +185,11 @@ class RestrictionController extends Controller
             $crumb = User::where('id', $user_id)->orderBy('user_name')->first();
         }
 
-        if(!empty($search) && $search!=null){
-            $users = User::where('parentid', $crumb->id)->where(function ($q) use ($search){
-                $q->where("user_name",'like', '%' . $search . '%')->orWhere("first_name",'like', '%' . $search . '%')->orWhere("last_name",'like', '%' . $search . '%');
-            })->where("agent_level", "!=",  "PL")->orderBy('user_name')->paginate(10);
-        }else {
+        if (!empty($search) && $search != null) {
+            $users = User::where('parentid', $crumb->id)->where(function ($q) use ($search) {
+                $q->where("user_name", 'like', '%' . $search . '%')->orWhere("first_name", 'like', '%' . $search . '%')->orWhere("last_name", 'like', '%' . $search . '%');
+            })->where("agent_level", "!=", "PL")->orderBy('user_name')->paginate(10);
+        } else {
             $users = User::where('parentid', $crumb->id)->where("agent_level", "!=", "PL")->orderBy('user_name')->paginate(10);
         }
 
@@ -201,7 +201,7 @@ class RestrictionController extends Controller
 
         $cumulative_pl_cli = 0;
 
-        if($users->count() > 0) {
+        if ($users->count() > 0) {
             foreach ($users as $key => $row) {
                 // calculation
 //            $totalClientBal = 0;
@@ -244,7 +244,7 @@ class RestrictionController extends Controller
 //                $calData[2] = 0;
 //                $calData[3] = 0;
 
-                $cumulative_pl_cli+=$calData[3];
+                $cumulative_pl_cli += $calData[3];
 
 //                echo __FILE__." at line ".__LINE__."<br>";echo "<pre>";print_r($calData);die();
 
@@ -306,7 +306,7 @@ class RestrictionController extends Controller
                     $total_calculated_available_balance = $availableBalance + $calData[0] + $calData[1];
                     $html .= '</td>
 
-                    <td class="white-bg"><a id="'.$row->id.'" data-credit="'.$sum_credit.'"  class="openCreditpopup favor-set">'.$sum_credit.'</a></td>
+                    <td class="white-bg"><a id="' . $row->id . '" data-credit="' . $sum_credit . '"  class="openCreditpopup favor-set">' . $sum_credit . '</a></td>
                     <td class="white-bg">' . number_format($availableBalance, 2, '.', '') . '</td>
                     <td class="white-bg">' . number_format($calData[0], 2, '.', '') . '</td>
                     <td class="white-bg">' . number_format($calData[1], 2, '.', '') . '</td>
@@ -346,7 +346,7 @@ class RestrictionController extends Controller
                     $html .= '</td>';
 
 //                    if ($admin == $row->id) {
-                        $html .= '
+                    $html .= '
                         <td class="white-bg">
                             <ul class="action-ul">
 
@@ -366,8 +366,8 @@ class RestrictionController extends Controller
                     $html .= '</tr>';
                 }
             }
-        }else{
-            $html.= "<tr><td colspan='12' class=\"align-L white-bg text-center\">No records found</td></tr>";
+        } else {
+            $html .= "<tr><td colspan='12' class=\"align-L white-bg text-center\">No records found</td></tr>";
         }
 
         $adata = $this->backdata($crumb->id);
@@ -377,7 +377,7 @@ class RestrictionController extends Controller
         $child[] = $getuser->id;
 
         foreach ($adata as $bread) {
-            if(in_array($bread,$child)) {
+            if (in_array($bread, $child)) {
                 $finaldata = User::where('id', $bread)->first();
                 $html1 .= '<li class="firstli" id=' . $finaldata['id'] . '>';
                 if ($finaldata['agent_level'] == 'COM') {
@@ -400,7 +400,7 @@ class RestrictionController extends Controller
             }
         }
 
-        $pagination=$users->links()->render();
+        $pagination = $users->links()->render();
 
         if ($cumulative_pl_cli <= 0) {
             $myPl = 'text-color-green';
@@ -433,34 +433,24 @@ class RestrictionController extends Controller
 
         $html2 = '';
 
-        if(!empty($search) && $search!=null){
-            $users = User::where('parentid', $crumb->id)->where(function ($q) use ($search){
-                $q->where("user_name",'like', '%' . $search . '%')->orWhere("first_name",'like', '%' . $search . '%')->orWhere("last_name",'like', '%' . $search . '%');
+        if (!empty($search) && $search != null) {
+            $users = User::where('parentid', $crumb->id)->where(function ($q) use ($search) {
+                $q->where("user_name", 'like', '%' . $search . '%')->orWhere("first_name", 'like', '%' . $search . '%')->orWhere("last_name", 'like', '%' . $search . '%');
             })->where("agent_level", "PL")->orderBy('user_name')->paginate(10);
-        }else {
+        } else {
             $users = User::where('parentid', $crumb->id)->where("agent_level", "PL")->orderBy('user_name')->paginate(10);
         }
         $total_ref_pl = 0;
 
-        if($users->count() > 0) {
+        if ($users->count() > 0) {
             foreach ($users as $key => $row) {
 
                 $totalClientBal = 0;
                 $totalAgentBal = 0;
-//            $totalExposure = 0;
                 $cumulative_pl = 0;
                 $total_Player_exposer = 0;
-//            $cumulative_pl_cli = 0;
-                // calculation
 
-//            $x = $row->id;
-//            $sum_credit = 0;
-                $credit_datamn = CreditReference::where('player_id', $row->id)->first();
-                $sum_credit = $credit_datamn->credit;
-
-//            $depParent = AgentController::userBalance($row->id);
-//            $calData = explode("~", $depParent);
-                $credit_data = CreditReference::where('player_id', $row->id)->select('available_balance_for_D_W','exposure')->first();
+                $credit_data = CreditReference::where('player_id', $row->id)->select('available_balance_for_D_W', 'exposure')->first();
                 $availableBalance = '';
                 $total_calculated_available_balance = 0;
                 if (!empty($credit_data)) {
@@ -468,7 +458,7 @@ class RestrictionController extends Controller
                     $total_Player_exposer = $credit_data->exposure;
                 }
 
-                $credit_data = CreditReference::where('player_id', $row->id)->select('remain_bal')->first();
+//                $credit_data = CreditReference::where('player_id', $row->id)->select('remain_bal')->first();
 //            $remain_bal = '';
 //            if (!empty($credit_data)) {
 //                $remain_bal = $credit_data->remain_bal;
@@ -482,11 +472,17 @@ class RestrictionController extends Controller
 
                 $cumulative_pl2 = $cumuPL_n - $cumulative_pl_loss;
 
+//                $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".$row->id.")) X");
+//                $cumulative_pl2 = 0;
+//                if(isset($cumulative_pl_query->total_profit)) {
+//                    $cumulative_pl2 = $cumulative_pl_query->total_profit;
+//                }
+
                 $cumulative_pl_cli = $cumulative_pl2;
 
                 $color = 'red-bg';
 
-                $total_ref_pl += $cumulative_pl;
+//                $total_ref_pl += $cumulative_pl;
 
                 if ($row->agent_level == 'PL') {
                     $html2 .= '<tr>
@@ -502,7 +498,7 @@ class RestrictionController extends Controller
                             <span class="' . $color . ' text-color-white">' . $row->agent_level . '</span>' . $row->user_name . ' [' . $row->first_name . ' ' . $row->last_name . ']
                         </a>
                     </td>
-                    <td class="white-bg"><a id="'.$row->id.'" data-credit="'.$credit.'"  class="openCreditpopup favor-set">'.$sum_credit.'</a></td>
+                    <td class="white-bg"><a id="' . $row->id . '" data-credit="' . $credit . '"  class="openCreditpopup favor-set">' . $credit . '</a></td>
                     <td class="white-bg">' . number_format($availableBalance, 2, '.', '') . '</td>';
                     $html2 .= '<td class="white-bg text-color-red" style="display:table-cell;">(' . number_format($total_Player_exposer, 2, '.', '') . ')</td>';
 
@@ -521,7 +517,7 @@ class RestrictionController extends Controller
                     } else {
                         $cuClass = 'text-color-green';
                     }
-                    $html2 .= '<td class="white-bg ' . $refPL .' '.$class. '">(' . number_format(abs($refPL), 2, '.', '') . ')</td>
+                    $html2 .= '<td class="white-bg ' . $refPL . ' ' . $class . '">(' . number_format(abs($refPL), 2, '.', '') . ')</td>
                     <td class="' . $cuClass . ' white-bg">(' . number_format(abs($cumulative_pl_cli), 2, '.', '') . ')</td>
                     <td class="white-bg" style="display: table-cell;">
                     ';
@@ -564,8 +560,8 @@ class RestrictionController extends Controller
                     $html2 .= '</tr>';
                 }
             }
-        }else{
-            $html2.= "<tr><td colspan='8' class=\"align-L white-bg text-center\">No records found</td></tr>";
+        } else {
+            $html2 .= "<tr><td colspan='8' class=\"align-L white-bg text-center\">No records found</td></tr>";
         }
 
         if ($total_ref_pl <= 0) {
@@ -576,9 +572,9 @@ class RestrictionController extends Controller
 
 //        dd($users->render());
 
-        $pagination=$users->links()->render();
+        $pagination = $users->links()->render();
 
-        return response()->json(array("html"=>$html2,'total_ref_pl'=>($total_ref_pl),'myPl'=>$myPl,'pagination'=>$pagination));
+        return response()->json(array("html" => $html2, 'total_ref_pl' => ($total_ref_pl), 'myPl' => $myPl, 'pagination' => $pagination));
 
     }
 
