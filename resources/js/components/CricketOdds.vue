@@ -33,7 +33,7 @@
                     <a data-bettype="ODDS" onclick="opnForm(this)" data-team="team1" :data-val="roundFloatVal(match.t1[0][0].b3)" data-cls="cyan-bg"
                        class="back1btn text-color-black"> {{ roundFloatVal(match.t1[0][0].b3) }} <br><span>{{ match.t1[0][0].bs3 }}</span></a>
                 </td>
-                <td data-team="team1" class="link(target, link)ght-blue-bg-3 ODDSBack td_team1_back_1">
+                <td data-team="team1" class="light-blue-bg-3 ODDSBack td_team1_back_1">
                     <a data-bettype="ODDS" onclick="opnForm(this)" data-team="team1" data-cls="cyan-bg" :data-val="roundFloatVal(match.t1[0][0].b2)"
                        class="back1btn text-color-black"> {{ roundFloatVal(match.t1[0][0].b2) }}<br><span>{{ match.t1[0][0].bs2 }}</span></a>
                 </td>
@@ -70,7 +70,7 @@
                     <a data-bettype="ODDS" onclick="opnForm(this)" data-team="team2" :data-val="roundFloatVal(match.t1[0][1].b3)" data-cls="cyan-bg"
                        class="back1btn text-color-black"> {{ roundFloatVal(match.t1[0][1].b3) }} <br><span>{{ match.t1[0][1].bs3 }}</span></a>
                 </td>
-                <td data-team="team2" class="link(target, link)ght-blue-bg-3 ODDSBack td_team2_back_1">
+                <td data-team="team2" class="light-blue-bg-3 ODDSBack td_team2_back_1">
                     <a data-bettype="ODDS" onclick="opnForm(this)" data-team="team2" data-cls="cyan-bg" :data-val="roundFloatVal(match.t1[0][1].b2)"
                        class="back1btn text-color-black"> {{ roundFloatVal(match.t1[0][1].b2) }}<br><span>{{ match.t1[0][1].bs2 }}</span></a>
                 </td>
@@ -107,7 +107,7 @@
                     <a data-bettype="ODDS" onclick="opnForm(this)" data-team="team3" :data-val="roundFloatVal(match.t1[0][2].b3)" data-cls="cyan-bg"
                        class="back1btn text-color-black"> {{ roundFloatVal(match.t1[0][2].b3) }} <br><span>{{ match.t1[0][2].bs3 }}</span></a>
                 </td>
-                <td data-team="team3" class="link(target, link)ght-blue-bg-3 ODDSBack td_team3_back_1">
+                <td data-team="team3" class="light-blue-bg-3 ODDSBack td_team3_back_1">
                     <a data-bettype="ODDS" onclick="opnForm(this)" data-team="team3" data-cls="cyan-bg" :data-val="roundFloatVal(match.t1[0][1].b2)"
                        class="back1btn text-color-black"> {{ roundFloatVal(match.t1[0][2].b2) }}<br><span>{{ match.t1[0][2].bs2 }}</span></a>
                 </td>

@@ -42,7 +42,7 @@
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" :data-val="runner.ex.availableToBack[2].price" data-cls="cyan-bg"
                            class="back1btn text-color-black"> {{ runner.ex.availableToBack[2].price }} <br><span>{{ runner.ex.availableToBack[2].size }}</span></a>
                     </td>
-                    <td :data-team="'team'+(index+1)" class="link(target, link)ght-blue-bg-3 ODDSBack" :class="'td_team'+(index+1)+'_back_1'">
+                    <td :data-team="'team'+(index+1)" class="light-blue-bg-3 ODDSBack" :class="'td_team'+(index+1)+'_back_1'">
                         <a data-bettype="ODDS" :data-team="'team'+(index+1)" onclick="opnForm(this)" data-cls="cyan-bg" :data-val="runner.ex.availableToBack[1].price"
                            class="back1btn text-color-black"> {{ runner.ex.availableToBack[1].price }}<br><span>{{ runner.ex.availableToBack[1].size }}</span></a>
                     </td>
