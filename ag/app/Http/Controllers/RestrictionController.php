@@ -373,7 +373,7 @@ class RestrictionController extends Controller
         $adata = $this->backdata($crumb->id);
         $child = $this->childdata($getuser->id);
         sort($adata);
-//
+
         $child[] = $getuser->id;
 
         foreach ($adata as $bread) {
@@ -430,8 +430,6 @@ class RestrictionController extends Controller
         } else {
             $crumb = User::where('id', $user_id)->first();
         }
-
-        $website = UsersAccount::getWebsite();
 
         $html2 = '';
 

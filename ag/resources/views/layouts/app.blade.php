@@ -236,7 +236,6 @@ if ($auth_type == 'COM') {
                                                 @endif
                                             @endif
 
-
                                             @if($ttuser->sports_main_market==1 || $ttuser->agent_level == 'COM')
                                                 <li>
                                                     <a href="{{route('backpanel/sports-list')}}"
