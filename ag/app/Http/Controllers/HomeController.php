@@ -82,7 +82,7 @@ class HomeController extends Controller
             $userData->password = Hash::make($newpass);
             $userData->update();
         } else {
-            return Redirect::back()->withErrors(['Your password do not match with current password', 'Password is not match !']);
+            return Redirect::back()->withErrors(['Your password does not match with current password', 'Password is not match !']);
         }
 
         if ($userData->agent_level == 'SL'){
