@@ -296,7 +296,7 @@ else if ($iframe == 'hdmi'){
         $('#liveTvContent').html('<div id="hasTv"> <u1 id="' + program + '"></u1></div>');
 
         if ( "MediaSource" in window && "WebSocket" in window ){
-            RunPlayer( program + '\', "100%", 200, ' + channelIp + '\', "443", true, ' + hdmi + '\', "", true, true, 0.01, "", false );
+            RunPlayer( program , "100%", 200, channelIp , "443", true, hdmi , "", true, true, 0.01, "", false );
         } else {
             document.getElementById(' + program + ').innerHTML = "Websockets are not supported in your browser.";
         }
