@@ -293,7 +293,7 @@ else if ($iframe == 'hdmi'){
         var hdmi = '<?php echo $hdmi; ?>';
         var program = "p1"
 
-        $('#liveTvContent').html('<div id="hasTv"> <u1 id="' + program + '"></u1> <script type="text/javascript"> if ( "MediaSource" in window && "WebSocket" in window ){RunPlayer( \'' + program + '\', "100%", 200, \'' + channelIp + '\', "443", true, \'' + hdmi + '\', "", true, true, 0.01, "", false ); } else {document.getElementById(' + program + ').innerHTML = "Websockets are not supported in your browser."; } </script></div>');
+        $('#liveTvContent').html('<div id="hasTv"> <u1 id="' + program + '"></u1> <script type="text/javascript"> if ( "MediaSource" in window && "WebSocket" in window ){RunPlayer( \'' + program + '\', "100%", 200, \'' + channelIp + '\', "443", true, \'' + hdmi + '\', "", true, true, 0.01, "", false ); } else {document.getElementById(' + program + ').innerHTML = "Websockets are not supported in your browser."; } </script> </div>');
     </script>
 <?php
 }
