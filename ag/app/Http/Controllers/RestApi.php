@@ -289,15 +289,17 @@ class RestApi extends Controller
 	}
 
     public function getSingleMatchData($eventId,$matchId,$matchtype){
+        $api_base_url = app('api_base_url');
+        $api_base_url2 = app('api_base_url2');
         if($matchtype == 4)
         { //cricket
-            $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId;
+            $url=$api_base_url.'/match/cricket/detail/'.$eventId."/".$matchId;
         } else if($matchtype== 2)
         { //tennis
-            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId;
+            $url=$api_base_url2.'/match/tennis/detail/'.$eventId."/".$matchId;
         } else if($matchtype== 1)
         { //soccer
-            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId;
+            $url=$api_base_url2.'/match/soccer/detail/'.$eventId."/".$matchId;
         }
 
         try {
@@ -320,15 +322,17 @@ class RestApi extends Controller
     }
 
     public function getSingleMatchOddsData($eventId,$matchId,$matchtype){
+        $api_base_url = app('api_base_url');
+        $api_base_url2 = app('api_base_url2');
         if($matchtype == 4)
         { //cricket
-            $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId."/odds";
+            $url=$api_base_url.'/match/cricket/detail/'.$eventId."/odds";
         } else if($matchtype== 2)
         { //tennis
-            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId."/odds";
+            $url=$api_base_url2.'/v1/match/tennis/detail/'.$matchId."/odds";
         } else if($matchtype== 1)
         { //soccer
-            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/odds";
+            $url=$api_base_url2.'/match/soccer/detail/'.$matchId."/odds";
         }
 
         try {
@@ -339,10 +343,11 @@ class RestApi extends Controller
                 ]
             ]);
             $data = json_decode($alldata->getBody(), true);
-            if($data['success'] == false){
+
+            if(isset($data['data']))
+                return $data['data'];
+            else
                 return [];
-            }
-            return $data['data'];
         }
         catch (\Guzzle\Http\Exception\ConnectException $e) {
             return 0;
@@ -354,12 +359,14 @@ class RestApi extends Controller
     }
 
     public function getSingleMatchFancyData($eventId,$matchId,$matchtype){
+        $api_base_url = app('api_base_url');
+        $api_base_url2 = app('api_base_url2');
         if($matchtype == 4)
         { //cricket
-            $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId."/fancy";
+            $url=$api_base_url.'/match/cricket/detail/'.$eventId."/fancy";
         } else if($matchtype== 2)
         { //tennis
-            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId."/fancy";
+            $url=$api_base_url2.'/match/tennis/detail/'.$matchId."/fancy";
         } else if($matchtype== 1)
         { //soccer
             $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/fancy";
@@ -385,15 +392,17 @@ class RestApi extends Controller
     }
 
     public function getSingleMatchBookmakerData($eventId,$matchId,$matchtype){
+        $api_base_url = app('api_base_url');
+        $api_base_url2 = app('api_base_url2');
         if($matchtype == 4)
         { //cricket
-            $url='https://chatnexus.xyz/api/v1/match/cricket/detail/'.$eventId."/bookmaker";
+            $url=$api_base_url.'/v1/match/cricket/detail/'.$eventId."/bookmaker";
         } else if($matchtype== 2)
         { //tennis
-            $url='https://nexusapi.xyz/api/v1/match/tennis/detail/'.$matchId."/bookmaker";
+            $url=$api_base_url2.'/v1/match/tennis/detail/'.$matchId."/bookmaker";
         } else if($matchtype== 1)
         { //soccer
-            $url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/bookmaker";
+            $url=$api_base_url2.'/match/soccer/detail/'.$matchId."/bookmaker";
         }
 
         try {

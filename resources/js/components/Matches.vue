@@ -50,7 +50,56 @@
             </div>
         </template>
         <template v-if="server==2 && matches.length > 0">
-            <div class="secondblock-cricket white-bg" v-for="(match, index) in matches" v-if="isVisible2(match,index)" :key="matchtype+index">
+            <div class="secondblock-cricket white-bg" v-for="(match, index) in matches" v-if="isVisible2(match)" :key="matchtype+index">
+                <div class="mblinplay">
+                    <!--                <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>-->
+                    <!--                <span v-if="matchtype == 4 && match.m1 == 'True'" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>-->
+                    <!--                <span style="color:green" class="mplay" v-if="match.inPlay == 'True'">In-Play</span>-->
+                </div>
+                <span class="desk" :class="match.inPlay == true ? 'fir-col1-green':'fir-col1'">
+                <a :href="'/matchDetail/'+match.gameId" class="text-color-blue-light">
+                    {{ match.eventName }}
+                </a>
+                <span style="color:green" v-if="match.inPlay == true" class="deskinplay">In-Play</span>
+<!--                <span class="game-live" v-if="match.tv == 'True'" id="streamingIcon" style="display: inline-flex;"></span>-->
+                <div class="mobileDate" v-if="match.inPlay != true">{{ getMatchDate2(match.openDate) }}</div>
+                <span v-if="matchtype == 4 && match.f == true" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>
+                <span v-if="matchtype == 4 && match.m1 == true" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>
+            </span>
+                <span class="fir-col2" :class="'col1-back-lay'+match.gameId">
+                <a class="backbtn lightblue-bg2" v-if="match.back1 > 0">{{ match.back1 }}</a>
+                <a class="backbtn lightblue-bg2" v-else>--</a>
+                <a class="laybtn lightpink-bg1" v-if="match.lay1 > 0">{{ match.lay1 }}</a>
+                <a class="laybtn lightpink-bg1" v-else>--</a>
+            </span>
+                <span class="fir-col2" :class="'col2-back-lay'+match.gameId">
+                 <a class="backbtn lightblue-bg2" v-if="match.back2 > 0">{{ match.back2 }}</a>
+                <a class="backbtn lightblue-bg2" v-else>--</a>
+                <a class="laybtn lightpink-bg1" v-if="match.lay2 > 0">{{ match.lay2 }}</a>
+                <a class="laybtn lightpink-bg1" v-else>--</a>
+            </span>
+                <span class="fir-col2" :class="'col3-back-lay'+match.gameId">
+                 <a class="backbtn lightblue-bg2" v-if="match.back3 > 0">{{ match.back3 }}</a>
+                <a class="backbtn lightblue-bg2" v-else>--</a>
+                <a class="laybtn lightpink-bg1" v-if="match.lay3 > 0">{{ match.lay3 }}</a>
+                <a class="laybtn lightpink-bg1" v-else>--</a>
+            </span>
+                <span class="fir-col3 text-center">
+                <a :data-id="matchesArray[match.gameId]" class="cricket-pin make-fav-match1 " @click="makeFav(matchesArray[match.gameId])" :class="'pin_'+matchesArray[match.gameId]">
+                    <span v-if="isFav(match.gameId)">
+                        <img class="pin-img hover-img" :src="roundpin">
+                        <img class="unpin-img" :src="roundpin1">
+                    </span>
+                    <span v-else>
+                        <img class="unpin-img" :src="roundpin">
+                        <img class="pin-img hover-img" :src="roundpin1">
+                    </span>
+                </a>
+            </span>
+            </div>
+        </template>
+        <template v-if="server==3 && matches.length > 0">
+            <div class="secondblock-cricket white-bg" v-for="(match, index) in matches" v-if="isVisible3(match,index)" :key="matchtype+index">
             <div class="mblinplay">
 <!--                <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>-->
 <!--                <span v-if="matchtype == 4 && match.m1 == 'True'" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>-->
@@ -203,10 +252,36 @@
                             }
                         }
                     }
+                }else if(server == 2) {
+                    var records = data;
+                    for (var i = 0; i < records.length; i++) {
+                        if (this.isVisible2(records[i])) {
+                            if (this.matches[i] != undefined) {
+                                if (this.matches[i].back1 != records[i].back1) {
+                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                }
+                                if (this.matches[i].lay1 != records[i].lay1) {
+                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                }
+                                if (this.matches[i].back2 != records[i].back2) {
+                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                }
+                                if (this.matches[i].lay2 != records[i].lay2) {
+                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                }
+                                if (this.matches[i].back3 != records[i].back3) {
+                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                }
+                                if (this.matches[i].lay3 != records[i].lay3) {
+                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                }
+                            }
+                        }
+                    }
                 }else {
                     var records = data.events;
                     for (var i = 0; i < records.length; i++) {
-                        if (this.isVisible2(records[i], i)) {
+                        if (this.isVisible3(records[i], i)) {
                             if (this.matches[i] != undefined) {
                                 for (var j = 0; j < records[i].markets[0].selections.length; j++) {
                                     if (records[i].markets[0].selections.length > 0 && records[i].markets[0].selections[j] != undefined && records[i].markets[0].selections[j].availableToBack != undefined && records[i].markets[0].selections[j].availableToBack[0] != undefined && this.matches[i].markets[0].selections.length > 0 && this.matches[i].markets[0].selections[j] != undefined && this.matches[i].markets[0].selections[j].availableToBack != undefined && this.matches[i].markets[0].selections[j].availableToBack[0] != undefined && this.matches[i].markets[0].selections[j].availableToBack[0].price != records[i].markets[0].selections[j].availableToBack[0].price) {
@@ -295,7 +370,45 @@
                 }
                 return valReturn;
             },
-            isVisible2(match, index){
+            isVisible2(match){
+
+                var valReturn = false;
+
+                var gameId = match.gameId;
+                var openDate = match.openDate;
+                var inPlay = match.inPlay;
+
+                if (this.filtertype != undefined) {
+                    if (this.matchesArray[gameId] != undefined && this.matchesArray[gameId] != null) {
+                        if (this.filtertype != 'inplay') {
+                            var mDate = openDate;
+                            var date = new Date(mDate.trim());
+                            var ye2 = new Intl.DateTimeFormat('en', {year: 'numeric'}).format(date);
+                            var mo2 = new Intl.DateTimeFormat('en', {month: '2-digit'}).format(date);
+                            var da2 = new Intl.DateTimeFormat('en', {day: '2-digit'}).format(date);
+                            var matchDate = `${da2}-${mo2}-${ye2}`;
+                        }
+
+                        if (this.filtertype == 'inplay' && inPlay == true) {
+                            valReturn = true;
+                        }
+
+                        if (this.filtertype == 'today' && matchDate == this.todaydate && inPlay != true) {
+                            valReturn = true;
+                        }
+
+                        if (this.filtertype == 'tomorrow' && matchDate == this.tomorrowdate && inPlay != true) {
+                            valReturn = true;
+                        }
+                    }
+                } else {
+                    if (this.matchesArray[gameId] != undefined && this.matchesArray[gameId] != null) {
+                        valReturn = true;
+                    }
+                }
+                return valReturn;
+            },
+            isVisible3(match, index){
 
                 var valReturn = false;
 

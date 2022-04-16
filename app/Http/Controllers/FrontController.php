@@ -269,7 +269,7 @@ class FrontController extends Controller
             if (sizeof($my_placed_bets) > 0) {
                 foreach ($my_placed_bets as $bet) {
                     $abc = json_decode($bet->extra, true);
-                    $total_team_count = count($abc);
+//                    $total_team_count = count($abc);
                     if (!empty($abc)) {
                         if (count($abc) >= 2) {
                             if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
@@ -398,6 +398,18 @@ class FrontController extends Controller
                     $inplay = 'false';
             }
         }
+        elseif($server == 2){
+            if(isset($match_data['t1']) && $match_data['t1']){
+                $match_data_found = true;
+            }
+
+            if(isset($match_data['t1'][0]['inPlay']) && $match_data['t1'][0]['inPlay'] == true) {
+                $inplay = 'True';
+            }else{
+                $inplay = 'False';
+            }
+            $page = 'front.matchDetail';
+        }
         else {
             $page = 'front.matchDetail2';
             $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
@@ -507,7 +519,7 @@ class FrontController extends Controller
             $bet_total['draw_BM_total'] = round($team_draw_bet_total, 2);
 
             if ($match->sports_id == 4) {
-                 if($server == 1){
+                 if($server == 1 || $server == 2){
                      if(isset($match_data['t3'])) {
                          $fancyArray = $match_data['t3'];
                      }
@@ -523,6 +535,9 @@ class FrontController extends Controller
                         if($server == 1) {
                             $fancyName = $value['nat'];
                             $sId = $value['sid'];
+                        }elseif($server == 2) {
+                            $fancyName = $value['nat'];
+                            $sId = $value['sId'];
                         }else{
                             $fancyName = $value['RunnerName'];
                             $sId = $value['SelectionId'];

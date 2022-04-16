@@ -11,7 +11,9 @@ class SportLeageController extends Controller
     public function index()
     {
     	$sport = Sport::get();
-        $sports_events = Match::whereNull('winner')->pluck('event_id');
+        $date = Carbon::now()->subDays(10);
+        $sports_events = Match::whereNull('winner')->where('created_at', '>=', $date)->pluck('event_id');
+
         return view('backpanel/sportLeage',compact('sport','sports_events'));
     }
     public function getallMatch(Request $request)
@@ -127,25 +129,34 @@ class SportLeageController extends Controller
 		else
 		{
             $data = $request->all();
-            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($request->event_id, $request->match_id, $request->sports_id);
-            $server = 0;
-            if(isset($match_data['server'])){
-                $server = $match_data['server'];
-            }
-            $match_data_found = false;
-            if($server == 1){
-                if(isset($match_data['t1'])){
-                    $match_data_found = true;
-                }
+//            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($request->event_id, $request->match_id, $request->sports_id);
 
-                if(isset($match_data[0])){
-                    $match_data_found = true;
-                }
-            }else{
-                if(isset($match_data[0])){
-                    $match_data_found = true;
-                }
-            }
+//            dd($match_data);
+
+//            $server = 0;
+//            if(isset($match_data['server'])){
+//                $server = $match_data['server'];
+//            }
+//            $match_data_found = false;
+//            if($server == 1){
+//                if(isset($match_data['t1'])){
+//                    $match_data_found = true;
+//                }
+//
+//                if(isset($match_data[0])){
+//                    $match_data_found = true;
+//                }
+//            }elseif($server == 2){
+//                if(isset($match_data['t1'])){
+//                    $match_data_found = true;
+//                }
+//            }else{
+//                if(isset($match_data[0])){
+//                    $match_data_found = true;
+//                }
+//            }
+
+            $match_data_found = true;
 
             if($match_data_found == true) {
                 $data['sports_id'] = $request->sports_id;

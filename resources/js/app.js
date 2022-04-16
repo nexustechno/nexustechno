@@ -21,16 +21,22 @@ import Matches from './components/Matches';
 import CasinoComponent from './components/CasinoComponent';
 
 // for server 1
-import CricketOdds from './components/CricketOdds';
-import CricketBookmarks from './components/CricketBookmarks';
-import CricketFancy from './components/CricketFancy';
-import TennisSoccerOdds from './components/TennisSoccerOdds';
+// import CricketOdds from './components/CricketOdds';
+// import CricketBookmarks from './components/CricketBookmarks';
+// import CricketFancy from './components/CricketFancy';
+// import TennisSoccerOdds from './components/TennisSoccerOdds';
 
 // for server 2
-// import CricketOdds from './components/CricketOdds2';
-// import CricketBookmarks from './components/CricketBookmarks2';
-// import CricketFancy from './components/CricketFancy2';
-// import TennisSoccerOdds from './components/TennisSoccerOdds2';
+import CricketOdds from './components/CricketOdds2';
+import CricketBookmarks from './components/CricketBookmarks2';
+import CricketFancy from './components/CricketFancy2';
+let TennisSoccerOdds = CricketOdds;
+
+// for server 3
+// import CricketOdds from './components/CricketOdds3';
+// import CricketBookmarks from './components/CricketBookmarks3';
+// import CricketFancy from './components/CricketFancy3';
+// import TennisSoccerOdds from './components/TennisSoccerOdds3';
 Vue.component('matches', Matches);
 Vue.component('cricketodds', CricketOdds);
 Vue.component('cricketoddsbookmarks', CricketBookmarks);

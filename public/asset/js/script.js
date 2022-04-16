@@ -108,20 +108,26 @@ $("#market-today").click(function () {
 });
 
 $(document).ready(function () {
-    $('#example').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
+    if($('#example').is(":visible")){
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
                 'csv',
             ]
-    });
-    $('#example1').DataTable();
-    $('#example2').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
+        });
+    }
+    if($('#example1').is(":visible")){
+        $('#example1').DataTable();
+    }
+    if($('#example2').is(":visible")){
+        $('#example2').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
                 'csv',
                 'pdf',
             ]
-    });
+        });
+    }
 });
 
 $(".depositebtn").click(function () {
@@ -141,7 +147,7 @@ $(".withdrawbtn").click(function () {
 });
 
 /*$(".creditEdit").click(function () {
-    $(".creditEdit").html($(".creditEdit").html() == 'Edit' ? 'Cancel' : 'Edit');    
+    $(".creditEdit").html($(".creditEdit").html() == 'Edit' ? 'Cancel' : 'Edit');
     $(".credit-amount .text-color-blue-light").toggle();
     $(".credit-amount input").toggle();
 });*/

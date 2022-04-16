@@ -90,7 +90,7 @@
                     </div>
                     <input class="search-input" type="text" name="userId" id="userSearch" placeholder="Find Player Name"
                            style="padding: 5px;border-radius: 2px; border: 1px solid #000;">
-                    <a class="submit-btn text-color-yellow btn1" onclick="getHistorylive()"> Refresh </a>
+                    <a class="submit-btn text-color-yellow btn1" onclick="getHistorylive(1)"> Refresh </a>
                 </div>
             </div>
             <div class="maintable-raju-block betlistlive-block">
@@ -132,47 +132,51 @@
                         </tbody>
                     </table>
                 </table>
+                <div class="player pagination-wrap light-grey-bg-1"></div>
             </div>
         </div>
     </section>
     <script type="text/javascript">
         var _token = $("input[name='_token']").val();
         $(document).ready(function () {
-            getHistorylive();
+            getHistorylive(1);
 
             $('#userSearch').keyup(function () {
-                var val = $('#userSearch').val();
-                $.ajax({
-                    type: "post",
-                    url: '{{route("playersearch")}}',
-                    data: {
-                        _token: _token,
-                        search: val,
-                    },
-                    beforeSend: function () {
-                        $('#site_bet_loading1').show();
-                    },
-                    complete: function () {
-                        $('#site_bet_loading1').hide();
-                    },
-                    success: function (data) {
-                        //document.getElementById("site_bet_loading1").style.display = "none";
-                        $('#append_data').html(data.html);
-                    }
-                });
+                getHistorylive(1);
+                {{--var val = $('#userSearch').val();--}}
+                {{--$.ajax({--}}
+                {{--    type: "post",--}}
+                {{--    url: '{{route("playersearch")}}',--}}
+                {{--    data: {--}}
+                {{--        _token: _token,--}}
+                {{--        search: val,--}}
+                {{--    },--}}
+                {{--    beforeSend: function () {--}}
+                {{--        $('#site_bet_loading1').show();--}}
+                {{--    },--}}
+                {{--    complete: function () {--}}
+                {{--        $('#site_bet_loading1').hide();--}}
+                {{--    },--}}
+                {{--    success: function (data) {--}}
+                {{--        //document.getElementById("site_bet_loading1").style.display = "none";--}}
+                {{--        $('#append_data').html(data.html);--}}
+                {{--    }--}}
+                {{--});--}}
             });
         });
 
-        function getHistorylive() {
+        function getHistorylive(page) {
             //document.getElementById("site_bet_loading1").style.display = "block";
             var sport = $('input[name="radio"]:checked').val();
-
+            var search = $('#userSearch').val();
             $.ajax({
                 type: "POST",
                 url: '{{route("getHistorylive")}}',
                 data: {
                     _token: _token,
                     sport: sport,
+                    search:search,
+                    page:page
                 },
                 beforeSend: function () {
                     $('#site_bet_loading1').show();
@@ -183,8 +187,16 @@
                 success: function (data) {
                     //document.getElementById("site_bet_loading1").style.display = "none";
                     $('#append_data').html(data.html);
+                    $(".player.pagination-wrap").html(data.pagination);
                 }
             });
         }
+
+        $(document).on('click', '.player.pagination-wrap .pagination a', function (event) {
+            event.preventDefault();
+            var page = $(this).attr('href').split('page=')[1];
+
+            getHistorylive(page);
+        });
     </script>
 @endsection

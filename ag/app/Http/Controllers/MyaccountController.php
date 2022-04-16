@@ -1170,28 +1170,30 @@ class MyaccountController extends Controller
 
             if ($sport_data != 0) {
                 $getresult = MyBets::select('my_bets.match_id', 'my_bets.sportID')
-                    ->join('user_exposure_log', 'user_exposure_log.user_id', '=', 'my_bets.user_id')
+//                    ->join('user_exposure_log', 'user_exposure_log.user_id', '=', 'my_bets.user_id')
                     ->where(['my_bets.sportID' => $sport_data, 'my_bets.result_declare' => 1])
                     ->whereIn('my_bets.user_id', $clist)
                     ->where('my_bets.isDeleted', 0)
-                    ->whereBetween('user_exposure_log.created_at', [$fromdate, $todate])
+                    ->whereBetween('my_bets.created_at', [$fromdate, $todate])
                     ->groupBy('my_bets.match_id')
-                    ->orderBy('user_exposure_log.created_at', 'Desc')
-                    ->get();
+                    ->orderBy('my_bets', 'Desc')
+                    ->paginate(10);
             } else {
                 $getresult = MyBets::select('my_bets.match_id', 'my_bets.sportID')
-                    ->join('user_exposure_log', 'user_exposure_log.user_id', '=', 'my_bets.user_id')
+//                    ->join('user_exposure_log', 'user_exposure_log.user_id', '=', 'my_bets.user_id')
                     ->where('my_bets.result_declare', 1)
                     ->whereIn('my_bets.user_id', $clist)
                     ->where('my_bets.isDeleted', 0)
-                    ->whereBetween('user_exposure_log.created_at', [$fromdate, $todate])
+                    ->whereBetween('my_bets.created_at', [$fromdate, $todate])
                     ->groupBy('my_bets.match_id')
-                    ->orderBy('user_exposure_log.created_at', 'Desc')
-                    ->get();
+                    ->orderBy('my_bets.created_at', 'Desc')
+                    ->paginate(10);
                 /* echo "<pre>";
                 print_r($getresult);
                 exit;*/
             }
+
+//            dd("asdsa");
 
             if (!empty($getresult)) {
                 foreach ($getresult as $data) {
@@ -1223,34 +1225,49 @@ class MyaccountController extends Controller
                                 ->where('bet_type', 'SESSION')
                                 ->groupBy('team_name')
                                 ->where('match_id', $data->match_id)
-                                //->whereBetween('created_at',[$fromdate,$todate])
+                                ->whereBetween('created_at',[$fromdate,$todate])
                                 ->orderBy('created_at')
                                 ->get();
 
-                            $betlist2 = MyBets::whereIn('user_id', $clist)
+                            $ttlAmt = MyBets::whereIn('user_id', $clist)
                                 ->where('result_declare', 1)
                                 ->where('isDeleted', 0)
                                 ->where('bet_type', 'SESSION')
                                 ->where('match_id', $data->match_id)
-                                //->whereBetween('created_at',[$fromdate,$todate])
+                                ->whereBetween('created_at', [$fromdate, $todate])
                                 ->orderBy('created_at')
-                                ->get();
+                                ->sum('bet_amount');
+//                            $uid = MyBets::whereIn('user_id', $clist)
+//                                ->where('result_declare', 1)
+//                                ->where('isDeleted', 0)
+//                                ->where('bet_type', 'SESSION')
+//                                ->where('match_id', $data->match_id)
+//                                //->whereBetween('created_at',[$fromdate,$todate])
+//                                ->orderBy('created_at')
+//                                ->pluck('user_id');
 
-                            $uid = array();
-                            foreach ($betlist2 as $key => $value2) {
-                                $ttlAmt += $value2->bet_amount;
-                                $uid[] = $value2->user_id;
-                            }
+//                            $uid = array();
+//                            foreach ($betlist2 as $key => $value2) {
+//                                $ttlAmt += $value2->bet_amount;
+//                                $uid[] = $value2->user_id;
+//                            }
                             $ttlAmts += $ttlAmt;
-                            $result_list = array_unique($uid);
+                            $result_list = $clist;
+
+//                            $cumulative_pl_query = \Illuminate\Support\Facades\DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name, ((select sum(profit) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND created_at >= '" . $fromdate . "' AND created_at <= '" . $todate . "' AND bet_type='SESSION' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-(select sum(loss) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND created_at >= '" . $fromdate . "' AND created_at <= '" . $todate . "' AND bet_type='SESSION' AND win_type='Loss' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(" . implode(', ', $result_list) . ")) X");
+////                            $sumAmt = 0;
+////                            dd($cumulative_pl_query);
+//                            if (isset($cumulative_pl_query->total_profit)) {
+//                                $sumAmt+= $cumulative_pl_query->total_profit;
+//                            }
 
                             foreach ($betlist1 as $key => $value1) {
-                                $fnc_rslt = FancyResult::where('eventid', $data->match_id)->where('fancy_name', $value1->team_name)->first();
+//                                $fnc_rslt = FancyResult::where('eventid', $data->match_id)->where('fancy_name', $value1->team_name)->first();
 
-                                $f_result = 0;
-                                if (!empty($fnc_rslt)) {
-                                    $f_result = $fnc_rslt->result;
-                                }
+//                                $f_result = 0;
+//                                if (!empty($fnc_rslt)) {
+//                                    $f_result = $fnc_rslt->result;
+//                                }
 
                                 $exposer_fancy_a = UserExposureLog::where('match_id', $matchdata->id)->whereBetween('created_at', [$fromdate, $todate])->where('bet_type', 'SESSION')->where('fancy_name', $value1->team_name)->whereIn('user_id', $result_list)->get();
 
@@ -1265,7 +1282,8 @@ class MyaccountController extends Controller
                                     }
                                 }
                             }
-                        } else if ($value->bet_type == 'ODDS') {
+                        }
+                        else if ($value->bet_type == 'ODDS') {
                             $betlist1 = MyBets::whereIn('user_id', $clist)
                                 ->where('result_declare', 1)
                                 ->where('isDeleted', 0)
@@ -1274,6 +1292,24 @@ class MyaccountController extends Controller
                                 //->whereBetween('created_at',[$fromdate,$todate])
                                 ->orderBy('created_at')
                                 ->get();
+
+
+//                            $ttlAmto = MyBets::whereIn('user_id', $clist)
+//                                ->where('result_declare', 1)
+//                                ->where('isDeleted', 0)
+//                                ->where('bet_type', 'ODDS')
+//                                ->where('match_id', $data->match_id)
+//                                //->whereBetween('created_at',[$fromdate,$todate])
+//                                ->orderBy('created_at')
+//                                ->sum('bet_amount');
+//                            $uid = MyBets::whereIn('user_id', $clist)
+//                                ->where('result_declare', 1)
+//                                ->where('isDeleted', 0)
+//                                ->where('bet_type', 'ODDS')
+//                                ->where('match_id', $data->match_id)
+//                                //->whereBetween('created_at',[$fromdate,$todate])
+//                                ->orderBy('created_at')
+//                                ->get();
 
                             $uid = array();
                             foreach ($betlist1 as $key => $value1) {
@@ -1289,14 +1325,9 @@ class MyaccountController extends Controller
                                 if (!empty($usercm->commission)) {
                                     $cmp = $usercm->commission;
                                 }
-                                //echo $cmdata;
-                                //echo "**";
-
                             }
-                            //echo "<br>";
 
-
-                            $expodds_a = UserExposureLog::where('match_id', $matchdata->id)->whereIn('user_id', $result_list)->whereBetween('created_at', [$fromdate, $todate])->whereBetween('created_at', [$fromdate, $todate])->where('bet_type', 'ODDS')->get();
+                            $expodds_a = UserExposureLog::where('match_id', $matchdata->id)->whereIn('user_id', $result_list)->whereBetween('created_at', [$fromdate, $todate])->where('bet_type', 'ODDS')->get();
 
                             if (!empty($expodds_a)) {
                                 foreach ($expodds_a as $key => $expodds) {
@@ -1315,34 +1346,54 @@ class MyaccountController extends Controller
                                         }
                                     }
                                 }
-
                             }
-                        } else if ($value->bet_type == 'BOOKMAKER') {
+
+//                            dd("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name, ((select sum(profit) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-(select sum(loss) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND bet_type='ODDS' AND win_type='Loss' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(" . implode(', ', $clist) . ")) X");
+
+//                            $cumulative_pl_query = \Illuminate\Support\Facades\DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name, ((select sum(profit) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-(select sum(loss) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND bet_type='ODDS' AND win_type='Loss' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(" . implode(', ', $clist) . ")) X");
+//                            $ttlodd = 0;
+//                            if (isset($cumulative_pl_query->total_profit)) {
+//                                $ttlodd += $cumulative_pl_query->total_profit;
+//                            }
+
+                        }
+                        else if ($value->bet_type == 'BOOKMAKER') {
                             $betlist1 = MyBets::whereIn('user_id', $clist)
                                 ->where('result_declare', 1)
                                 ->where('isDeleted', 0)
                                 ->where('bet_type', 'BOOKMAKER')
                                 ->where('match_id', $data->match_id)
-                                //->whereBetween('created_at',[$fromdate,$todate])
+                                ->whereBetween('created_at',[$fromdate,$todate])
                                 ->orderBy('created_at')
                                 ->get();
+
 
                             $uid = array();
                             foreach ($betlist1 as $key => $value1) {
                                 $ttlAmtb += $value1->bet_amount;
                                 $uid[] = $value1->user_id;
                             }
-                            $totttlAmtb += $ttlAmtb;
 
                             $result_list = array_unique($uid);
-                            $cmp = 0;
-                            foreach ($result_list as $key => $cmdata) {
-                                $usercm = User::where('id', $cmdata)->first();
-                                if (!empty($usercm->commission)) {
-                                    $cmp += $usercm->commission;
-                                }
-                            }
+                            $ttlAmto = MyBets::whereIn('user_id', $result_list)
+                                ->where('result_declare', 1)
+                                ->where('isDeleted', 0)
+                                ->where('bet_type', 'BOOKMAKER')
+                                ->where('match_id', $data->match_id)
+                                ->whereBetween('created_at', [$fromdate, $todate])
+                                ->orderBy('created_at')
+                                ->sum('bet_amount');
 
+                            $totttlAmtb += $ttlAmto;
+
+//                            $cmp = 0;
+//                            foreach ($result_list as $key => $cmdata) {
+//                                $usercm = User::where('id', $cmdata)->first();
+//                                if (!empty($usercm->commission)) {
+//                                    $cmp += $usercm->commission;
+//                                }
+//                            }
+//
                             $exposer_bm_a = UserExposureLog::where('bet_type', 'BOOKMAKER')->where('match_id', $matchdata->id)->whereBetween('created_at', [$fromdate, $todate])->whereIn('user_id', $result_list)->whereBetween('created_at', [$fromdate, $todate])->get();
                             if (!empty($exposer_bm_a)) {
                                 foreach ($exposer_bm_a as $key => $exposer_bm) {
@@ -1353,98 +1404,104 @@ class MyaccountController extends Controller
                                         $sumAmtb -= $exposer_bm->loss;
                                 }
                             }
+
+//                            $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name, ((select sum(profit) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND created_at >= '" . $fromdate . "' AND created_at <= '" . $todate . "' AND bet_type='BOOKMAKER' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-(select sum(loss) from user_exposure_log WHERE match_id='" . $matchdata->id . "' AND created_at >= '" . $fromdate . "' AND created_at <= '" . $todate . "' AND bet_type='BOOKMAKER' AND win_type='Loss' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(" . implode(', ', $result_list) . ")) X");
+////                            $sumAmtb = 0;
+//                            if (isset($cumulative_pl_query->total_profit)) {
+//                                $sumAmtb+= $cumulative_pl_query->total_profit;
+//                            }
                         }
                     }
-
-                    $html .= '
+                        $html .= '
                     <tr>
                         <td class="white-bg"><img src="' . asset('asset/img/plus-icon.png') . '">
                             <a class="ico_account text-color-blue-light">
-                                ' . $sports->sport_name . ' <i class="fas fa-caret-right text-color-grey"></i> <strong> ' . $matchdata->match_name . ' </strong>
+                                ' . $sports->sport_name . ' <i class="fas fa-caret-right text-color-grey"></i> <strong> ' . $matchdata->match_name."[".$matchdata->id."]" . ' </strong>
                             </a>
                         </td>';
-                    if (!empty($ttlodd)) {
-                        $cms = $ttlodd;
+                        if (!empty($ttlodd)) {
+                            $cms = $ttlodd;
 
-                        if ($cms >= 0) {
-                            $totcmsG += $cms;
-                            $html .= '<td class="white-bg text-color-green">' . round($cms, 2) . ' </td>';
+                            if ($cms >= 0) {
+                                $totcmsG += $cms;
+                                $html .= '<td class="white-bg text-color-green">' . round($cms, 2) . ' </td>';
+                            } else {
+                                $totcmsR += $cms;
+                                $html .= '<td class="white-bg text-color-red">' . round(abs($cms), 2) . ' </td>';
+                            }
+                        } else if ($ttlodd == 0) {
+                            $html .= '<td class="white-bg text-color-green">0</td>';
                         } else {
-                            $totcmsR += $cms;
-                            $html .= '<td class="white-bg text-color-red">' . round(abs($cms), 2) . ' </td>';
+                            $html .= '<td class="white-bg"> -- </td>';
                         }
-                    } else if ($ttlodd == 0) {
-                        $html .= '<td class="white-bg text-color-green">0</td>';
-                    } else {
-                        $html .= '<td class="white-bg"> -- </td>';
-                    }
-                    if (!empty($ttlAmto)) {
-                        $html .= '<td class="white-bg">' . $ttlAmto . ' </td>';
-                    } else if ($ttlAmto == 0) {
-                        $html .= '<td class="white-bg">0</td>';
-                    } else {
-                        $html .= '<td class="white-bg"> -- </td>';
-                    }
-
-                    if (!empty($sumAmtb)) {
-                        if ($sumAmtb >= 0) {
-                            $totsumAmtbG += $sumAmtb;
-                            $html .= '<td class="white-bg text-color-green">' . round($sumAmtb, 2) . '</td>';
+                        if (!empty($ttlAmto)) {
+                            $html .= '<td class="white-bg">' . $ttlAmto . ' </td>';
+                        } else if ($ttlAmto == 0) {
+                            $html .= '<td class="white-bg">0</td>';
                         } else {
-                            $totsumAmtbR += $sumAmtb;
-                            $html .= '<td class="white-bg text-color-red">' . round(abs($sumAmtb), 2) . ' </td>';
+                            $html .= '<td class="white-bg"> -- </td>';
                         }
-                    } else if ($sumAmtb == 0) {
-                        $html .= '<td class="white-bg text-color-green">0</td>';
-                    } else {
-                        $html .= '<td class="white-bg"> -- </td>';
-                    }
 
-                    if (!empty($ttlAmtb)) {
-                        $html .= '<td class="white-bg">' . $ttlAmtb . ' </td>';
-                    } else if ($ttlAmtb == 0) {
-                        $html .= '<td class="white-bg">0</td>';
-                    } else {
-                        $html .= '<td class="white-bg"> -- </td>';
-                    }
-
-                    if (!empty($sumAmt)) {
-                        if ($sumAmt >= 0) {
-                            $sumAmtG += $sumAmt;
-                            $html .= '<td class="white-bg text-color-green">' . round($sumAmt, 2) . ' </td>';
+                        if (!empty($sumAmtb)) {
+                            if ($sumAmtb >= 0) {
+                                $totsumAmtbG += $sumAmtb;
+                                $html .= '<td class="white-bg text-color-green">' . round($sumAmtb, 2) . '</td>';
+                            } else {
+                                $totsumAmtbR += $sumAmtb;
+                                $html .= '<td class="white-bg text-color-red">' . round(abs($sumAmtb), 2) . ' </td>';
+                            }
+                        } else if ($sumAmtb == 0) {
+                            $html .= '<td class="white-bg text-color-green">0</td>';
                         } else {
-                            $sumAmtR += $sumAmt;
-                            $html .= '<td class="white-bg text-color-red">' . round(abs($sumAmt), 2) . ' </td>';
+                            $html .= '<td class="white-bg"> -- </td>';
                         }
-                    } else if ($sumAmt == 0) {
-                        $html .= '<td class="white-bg text-color-green">0</td>';
-                    } else {
-                        $html .= '<td class="white-bg"> -- </td>';
-                    }
 
-                    if (!empty($ttlAmt)) {
-                        $html .= '<td class="white-bg">' . $ttlAmt . ' </td>';
-                    } else if ($ttlAmt == 0) {
-                        $html .= '<td class="white-bg">0</td>';
-                    } else {
-                        $html .= '<td class="white-bg"> -- </td>';
-                    }
+                        if (!empty($ttlAmtb)) {
+                            $html .= '<td class="white-bg">' . $ttlAmtb . ' </td>';
+                        } else if ($ttlAmtb == 0) {
+                            $html .= '<td class="white-bg">0</td>';
+                        } else {
+                            $html .= '<td class="white-bg"> -- </td>';
+                        }
 
-                    $ttlnp = $ttlodd + $sumAmtb + $sumAmt;
+                        if (!empty($sumAmt)) {
+                            if ($sumAmt >= 0) {
+                                $sumAmtG += $sumAmt;
+                                $html .= '<td class="white-bg text-color-green">' . round($sumAmt, 2) . ' </td>';
+                            } else {
+                                $sumAmtR += $sumAmt;
+                                $html .= '<td class="white-bg text-color-red">' . round(abs($sumAmt), 2) . ' </td>';
+                            }
+                        } else if ($sumAmt == 0) {
+                            $html .= '<td class="white-bg text-color-green">0</td>';
+                        } else {
+                            $html .= '<td class="white-bg"> -- </td>';
+                        }
 
-                    if ($ttlnp > 0) {
-                        $ttlnpR += $ttlnp;
-                        $html .= '<td class="white-bg text-color-red">' . round($ttlnp, 2) . '</td>';
-                    } else {
-                        $ttlnpG += $ttlnp;
-                        $html .= '<td class="white-bg text-color-green">' . round(abs($ttlnp), 2) . '</td>';
-                    }
-                    $ttlnps1 = abs($ttlnpG) - abs($ttlnpR);
+                        if (!empty($ttlAmt)) {
+                            $html .= '<td class="white-bg">' . $ttlAmt . ' </td>';
+                        } else if ($ttlAmt == 0) {
+                            $html .= '<td class="white-bg">0</td>';
+                        } else {
+                            $html .= '<td class="white-bg"> -- </td>';
+                        }
 
-                    $html .= '
+                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt;
+
+                        if ($ttlnp > 0) {
+                            $ttlnpR += $ttlnp;
+                            $html .= '<td class="white-bg text-color-red">' . round($ttlnp, 2) . '</td>';
+                        } else {
+                            $ttlnpG += $ttlnp;
+                            $html .= '<td class="white-bg text-color-green">' . round(abs($ttlnp), 2) . '</td>';
+                        }
+                        $ttlnps1 = abs($ttlnpG) - abs($ttlnpR);
+
+                        $html .= '
                     </tr>';
+
                 }
-            } else {
+            }else {
 //                $html .= 'No Record Found';
             }
         }
@@ -1528,10 +1585,11 @@ class MyaccountController extends Controller
             $totttlnpsClass = 'text-color-green';
         }
 
+        $pagination = $getresult->links()->render();
 
         //$totAmto += $ttlAmto;
         $html1 = '<tr><td>Total</td><td class=' . $totcmsClass . '>' . number_format(abs($totcms), 2) . '</td><td>' . number_format($totAmto, 2) . '</td><td class=' . $totsumAmtbClass . '>' . number_format($totsumAmtb, 2) . '</td><td>' . number_format($totttlAmtb, 2) . '</td><td class=' . $totsumAmtClass . '>' . number_format(abs($totsumAmt), 2) . '</td><td>' . number_format($ttlAmts, 2) . '</td><td class=' . $totttlnpsClass . '>' . number_format(abs($ttlnps), 2) . '</td></tr>';
-        return $html . '~~' . $html1;
+        return $html . '~~' . $html1. '~~' . $pagination;
     }
 
     public function profitlossdownline(Request $request)
@@ -1642,10 +1700,12 @@ class MyaccountController extends Controller
         exit;*/
         $loginuser = Auth::user();
         $ag_id = $loginuser->id;
-        $all_child = $this->GetChildofAgent($ag_id);
+//        $all_child = $this->GetChildofAgent($ag_id);
 
         $users_all_count = User::where('parentid', $loginuser->id)->latest()->count();
         $users_all = User::where('parentid', $loginuser->id)->latest()->get();
+
+//        dd($users_all);
         if ($users_all_count != 0) {
             foreach ($users_all as $key => $value) {
 
@@ -1673,6 +1733,7 @@ class MyaccountController extends Controller
                         $cumulative_pl_profit_get = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', 'ODDS')->sum('profit');
                         $cumulative_pl_profit = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', '!=', 'ODDS')->sum('profit');
                         $cumulative_pl_loss = UserExposureLog::where('user_id', $datac)->where('win_type', 'Loss')->whereBetween('created_at', [$date_from, $date_to])->sum('loss');
+
                         $casino_pl_profit = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('credit_amount');
                         $casino_pl_lose = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('debit_amount');
                         $cumu_n = 0;
@@ -1682,23 +1743,37 @@ class MyaccountController extends Controller
 
                     } else {
                         $x = $value->id;
-                        $ans = $this->childdata($x);
 
-                        foreach ($ans as $datac) {
+                        $hirUser = UserHirarchy::where('agent_user', $x)->first();
+                        if(!empty($hirUser)) {
+                            $getuserArray = explode(',', $hirUser->sub_user);
 
-                            $cumulative_pl_profit_get = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', 'ODDS')->sum('profit');
-                            $cumulative_pl_profit = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', '!=', 'ODDS')->sum('profit');
-                            $cumulative_pl_loss = UserExposureLog::where('user_id', $datac)->where('win_type', 'Loss')->whereBetween('created_at', [$date_from, $date_to])->sum('loss');
-                            $cumu_n = 0;
+                            $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".implode(', ',$getuserArray).")) X");
+                            $cumulative_pl = 0;
+                            if(isset($cumulative_pl_query->total_profit)) {
+                                $cumulative_pl = $cumulative_pl_query->total_profit;
+                            }
 
-                            $casino_pl_profit = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('credit_amount');
-                            $casino_pl_lose = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('debit_amount');
+                            $casino_pl_profit = UsersAccount::whereIn('user_id', $getuserArray)->whereBetween('created_at', [$date_from, $date_to])->where('casino_id', ">", 0)->sum('credit_amount');
+                            $casino_pl_lose = UsersAccount::whereIn('user_id', $getuserArray)->whereBetween('created_at', [$date_from, $date_to])->where('casino_id', ">", 0)->sum('debit_amount');
 
-                            $cumu_n = $cumulative_pl_profit_get * ($value->commission) / 100;
-                            $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit + $casino_pl_profit - $cumu_n;
-                            $totalProfit += $cumuPL_n - $cumulative_pl_loss - $casino_pl_lose;
+                            $totalProfit += ($cumulative_pl + $casino_pl_profit) - $casino_pl_lose;
 
-
+//                            $ans = $this->childdata($x);
+//                            foreach ($ans as $datac) {
+//
+//                                $cumulative_pl_profit_get = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', 'ODDS')->sum('profit');
+//                                $cumulative_pl_profit = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', '!=', 'ODDS')->sum('profit');
+//                                $cumulative_pl_loss = UserExposureLog::where('user_id', $datac)->where('win_type', 'Loss')->whereBetween('created_at', [$date_from, $date_to])->sum('loss');
+//                                $cumu_n = 0;
+//
+//                                $casino_pl_profit = UsersAccount::where('user_id', $datac)->where('casino_id', ">", 0)->sum('credit_amount');
+//                                $casino_pl_lose = UsersAccount::where('user_id', $datac)->where('casino_id', ">", 0)->sum('debit_amount');
+//
+//                                $cumu_n = $cumulative_pl_profit_get * ($value->commission) / 100;
+//                                $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit + $casino_pl_profit - $cumu_n;
+//                                $totalProfit += $cumuPL_n - $cumulative_pl_loss - $casino_pl_lose;
+//                            }
                         }
                     }
                     $totpamount = $totalProfit;

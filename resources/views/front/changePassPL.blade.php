@@ -1,9 +1,4 @@
 <!doctype html>
-<?php
-$main_url=explode(".",$_SERVER['HTTP_HOST']);
-use App\Website;
-$website = Website::where('title',$main_url[0])->first();
-?>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -92,7 +87,7 @@ $settings = setting::latest('id')->first();
     </div>
 @include('footer')
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{{--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>--}}
 <script type="text/javascript">
 $('#btnpwd').click(function () {
     var newpwd = $('#newpwd').val();

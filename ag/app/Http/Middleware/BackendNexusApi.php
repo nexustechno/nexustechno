@@ -46,17 +46,19 @@ class BackendNexusApi
 
                 if(!empty($match)) {
                     if($match->event_id > 0 && $match->match_id) {
+                        $api_base_url = app('api_base_url');
+                        $api_base_url2 = app('api_base_url2');
                         $client = new Client();
                         $type = '';
                         if ($match->sports_id == 4) {
                             $type = 'cricket';
-                            $baseUrl = 'https://chatnexus.xyz/api/v1';
+                            $baseUrl = $api_base_url;
                         } else if ($match->sports_id == 2) {
                             $type = 'tennis';
-                            $baseUrl = 'https://nexusapi.xyz/api/v1';
+                            $baseUrl = $api_base_url2;
                         } else if ($match->sports_id == 1) {
                             $type = 'soccer';
-                            $baseUrl = 'https://nexusapi.xyz/api/v1';
+                            $baseUrl = $api_base_url2;
                         }
 
                         $url = $baseUrl.'/websites/match/' . $match->event_id . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
@@ -86,7 +88,7 @@ class BackendNexusApi
 
             if(!empty($eventId)){
                 $client = new Client();
-                $baseUrl = 'https://nexusapi.xyz/api/v1';
+                $baseUrl = app('api_base_url2');
                 $url = $baseUrl.'/websites/match/' . $eventId . "/casino/" . $broadcast . "/" . $eventId;
 
 //                dd($url);

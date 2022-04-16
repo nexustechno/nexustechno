@@ -130,7 +130,7 @@
 
                             var checked = '';
                             if (jQuery.inArray(data.records[i].gameId, sports_events) != -1) {
-                                var checked = 'checked';
+                                checked = 'checked';
                             }
 
                             var isDraw = 0;
@@ -161,12 +161,48 @@
                                     '</tr>'
                             }
                         }
-                    }else {
+                    }
+                    else if(data.server == 2) {
+
+                        for (var i = 0; i < data.records.length; i++) {
+
+                            var checked = '';
+                            if (sports_events.indexOf(data.records[i].gameId.toString()) != -1) {
+                                checked = 'checked';
+                            }
+
+                            var isDraw = 0;
+                            if (data.records[i].back2 > 0 && data.records[i].lay2 > 0) {
+                                isDraw = 1;
+                            }
+
+                            var bookmaker = 0;
+                            if (data.records[i].m1 == true) {
+                                bookmaker = 1;
+                            }
+
+                            var fancy = 0;
+                            if (data.records[i].f == true) {
+                                fancy = 1;
+                            }
+
+                            htmldata += '<tr role="row" class="even">' +
+                                '<td class="notLink">' + data.records[i].marketId + '</td> ' +
+                                '<td class="notLink">' + data.records[i].gameId + '</td>' +
+                                '<td class="notLink">' + data.records[i].eventName + '</td>' +
+                                '<td class="notLink">' + data.records[i].openDate + '</td>' +
+                                '<td class="text-center">' +
+                                '<input type="checkbox" ' + checked + ' name="sportLeage" data-sports_id="' + sports_id + '" data-isDraw="' + isDraw + '" data-fancy="' + fancy + '" data-bookmaker="' + bookmaker + '" data-matchId="' + data.records[i].marketId + '" data-eventId="' + data.records[i].gameId + '" data-matchName="' + data.records[i].eventName + '" data-game="' + sports + '" data-matchDate="' + data.records[i].openDate + '" onclick="onClickSportsLeage(this)">' +
+                                '</td>' +
+                                '</tr>'
+                        }
+                    }
+                    else {
                         for (var i = 0; i < data.records.events.length; i++) {
                             if (data.records.events[i].markets[0] != undefined) {
                                 var checked = '';
                                 if (jQuery.inArray(data.records.events[i].id, sports_events) != -1) {
-                                    var checked = 'checked';
+                                    checked = 'checked';
                                 }
 
                                 var isDraw = 0;
@@ -246,6 +282,7 @@
                 success: function(data) {
                     if (data.result == 'error') {
                         toastr.error(data.message);
+                        // $(obj).trigger('click');
                     }
                     if (data.result == 'success') {
                         toastr.success(data.message);

@@ -41,7 +41,14 @@ class AppServiceProvider extends ServiceProvider
             return $this->website;
         });
         $this->app->singleton('API_SERVER', function($app) {
-            return 1;
+            return 2;
+        });
+
+        $this->app->singleton('api_base_url', function ($app) {
+            return "https://ballbets.xyz/api/v1";
+        });
+        $this->app->singleton('api_base_url2', function ($app) {
+            return "https://ballbets.xyz/api/v1";
         });
 
         // Sharing is caring

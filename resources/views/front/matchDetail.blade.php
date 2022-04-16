@@ -1128,6 +1128,7 @@
 @endsection
 
 @push('third_party_scripts')
+    <script src="{{ asset('js/lifecycle.es5.js') }}"></script>
     <script src="{{ asset('js/laravel-echo-server2.js') }}"></script>
     <script src="{{ asset('js/app.js') }}?v={{$vue_app_version}}"></script>
 @endpush
@@ -2003,10 +2004,10 @@
                 var id = $(this).data("target");
                 $('#opened_fancy_model_id').val(id);
             });
-            $(document).on("click", '.modelclose', function (event) {
-                $('#opened_fancy_model_id').val('');
-                $(mid).modal('hide');
-            });
+            // $(document).on("click", '.modelclose', function (event) {
+            //     $('#opened_fancy_model_id').val('');
+            //     $(mid).modal('hide');
+            // });
             //default call
             var _token = $("input[name='_token']").val();
             var match_type = '{{$match->sports_id}}';
@@ -7378,5 +7379,47 @@
             $('.' + val).addClass('blue-dark');
         }
 
+    </script>
+
+    <script defer>
+        if(this.sports_id == 4) {
+            var LaravelEcho = window.Echo;
+        }else{
+            var LaravelEcho = window.Echo2;
+        }
+
+        // LaravelEcho.connector.socket.on('connect', function() {
+        //     console.log('info', `Echo server running`);
+        // })
+        // LaravelEcho.connector.socket.on('disconnect', function() {
+        //     alert(`Echo server disconnected`);
+        //     console.log('warn', `Echo server disconnected`);
+        //
+        //     $.ajax({
+        //         type: "GET",
+        //         url: '/api/disconnect/match',
+        //         data: {},
+        //         timeout: 10000,
+        //         success: function (data) {
+        //             console.log(data);
+        //         }
+        //     });
+        // });
+
+        lifecycle.addEventListener('statechange', function(event) {
+            console.log(event.oldState, event.newState);
+            var match_id = '{{$match->match_id}}';
+            var event_id = '{{$match->event_id}}';
+            if((event.oldState == 'passive' && event.newState == 'hidden') || (event.oldState == 'hidden' && event.newState == 'passive')) {
+                $.ajax({
+                    type: "GET",
+                    url: '/api/disconnect/match/' + event_id + "/" + match_id + "/" + event.newState,
+                    timeout: 10000,
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        });
     </script>
 @endpush

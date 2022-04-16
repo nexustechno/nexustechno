@@ -32,15 +32,23 @@ class AppServiceProvider extends ServiceProvider
         if(count($main_url) == 3){
             unset($main_url[0]);
         }
-
         $this->website = Website::where('domain',implode(".",$main_url))->first();
 
         $this->app->singleton('website', function($app) {
             return $this->website;
         });
+
         $this->app->singleton('API_SERVER', function($app) {
-            return 1;
+            return 2;
         });
+
+        $this->app->singleton('api_base_url', function ($app) {
+            return "https://ballbets.xyz/api/v1";
+        });
+        $this->app->singleton('api_base_url2', function ($app) {
+            return "https://ballbets.xyz/api/v1";
+        });
+
         $matchesToBeDisplay = Match::where('status', 1)->where('winner', NULL)->pluck('event_id');
 
         // Sharing is caring

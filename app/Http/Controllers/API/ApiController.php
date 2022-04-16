@@ -9,6 +9,7 @@ use App\Match;
 use App\MyBets;
 use App\setting;
 use App\Website;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,241 +17,44 @@ use Illuminate\Support\Facades\Log;
 class ApiController extends Controller
 {
 
-    public $website;
+    public function removeBroadCastEvent($eventId,$matchId,$status){
 
-    public function __construct(Request $request)
-    {
-        $main_url=explode(".",$request->getHost());
-        if(count($main_url) == 3){
-            unset($main_url[0]);
+        if($status == 'hidden'){
+            $broadcast = 0;
+        }else{
+            $broadcast = 1;
         }
 
-        $this->website = Website::where('domain',implode(".",$main_url))->first();
-    }
+        if(!empty($eventId)){
 
-    public function connection(){
-        return response()->json([
-            'status' => 'success',
-            'message' => "connection successfully created"
-        ],200);
-    }
+            $match = Match::where("event_id",$eventId)->first();
 
-    public function updateWebsite(Request $request)
-    {
+            $api_base_url = app('api_base_url');
+            $api_base_url2 = app('api_base_url2');
 
-        $website = app('website');
+            if(!empty($match)) {
+                if($eventId > 0 && $match->match_id) {
+                    $client = new Client();
+                    $type = '';
+                    if ($match->sports_id == 4) {
+                        $type = 'cricket';
+                        $baseUrl = $api_base_url;
+                    } else if ($match->sports_id == 2) {
+                        $type = 'tennis';
+                        $baseUrl = $api_base_url2;
+                    } else if ($match->sports_id == 1) {
+                        $type = 'soccer';
+                        $baseUrl = $api_base_url2;
+                    }
 
-        $message = 'Website updated successfully';
+                    if(isset($baseUrl)) {
+                        $url = $baseUrl . '/websites/match/' . $eventId . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
 
-        if($website->currency!=$request->currency){
-
-            try {
-                DB::beginTransaction();
-
-                if($request->has('old_currency') && $request->old_currency==$website->currency) {
-                    $setting = setting::latest('id')->first();
-                    $oldCurrencyToINRBalance = $setting->balance * $request->old_rate;
-                    $setting->balance = $oldCurrencyToINRBalance / $request->rate;
-                    $setting->save();
-
-                    $users = CreditReference::all();
-                    foreach ($users as $user) {
-
-                        $oldCurrencyToINRCredit = $user->credit * $request->old_rate;
-                        $oldCurrencyToINRRemainBal = $user->remain_bal * $request->old_rate;
-                        $oldCurrencyToINRAvailableBalanceForDW = $user->available_balance_for_D_W * $request->old_rate;
-                        $oldCurrencyToINRExposure = $user->exposure * $request->old_rate;
-
-                        $user->credit = $oldCurrencyToINRCredit / $request->rate;
-                        $user->remain_bal = $oldCurrencyToINRRemainBal / $request->rate;
-                        $user->available_balance_for_D_W = $oldCurrencyToINRAvailableBalanceForDW / $request->rate;
-                        $user->exposure = $oldCurrencyToINRExposure / $request->rate;
-
-                        $user->save();
+                        $res = $client->request('GET', $url);
+                        $response = $res->getBody()->getContents();
                     }
                 }
-
-                Website::where("id",$website->id)->update(['currency'=>$request->currency]);
-
-                DB::commit();
-            }catch (\Exception $e){
-                DB::rollBack();
             }
         }
-        else{
-            $message = 'Website not updated';
-        }
-
-        if($request->status == 'On'){
-            $message = 'Website updated successfully';
-            $website->status = 1;
-            $website->admin_status = 1;
-            $website->save();
-        }else if($request->status == 'Off'){
-            $message = 'Website updated successfully';
-            $website->status = 0;
-            $website->admin_status = 0;
-            $website->save();
-        }
-
-        return response()->json([
-           'status' => 'success',
-           'message' => $message
-        ],200);
-    }
-
-    public function getFancyMatches(){
-        $match=DB::table('my_bets as b')
-            ->join('match as m', 'b.match_id', '=', 'm.event_id')
-            ->selectRaw('*,CONCAT(m.match_name," [",m.match_date,"]") as match_name_string')
-            ->where('b.team_name','!=','')
-            ->where('b.result_declare','=',0)
-            ->where('b.bet_type','=','SESSION')
-            ->groupBy('b.match_id')
-            ->orderBy('b.result_declare','ASC')
-            ->distinct()
-//            ->get();
-            ->pluck('match_name_string','m.match_id');
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data retrieved successfully',
-            'data' => $match->toArray()
-        ],200);
-    }
-
-    public function getFancy($id){
-        $match = Match::where('match_id', $id)->first();
-        $ev = $match->event_id;
-        $match_bet = MyBets::whereNotIn('team_name', function ($query) use ($ev) {
-            $query->select('fancy_name')
-                ->from(with(new FancyResult())->getTable())
-                ->where('eventid', $ev);
-        })->where('match_id', $match->event_id)->where('bet_type', 'SESSION')->groupBy('my_bets.team_name')->pluck('match_id','team_name');
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data retrieved successfully',
-            'data' => $match_bet->toArray()
-        ],200);
-    }
-
-    public function getFancyMatchHistory(){
-        $match = Match::selectRaw('match.id,match.match_id,match.match_name,match.match_name,match.match_date,CONCAT(match.match_name," [",match.match_date,"]") as match_name_string')->join('fancy_results','fancy_results.match_id','=','match.id')->where('sports_id',4)->orderBy('match_date', 'DESC')->groupBy('match.id')->where('status',1)->pluck('match_name_string','match.match_id');
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data retrieved successfully',
-            'data' => $match->toArray()
-        ],200);
-    }
-
-    public function getFancyHistory($id){
-        $match = Match::where('match_id', $id)->first();
-        $fancyResult = FancyResult::selectRaw('*, CONCAT(fancy_name,"[[]]",result) as fancy_result, '.$match->event_id.' as match_id_new')->where('match_id', $match->id)->pluck('match_id_new','fancy_result');
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data retrieved successfully',
-            'data' => $fancyResult->toArray()
-        ],200);
-    }
-    public function declareFancyResult(Request $request){
-        Log::info("Result Declare");
-        $id = $request->id;
-        $fancyName = $request->fancy_name;
-        $run = $request->run;
-        $action = $request->action;
-
-        Log::info(['id'=>$id,'fancyName'=>$fancyName,'run'=>$run,'action'=>$action]);
-
-        $match = Match::where('event_id', $id)->first();
-
-        if(empty($match)){
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Match record not found',
-            ],200);
-        }
-
-        $ev = $match->event_id;
-        $match_bet = MyBets::whereNotIn('team_name', function ($query) use ($ev) {
-            $query->select('fancy_name')
-                ->from(with(new FancyResult)->getTable())
-                ->where('eventid', $ev);
-        })->where('match_id', $match->event_id)->where('bet_type', 'SESSION')->where('team_name',$fancyName)->groupBy('my_bets.team_name')->first();
-
-        $settingController = new SettingController();
-
-        $result = $run;
-        if($action == 'cancel'){
-            $result = 'cancel';
-        }
-
-        if(!empty($match_bet)){
-            $data['fancy_name'] = $fancyName;
-            $data['match_id'] = $match->id;
-            $data['eventid'] = $match->event_id;
-            $data['result'] = $result;
-            $data['bet_id'] = $match_bet->id;
-
-            if(FancyResult::where($data)->count() > 0){
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Already fancy declare',
-                ],200);
-            }
-
-            if(FancyResult::create($data)){
-                $bet = MyBets::where('match_id', $match->event_id)->where('bet_type', 'SESSION')->where('team_name', $fancyName)->where('isDeleted', 0)->where('result_declare', 0)->groupby('user_id')->get();
-                foreach ($bet as $b) {
-
-                    Log::info("Result bet processing");
-//                    Log::info($b->toArray());
-                    Log::info(['fancyName'=>$fancyName, 'match_id'=>$match->id, 'event_id'=>$match->event_id, 'user_id'=>$b->user_id, 'result'=>$result]);
-
-                    $settingController->getFancyBetResult($fancyName, $match->id, $match->event_id, $b->user_id, $result);
-                }
-
-                $message = "Result declare successfully";
-                if($action == 'cancel'){
-                    $message = "Result cancel successfully.";
-                }
-                MyBets::where('match_id', $match->event_id)->where('bet_type', 'SESSION')->where('team_name', $fancyName)->update(['result_declare'=>1]);
-
-                return response()->json([
-                    'status' => 'success',
-                    'message' => $message,
-                ],200);
-            }
-        }
-
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Unable to found bet record',
-        ],200);
-
-    }
-
-    public function rollbackFancyResult(Request $request){
-        $id = $request->id;
-        $fancyName = $request->fancy_name;
-        $run = $request->run;
-        $settingController = new SettingController();
-
-        $fancyResult = FancyResult::where("eventid",$id)->where("fancy_name",$fancyName)->where("result",$run)->first();
-        if(!empty($fancyResult)) {
-            $settingController->updateFancyResultRollback($fancyResult->id);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Result rollback successfully',
-            ],200);
-        }
-
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Unable to found fancy result record',
-        ],200);
     }
 }

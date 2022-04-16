@@ -6,7 +6,7 @@ $getUser = Auth::user();
 ?>
  <!-- <script type="text/javascript">
     $(document).ajaxStart(function() {
-    $(".betloaderimage1").show();  
+    $(".betloaderimage1").show();
     }).ajaxStop(function() {
     $(".betloaderimage1").hide();
     });
@@ -24,7 +24,7 @@ $getUser = Auth::user();
     left: 50%;
     width: 190px;
     margin-left: -95px;
-    
+
 }
 
 .loading1 img {
@@ -68,7 +68,7 @@ $getUser = Auth::user();
                             <input type="text" name="date_from" id="date_from" class="form-control period_date1" placeholder="{{date('d-m-Y')}}" value="{{date('d-m-Y')}}">
                             <img src="{{ URL::to('asset/img/calendar-icon.png')}}" class="calendar-icon">
                         </div>
-                         <input type="text" name="" id="" placeholder="09:00" maxlength="5" class="form-control disable" disabled>                  
+                         <input type="text" name="" id="" placeholder="09:00" maxlength="5" class="form-control disable" disabled>
                         <div class="datediv">
                             <input type="text" name="date_to" id="date_to" class="form-control period_date2" placeholder="{{Date('d-m-Y', strtotime('+1 days'))}}" value="{{Date('d-m-Y', strtotime('+1 days'))}}">
                             <img src="{{ URL::to('asset/img/calendar-icon.png')}}" class="calendar-icon">
@@ -76,8 +76,8 @@ $getUser = Auth::user();
                         <input type="text" name="" id="" placeholder="08:59" maxlength="5" class="form-control disable" disabled>
                     </div>
                 </div>
-            </div>
-            <div class="timeblock-box">
+{{--            </div>--}}
+{{--            <div class="timeblock-box">--}}
                 <ul>
                     {{--<li> <a class="justbtn grey-gradient-bg text-color-black1" onclick="getHistoryPL('today')"> Just For Today </a> </li>
                     <li> <a class="justbtn grey-gradient-bg text-color-black1" onclick="getHistoryPL('yesterday')"> From Yesterday </a> </li>--}}
@@ -85,15 +85,15 @@ $getUser = Auth::user();
                 </ul>
             </div>
         </div>
-       
+
         <div class="maintable-raju-block" id="downline-table">
-            <div class="name-div">
-                <div class="name-block light-grey-bg-3">
-                    <ul class="agentlist" style="border:none;">
-                        <li class="agentlistadmin" id="{{$getUser->id}}"></li>        
-                    </ul>
-                </div>
-            </div>
+{{--            <div class="name-div">--}}
+{{--                <div class="name-block light-grey-bg-3">--}}
+{{--                    <ul class="agentlist" style="border:none;">--}}
+{{--                        <li class="agentlistadmin" id="{{$getUser->id}}"></li>--}}
+{{--                    </ul>--}}
+{{--                </div>--}}
+{{--            </div>--}}
             <table class="table custom-table white-bg text-color-blue-2">
                 <thead>
                     <tr>
@@ -135,13 +135,13 @@ $getUser = Auth::user();
                 date_from:date_from,
                 date_to:date_to,
                 val:val,
-            }, 
+            },
              beforeSend:function(){
                 $('#site_bet_loading1').show();
             },
             complete: function(){
                 $('#site_bet_loading1').hide();
-            },             
+            },
             success: function(data) {
                 //document.getElementById("site_bet_loading1").style.display = "none";
                 var spl=data.split('~~');
@@ -150,7 +150,7 @@ $getUser = Auth::user();
             }
         });
     }
-    
+
     function subpagedata(val){
         var user_id = val;
         var date_to = $('#date_to').val();
@@ -164,7 +164,7 @@ $getUser = Auth::user();
             },
             complete: function(){
                 $('#site_bet_loading1').hide();
-            }, 
+            },
             success: function(data){
                 var spl=data.split('~~');
                 $('#bodyData').html(spl[0]);
@@ -188,7 +188,7 @@ $getUser = Auth::user();
             },
             complete: function(){
                 $('#site_bet_loading1').hide();
-            }, 
+            },
             success: function(data){
                 var spl=data.split('~~');
                 $('#bodyData').html(spl[0]);

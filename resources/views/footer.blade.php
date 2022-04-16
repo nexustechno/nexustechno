@@ -35,8 +35,6 @@
 <script src="{{ asset('asset/js/jquery-ui.min.js') }}" ></script>
 <script src="{{ asset('asset/js/jquery-ui.multidatespicker.js') }}" ></script>
 <script src="{{ asset('asset/js/script.js') }}" ></script>
-
-
 </body>
 
 </html>

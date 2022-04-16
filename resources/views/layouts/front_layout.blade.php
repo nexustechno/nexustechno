@@ -1169,6 +1169,15 @@ if (!$DEVICE) {
                     cricketLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
                 }
             }
+        }else if(data.server == 2) {
+            for (var i = 0; i < data.records.length; i++) {
+                if (matchesToBeDisplay.indexOf(data.records[i].gameId.toString()) >= 0) {
+                    if (data.records[i].inPlay == true) {
+                        inPlayCount++;
+                    }
+                    cricketLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + data.records[i].eventName + '</a></li>'
+                }
+            }
         }else {
             for (var i = 0; i < data.records.events.length; i++) {
 
@@ -1199,6 +1208,15 @@ if (!$DEVICE) {
                     tennisLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
                 }
             }
+        }else if(data.server == 2) {
+            for (var i = 0; i < data.records.length; i++) {
+                if (matchesToBeDisplay.indexOf(data.records[i].gameId.toString()) >= 0) {
+                    if (data.records[i].inPlay == true) {
+                        inPlayCount++;
+                    }
+                    tennisLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + data.records[i].eventName + '</a></li>'
+                }
+            }
         }else {
             for (var i = 0; i < data.records.events.length; i++) {
                 if (matchesToBeDisplay.indexOf((data.records.events[i].id).toString()) >= 0) {
@@ -1225,6 +1243,15 @@ if (!$DEVICE) {
                     }
                     var eventNameString = data.records[i].eventName.split('/');
                     soccerLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + eventNameString[0] + '</a></li>'
+                }
+            }
+        }else if(data.server == 2) {
+            for (var i = 0; i < data.records.length; i++) {
+                if (matchesToBeDisplay.indexOf(data.records[i].gameId.toString()) >= 0) {
+                    if (data.records[i].inPlay == true) {
+                        inPlayCount++;
+                    }
+                    soccerLeftMenuHtml += '<li><a href="/matchDetail/' + data.records[i].gameId + '" class="text-color-black2">' + data.records[i].eventName + '</a></li>'
                 }
             }
         }else {
