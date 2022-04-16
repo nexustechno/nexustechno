@@ -106,6 +106,28 @@
                 var team = 3;
                 $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back12);
                 $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay12);
+            }else if(server == 2){
+
+                var inPlay = record.inPlay;
+                var eventId = record.gameId;
+
+                if (inPlay == true) {
+                    $(".in-play-status-" + eventId).removeClass('collapse');
+                } else {
+                    $(".in-play-status-" + eventId).addClass('collapse');
+                }
+
+                var team = 1;
+                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back1);
+                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay1);
+
+                var team = 2;
+                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back2);
+                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay2);
+
+                var team = 3;
+                $(".team" + team + "-" + eventId + " .button_content .backbtn").html(record.back3);
+                $(".team" + team + "-" + eventId + " .button_content .laybtn").html(record.lay3);
             }else {
                 if (record.markets != undefined && record.markets[0] != undefined && record.markets[0].selections != undefined) {
                     var selections = record.markets[0].selections;
@@ -141,6 +163,10 @@
                 for (var i = 0; i < data.records.length; i++) {
                     loadData(data.server,data.records[i]);
                 }
+            }else if(data.server == 2){
+                for (var i = 0; i < data.records.length; i++) {
+                    loadData(data.server,data.records[i]);
+                }
             }else {
                 for (var i = 0; i < data.records.events.length; i++) {
                     loadData(data.server,data.records.events[i]);
@@ -153,6 +179,10 @@
                 for (var i = 0; i < data.records.length; i++) {
                     loadData(data.server,data.records[i]);
                 }
+            }else if(data.server == 2){
+                for (var i = 0; i < data.records.length; i++) {
+                    loadData(data.server,data.records[i]);
+                }
             }else {
                 for (var i = 0; i < data.records.events.length; i++) {
                     loadData(data.server,data.records.events[i]);
@@ -162,6 +192,10 @@
         window.Echo.channel('matches').listen('.soccer', (data) => {
             // console.log(data);
             if(data.server == 1){
+                for (var i = 0; i < data.records.length; i++) {
+                    loadData(data.server,data.records[i]);
+                }
+            }else if(data.server == 2){
                 for (var i = 0; i < data.records.length; i++) {
                     loadData(data.server,data.records[i]);
                 }

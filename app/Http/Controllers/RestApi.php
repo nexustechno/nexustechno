@@ -268,7 +268,7 @@ class RestApi extends Controller
 			$url=$api_base_url.'/match/cricket/detail/'.$eventId."/odds";
 		} else if($matchtype== 2)
 		{ //tennis
-			$url=$api_base_url2.'/v1/match/tennis/detail/'.$matchId."/odds";
+			$url=$api_base_url2.'/match/tennis/detail/'.$matchId."/odds";
 		} else if($matchtype== 1)
 		{ //soccer
 			$url=$api_base_url2.'/match/soccer/detail/'.$matchId."/odds";
@@ -308,7 +308,7 @@ class RestApi extends Controller
 			$url=$api_base_url2.'/match/tennis/detail/'.$matchId."/fancy";
 		} else if($matchtype== 1)
 		{ //soccer
-			$url='https://nexusapi.xyz/api/v1/match/soccer/detail/'.$matchId."/fancy";
+			$url=$api_base_url2.'/match/soccer/detail/'.$matchId."/fancy";
 		}
 
 		try {
@@ -335,10 +335,10 @@ class RestApi extends Controller
         $api_base_url2 = app('api_base_url2');
 		if($matchtype == 4)
 		{ //cricket
-			$url=$api_base_url.'/v1/match/cricket/detail/'.$eventId."/bookmaker";
+			$url=$api_base_url.'/match/cricket/detail/'.$eventId."/bookmaker";
 		} else if($matchtype== 2)
 		{ //tennis
-			$url=$api_base_url2.'/v1/match/tennis/detail/'.$matchId."/bookmaker";
+			$url=$api_base_url2.'/match/tennis/detail/'.$matchId."/bookmaker";
 		} else if($matchtype== 1)
 		{ //soccer
 			$url=$api_base_url2.'/match/soccer/detail/'.$matchId."/bookmaker";

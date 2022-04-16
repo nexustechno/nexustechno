@@ -147,7 +147,7 @@
                 var newRecords = data.records;
 
                 if(newRecords.t2!=undefined){
-
+                    newRecords.t2 = this.sortedArray(newRecords.t2);
                     for (var i=0;i < newRecords.t2.length;i++) {
                         //team1 spark changes
                         if(this.bookmaker[i]!=undefined) {
@@ -181,6 +181,17 @@
             });
         },
         methods: {
+            sortedArray: function(arrays) {
+                function compare(a, b) {
+                    if (a.sortPriority < b.sortPriority)
+                        return -1;
+                    if (a.sortPriority > b.sortPriority)
+                        return 1;
+                    return 0;
+                }
+
+                return arrays.sort(compare);
+            },
             getPriceValue(price,type,val){
                 if(price!='' && price!=undefined) {
                     if (type == 'plus') {

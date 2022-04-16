@@ -169,16 +169,15 @@ class FrontController extends Controller
         $logindata = '';
         if (!empty($getUserCheck)) {
             $logindata = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
+            $getUser = $logindata;
+            $userId = $getUser->id;
         }
 
-        if(!isset($logindata) || (isset($logindata) && empty($logindata))){
-            return redirect()->back()->with('error', 'Please login');
-        }
+//        if(!isset($logindata) || (isset($logindata) && empty($logindata))){
+//            return redirect()->back()->with('error', 'Please login');
+//        }
 
-        $getUser = $logindata;
-        $userId = $getUser->id;
-
-        if ($logindata) {
+        if (isset($logindata)) {
             $stkdata = UserStake::where('user_id', $logindata->id)->first();
             $stkval = json_decode($stkdata->stake);
         } else {

@@ -3223,7 +3223,6 @@ class SettingController extends Controller
                 $section = 4;
             }
 
-
             if(isset($match_data[0])) {
                 $match_updated_date = strtotime($match_data[0]['updateTime']);
             }
@@ -3258,6 +3257,17 @@ class SettingController extends Controller
                     $matchDataFound = true;
                 }
             }
+        } elseif($server == 2){
+            if(isset($match_data['t1']) && $match_data['t1']){
+                $matchDataFound = true;
+            }
+
+            if(isset($match_data['t1'][0]['inPlay']) && $match_data['t1'][0]['inPlay'] == true) {
+                $inplay = 'True';
+            }else{
+                $inplay = 'False';
+            }
+            $page = 'backpanel.risk-management-details';
         }else {
             $page = 'backpanel.risk-management-details2';
             $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';

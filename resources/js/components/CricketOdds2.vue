@@ -49,15 +49,15 @@
                     </td>
                     <td :data-team="'team'+(index+1)" class="pink-bg ODDSLay" :class="'td_team'+(index+1)+'_lay_0'">
                         <a data-bettype="ODDS" onclick="opnForm(this)" :data-team="'team'+(index+1)" :data-val="roundFloatVal(team.l1)" data-cls="pink-bg"
-                           class="lay1btn text-color-black"> {{ roundFloatVal(team.l1) }} <br><span>{{ team.l1 }}</span></a>
+                           class="lay1btn text-color-black"> {{ roundFloatVal(team.l1) }} <br><span>{{ team.ls1 }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="light-pink-bg-2 ODDSLay" :class="'td_team'+(index+1)+'_lay_1'">
                         <a data-bettype="ODDS" onclick="opnForm(this)" :data-team="'team'+(index+1)" :data-val="roundFloatVal(team.l2)" data-cls="pink-bg"
-                           class="lay1btn text-color-black"> {{ roundFloatVal(team.l2) }} <br><span>{{ team.l2 }}</span></a>
+                           class="lay1btn text-color-black"> {{ roundFloatVal(team.l2) }} <br><span>{{ team.ls2 }}</span></a>
                     </td>
                     <td :data-team="'team'+(index+1)" class="light-pink-bg-3 ODDSLay" :class="'td_team'+(index+1)+'_lay_2'">
                         <a data-bettype="ODDS" onclick="opnForm(this)" :data-team="'team'+(index+1)" :data-val="roundFloatVal(team.l3)" data-cls="pink-bg"
-                           class="lay1btn text-color-black"> {{ roundFloatVal(team.l3) }} <br><span>{{ team.l3 }}</span></a>
+                           class="lay1btn text-color-black"> {{ roundFloatVal(team.l3) }} <br><span>{{ team.ls3 }}</span></a>
                     </td>
                 </tr>
                 <tr id="mobile_tr" :class="'tr_team'+(index+1)" class="mobileBack mobile_bet_model_div">
@@ -107,7 +107,7 @@
                 var newRecords = data.records;
 
                 if(newRecords.t1!=undefined){
-
+                    newRecords.t1 = this.sortedArray(newRecords.t1);
                     for (var i=0;i < newRecords.t1.length;i++) {
                         //team1 spark changes
                         if(this.teams[i]!=undefined) {
@@ -143,6 +143,19 @@
             });
         },
         methods: {
+            sortedArray: function(arrays) {
+                function compare(a, b) {
+                    if (a.sortPriority < b.sortPriority)
+                        return -1;
+                    if (a.sortPriority > b.sortPriority)
+                        return 1;
+
+                    return 0;
+                }
+
+                var arr2 =  arrays.sort(compare);
+                return arr2;
+            },
             roundFloatVal(num) {
                 var m = Number((Math.abs(num) * 100).toPrecision(15));
                 return Math.round(m) / 100 * Math.sign(num);
