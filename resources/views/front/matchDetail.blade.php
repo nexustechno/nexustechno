@@ -7407,7 +7407,7 @@
         // });
 
         lifecycle.addEventListener('statechange', function(event) {
-            console.log(event.oldState, event.newState);
+            // console.log(event.oldState, event.newState);
             var match_id = '{{$match->match_id}}';
             var event_id = '{{$match->event_id}}';
             if((event.oldState == 'passive' && event.newState == 'hidden') || (event.oldState == 'hidden' && event.newState == 'passive')) {

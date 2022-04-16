@@ -151,11 +151,11 @@
                     </td>
                     <td class="zeroopa1" colspan="1"> <span>Min/Max</span> <br> {{min_bet_fancy_limit}} / {{max_bet_fancy_limit}}</td>
                 </tr>
-                <tr v-if="getFancyStatus(fancy.gstatus,index)" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 mobile-ui-tr team_session_fancy">
+                <tr v-if="getFancyStatus(fancy.status,index)" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 mobile-ui-tr team_session_fancy">
                     <td colspan="3"></td>
                     <td colspan="2" class="fancy-suspend-td-1">
                         <div class="fancy-suspend-1 black-bg-5 text-color-white">
-                            <span class="text-uppercase">{{fancy.gstatus}}</span>
+                            <span class="text-uppercase">{{fancy.status}}</span>
                         </div>
                     </td>
                 </tr>
@@ -209,7 +209,7 @@
         },
         methods: {
             getFancyStatus(gstatus,index){
-                if(gstatus=='Ball Running' || gstatus=='SUSPENDED'){
+                if(gstatus=='BALL RUNNING' || gstatus=='Ball Running' || gstatus=='SUSPENDE' || gstatus=='SUSPEND'){
                     $(".tr_team"+index+"_fancy_td_mobile").html("");
                     return true;
                 }
