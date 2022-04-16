@@ -47,7 +47,7 @@
             <td colspan="2"></td>
         </tr>
         <template v-for="(team,index) in bookmaker">
-        <tr v-if="team.status == 'CLOSED' || team.status == 'SUSPENDED' || team.status == 'SUSPEND'" class="fancy-suspend-tr" :class="'team'+(index+1)+'_bm_fancy'"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
+        <tr v-if="team.status == 'CLOSED' || team.status == 'SUSPENDED' || team.status == 'SUSPEND' || team.status == 'BALL RUNNING'" class="fancy-suspend-tr" :class="'team'+(index+1)+'_bm_fancy'"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
         <tr :key="team.sId" class="white-bg" :class="'tr_bm_team'+(index+1)">
             <td class="padding3">
                 {{ team.nat }}<br>

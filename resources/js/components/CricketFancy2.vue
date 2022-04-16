@@ -91,7 +91,7 @@
                 <td></td>
             </tr>
             <template v-for="(fancy, index) in match.t3" >
-                <tr :key="fancy.sId" v-if="fancy.status=='Ball Running' || fancy.status=='SUSPENDED' || fancy.status=='SUSPEND'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
+                <tr :key="fancy.sId" v-if="fancy.status=='BALL RUNNING' || fancy.status=='Ball Running' || fancy.status=='SUSPENDED' || fancy.status=='SUSPEND'" :id="'tr_fancy_suspend_'+index" class="fancy-suspend-tr-1 desktop-ui-tr team_session_fancy">
                     <td colspan="3"></td>
                     <td colspan="2" class="fancy-suspend-td-1">
                         <div class="fancy-suspend-1 black-bg-5 text-color-white">
