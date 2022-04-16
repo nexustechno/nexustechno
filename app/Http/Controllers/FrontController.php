@@ -177,8 +177,8 @@ class FrontController extends Controller
 //            return redirect()->back()->with('error', 'Please login');
 //        }
 
-        if (isset($logindata)) {
-            $stkdata = UserStake::where('user_id', $logindata->id)->first();
+        if (isset($userId)) {
+            $stkdata = UserStake::where('user_id', $userId)->first();
             $stkval = json_decode($stkdata->stake);
         } else {
             $stkval = array('100', '200', '300', '400', '500', '600');
@@ -252,7 +252,7 @@ class FrontController extends Controller
         $oddsLimit['min_bet_odds_limit'] = $matchList->min_bet_odds_limit;
         $oddsLimit['max_bet_odds_limit'] = $matchList->max_bet_odds_limit;
 
-        $oddsBookmakerExposerArr = PlayerController::getOddsAndBookmakerExposer($userId,$event_id);
+//        $oddsBookmakerExposerArr = PlayerController::getOddsAndBookmakerExposer($userId,$event_id);
 //        dd($oddsBookmakerExposerArr);
 
         $team1_bet_total = 0;
