@@ -51,11 +51,6 @@
         </template>
         <template v-if="server==2 && matches.length > 0">
             <div class="secondblock-cricket white-bg" v-for="(match, index) in matches" v-if="isVisible2(match)" :key="matchtype+index">
-                <div class="mblinplay">
-                    <!--                <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>-->
-                    <!--                <span v-if="matchtype == 4 && match.m1 == 'True'" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>-->
-                    <!--                <span style="color:green" class="mplay" v-if="match.inPlay == 'True'">In-Play</span>-->
-                </div>
                 <span class="desk" :class="match.inPlay == true ? 'fir-col1-green':'fir-col1'">
                 <a :href="'/matchDetail/'+match.gameId" class="text-color-blue-light">
                     {{ match.eventName }}
@@ -73,15 +68,15 @@
                 <a class="laybtn lightpink-bg1" v-else>--</a>
             </span>
                 <span class="fir-col2" :class="'col2-back-lay'+match.gameId">
-                 <a class="backbtn lightblue-bg2" v-if="match.back2 > 0">{{ match.back2 }}</a>
-                <a class="backbtn lightblue-bg2" v-else>--</a>
-                <a class="laybtn lightpink-bg1" v-if="match.lay2 > 0">{{ match.lay2 }}</a>
-                <a class="laybtn lightpink-bg1" v-else>--</a>
-            </span>
-                <span class="fir-col2" :class="'col3-back-lay'+match.gameId">
                  <a class="backbtn lightblue-bg2" v-if="match.back3 > 0">{{ match.back3 }}</a>
                 <a class="backbtn lightblue-bg2" v-else>--</a>
                 <a class="laybtn lightpink-bg1" v-if="match.lay3 > 0">{{ match.lay3 }}</a>
+                <a class="laybtn lightpink-bg1" v-else>--</a>
+            </span>
+                <span class="fir-col2" :class="'col3-back-lay'+match.gameId">
+                 <a class="backbtn lightblue-bg2" v-if="match.back2 > 0">{{ match.back2 }}</a>
+                <a class="backbtn lightblue-bg2" v-else>--</a>
+                <a class="laybtn lightpink-bg1" v-if="match.lay2 > 0">{{ match.lay2 }}</a>
                 <a class="laybtn lightpink-bg1" v-else>--</a>
             </span>
                 <span class="fir-col3 text-center">
@@ -238,21 +233,22 @@
                                     $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
                                 }
                                 if (this.matches[i].back12 != records[i].back12) {
-                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    $(".col2-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
                                 }
                                 if (this.matches[i].lay12 != records[i].lay12) {
-                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    $(".col2-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
                                 }
                                 if (this.matches[i].back11 != records[i].back11) {
-                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    $(".col3-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
                                 }
                                 if (this.matches[i].lay11 != records[i].lay11) {
-                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    $(".col3-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
                                 }
                             }
                         }
                     }
-                }else if(server == 2) {
+                }
+                else if(server == 2) {
                     var records = data;
                     for (var i = 0; i < records.length; i++) {
                         if (this.isVisible2(records[i])) {
@@ -264,16 +260,16 @@
                                     $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
                                 }
                                 if (this.matches[i].back2 != records[i].back2) {
-                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    $(".col3-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
                                 }
                                 if (this.matches[i].lay2 != records[i].lay2) {
-                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    $(".col3-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
                                 }
                                 if (this.matches[i].back3 != records[i].back3) {
-                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    $(".col2-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
                                 }
                                 if (this.matches[i].lay3 != records[i].lay3) {
-                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    $(".col2-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
                                 }
                             }
                         }
