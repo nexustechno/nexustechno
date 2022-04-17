@@ -2,7 +2,7 @@
 error_reporting(0);
 $eventId = $_GET['event_id'];
 $match_type = $_GET['match_type'];
-$height = '110px;';
+$height = '100%;';
 $eventId2 = $match_type;
 if($match_type == 'cricket') {
     $matchdate = $_GET['date'];
