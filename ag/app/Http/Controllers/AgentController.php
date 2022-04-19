@@ -26,6 +26,119 @@ class AgentController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public static function getUsersProfitLossWithoutCommission($id)
+    {
+        $cumulative_pl_query = DB::selectOne("SELECT
+            SUM(X.profit) AS total_profit,
+            SUM(X.profit_commission) as total_commission,
+            SUM(X.loss) AS total_loss
+        FROM
+            (
+            SELECT
+                id,
+                user_name,
+                commission,
+                (
+                    (
+                    SELECT
+                        SUM(profit)
+                    FROM
+                        user_exposure_log
+                    WHERE win_type = 'Profit' AND user_exposure_log.user_id = users.id
+                )) as profit,((
+                    SELECT
+                        SUM(profit)
+                    FROM
+                        user_exposure_log
+                    WHERE bet_type='ODDS' AND win_type = 'Profit' AND user_exposure_log.user_id = users.id
+                ) * users.commission / 100) as profit_commission, (
+                SELECT
+                    SUM(loss)
+                FROM
+                    user_exposure_log
+                WHERE win_type = 'Loss' AND user_exposure_log.user_id = users.id
+
+                ) AS loss
+            FROM
+                `users`
+            WHERE
+                `id` IN(" . implode(', ', $id) . ")) X");
+
+        $total_profit = 0;
+        $total_commission = 0;
+        $total_loss = 0;
+
+        if (isset($cumulative_pl_query->total_profit) && $cumulative_pl_query->total_profit!=null) {
+            $total_profit = $cumulative_pl_query->total_profit;
+        }
+        if (isset($cumulative_pl_query->total_commission) && $cumulative_pl_query->total_commission!=null) {
+            $total_commission = $cumulative_pl_query->total_commission;
+        }
+        if (isset($cumulative_pl_query->total_loss) && $cumulative_pl_query->total_loss!=null) {
+            $total_loss = $cumulative_pl_query->total_loss;
+        }
+
+        $returnableProfit = floatval($total_profit) - floatval($total_commission) - floatval($total_loss);
+
+        return round($returnableProfit,2);
+    }
+
+    public static function getUsersProfitLossWithoutCommissionBetweenTwoDates($id,$fromDate,$toDate)
+    {
+        $cumulative_pl_query = DB::selectOne("SELECT
+            SUM(X.profit) AS total_profit,
+            SUM(X.profit_commission) as total_commission,
+            SUM(X.loss) AS total_loss
+        FROM
+            (
+            SELECT
+                id,
+                user_name,
+                commission,
+                (
+                    (
+                    SELECT
+                        SUM(profit)
+                    FROM
+                        user_exposure_log
+                    WHERE win_type = 'Profit' AND created_at >= '".$fromDate."' AND created_at <= '".$toDate."' AND user_exposure_log.user_id = users.id
+                )) as profit,((
+                    SELECT
+                        SUM(profit)
+                    FROM
+                        user_exposure_log
+                    WHERE bet_type='ODDS' AND created_at >= '".$fromDate."' AND created_at <= '".$toDate."' AND win_type = 'Profit' AND user_exposure_log.user_id = users.id
+                ) * users.commission / 100) as profit_commission, (
+                SELECT
+                    SUM(loss)
+                FROM
+                    user_exposure_log
+                WHERE win_type = 'Loss' AND user_exposure_log.user_id = users.id AND created_at >= '".$fromDate."' AND created_at <= '".$toDate."'
+                ) AS loss
+            FROM
+                `users`
+            WHERE
+                `id` IN(" . implode(', ', $id) . ")) X");
+
+        $total_profit = 0;
+        $total_commission = 0;
+        $total_loss = 0;
+
+        if (isset($cumulative_pl_query->total_profit) && $cumulative_pl_query->total_profit!=null) {
+            $total_profit = $cumulative_pl_query->total_profit;
+        }
+        if (isset($cumulative_pl_query->total_commission) && $cumulative_pl_query->total_commission!=null) {
+            $total_commission = $cumulative_pl_query->total_commission;
+        }
+        if (isset($cumulative_pl_query->total_loss) && $cumulative_pl_query->total_loss!=null) {
+            $total_loss = $cumulative_pl_query->total_loss;
+        }
+
+        $returnableProfit = floatval($total_profit) - floatval($total_commission) - floatval($total_loss);
+
+        return round($returnableProfit,2);
+    }
+
     public static function userBalance($userId)
     {
 
@@ -41,25 +154,24 @@ class AgentController extends Controller
             $getuserArray = explode(',', $hirUser->sub_user);
 
             $hirUser_bal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
-                $q->where('agent_level','!=','PL');
+                $q->where('agent_level', '!=', 'PL');
             })->sum('available_balance_for_D_W');
 
 
             $totalClientBal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
-                $q->where('agent_level','PL');
+                $q->where('agent_level', 'PL');
             })->sum('remain_bal');
 
 //            DB::connection()->enableQueryLog();
             $totalExposure = CreditReference::whereIn('player_id', $getuserArray)->selectRaw('abs(exposure)')->whereHas('user', function ($q) {
-                $q->where('agent_level','PL');
+                $q->where('agent_level', 'PL');
             })->sum('exposure');
 //            dd($totalExposure);
 
-            $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".implode(', ',$getuserArray).")) X");
-            if(isset($cumulative_pl_query->total_profit)) {
-                $cumulative_pl = $cumulative_pl_query->total_profit;
-            }
+//            dd("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".implode(', ',$getuserArray).")) X");
 
+
+            $cumulative_pl = self::getUsersProfitLossWithoutCommission($getuserArray);
 
 //            foreach ($getuserArray as $value_data) {
 //                $exposer = 0;
@@ -120,23 +232,23 @@ class AgentController extends Controller
             $getuserArray = explode(',', $hirUser->sub_user);
 
             $hirUser_bal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
-                $q->where('agent_level','!=','PL');
+                $q->where('agent_level', '!=', 'PL');
             })->sum('available_balance_for_D_W');
 
             $totalClientBal = CreditReference::whereIn('player_id', $getuserArray)->whereHas('user', function ($q) {
-                $q->where('agent_level','PL');
+                $q->where('agent_level', 'PL');
             })->sum('remain_bal');
 
             $totalExposure = CreditReference::whereIn('player_id', $getuserArray)->selectRaw('abs(exposure)')->whereHas('user', function ($q) {
-                $q->where('agent_level','PL');
+                $q->where('agent_level', 'PL');
             })->sum('exposure');
         }
         return response()->json(array(
-            'balance' => number_format($balance,2,'.',''),
-            'remain_bal' => number_format($remain_bal,2,'.',''),
-            'hirUser_bal' => number_format($hirUser_bal,2,'.',''),
-            'totalClientBal' => number_format($totalClientBal,2,'.',''),
-            'totalExposure' => number_format($totalExposure,2,'.',''),
+            'balance' => number_format($balance, 2, '.', ''),
+            'remain_bal' => number_format($remain_bal, 2, '.', ''),
+            'hirUser_bal' => number_format($hirUser_bal, 2, '.', ''),
+            'totalClientBal' => number_format($totalClientBal, 2, '.', ''),
+            'totalExposure' => number_format($totalExposure, 2, '.', ''),
         ), 200);
     }
 
@@ -149,9 +261,9 @@ class AgentController extends Controller
         $data['first_login'] = 0;
         $data['ip_address'] = resAll::ip();
 
-        if($request->has('partnership_perc') && !empty($request->partnership_perc)){
+        if ($request->has('partnership_perc') && !empty($request->partnership_perc)) {
 
-        }else{
+        } else {
             $data['partnership_perc'] = 0;
         }
 

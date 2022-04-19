@@ -1729,17 +1729,20 @@ class MyaccountController extends Controller
                     $totalLoss = 0;
                     $totalProfit = 0;
                     if ($value->agent_level == 'PL') {
-                        $datac = $value->id;
-                        $cumulative_pl_profit_get = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', 'ODDS')->sum('profit');
-                        $cumulative_pl_profit = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', '!=', 'ODDS')->sum('profit');
-                        $cumulative_pl_loss = UserExposureLog::where('user_id', $datac)->where('win_type', 'Loss')->whereBetween('created_at', [$date_from, $date_to])->sum('loss');
 
-                        $casino_pl_profit = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('credit_amount');
-                        $casino_pl_lose = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('debit_amount');
-                        $cumu_n = 0;
-                        $cumu_n = $cumulative_pl_profit_get * ($value->commission) / 100;
-                        $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit + $casino_pl_profit - $cumu_n;
-                        $totalProfit += $cumuPL_n - $cumulative_pl_loss - $casino_pl_lose;
+                        $totalProfit +=AgentController::getUsersProfitLossWithoutCommissionBetweenTwoDates([$value->id], $date_from, $date_to);
+
+//                        $datac = $value->id;
+//                        $cumulative_pl_profit_get = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', 'ODDS')->sum('profit');
+//                        $cumulative_pl_profit = UserExposureLog::where('user_id', $datac)->where('win_type', 'Profit')->whereBetween('created_at', [$date_from, $date_to])->where('bet_type', '!=', 'ODDS')->sum('profit');
+//                        $cumulative_pl_loss = UserExposureLog::where('user_id', $datac)->where('win_type', 'Loss')->whereBetween('created_at', [$date_from, $date_to])->sum('loss');
+//
+//                        $casino_pl_profit = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('credit_amount');
+//                        $casino_pl_lose = UsersAccount::where('user_id', $datac)->where('casino_id',">",0)->sum('debit_amount');
+//                        $cumu_n = 0;
+//                        $cumu_n = $cumulative_pl_profit_get * ($value->commission) / 100;
+//                        $cumuPL_n = $cumulative_pl_profit_get + $cumulative_pl_profit + $casino_pl_profit - $cumu_n;
+//                        $totalProfit += $cumuPL_n - $cumulative_pl_loss - $casino_pl_lose;
 
                     } else {
                         $x = $value->id;
@@ -1748,16 +1751,18 @@ class MyaccountController extends Controller
                         if(!empty($hirUser)) {
                             $getuserArray = explode(',', $hirUser->sub_user);
 
-                            $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".implode(', ',$getuserArray).")) X");
-                            $cumulative_pl = 0;
-                            if(isset($cumulative_pl_query->total_profit)) {
-                                $cumulative_pl = $cumulative_pl_query->total_profit;
-                            }
+                            $totalProfit +=AgentController::getUsersProfitLossWithoutCommissionBetweenTwoDates($getuserArray, $date_from, $date_to);
 
-                            $casino_pl_profit = UsersAccount::whereIn('user_id', $getuserArray)->whereBetween('created_at', [$date_from, $date_to])->where('casino_id', ">", 0)->sum('credit_amount');
-                            $casino_pl_lose = UsersAccount::whereIn('user_id', $getuserArray)->whereBetween('created_at', [$date_from, $date_to])->where('casino_id', ">", 0)->sum('debit_amount');
-
-                            $totalProfit += ($cumulative_pl + $casino_pl_profit) - $casino_pl_lose;
+//                            $cumulative_pl_query = DB::selectOne("SELECT SUM(X.profit) as total_profit FROM (SELECT id,user_name,commission, ((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)-((select sum(profit) from user_exposure_log WHERE bet_type='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)*users.commission/100) + (select sum(profit) from user_exposure_log WHERE bet_type!='ODDS' AND created_at >= '".$date_from."' AND created_at <= '".$date_to."' AND win_type='Profit' AND user_exposure_log.user_id=users.id)) as profit FROM `users` WHERE `id` IN(".implode(', ',$getuserArray).")) X");
+//                            $cumulative_pl = 0;
+//                            if(isset($cumulative_pl_query->total_profit)) {
+//                                $cumulative_pl = $cumulative_pl_query->total_profit;
+//                            }
+//
+//                            $casino_pl_profit = UsersAccount::whereIn('user_id', $getuserArray)->whereBetween('created_at', [$date_from, $date_to])->where('casino_id', ">", 0)->sum('credit_amount');
+//                            $casino_pl_lose = UsersAccount::whereIn('user_id', $getuserArray)->whereBetween('created_at', [$date_from, $date_to])->where('casino_id', ">", 0)->sum('debit_amount');
+//
+//                            $totalProfit += ($cumulative_pl + $casino_pl_profit) - $casino_pl_lose;
 
 //                            $ans = $this->childdata($x);
 //                            foreach ($ans as $datac) {

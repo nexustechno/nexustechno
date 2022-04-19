@@ -26,3 +26,11 @@ ALTER TABLE `casino_bet` CHANGE `winner` `winner` TEXT CHARACTER SET utf8 COLLAT
 
 CREATE TABLE `works_rich`.`exposer_deduct_log` ( `id` INT NOT NULL , `user_id` INT NOT NULL , `action` VARCHAR(200) NOT NULL , `current_exposer` VARCHAR(200) NULL DEFAULT NULL , `new_exposer` VARCHAR(200) NULL DEFAULT NULL , `exposer_deduct` VARCHAR(200) NULL DEFAULT NULL , `match_id` VARCHAR(200) NULL DEFAULT NULL , `bet_type` VARCHAR(200) NULL DEFAULT NULL , `bet_amount` VARCHAR(200) NULL DEFAULT NULL , `odds_value` VARCHAR(200) NULL DEFAULT NULL , `odds_volume` VARCHAR(200) NULL DEFAULT NULL , `profit` VARCHAR(200) NULL DEFAULT NULL , `lose` VARCHAR(200) NULL DEFAULT NULL , `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ) ENGINE = MyISAM;
 
+-- DONE
+
+ALTER TABLE `user_exposure_log` ADD INDEX(`match_id`);
+ALTER TABLE `user_exposure_log` ADD INDEX(`user_id`);
+ALTER TABLE `user_exposure_log` ADD INDEX(`bet_type`);
+ALTER TABLE `user_exposure_log` ADD INDEX(`profit`);
+ALTER TABLE `user_exposure_log` ADD INDEX(`loss`);
+
