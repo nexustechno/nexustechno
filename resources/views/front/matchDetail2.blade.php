@@ -492,7 +492,7 @@
                         </div>
                         <div id="app">
                             @if(isset($match_data[0]))
-                            <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                            <tennissoccerodds status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                               pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                               pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                               pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -504,7 +504,7 @@
 
                             @if($match->sports_id=='4')
 
-                                <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                <cricketoddsbookmarks status_b="{{$match->status_b}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -514,7 +514,7 @@
                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                       :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
 
-                                <cricketoddsfancy sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                <cricketoddsfancy status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                   pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                   bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                   clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"

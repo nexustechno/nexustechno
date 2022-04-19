@@ -2697,6 +2697,12 @@ class PlayerController extends Controller
         $team3_main_odds = '';
         //odds check
         if ($requestData['bet_type'] === 'ODDS' && $requestData['bet_side'] == 'back') {
+            if($sportsModel->status_m == '0' || $sportsModel->status_m == 0){
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                return json_encode($responce);
+            }
+
             $main_odds = self::getMainOdds($requestData['match_id'], $requestData['bet_side']);
 
             if ($main_odds != '') {
@@ -2707,6 +2713,11 @@ class PlayerController extends Controller
             }
         }
         if ($requestData['bet_type'] === 'ODDS' && $requestData['bet_side'] == 'lay') {
+            if($sportsModel->status_m == '0' || $sportsModel->status_m == 0){
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                return json_encode($responce);
+            }
             $main_odds = self::getMainOdds($requestData['match_id'], $requestData['bet_side']);
 
             if ($main_odds != '') {
@@ -2717,6 +2728,12 @@ class PlayerController extends Controller
             }
         }
         if ($requestData['bet_type'] === 'BOOKMAKER') {
+            if($sportsModel->status_b == '0' || $sportsModel->status_b == 0){
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                return json_encode($responce);
+            }
+
             $main_odds = self::getMainBMOdds($requestData['match_id'], $requestData['team_name'], $requestData['bet_position'], $requestData['bet_side'], $requestData['bet_odds']);
 
             if ($main_odds == 'Suspend') {
@@ -2732,6 +2749,12 @@ class PlayerController extends Controller
             }
         }
         if ($requestData['bet_type'] === 'SESSION') {
+            if($sportsModel->status_f == '0' || $sportsModel->status_f == 0){
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                return json_encode($responce);
+            }
+
             $main_odds = self::getMainFancyOdds($requestData['match_id'], $requestData['team_name'], $requestData['bet_side'], $requestData['bet_odds']);
 
             if ($main_odds == 'Suspend') {

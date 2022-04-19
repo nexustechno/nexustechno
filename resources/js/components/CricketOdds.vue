@@ -154,7 +154,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','bet_total'],
+        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','bet_total','status_m'],
         data() {
             return {
                 match: [],

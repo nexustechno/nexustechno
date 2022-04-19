@@ -22,7 +22,7 @@
                 <td colspan="2">97.9%</td>
             </tr> <!-- DONE -->
             <template v-for="(team,index) in teams">
-                <tr v-if="team.status == 'CLOSED' || team.status == 'SUSPENDED' || team.status == 'SUSPEND'" class="fancy-suspend-tr 222222" :class="'team'+(index+1)+'_fancy'"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>CLOSED</span></div></td></tr>
+                <tr v-if="status_m == '0' || team.status == 'CLOSED' || team.status == 'SUSPENDED' || team.status == 'SUSPEND'" class="fancy-suspend-tr 222222" :class="'team'+(index+1)+'_fancy'"><td></td> <td colspan="6" class="fancy-suspend-td"><div class="fancy-suspend black-bg-5 text-color-white"><span>SUSPENDED</span></div></td></tr>
                 <tr :key="team.sId" :id="'team'+(index+1)" :class="'tr_team'+(index+1)" class="white-bg">
                     <td>
                         <img :src="bar_image"> <b :class="'team'+(index+1)">{{ team.nat }}</b>
@@ -87,7 +87,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','bet_total'],
+        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','bet_total','status_m'],
         data() {
             return {
                 match: [],

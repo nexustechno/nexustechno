@@ -3202,6 +3202,7 @@ class SettingController extends Controller
         $match = $matchList;
 
         $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($matchList->event_id, $matchList->match_id, $matchList->sports_id);
+//        dd($match_data);
 
         $server = 0;
         if(isset($match_data['server'])){
@@ -3257,7 +3258,8 @@ class SettingController extends Controller
                     $matchDataFound = true;
                 }
             }
-        } elseif($server == 2){
+        }
+        elseif($server == 2){
             if(isset($match_data['t1']) && $match_data['t1']){
                 $matchDataFound = true;
             }
@@ -3276,6 +3278,8 @@ class SettingController extends Controller
                 $matchDataFound = true;
             }
         }
+
+//        dd($matchDataFound);
 
         $list = User::where('parentid', $loginUser->id)->orderBy('user_name')->get();
 
@@ -4568,28 +4572,28 @@ class SettingController extends Controller
     {
         $status = 0;
         Match::where('id', $id)->update(['status_m' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function unblockMatch($id)
     {
         $status = 1;
         Match::where('id', $id)->update(['status_m' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function blockBook($id)
     {
         $status = 0;
         Match::where('id', $id)->update(['status_b' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function unblockBook($id)
     {
         $status = 1;
         Match::where('id', $id)->update(['status_b' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function blockFancy($id)
@@ -4597,28 +4601,28 @@ class SettingController extends Controller
 
         $status = 0;
         Match::where('id', $id)->update(['status_f' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function unblockFancy($id)
     {
         $status = 1;
         Match::where('id', $id)->update(['status_f' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function allBlock($id)
     {
         $status = 0;
         Match::where('id', $id)->update(['status_m' => $status, 'status_b' => $status, 'status_f' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function allunBlock($id)
     {
         $status = 1;
         Match::where('id', $id)->update(['status_m' => $status, 'status_b' => $status, 'status_f' => $status]);
-        return \Redirect::route('backpanel/risk-management-details', $id)->with('message', 'Status saved correctly!!!');
+        return \Redirect::route('backpanel.risk-management-details', $id)->with('message', 'Status saved correctly!!!');
     }
 
     public function risk_management_odds_bet(Request $request)

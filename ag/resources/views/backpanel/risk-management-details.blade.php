@@ -78,23 +78,19 @@
 
                                             @if($matchList->status_m == '1')
                                                 <li><a class="dropdown-item"
-                                                       href="{{route('blockMatch',$matchList->id)}}"
-                                                       id="{{$matchList->id}}">Match Odds [Block]</a></li>
+                                                       href="{{route('blockMatch',$matchList->id)}}" id="{{$matchList->id}}">Match Odds [Block]</a></li>
                                             @else
                                                 <li><a class="dropdown-item"
-                                                       href="{{route('unblockMatch',$matchList->id)}}">Match Odds
-                                                        [Un-Block]</a></li>
+                                                       href="{{route('unblockMatch',$matchList->id)}}">Match Odds [Un-Block]</a></li>
                                             @endif
 
                                             @if($matchList->status_b == '1')
 
                                                 <li><a class="dropdown-item"
-                                                       href="{{route('blockBook',$matchList->id)}}">Bookmaker
-                                                        [Block]</a></li>
+                                                       href="{{route('blockBook',$matchList->id)}}">Bookmaker [Block]</a></li>
                                             @else
                                                 <li><a class="dropdown-item"
-                                                       href="{{route('unblockBook',$matchList->id)}}">Bookmaker
-                                                        [Un-Block]</a></li>
+                                                       href="{{route('unblockBook',$matchList->id)}}">Bookmaker [Un-Block]</a></li>
                                             @endif
 
                                             @if($matchList->status_f == '1')
@@ -103,8 +99,7 @@
                                                 </li>
                                             @else
                                                 <li><a class="dropdown-item"
-                                                       href="{{route('unblockFancy',$matchList->id)}}">Fancy
-                                                        [Un-Block]</a></li>
+                                                       href="{{route('unblockFancy',$matchList->id)}}">Fancy [Un-Block]</a></li>
                                             @endif
                                         </ul>
                                     </li>
@@ -129,7 +124,7 @@
 
                                                 @if($match->sports_id=='4')
 
-                                                    <cricketodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                    <cricketodds status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                  pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                                  pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                                  pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -139,7 +134,7 @@
                                                                  bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                                  :event_id="'{{ $match->event_id }}'"></cricketodds>
 
-                                                    <cricketoddsbookmarks sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                    <cricketoddsbookmarks status_b="{{$match->status_b}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                           pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                                           pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                                           pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -149,7 +144,7 @@
                                                                           bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                                           :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
 
-                                                    <cricketoddsfancy sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                    <cricketoddsfancy status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                                       bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                                       clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
@@ -160,7 +155,7 @@
                                                                       :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
 
                                                 @else
-                                                    <tennissoccerodds sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
+                                                    <tennissoccerodds status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
                                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                                       pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
