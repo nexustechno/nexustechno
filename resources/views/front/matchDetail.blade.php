@@ -6078,7 +6078,8 @@
 
                         $("#betConfirmationForMobileModal").modal("show");
                         return false;
-                    } else {
+                    }
+                    else {
                         if (width < 990) {
                             $("#betConfirmationForMobileModal").modal("hide");
                         }
