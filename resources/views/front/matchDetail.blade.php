@@ -217,8 +217,20 @@
                     $delayTime_Fancy = 1;
 
                 ?>
+
+                @if(!empty($getUser))
+                    @if(!empty($settings->user_msg))
+                        <div class="news-addvertisment black-gradient-bg text-color-white">
+                            <h4>News</h4>
+                            <marquee>
+                                <a href="#" class="text-color-blue">{{$settings->user_msg}}</a>
+                            </marquee>
+                        </div>
+                    @endif
+                @endif
+
                 @if($is_agent=='mobile')
-                    @if(!empty($logindata))
+{{--                    @if(!empty($logindata))--}}
                         <div class="betslip-block mLiveTv fxsrc">
                             <!-- <a class="collape-link text-color-white blue-gradient-bg1" data-toggle="collapse" href="#live_tv" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <div class="w-100">Live TV
@@ -268,20 +280,11 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+{{--                    @endif--}}
                 @endif
 
                 <div class="middle-section second">
-                    @if(!empty($getUser))
-                        @if(!empty($settings->user_msg))
-                            <div class="news-addvertisment black-gradient-bg text-color-white">
-                                <h4>News</h4>
-                                <marquee>
-                                    <a href="#" class="text-color-blue">{{$settings->user_msg}}</a>
-                                </marquee>
-                            </div>
-                        @endif
-                    @endif
+
                     <div class="middle-wraper">
 
                         <?php /*?>@if($match->sports_id == '1')
@@ -407,7 +410,7 @@
                                 </ul>
                                 <!-- Live TV Start -->
                                 @if($is_agent=='desktop')
-                                    @if(!empty($logindata))
+{{--                                    @if(!empty($logindata))--}}
                                         <div class="betslip-block mb-2 mt-10">
                                             <a class="collape-link text-color-white blue-gradient-bg1"
                                                data-toggle="collapse" href="#live_tv" role="button"
@@ -440,7 +443,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                @endif
+{{--                                @endif--}}
                             @endif
                             <!-- Live TV End -->
 

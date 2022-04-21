@@ -2,20 +2,20 @@
     <div v-if="!loading" class="fancy-section">
         <div v-if="match.fancy!=undefined && match.fancy.length > 0" id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
             <div id="fancyBetHead" class="" :class="fancyType=='premium' ? 'sportsbook_bet-head':'fancy_bet-head'" style="">
-            <template v-if="fancyType=='premium'">
-                <h4 @click="fancyType='premium'" class="fa-in-play">
-                    <span>Premium F</span>
-                    <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
-                </h4>
-                <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='general'">Fancy Bet</a>
-            </template>
-            <template v-else-if="fancyType=='general'">
-                <h4 @click="fancyType='general'" class="fa-in-play">
-                    <span>Fancy Bet</span>
-                    <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
-                </h4>
-                <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='premium'"><span class="tag-new">New</span>Premium F</a>
-            </template>
+                <template v-if="fancyType=='premium'">
+                    <h4 @click="fancyType='premium'" class="fa-in-play">
+                        <span>Premium F</span>
+                        <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
+                    </h4>
+                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='general'">Fancy Bet</a>
+                </template>
+                <template v-else-if="fancyType=='general'">
+                    <h4 @click="fancyType='general'" class="fa-in-play">
+                        <span>Fancy Bet</span>
+                        <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
+                    </h4>
+                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='premium'"><span class="tag-new">New</span>Premium F</a>
+                </template>
             </div>
 
             <div id="fancyBetTabWrap" class="fancy_bet_tab-wrap" style="">

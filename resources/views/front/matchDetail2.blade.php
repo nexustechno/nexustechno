@@ -218,7 +218,7 @@
 
                 ?>
                 @if($is_agent=='mobile')
-                    @if(!empty($logindata))
+{{--                    @if(!empty($logindata))--}}
                         <div class="betslip-block mLiveTv fxsrc">
                             <!-- <a class="collape-link text-color-white blue-gradient-bg1" data-toggle="collapse" href="#live_tv" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <div class="w-100">Live TV
@@ -268,7 +268,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
+{{--                    @endif--}}
                 @endif
 
                 <div class="middle-section second">

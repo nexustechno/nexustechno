@@ -1434,6 +1434,7 @@ class PlayerController extends Controller
                     }
                 }
             }
+            return $team1 . '~~' . $team2 . '~~' . $team3;
         }
         else {
             $matchList = Match::where('event_id', $matchid)->where('status', 1)->first();
@@ -2846,8 +2847,10 @@ class PlayerController extends Controller
         $stack = $requestData['stack'];
 
         $deduct_expo_amt = 0;
+
         if ($requestData['bet_type'] === 'ODDS') {
             $betodds = $requestData['bet_odds'];
+//            dd($team1_main_odds);
             if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
                 if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_odds'] >= $team1_main_odds)
