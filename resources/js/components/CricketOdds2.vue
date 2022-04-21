@@ -156,9 +156,15 @@
                 var arr2 =  arrays.sort(compare);
                 return arr2;
             },
-            roundFloatVal(num) {
-                var m = Number((Math.abs(num) * 100).toPrecision(15));
-                return Math.round(m) / 100 * Math.sign(num);
+            roundFloatVal(price) {
+                if(price!='' && price!=undefined && price > 0 && price!='0') {
+                    if(price.toString().includes('.')) {
+                        return Math.round(price * 100) / 100;
+                    }
+
+                    return price;
+                }
+                return 0;
             },
         }
     }

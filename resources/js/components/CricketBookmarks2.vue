@@ -210,12 +210,8 @@
             },
             roundFloatVal(price) {
                 if(price!='' && price!=undefined && price > 0 && price!='0') {
-                    price = price.toString();
-                    if(price.includes('.')) {
-                        var num2 = price.split(".");
-                        var num = num2[1];
-                        var m = Number((Math.abs(num) * 100).toPrecision(15));
-                        return Math.round(m) / 100 * Math.sign(num);
+                    if(price.toString().includes('.')) {
+                        return Math.round(price * 100) / 100;
                     }
 
                     return price;
