@@ -2,20 +2,20 @@
     <div v-if="!loading" class="fancy-section">
         <div id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
             <div id="fancyBetHead" class="" :class="fancyType=='premium' ? 'sportsbook_bet-head':'fancy_bet-head'" style="">
-                <template v-if="fancyType=='premium'">
-                    <h4 @click="fancyType='premium'" class="fa-in-play">
-                        <span>Premium F</span>
-                        <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
-                    </h4>
-                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='general'">Fancy Bet</a>
-                </template>
-<!--                <template v-else-if="fancyType=='general'">-->
-<!--                    <h4 @click="fancyType='general'" class="fa-in-play">-->
-<!--                        <span>Fancy Bet</span>-->
+<!--                <template v-if="fancyType=='premium'">-->
+<!--                    <h4 @click="fancyType='premium'" class="fa-in-play">-->
+<!--                        <span>Premium F</span>-->
 <!--                        <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>-->
 <!--                    </h4>-->
-<!--                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='premium'"><span class="tag-new">New</span>Premium F</a>-->
+<!--                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='general'">Fancy Bet</a>-->
 <!--                </template>-->
+                <template >
+                    <h4 @click="fancyType='general'" class="fa-in-play">
+                        <span>Fancy Bet</span>
+                        <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
+                    </h4>
+<!--                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='premium'"><span class="tag-new">New</span>Premium F</a>-->
+                </template>
             </div>
             <div id="fancyBetTabWrap" :class="fancyType" class="fancy_bet_tab-wrap" style="">
                 <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist">
@@ -419,7 +419,7 @@
     .fancy-th-layout {
         margin-bottom: 0px;
     }
-    tr.fancy-suspend-tr {
+    .fancy-section tr.fancy-suspend-tr {
         position: absolute;
         width: 100%;
         display: inline-table;
