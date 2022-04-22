@@ -1242,7 +1242,9 @@ class PlayerController extends Controller
         }
         return $response;
     }
-
+    function sortByOrder($a, $b) {
+        return $a['sortPriority'] - $b['sortPriority'];
+    }
     public function getMainOdds($matchid, $betside)
     {
         $API_SERVER = app('API_SERVER');
@@ -1387,6 +1389,15 @@ class PlayerController extends Controller
                     $team1 = 'Suspend';
                     $team2 = 'Suspend';
                 } else {
+                    $myArray = $match_data['t1'];
+
+                    usort($myArray, function ($a, $b) {
+                        return $a['sortPriority'] - $b['sortPriority'];
+                    });
+
+                    $match_data['t1'] = $myArray;
+//                    dd($myArray);
+
                     if (@$match_data['t1'][2]['b1'] != '') {
                         if ($betside == 'back')
                             $team3 = @$match_data['t1'][0][2]['b1'];
@@ -1640,6 +1651,7 @@ class PlayerController extends Controller
             $team1 = $team2 = $team3 = '';
             if ($match_data != 0) {
                 if ($match_m == '1') {
+
                     if (@$match_data['t2'][0]['status'] != 'ACTIVE' && strtolower(@$match_data['t2'][0]['nat']) == strtolower($teamname)) {
                         return 'Suspend';
                     } else if (@$match_data['t2'][1]['status'] != 'ACTIVE' && strtolower(@$match_data['t2'][1]['nat']) == strtolower($teamname)) {
@@ -1647,6 +1659,14 @@ class PlayerController extends Controller
                     } else if (@$match_data['t2'][2]['status'] != 'ACTIVE' && strtolower(@$match_data['t2'][2]['nat']) == strtolower($teamname)) {
                         return 'Suspend';
                     }else {
+                        $myArray = $match_data['t2'];
+
+                        usort($myArray, function ($a, $b) {
+                            return $a['sortPriority'] - $b['sortPriority'];
+                        });
+
+                        $match_data['t2'] = $myArray;
+
                         if (@$match_data['t2'][0]['status'] == 'ACTIVE' && strtolower(@$match_data['t2'][0]['nat']) == strtolower($teamname)) {
                             if ($betside == 'lay') {
                                 if ($position == 0) {
@@ -1662,7 +1682,8 @@ class PlayerController extends Controller
                                         return 'Unmatch Bet Total Not Allowed!';
                                     }
                                 }
-                            } elseif ($betside == 'back') {
+                            }
+                            elseif ($betside == 'back') {
                                 if ($position == 0) {
                                     if (round($match_data['t2'][0]['b1']) != $odds) {
                                         return 'Unmatch Bet Total Not Allowed!';
@@ -1692,7 +1713,8 @@ class PlayerController extends Controller
                                         return 'Unmatch Bet Total Not Allowed!';
                                     }
                                 }
-                            } elseif ($betside == 'back') {
+                            }
+                            elseif ($betside == 'back') {
                                 if ($position == 0) {
                                     if (round($match_data['t2'][1]['b1']) != $odds) {
                                         return 'Unmatch Bet Total Not Allowed!';
@@ -2706,6 +2728,8 @@ class PlayerController extends Controller
 
             $main_odds = self::getMainOdds($requestData['match_id'], $requestData['bet_side']);
 
+//            dd($main_odds);
+
             if ($main_odds != '') {
                 $odd = explode("~~", $main_odds);
                 $team1_main_odds = $odd[0];
@@ -2865,7 +2889,7 @@ class PlayerController extends Controller
                         $betodds = $team1_main_odds;
                     else {
                         $responce['status'] = 'false';
-                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!!';
                         return json_encode($responce);
                     }
                 }
@@ -2880,11 +2904,12 @@ class PlayerController extends Controller
                         return json_encode($responce);
                     }
                 } else {
+//                    dd($team2_main_odds);
                     if ($requestData['bet_odds'] <= $team2_main_odds)
                         $betodds = $team2_main_odds;
                     else {
                         $responce['status'] = 'false';
-                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!!!';
                         return json_encode($responce);
                     }
                 }
@@ -2903,7 +2928,7 @@ class PlayerController extends Controller
                         $betodds = $team3_main_odds;
                     else {
                         $responce['status'] = 'false';
-                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                        $responce['msg'] = 'Unmatch Bet Total Not Allowed!!!!';
                         return json_encode($responce);
                     }
                 }
