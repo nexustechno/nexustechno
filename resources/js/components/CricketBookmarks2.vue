@@ -4,10 +4,9 @@
         <tbody>
         <tr>
             <td colspan="7" class="text-color-grey fancybet-block">
-                <div class="dark-blue-bg-1 text-color-white">
+                <div class="dark-blue-bg-1 text-color-white p-2">
                     <a>
-                        <img :src="pinbg">
-                        <img :src="pinbg" class="hover-img">
+                        <i class="fas fa-thumbtack mr-2"></i>
                     </a>
                     Bookmaker Market <span class="zeroopa">| Zero Commission</span>
                     <div class="mobile-bookmark-min-max-popup">

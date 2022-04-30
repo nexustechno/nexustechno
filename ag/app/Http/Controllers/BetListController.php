@@ -259,12 +259,12 @@ class BetListController extends Controller
             }
 
             if ($date_from != '' && $date_to != '') {
-                $getresult = MyBets::select('users.user_name', 'users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->whereBetween('my_bets.created_at', [$date_from, $date_to])->where('my_bets.result_declare', 1)
+                $getresult = MyBets::select('users.user_name', 'my_bets.winner as premium_winner','users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->whereBetween('my_bets.created_at', [$date_from, $date_to])->where('my_bets.result_declare', 1)
                     ->where('my_bets.isDeleted', 0)
                     ->whereIn('user_id', $all_child)
                     ->orderBy('my_bets.id', 'Desc')->paginate(20);
             } else {
-                $getresult = MyBets::select('users.user_name', 'users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->where('my_bets.result_declare', 1)
+                $getresult = MyBets::select('users.user_name', 'my_bets.winner as premium_winner', 'users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->where('my_bets.result_declare', 1)
                     ->where('my_bets.isDeleted', 0)
                     ->whereIn('user_id', $all_child)
                     ->orderBy('my_bets.id', 'Desc')->paginate(20);
@@ -278,7 +278,7 @@ class BetListController extends Controller
                 $date_to = date('Y-m-d', strtotime($request->date_to));
             }
 
-            $getresult = MyBets::select('users.user_name', 'users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->where('my_bets.sportID', $sportId)
+            $getresult = MyBets::select('users.user_name', 'users.parentid', 'my_bets.id', 'my_bets.sportID','my_bets.winner as premium_winner', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->where('my_bets.sportID', $sportId)
                 ->whereBetween('my_bets.created_at', [$date_from, $date_to])->where('my_bets.result_declare', 1)
                 ->where('my_bets.isDeleted', 0)
                 ->whereIn('user_id', $all_child)
@@ -286,7 +286,7 @@ class BetListController extends Controller
         }
 
 //        echo "<pre>";
-//        print_r($getresult);
+//        print_r($getresult->toArray());
 //        exit;
 
         $html .= ' <table class="table custom-table white-bg text-color-blue-2" >
@@ -345,6 +345,22 @@ class BetListController extends Controller
                     $class = "text-color-red";
                     $pl_ttl = $value->exposureAmt;
                 } else if ($value->winner != $value->team_name && $value->bet_side == 'lay') {
+                    $class = "text-color-green";
+                    $pl_ttl = $value->bet_profit;
+                }
+            }
+
+            if ($value->bet_type == 'PREMIUM') {
+                if ($value->premium_winner == $value->team_name && $value->bet_side == 'back') {
+                    $class = "text-color-green";
+                    $pl_ttl = $value->bet_profit;
+                } else if ($value->premium_winner != $value->team_name && $value->bet_side == 'back') {
+                    $class = "text-color-red";
+                    $pl_ttl = $value->exposureAmt;
+                } else if ($value->premium_winner == $value->team_name && $value->bet_side == 'lay') {
+                    $class = "text-color-red";
+                    $pl_ttl = $value->exposureAmt;
+                } else if ($value->premium_winner != $value->team_name && $value->bet_side == 'lay') {
                     $class = "text-color-green";
                     $pl_ttl = $value->bet_profit;
                 }

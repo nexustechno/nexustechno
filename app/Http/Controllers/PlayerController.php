@@ -2872,14 +2872,12 @@ class PlayerController extends Controller
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Bet Locked By Admin!';
                 return json_encode($responce);
-                exit;
             }
         }
         if ($is_userlocked == 'locked') {
             $responce['status'] = 'false';
             $responce['msg'] = 'Bet Locked By Admin!';
             return json_encode($responce);
-            exit;
         }
 
         $main_odds = '';
@@ -2921,6 +2919,13 @@ class PlayerController extends Controller
             }
         }
         if ($requestData['bet_type'] === 'BOOKMAKER') {
+
+            if ($sportsModel->bookmaker == 0) {
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Bookmaker is disabled by admin!';
+                return json_encode($responce);
+            }
+
             if($sportsModel->status_b == '0' || $sportsModel->status_b == 0){
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
@@ -2942,7 +2947,11 @@ class PlayerController extends Controller
             }
         }
         if ($requestData['bet_type'] === 'PREMIUM') {
-
+            if ($sportsModel->premium == 0) {
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Premium is disabled by admin!';
+                return json_encode($responce);
+            }
             $main_odds = self::getMainPremiumOdds($sportsModel->event_id,$sportsModel->match_id, $requestData['market_id'], $requestData['bet_odds'], $requestData['selection_sid']);
 
             if ($main_odds == true) {
@@ -2953,6 +2962,13 @@ class PlayerController extends Controller
             }
         }
         if ($requestData['bet_type'] === 'SESSION') {
+
+            if ($sportsModel->fancy == 0) {
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Fancy is disabled by admin!';
+                return json_encode($responce);
+            }
+
             if($sportsModel->status_f == '0' || $sportsModel->status_f == 0){
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Unmatch Bet Total Not Allowed!';

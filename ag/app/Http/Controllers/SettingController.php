@@ -8358,43 +8358,33 @@ class SettingController extends Controller
         $matchId = $request->fid;
         $chk = $request->chk;
 
-        $match = Match::find($matchId);
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleCricketMatchData($match->event_id, $match->match_id, $match->sports_id);
-        if (isset($match_data['t2'][0]['bm1'][0]) != '') {
-            if ($chk != 1) {
-                $bm = 0;
-            } else {
-                $bm = 1;
-            }
-            $upd = Match::find($matchId);
-            $upd->bookmaker = $bm;
-            $upd->update();
-            return response()->json(array('result' => 'success', 'message' => 'Status change successfully'));
+        if ($chk != 1) {
+            $bm = 0;
         } else {
-            return response()->json(array('result' => 'error', 'message' => 'Bookmaker is not available'));
+            $bm = 1;
         }
+        $upd = Match::find($matchId);
+        $upd->bookmaker = $bm;
+        $upd->update();
+        return response()->json(array('result' => 'success', 'message' => 'Status change successfully'));
     }
 
     public function chkstatusfancy(Request $request)
     {
         $matchId = $request->fid;
-        $chk = $request->chk;
-        $match = Match::find($matchId);
-
-        $match_data = app('App\Http\Controllers\RestApi')->getSingleCricketMatchData($match->event_id, $match->match_id, $match->sports_id);
-        if (isset($match_data['t3'][0]) != '') {
-            if ($chk != 1) {
-                $fancy = 0;
-            } else {
-                $fancy = 1;
-            }
+        if($request->has('chk')) {
+            $chk = $request->chk;
             $upd = Match::find($matchId);
-            $upd->fancy = $fancy;
+            $upd->fancy = $chk;
             $upd->update();
-            return response()->json(array('result' => 'success', 'message' => 'Status change successfully'));
-        } else {
-            return response()->json(array('result' => 'error', 'message' => 'fancy is not available'));
+        }else if($request->has('premium')){
+            $chk = $request->premium;
+            $upd = Match::find($matchId);
+            $upd->premium = $chk;
+            $upd->update();
         }
+
+        return response()->json(array('result' => 'success', 'message' => 'Status change successfully'));
     }
 
     public function saveMatchAction(Request $request)

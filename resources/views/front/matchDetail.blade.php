@@ -507,17 +507,20 @@
                                                  bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                  :event_id="'{{ $match->event_id }}'"></cricketodds>
 
-                                    <cricketoddsbookmarks status_b="{{$match->status_b}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
-                                                          pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
-                                                          pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
-                                                          pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
-                                                          bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
-                                                          min_bookmaker_limit="{{ $oddsLimit['min_bookmaker_limit'] }}"
-                                                          max_bookmaker_limit="{{ $oddsLimit['max_bookmaker_limit'] }}"
-                                                          bar_image="{{ asset('asset/front/img/bars.png') }}"
-                                                          :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
-
-                                    <cricketoddsfancy stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                    @if($match->bookmaker == 1)
+                                        <cricketoddsbookmarks status_b="{{$match->status_b}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                              pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                                              pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
+                                                              pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
+                                                              bluebg1="{{ asset('asset/front/img/bluebg1.png') }}"
+                                                              min_bookmaker_limit="{{ $oddsLimit['min_bookmaker_limit'] }}"
+                                                              max_bookmaker_limit="{{ $oddsLimit['max_bookmaker_limit'] }}"
+                                                              bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                              :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
+                                    @endif
+                                    <cricketoddsfancy :fancy_enable="{{$fancy_enable}}" :premium_enable="{{$premium_enable}}" stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                                      pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                                      pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                       bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                       clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
@@ -540,7 +543,9 @@
                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                       :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
 
-                                    <cricketoddsfancy stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                    <cricketoddsfancy :fancy_enable="{{$fancy_enable}}" :premium_enable="{{$premium_enable}}" stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                                      pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
+                                                      pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                       bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                       clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"

@@ -79,11 +79,12 @@ use App\Match;
                                 <table class="table text-color-blue-2">
                                     <thead>
                                         <tr class="white-bg">
-                                            <th width="25%">Match Name</th>
+                                            <th width="30%">Match Name</th>
                                             @if ($sport->sId == 4)
                                                 <th class="text-center">Bookmaker</th>
                                                 <th class="text-center">Fancy</th>
                                             @endif
+                                            <th class="text-center">Premium</th>
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Odds Limit</th>
                                             <th class="text-center">Bet Odds Limit</th>
@@ -104,6 +105,7 @@ use App\Match;
                                                     $active = '';
                                                     $bmStatus = '';
                                                     $fStatus = '';
+                                                    $pStatus = '';
                                                 @endphp
                                                 @if ($match->status == 1)
                                                     @php
@@ -125,6 +127,12 @@ use App\Match;
                                                 @if ($match->fancy == 1)
                                                     @php
                                                         $fStatus = 'checked';
+                                                    @endphp
+                                                @endif
+
+                                                @if ($match->premium == 1)
+                                                    @php
+                                                        $pStatus = 'checked';
                                                     @endphp
                                                 @endif
                                                 <?php
@@ -176,6 +184,15 @@ use App\Match;
                                                             </label>
                                                         </td>
                                                     @endif
+
+                                                    <td class="text-center">
+                                                        <label for="checkactive">
+                                                            <input type="checkbox" {{ $pStatus }}
+                                                            id="checkpremium{{ $match->id }}"
+                                                                   class="chkstatuspremium" data-fid="{{ $match->id }}"
+                                                                   value="1"><br /> Premium
+                                                        </label>
+                                                    </td>
 
                                                     <td class="text-center">
                                                         <label for="checkactive">
@@ -513,6 +530,36 @@ use App\Match;
                     if (data.result == 'error') {
                         toastr.error(data.message);
                         $('#checkfancy' + fid).prop('checked', false); // Unchecks it
+                    }
+                    if (data.result == 'success') {
+                        toastr.success(data.message);
+                    }
+                }
+            });
+        });
+
+        $(".chkstatuspremium").on('click', function(event) {
+            var _token = $("input[name='_token']").val();
+            var fid = $(this).attr('data-fid');
+            var chk = (this.checked ? $(this).val() : "");
+            $.ajax({
+                type: "POST",
+                url: '{{ route('chkstatusfancy') }}',
+                data: {
+                    _token: _token,
+                    fid: fid,
+                    premium: chk
+                },
+                beforeSend: function() {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function() {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function(data) {
+                    if (data.result == 'error') {
+                        toastr.error(data.message);
+                        $('#checkpremium' + fid).prop('checked', false); // Unchecks it
                     }
                     if (data.result == 'success') {
                         toastr.success(data.message);
