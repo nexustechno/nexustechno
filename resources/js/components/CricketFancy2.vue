@@ -195,7 +195,11 @@
                                     <a id="" class="add-pin multiMarketPin" title="Add to Multi Markets">
                                         <i class="fas fa-thumbtack"></i>
                                     </a>
-                                    <a class="marketName">{{match.marketName}}</a>
+                                    <a class="marketName">
+                                        {{match.marketName}}
+                                    </a>
+                                    <i v-if="isSectionVisible('.collapsable_'+match.id)" class="fa fa-plus marketNameIcon" aria-hidden="true"></i>
+                                    <i v-else class="fa fa-minus marketNameIcon" aria-hidden="true"></i>
                                 </h3>
                             </td>
                         </tr>
@@ -356,6 +360,13 @@
             // }
         },
         methods: {
+            isSectionVisible(target){
+                if($(target).is(':visible')){
+                    return true;
+                }
+
+                return false;
+            },
             getPremiumBetValue(marketName,teamName){
                 if(this.premiumBetTotalValue[marketName]!=undefined && this.premiumBetTotalValue[marketName][teamName]!=undefined){
                     return this.roundFloatVal(this.premiumBetTotalValue[marketName][teamName]['PREMIUM_profitLost']);
@@ -491,6 +502,15 @@
     }
 </script>
 <style>
+    .marketNameIcon{
+        font-size: 8px;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        border: solid 1px;
+        padding: 3px 4px;
+        border-radius: 3px;
+    }
     .bets{
         margin: 0 !important;
     }
@@ -765,6 +785,8 @@
 
     .quick_bet-wrap .col-btn {
         width: 9.00901%;
+        min-width: 85px;
+        margin-left: 15px;
     }
     .quick_bet-wrap dd {
         padding: 7px 5px 0px 0;
@@ -780,7 +802,7 @@
         line-height: 22px;
     }
     .quick_bet-wrap .col-odd {
-        width: 8.36551%;
+        width: 65px;
     }
     .quick_bet-wrap dd {
         padding: 7px 5px 7px 0;
@@ -795,12 +817,14 @@
         line-height: 22px;
     }
     .quick_bet-wrap .col-stake {
-        width: 10.29601%;
+        width: 100px;
         padding-left: 0;
     }
     .quick_bet-wrap .col-send {
-        width: 18.01802%;
+        min-width: 100px;
+        width: 10%;
     }
+
     .quick_bet-wrap .col-stake_list {
         width: calc(100% + 7px + 2px);
         padding: 5px 0;

@@ -7293,8 +7293,12 @@ table.dataTable thead > tr > th {
       z-index: 9;
     }
 
-    table#inplay-tableblock-fancy {
+    table#inplay-tableblock-fancy:not(.collapse) {
         display: inline-table;
+    }
+
+    .quick_bet-wrap.slip-book #sportsBookBetHeader{
+        display: none;
     }
 }
 
