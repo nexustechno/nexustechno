@@ -433,12 +433,10 @@ class PlayerController extends Controller
     public static function getExAmountCricketAndTennis($sportID = '', $matchid = '', $userID = '')
     {
         if (empty($userID)) {
-
             $getUserCheck = Session::get('playerUser');
             if (!empty($getUserCheck)) {
                 $userID = User::where('id', $getUserCheck->id)->where('check_login', 1)->first();
             }
-
             $userID = $userID->id;
         }
         if (empty($sportID) && empty($matchid)) {
@@ -598,6 +596,50 @@ class PlayerController extends Controller
                     }
                     break;
                 }
+                case 'PREMIUM':
+                {
+                    if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = $bet['exposureAmt'];
+                        $profitAmt = ($profitAmt * (-1));
+
+                        foreach ($extra as $teamName){
+                            if($teamName == $bet['team_name']) {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] = $profitAmt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] += $profitAmt;
+                                }
+                            }else {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] = $bet['bet_amount'];
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] += $bet['bet_amount'];
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $profitAmt = $bet['bet_profit']; ////nnn
+                        $bet_amt = ($bet['bet_amount'] * (-1));
+
+                        foreach ($extra as $teamName){
+                            if($teamName == $bet['team_name']) {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] = round($profitAmt, 2);
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] += round($profitAmt, 2);
+                                }
+                            }else {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] = round($bet_amt, 2);
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] += round($bet_amt, 2);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
                 case 'SESSION':
                 {
 
@@ -681,11 +723,29 @@ class PlayerController extends Controller
                     $exposerArray['exposer'] += max($arrB);
                 }
             }
+
+            if (isset($exAmtArr['PREMIUM'])) {
+
+                foreach ($exAmtArr['PREMIUM'] as $marketName => $teams) {
+                    $arrB = array();
+                    foreach ($teams as $key => $profitLos) {
+                        if ($profitLos['PREMIUM_profitLost'] < 0) {
+                            $arrB[abs($profitLos['PREMIUM_profitLost'])] = abs($profitLos['PREMIUM_profitLost']);
+                        }
+                    }
+                    if (is_array($arrB) && count($arrB) > 0) {
+                        $exposerArray['exposer'] += max($arrB);
+                    }
+                }
+
+                $exposerArray['PREMIUM'] = $exAmtArr['PREMIUM'];
+            }
         }
 
         if(isset($conditionalParameters['bet_type'])){
             $response = self::getOddsAndBookmakerExposer($id,$eventId);
-//            dd($conditionalParameters);
+
+//            dd($response);
 
             $bet = [];
             $bet['bet_type'] = $conditionalParameters['bet_type'];
@@ -694,6 +754,12 @@ class PlayerController extends Controller
             $bet['exposureAmt'] = $conditionalParameters['exposureAmt'];
             $bet['bet_amount'] = $conditionalParameters['bet_amount'];
             $bet['bet_profit'] = $conditionalParameters['bet_profit'];
+            if(isset($conditionalParameters['market_name'])) {
+                $bet['market_name'] = $conditionalParameters['market_name'];
+            }
+            if(isset($conditionalParameters['market_id'])) {
+                $bet['market_id'] = $conditionalParameters['market_id'];
+            }
             $extra = json_decode($conditionalParameters['extra'], true);
 
             switch ($bet['bet_type']) {
@@ -774,20 +840,6 @@ class PlayerController extends Controller
                             }
                         }
                     }
-
-                    $arr = array();
-                    foreach ($response['ODDS'] as $key => $profitLos) {
-                        if ($profitLos['ODDS_profitLost'] < 0) {
-                            $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
-                        }
-                    }
-
-                    if (is_array($arr) && count($arr) > 0) {
-                        $response['exposer'] = max($arr);
-                    }
-
-                    $exposerArray['ODDS'] = $response['ODDS'];
-                    $exposerArray['exposer'] += $response['exposer'];
                     break;
                 }
                 case 'BOOKMAKER':
@@ -852,22 +904,106 @@ class PlayerController extends Controller
                             }
                         }
                     }
+                    break;
+                }
+                case 'PREMIUM':
+                {
 
-                    $arrB = array();
-                    foreach ($response['BOOKMAKER'] as $key => $profitLos) {
-                        if ($profitLos['BOOKMAKER_profitLost'] < 0) {
-                            $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                    if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = $bet['exposureAmt'];
+                        $profitAmt = ($profitAmt * (-1));
+
+                        foreach ($extra as $teamName){
+
+                            if($teamName == $bet['team_name']) {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] = $profitAmt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] += $profitAmt;
+                                }
+                            }else {
+
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] = $bet['bet_amount'];
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] += $bet['bet_amount'];
+                                }
+                            }
                         }
                     }
+                    else {
+                        $profitAmt = $bet['bet_profit']; ////nnn
+                        $bet_amt = ($bet['bet_amount'] * (-1));
 
-                    if (is_array($arrB) && count($arrB) > 0) {
-                        $response['exposer'] += max($arrB);
+                        foreach ($extra as $teamName){
+                            if($teamName == $bet['team_name']) {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] = $profitAmt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] += $profitAmt;
+                                }
+                            }else {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] = $bet_amt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] += $bet_amt;
+                                }
+                            }
+                        }
                     }
-                    $exposerArray['BOOKMAKER'] = $response['BOOKMAKER'];
-                    $exposerArray['exposer'] += $response['exposer'];
                     break;
                 }
             }
+
+            if(isset($response['ODDS'])) {
+                $arr = array();
+                foreach ($response['ODDS'] as $key => $profitLos) {
+                    if ($profitLos['ODDS_profitLost'] < 0) {
+                        $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                    }
+                }
+
+                $newExpAmount = 0;
+                if (is_array($arr) && count($arr) > 0) {
+                    $newExpAmount = max($arr);
+                }
+                $exposerArray['exposer'] += $newExpAmount;
+                $exposerArray['ODDS'] = $response['ODDS'];
+            }
+
+            if(isset($response['BOOKMAKER'])) {
+                $arrB = array();
+                foreach ($response['BOOKMAKER'] as $key => $profitLos) {
+                    if ($profitLos['BOOKMAKER_profitLost'] < 0) {
+                        $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                    }
+                }
+                $newExpAmount1 = 0;
+                if (is_array($arrB) && count($arrB) > 0) {
+                    $newExpAmount1 += max($arrB);
+                }
+                $exposerArray['exposer'] += $newExpAmount1;
+                $exposerArray['BOOKMAKER'] = $response['BOOKMAKER'];
+            }
+
+            if(isset($response['PREMIUM'])) {
+                foreach ($response['PREMIUM'] as $marketName => $teams) {
+                    $arrC = array();
+                    foreach ($teams as $key => $profitLos) {
+                        if ($profitLos['PREMIUM_profitLost'] < 0) {
+                            $arrC[abs($profitLos['PREMIUM_profitLost'])] = abs($profitLos['PREMIUM_profitLost']);
+                        }
+                    }
+
+                    $newExpAmount2 = 0;
+                    if (is_array($arrC) && count($arrC) > 0) {
+                        $newExpAmount2 += max($arrC);
+                    }
+                    $exposerArray['exposer'] += $newExpAmount2;
+                }
+                $exposerArray['PREMIUM'] = $response['PREMIUM'];
+            }
+
         }
 
 //        dd($exposerArray);
@@ -1245,6 +1381,31 @@ class PlayerController extends Controller
     function sortByOrder($a, $b) {
         return $a['sortPriority'] - $b['sortPriority'];
     }
+
+    public function getMainPremiumOdds($event_id, $match_id, $market_id, $bet_odds, $selection_sid)
+    {
+        $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchPremiumData($event_id, $match_id);
+
+//        dd($match_data);
+
+        if(isset($match_data['t4'])){
+            foreach ($match_data['t4'] as $match){
+                if($match['marketId'] == $market_id) {
+                    foreach ($match as $team) {
+                        if($team['sId'] == $selection_sid) {
+                            if($team['odds']!=$bet_odds){
+                                return true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function getMainOdds($matchid, $betside)
     {
         $API_SERVER = app('API_SERVER');
@@ -2696,6 +2857,13 @@ class PlayerController extends Controller
             return json_encode($responce);
         }
 
+        if ($requestData['bet_odds'] <= 0) {
+            $responce = [];
+            $responce['status'] = 'false';
+            $responce['msg'] = 'Invalid odds value';
+            return json_encode($responce);
+        }
+
         $sportsModel = Match::where(['event_id' => $requestData['match_id']])->first();
         $locked_user = json_decode($sportsModel->user_list);
         $is_userlocked = $getUser->status;
@@ -2767,6 +2935,17 @@ class PlayerController extends Controller
                 return json_encode($responce);
                 exit;
             } else if ($main_odds == 'Unmatch Bet Total Not Allowed!') {
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
+                return json_encode($responce);
+                exit;
+            }
+        }
+        if ($requestData['bet_type'] === 'PREMIUM') {
+
+            $main_odds = self::getMainPremiumOdds($sportsModel->event_id,$sportsModel->match_id, $requestData['market_id'], $requestData['bet_odds'], $requestData['selection_sid']);
+
+            if ($main_odds == true) {
                 $responce['status'] = 'false';
                 $responce['msg'] = 'Unmatch Bet Total Not Allowed!';
                 return json_encode($responce);
@@ -2867,14 +3046,27 @@ class PlayerController extends Controller
                 return json_encode($responce);
             }
         }
+        if ($requestData['bet_type'] == 'PREMIUM') {
+            if ($requestData['bet_amount'] < $sportsModel->min_premium_limit) {
+                $responce = [];
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Minimum bet limit is ' . $sportsModel->min_premium_limit . '!';
+                return json_encode($responce);
+            }
+            if ($requestData['bet_amount'] > $sportsModel->max_premium_limit) {
+                $responce = [];
+                $responce['status'] = 'false';
+                $responce['msg'] = 'Maximum bet limit is ' . $sportsModel->max_premium_limit . '!';
+                return json_encode($responce);
+            }
+        }
 
-        $stack = $requestData['stack'];
+        $stack = $requestData['bet_amount'];
 
         $deduct_expo_amt = 0;
 
         if ($requestData['bet_type'] === 'ODDS') {
             $betodds = $requestData['bet_odds'];
-//            dd($team1_main_odds);
             if ($requestData['team1'] == $requestData['team_name'] && $team1_main_odds != '' && $team1_main_odds != 'Suspend') {
                 if ($requestData['bet_side'] == 'lay') {
                     if ($requestData['bet_odds'] >= $team1_main_odds)
@@ -2934,53 +3126,69 @@ class PlayerController extends Controller
                 }
             }
 
-            if ($requestData['bet_side'] == 'lay') {
-                $deduct_expo_amt = ((($betodds - 1) * $stack));
-            }
-            else {
-                $deduct_expo_amt = $stack;
-            }
-
             if ($requestData['bet_side'] === 'lay') {
                 $bet_profit = round($stack, 2);
+                $deduct_expo_amt = ((($betodds - 1) * $stack));
             } else {
+                $deduct_expo_amt = $stack;
                 $bet_profit = ((($betodds - 1) * $stack));
             }
         }
         if ($requestData['bet_type'] === 'BOOKMAKER') {
             $betodds = $requestData['bet_odds'];
-            if ($requestData['bet_side'] == 'lay') {
+            if ($requestData['bet_side'] === 'lay') {
+                $bet_profit = round($stack, 2);
                 $deduct_expo_amt = (($betodds * $stack) / 100);
             } else {
                 $deduct_expo_amt = $stack;
+                $bet_profit = round(($betodds * $stack) / 100, 2);
             }
+        }
+        if($requestData['bet_type'] == 'PREMIUM'){
+            $betodds = $requestData['bet_odds'];
+            if ($requestData['bet_side'] === 'lay') {
+                $bet_profit = round($stack, 2);
+                $deduct_expo_amt = ((($betodds - 1) * $stack));
+            } else {
+                $deduct_expo_amt = $stack;
+                $bet_profit = ((($betodds - 1) * $stack));
+            }
+        }
+        if ($requestData['bet_type'] === 'SESSION') {
+            $betodds = $requestData['odds_volume'];
 
             if ($requestData['bet_side'] === 'lay') {
                 $bet_profit = round($stack, 2);
+                $deduct_expo_amt = ((($requestData['odds_volume']) * $stack)) / 100;
             } else {
                 $bet_profit = round(($betodds * $stack) / 100, 2);
+                $deduct_expo_amt = $stack;
             }
         }
 
         // getting odds and bookmaker total exposer with current new bet
         $extra = '';
 
-        $teamNameArr = array();
-        if (isset($requestData['teamname1']) && !empty($requestData['teamname1'])) {
-            $teamNameArr['teamname1'] = $requestData['teamname1'];
-        }
-        if (isset($requestData['teamname2']) && !empty($requestData['teamname2'])) {
-            $teamNameArr['teamname2'] = $requestData['teamname2'];
-        }
-        if (isset($requestData['teamname3']) && !empty($requestData['teamname3'])) {
-            $teamNameArr['teamname3'] = $requestData['teamname3'];
-        }
+        if($request->has('extra')){
+            $extra = json_encode($request->extra);
+        } else {
+            $teamNameArr = array();
+            if (isset($requestData['teamname1']) && !empty($requestData['teamname1'])) {
+                $teamNameArr['teamname1'] = $requestData['teamname1'];
+            }
+            if (isset($requestData['teamname2']) && !empty($requestData['teamname2'])) {
+                $teamNameArr['teamname2'] = $requestData['teamname2'];
+            }
+            if (isset($requestData['teamname3']) && !empty($requestData['teamname3'])) {
+                $teamNameArr['teamname3'] = $requestData['teamname3'];
+            }
 
-        if (is_array($teamNameArr) && count($teamNameArr) > 0) {
-            $extra = json_encode($teamNameArr);
+            if (is_array($teamNameArr) && count($teamNameArr) > 0) {
+                $extra = json_encode($teamNameArr);
+            }
         }
         $oddsBookmakerExposerArr = [];
-        if ($requestData['bet_type'] === 'ODDS' || $requestData['bet_type'] === 'BOOKMAKER') {
+        if ($requestData['bet_type'] === 'ODDS' || $requestData['bet_type'] === 'BOOKMAKER' || $requestData['bet_type'] === 'PREMIUM') {
             $betRecord = [];
             $betRecord['match_id'] =  "!=";
             $betRecord['bet_type'] = $requestData['bet_type'];
@@ -2988,33 +3196,24 @@ class PlayerController extends Controller
             $betRecord['team_name'] = $requestData['team_name'];
             $betRecord['exposureAmt'] = $deduct_expo_amt;
             $betRecord['bet_amount'] = $requestData['bet_amount'];
+            if($request->has('market_name')) {
+                $betRecord['market_name'] = $requestData['market_name'];
+            }
+            if($request->has('market_id')) {
+                $betRecord['market_id'] = $requestData['market_id'];
+            }
             $betRecord['bet_profit'] = $bet_profit;
             $betRecord['extra'] = $extra;
 
             $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($userId, $requestData['match_id'], $betRecord);
 
-//            dd($betRecord, $oddsBookmakerExposerArr);
+//            dd($oddsBookmakerExposerArr);
 
             $oddsBookmakerExposer = $oddsBookmakerExposerArr['exposer'];
         }
         else{
             $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($userId);
             $oddsBookmakerExposer = $oddsBookmakerExposerArr['exposer'];
-        }
-
-        if ($requestData['bet_type'] === 'SESSION') {
-            $betodds = $requestData['odds_volume'];
-            if ($requestData['bet_side'] == 'lay') {
-                $deduct_expo_amt = ((($requestData['odds_volume']) * $stack)) / 100;
-            } else {
-                $deduct_expo_amt = $stack;
-            }
-
-            if ($requestData['bet_side'] === 'lay') {
-                $bet_profit = round($stack, 2);
-            } else {
-                $bet_profit = round(($betodds * $stack) / 100, 2);
-            }
         }
 
         $currentSessionBetTotalExposer = 0;
@@ -3025,10 +3224,13 @@ class PlayerController extends Controller
             $betRecord['position'] = $betodds;
             $betRecord['betside'] = $requestData['bet_side'];
 
-            $otherSessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'],['team_name'=>'!=']);
+            $otherSessionExposer = self::getSessionExposer($userId,$requestData['match_id'],'',['match_id'=>'!=']);
+            $otherCurrentSessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'],['team_name'=>'!=']);
             $currentSessionExposer = self::getSessionExposer($userId,$requestData['match_id'],$requestData['team_name'], $betRecord);
 
-            $sessionExposer = $otherSessionExposer + $currentSessionExposer;
+//            dd($otherSessionExposer, $otherCurrentSessionExposer, $currentSessionExposer, $betodds);
+
+            $sessionExposer = $otherSessionExposer + $otherSessionExposer + $currentSessionExposer;
             $currentSessionBetTotalExposer = $currentSessionExposer;
         }else{
             $sessionExposer = self::getSessionExposer($userId);
@@ -3052,7 +3254,7 @@ class PlayerController extends Controller
         $timezone = Carbon::now()->format('Y-m-d H:i:s');
 
         $betModel = new MyBets();
-        $betModel->sportID = $requestData['sportID'];
+        $betModel->sportID = $sportsModel->sports_id;
         $betModel->user_id = $getUser->id;
         $betModel->match_id = $requestData['match_id'];
         $betModel->bet_type = $requestData['bet_type'];
@@ -3060,6 +3262,12 @@ class PlayerController extends Controller
         $betModel->bet_amount = $stack;
         $betModel->bet_profit = $bet_profit;
         $betModel->team_name = $requestData['team_name'];
+        if($request->has('market_name')) {
+            $betModel->market_name = $requestData['market_name'];
+        }
+        if($request->has('market_id')) {
+            $betModel->market_id = $requestData['market_id'];
+        }
         if (!empty($extra)) {
             $betModel->extra = $extra;
         }
@@ -3139,28 +3347,35 @@ class PlayerController extends Controller
             $k = 0;
             foreach ($my_placed_bets as $bet) {
                 if ($bet->bet_side == 'back') {
-                    if ($j == 0) {
-                        $html .= '<ul class="betslip_head">
-                        <li class="col-bet">Back (Bet For)</li>
-                        <li class="col-odd">Odds</li>
-                        <li class="col-stake">Stake</li>
-                        <li class="col-profit">Profit</li>
-                    </ul>';
+                        if ($j == 0) {
+                            $html .= '<ul class="betslip_head">
+                            <li class="col-bet">Back (Bet For)</li>
+                            <li class="col-odd">Odds</li>
+                            <li class="col-stake">Stake</li>
+                            <li class="col-profit">Profit</li>
+                        </ul>';
                     }
                     $bet_type_check = "";
-                    if ($bet->bet_type == 'ODDS' || $bet->bet_type == 'BOOKMAKER')
+                    if ($bet->bet_type == 'ODDS' || $bet->bet_type == 'BOOKMAKER' || $bet->bet_type == 'PREMIUM')
                         $bet_type_check = 'BACK';
                     if ($bet->bet_type == 'SESSION')
                         $bet_type_check = 'YES';
                     $bet_profit = "";
-                    if ($bet->bet_type == 'ODDS' || $bet->bet_type == 'BOOKMAKER')
+                    if ($bet->bet_type == 'ODDS' || $bet->bet_type == 'BOOKMAKER' || $bet->bet_type == 'PREMIUM')
                         $bet_profit = $bet->bet_profit;
                     if ($bet->bet_type == 'SESSION')
                         $bet_profit = $bet->bet_profit;
+
+
+                    $teamName = $bet->team_name;
+                    if($bet->bet_type == 'PREMIUM'){
+                        $teamName = $bet->market_name ." [".$bet->team_name."]";
+                    }
+
                     $html .= '<div class="betslip_box light-blue-bg-1" id="backbet">
               <div class="betn">
                   <span class="slip_type lightblue-bg2">' . $bet_type_check . '</span>
-                  <span class="shortamount">' . $bet->team_name . '</span>
+                  <span class="shortamount">' . $teamName . '</span>
                   <span>' . $bet->bet_type . '</span>
               </div>
               <div class="col-odd text-color-blue-2 text-center">';

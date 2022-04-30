@@ -91,6 +91,7 @@ use App\Match;
                                                 <th class="text-center">Bet Bookmaker Limit</th>
                                                 <th class="text-center">Bet Fancy Limit</th>
                                             @endif
+                                            <th class="text-center">Premium Limit</th>
                                             <th class="text-center">Winner</th>
                                         </tr>
                                     </thead>
@@ -239,6 +240,20 @@ use App\Match;
                                                             </div>
                                                         </td>
                                                     @endif
+
+                                                    <td class="text-center">
+                                                        <div class="minmax_input">
+                                                            Min <input type="text" id="premiummin{{ $match->id }}"
+                                                                       name="min_premium_limit" class="form-control txt_min_premium_limit allowNumeric"
+                                                                       data-fid="{{ $match->id }}"
+                                                                       value="{{ $match->min_premium_limit }}">
+
+                                                            Max <input type="text" id="premiummax{{ $match->id }}"
+                                                                       name="max_premium_limit" class="form-control txt_max_premium_limit allowNumeric"
+                                                                       data-fid="{{ $match->id }}"
+                                                                       value="{{ $match->max_premium_limit }}">
+                                                        </div>
+                                                    </td>
 
                                                     <td class="text-center">
                                                         <a href="#" class="logbtn text-color-black grey-gradient-bg"
@@ -739,6 +754,60 @@ use App\Match;
                     _token: _token,
                     fid: fid,
                     chk: chk
+                },
+                beforeSend: function() {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function() {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function(data) {
+                    if (data.trim() == 'Fail')
+                        toastr.error('Problem in updating fancy max limit!');
+                    else
+                        toastr.success('Status changed successfully!');
+                }
+            });
+        });
+
+        $(".txt_min_premium_limit").blur(function() {
+            var _token = $("input[name='_token']").val();
+            var fid = $(this).attr('data-fid');
+            var chk = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: '{{ route('saveMatchPremiumMinMaxLimit') }}',
+                data: {
+                    _token: _token,
+                    fid: fid,
+                    min: chk
+                },
+                beforeSend: function() {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function() {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function(data) {
+                    if (data.trim() == 'Fail')
+                        toastr.error('Problem in updating fancy min limit!');
+                    else
+                        toastr.success('Status changed successfully!');
+                }
+            });
+        });
+
+        $(".txt_max_premium_limit").blur(function() {
+            var _token = $("input[name='_token']").val();
+            var fid = $(this).attr('data-fid');
+            var chk = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: '{{ route('saveMatchPremiumMinMaxLimit') }}',
+                data: {
+                    _token: _token,
+                    fid: fid,
+                    max: chk
                 },
                 beforeSend: function() {
                     $('#site_bet_loading1').show();

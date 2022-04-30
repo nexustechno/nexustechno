@@ -4964,7 +4964,7 @@ table.dataTable.display tbody tr {
     line-height: 22px;
     border-radius: 3px;
     padding: 0 5px;
-    margin: 5px 5px 0 0;
+    margin: 5px 5px 5px 0;
     opacity: 1;
     font-weight: 400;
     display: inline-block;

@@ -34,3 +34,8 @@ ALTER TABLE `user_exposure_log` ADD INDEX(`bet_type`);
 ALTER TABLE `user_exposure_log` ADD INDEX(`profit`);
 ALTER TABLE `user_exposure_log` ADD INDEX(`loss`);
 
+ALTER TABLE `match` ADD `min_premium_limit` INT NOT NULL DEFAULT '0' AFTER `max_fancy_limit`, ADD `max_premium_limit` INT NOT NULL DEFAULT '0' AFTER `min_premium_limit`;
+
+ALTER TABLE `my_bets` ADD `market_name` VARCHAR(555) NULL DEFAULT NULL AFTER `team_name`;
+ALTER TABLE `my_bets` ADD `market_id` VARCHAR(10) NOT NULL DEFAULT '0' AFTER `market_name`;
+ALTER TABLE `my_bets` ADD `winner` VARCHAR(500) NULL DEFAULT NULL AFTER `result_declare`;

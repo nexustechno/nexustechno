@@ -68,20 +68,14 @@
         </table>
     </div>
     <div class="inplay-tableblock" id="inplay-tableblock" v-else>
-        <table class="table custom-table inplay-table w1-table" >
-            <tr>
-                <td colspan="7" class="text-center pt-3">
-                    <div id="site_bet_loading1" class="betloaderimage1 loader-style1">
-                        <ul class="loading1">
-                            <li>
-                                <img src="/asset/front/img/loaderajaxbet.gif">
-                            </li>
-                            <li>Loading...</li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div id="site_bet_loading1" class="betloaderimage1 loader-style1">
+            <ul class="loading1">
+                <li>
+                    <img src="/asset/front/img/loaderajaxbet.gif">
+                </li>
+                <li>Loading...</li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -161,7 +155,6 @@
                     if(price.toString().includes('.')) {
                         return Math.round(price * 100) / 100;
                     }
-
                     return price;
                 }
                 return 0;

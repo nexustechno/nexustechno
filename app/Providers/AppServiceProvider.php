@@ -55,5 +55,6 @@ class AppServiceProvider extends ServiceProvider
         View::share('website', $this->website);
         View::share('vue_app_version', 22);
         View::share('matchesToBeDisplay', $matchesToBeDisplay->toArray());
+
     }
 }

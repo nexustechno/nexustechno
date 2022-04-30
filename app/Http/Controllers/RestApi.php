@@ -260,6 +260,29 @@ class RestApi extends Controller
 		}
 	}
 
+	public function getSingleMatchPremiumData($eventId,$matchId){
+        $api_base_url = app('api_base_url');
+        $url=$api_base_url."/match/premium/".$eventId."/".$matchId;
+
+		try {
+			$client = new Client();
+				$alldata=$client->request('GET',$url,[
+					'headers'=>[
+					'Content-Type' => 'application/json',
+				]
+		   ]);
+			$data = json_decode($alldata->getBody(), true);
+			return $data['data'];
+		}
+		catch (\Exception $e) {
+			return 0;
+		}
+		catch (Exception $e)
+		{
+			return 0;
+		}
+	}
+
 	public function getSingleMatchOddsData($eventId,$matchId,$matchtype){
         $api_base_url = app('api_base_url');
         $api_base_url2 = app('api_base_url2');

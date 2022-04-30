@@ -222,6 +222,8 @@ class FrontController extends Controller
 //            return redirect()->back()->with('error', 'No data found4!');
 //        }
 
+//        dd(strtotime($match_data['t1'][0]['openDate']) <= strtotime(date('Y-m-d H:i')));
+
         $total_todays_bet = 0;
         $my_placed_bets_all = [];
         $placed_bet_match_list = [];
@@ -251,9 +253,9 @@ class FrontController extends Controller
         $oddsLimit = [];
         $oddsLimit['min_bet_odds_limit'] = $matchList->min_bet_odds_limit;
         $oddsLimit['max_bet_odds_limit'] = $matchList->max_bet_odds_limit;
+        $oddsLimit['min_premium_limit'] = $matchList->min_premium_limit;
+        $oddsLimit['max_premium_limit'] = $matchList->max_premium_limit;
 
-//        $oddsBookmakerExposerArr = PlayerController::getOddsAndBookmakerExposer($userId,$event_id);
-//        dd($oddsBookmakerExposerArr);
 
         $team1_bet_total = 0;
         $team2_bet_total = 0;
@@ -427,6 +429,8 @@ class FrontController extends Controller
         $team2_bet_total = 0;
         $team1_bet_total = 0;
         $team_draw_bet_total = 0;
+
+        $premium_bet_total = [];
 
         if(isset($userId)) {
             $my_placed_bets_bm = MyBets::where('user_id', $userId)->where('match_id', $eventId)->where('bet_type', 'BOOKMAKER')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
@@ -623,6 +627,12 @@ class FrontController extends Controller
                     }
                 }
             }
+
+            $oddsBookmakerExposerArr = PlayerController::getOddsAndBookmakerExposer($userId, $eventId);
+            if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
+                $premium_bet_total = $oddsBookmakerExposerArr['PREMIUM'];
+//                dd($premium_bet_total);
+            }
         }
         else{
             $bet_total['team1_BM_total'] = 0;
@@ -630,7 +640,7 @@ class FrontController extends Controller
             $bet_total['draw_BM_total'] = 0;
         }
 
-        return view($page, compact('match','team','match_data_found', 'server','match_data', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
+        return view($page, compact('match','team','match_data_found', 'server','match_data','premium_bet_total', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
     }
 
     public function fancyUserCalculation(Request $request){
@@ -8793,7 +8803,25 @@ class FrontController extends Controller
 
                 $log = UserExposureLog::where("id", $data->user_exposure_log_id)->first();
 
-                if ($log->bet_type != 'SESSION') {
+                if ($log->bet_type == 'PREMIUM') {
+//                    dd($data->toArray(), $log->toArray(),$match->event_id);
+                    $bet = MyBets::where('user_id', $data->bet_user_id)
+                        ->where('result_declare', 1)
+                        ->where('isDeleted', 0)
+                        ->where('match_id', $match->event_id)
+                        ->groupBy('team_name')
+                        ->where('market_name', $log->fancy_name)
+                        ->where('bet_type', $log->bet_type)
+                        ->orderBy('created_at')
+                        ->first();
+//                    dd($bet->toArray());
+
+                    if(!empty($bet)) {
+                        $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->market_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' .$bet->market_name. ' / ' . $bet->winner . '</a></span>';
+                    }else{
+                        $remark = "Match bet not found here, contact to administrator";
+                    }
+                }else if ($log->bet_type != 'SESSION') {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
@@ -8804,7 +8832,7 @@ class FrontController extends Controller
                         ->orderBy('created_at')
                         ->first();
                     if(!empty($bet)) {
-                        $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
+                            $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
                     }else{
                         $remark = "Match bet not found here, contact to administrator";
                     }
@@ -9921,6 +9949,16 @@ class FrontController extends Controller
 //                ->groupBy('team_name',$tnm)
 //                ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
+        }elseif ($btyp == 'PREMIUM') {
+            $gmdata = MyBets::where('user_id', $loginuser->id)
+                ->where('result_declare', 1)
+                ->where('match_id', $mid)
+                ->where('bet_type', $btyp)
+                ->where('market_name', $tnm)
+                ->where('isDeleted', 0)
+//                ->groupBy('team_name',$tnm)
+//                ->whereBetween('created_at', [$fromdate, $todate])
+                ->get();
         }elseif($btyp == 'casino') {
             $gmdata = CasinoBet::where('user_id', $loginuser->id)->where('roundid',$mid)->get();
         } else {
@@ -9998,6 +10036,31 @@ class FrontController extends Controller
 	            <td aria-colindex="6" role="cell" class="text-right">' . $data->bet_amount . '</td>
 	            <td aria-colindex="7" role="cell" class="text-right">';
                 if ($data->bet_type == 'ODDS') {
+                    if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
+                        $sumAmt += $data->bet_profit;
+
+                        $html .= '<span class="text-success">
+			                    ' . $data->bet_profit . '
+			                </span> ';
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'back') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
+			                    ' . $data->exposureAmt . '
+			                </span> ';
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'lay') {
+                        $sumAmt += $data->bet_profit;
+                        $html .= '<span class="text-success">
+			                    ' . $data->bet_profit . '
+			                </span> ';
+                    } else if ($winner == strtolower($data->team_name) && $data->bet_side == 'lay') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
+			                    ' . $data->exposureAmt . '
+			                </span> ';
+                    }
+                }
+                if ($data->bet_type == 'PREMIUM') {
+                    $winner = strtolower($data->winner);
                     if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
                         $sumAmt += $data->bet_profit;
 
@@ -10151,12 +10214,17 @@ class FrontController extends Controller
 
             $fancydata = FancyResult::where(['eventid' => $data->match_id, 'fancy_name' => $data->team_name])->first();
 
+            $market = $sports->sport_name . '<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $matchdata->match_name . ' </b> <i class="fas fa-caret-right text-color-grey"></i> ' . $data->bet_type;
+            if($data->bet_type == 'PREMIUM'){
+                $market.= '<i class="fas fa-caret-right text-color-grey"></i> <strong>'.$data->market_name.'</strong>';
+            }
+
             $html .= '<tr class="white-bg">
                     <td class="white-bg"><img src="">
                         <a class="text-color-blue-light">' . $data->id . '</a>
                     </td>
                     <td>' . $loginUser->user_name . '</td>
-                    <td>' . $sports->sport_name . '<i class="fas fa-caret-right text-color-grey"></i> <b> ' . $matchdata->match_name . ' </b> <i class="fas fa-caret-right text-color-grey"></i> ' . $data->bet_type . '</td>
+                    <td>'.$market.'</td>
                     <td class="text-right">' . $data->team_name . ' </td>';
 
             if ($data->bet_side == 'lay') {

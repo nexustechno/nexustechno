@@ -33,7 +33,7 @@ class SettingController extends Controller
     public function index()
     {
         $setting = setting::latest('id')->first();
-        return view('backpanel/message', compact('setting'));
+        return view('backpanel.message', compact('setting'));
     }
 
     function dataAllParent($id)
@@ -53,7 +53,7 @@ class SettingController extends Controller
         $user = User::find($id);
         $getresult = MyBets::where('user_id', $user->id)->where('result_declare', 0)->where('isDeleted', 0)->latest()->get();
         //echo "<pre>";print_r($getresult);echo "<pre>";exit;
-        return view('backpanel/user-bets', compact('user', 'getresult', 'id'));
+        return view('backpanel.user-bets', compact('user', 'getresult', 'id'));
     }
 
     public function addBanner(Request $request)
@@ -75,7 +75,7 @@ class SettingController extends Controller
     public function editBanner($id)
     {
         $banner = Banner::find($id);
-        return view('backpanel/editBanner', compact('banner'));
+        return view('backpanel.editBanner', compact('banner'));
     }
 
     public function updatebanner(Request $request, $id)
@@ -102,7 +102,7 @@ class SettingController extends Controller
     public function match_history()
     {
         $matchList = Match::where('winner', '!=', null)->orderBy('match_date', 'DESC')->get();
-        return view('backpanel/match_history', compact('matchList'));
+        return view('backpanel.match_history', compact('matchList'));
     }
 
     public function matchHistoryData(Request $request)
@@ -214,14 +214,14 @@ class SettingController extends Controller
     {
         $matchData = Match::where('id', $id)->first();
         $betdata = MyBets::where('match_id', $matchData->event_id)->where('bet_type', '!=', 'session')->get();
-        return view('backpanel/matchuser', compact('betdata'));
+        return view('backpanel.matchuser', compact('betdata'));
     }
 
     public function fancy_history()
     {
         $sports = Sport::where('status', 'active')->where('sId', '4')->get();
 //        $matchList = Match::orderBy('match_date', 'DESC')->get();
-        return view('backpanel/fancy_history', compact('sports'));
+        return view('backpanel.fancy_history', compact('sports'));
     }
 
     public static function GetAllParentofPlayer($pid)
@@ -243,267 +243,6 @@ class SettingController extends Controller
 
 
     }
-
-    /*public function getFancyBetResult($fancyname,$matchid,$eventid,$id,$result)
-	{
-		$mytotal=0; $total_expo_amount=0;
-		$my_placed_bets = MyBets::where('match_id',$eventid)->where('user_id',$id)->where('team_name',$fancyname)->where('isDeleted',0)->where('result_declare',0)->get();
-
-		if(sizeof($my_placed_bets)>0)
-		{
-			foreach($my_placed_bets as $bet)
-			{
-				if($bet->bet_side=='back')
-				{
-					if($bet->bet_odds<=$result)
-					{
-						$mytotal=$mytotal+$bet->bet_profit;
-						//$mytotal=$mytotal1+$bet->bet_amount;
-					}
-					else if($bet->bet_odds>$result)
-					{
-						$mytotal=$mytotal-$bet->exposureAmt;
-					}
-				}
-				else if($bet->bet_side=='lay')
-				{
-					if($bet->bet_odds>$result)
-					{
-						$mytotal=$mytotal+$bet->bet_profit;
-						//$mytotal=$mytotal2+$bet->bet_amount;
-					}
-					else if($bet->bet_odds<=$result)
-					{
-						$mytotal=$mytotal-$bet->exposureAmt;
-					}
-				}
-				$total_expo_amount=$total_expo_amount+$bet->exposureAmt;
-			}
-		}
-
-		if($mytotal>0)
-		{
-
-			$is_won=1;
-			$betModel = new UserExposureLog();
-			$betModel->match_id = $matchid;
-			$betModel->user_id = $id;
-			$betModel->bet_type = 'SESSION';
-			$betModel->profit = $mytotal;
-			if($is_won==1)
-				$betModel->win_type = 'Profit';
-			else
-				$betModel->win_type = 'Loss';
-			$betModel->fancy_name=$fancyname;
-			$check=$betModel->save();
-			if($check)
-			{
-				if($is_won==1)
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W+abs($total_expo_amount)+$mytotal;
-
-					$remain_balance=$creditref->remain_bal+$mytotal;
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->first();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal+$mytotal;
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W;
-					$remain_balance=$creditref->remain_bal-abs($total_expo_amount);
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->get();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal-abs($total_expo_amount);
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-
-				//calculating admin balance
-				$admin_tran=UserExposureLog::where('match_id',$matchid)->where('bet_type','SESSION')->where('fancy_name',$fancyname)->where('user_id',$id)->get();
-				$admin_profit=0;
-				$admin_loss=0;
-				foreach($admin_tran as $trans)
-				{
-					if($trans->profit!='')
-					{
-						$admin_loss+=$trans->profit;
-					}
-					else if($trans->loss!='')
-					{
-						$admin_profit+=abs($trans->loss);
-					}
-				}
-				$settings = setting::latest('id')->first();
-				$adm_balance=$settings->balance;
-				$new_balance=$adm_balance+$admin_profit-$admin_loss;
-
-				$adminData = setting::find($settings->id);
-				$adminData->balance=$new_balance;
-				$adminData->update();
-			}
-		}
-		else
-		{
-
-			$is_won=0;
-			$betModel = new UserExposureLog();
-			$betModel->match_id = $matchid;
-			$betModel->user_id = $id;
-			$betModel->bet_type = 'SESSION';
-			$betModel->loss = abs($mytotal);
-			$betModel->fancy_name=$fancyname;
-			if($is_won==1)
-				$betModel->win_type = 'Profit';
-			else
-				$betModel->win_type = 'Loss';
-			$check=$betModel->save();
-			if($check)
-			{
-				if($is_won==0)
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W;
-					$remain_balance=$creditref->remain_bal-abs($total_expo_amount);
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->first();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal-abs($total_expo_amount);
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					$creditref=CreditReference::where(['player_id'=>$id])->first();
-					$exposer=$creditref->exposure-abs($total_expo_amount);
-					$balance=$creditref->available_balance_for_D_W+abs($total_expo_amount)+$mytotal;
-					$remain_balance=$creditref->remain_bal+$mytotal;
-
-					$upd=CreditReference::find($creditref['id']);
-					$upd->exposure = $exposer;
-					$upd->available_balance_for_D_W =$balance;
-					$upd->remain_bal =$remain_balance;
-					$update_=$upd->update();
-					if($update_)
-					{
-						$parentid=self::GetAllParentofPlayer($id);
-						$parentid=json_decode($parentid);
-						if(!empty($parentid))
-						{
-							for($i=0;$i<sizeof($parentid);$i++)
-							{
-								$pid=$parentid[$i];
-								if($pid!=1)
-								{
-									$creditref_bal=CreditReference::where(['player_id'=>$pid])->first();
-									$bal=$creditref_bal->remain_bal;
-									$remain_balance_=$bal+$mytotal;
-									$upd_=CreditReference::find($creditref_bal->id);
-									$upd_->remain_bal =$remain_balance_;
-									$update_parent=$upd_->update();
-								}
-							}
-						}
-					}
-				}
-
-				//calculating admin balance
-				$admin_tran=UserExposureLog::where('match_id',$matchid)->where('bet_type','SESSION')->where('fancy_name',$fancyname)->where('user_id',$id)->get();
-				$admin_profit=0;
-				$admin_loss=0;
-				foreach($admin_tran as $trans)
-				{
-					if($trans->profit!='' && $trans->win_type=='Profit')
-					{
-						$admin_loss+=$trans->profit;
-					}
-					else if($trans->loss!='' && $trans->win_type=='Loss')
-					{
-						$admin_profit+=abs($trans->loss);
-					}
-				}
-				$settings = setting::latest('id')->first();
-				$adm_balance=$settings->balance;
-				$new_balance=$adm_balance+$admin_profit-$admin_loss;
-				$adminData = setting::find($settings->id);
-				$adminData->balance=$new_balance;
-				$adminData->update();
-			}
-		}
-	}*/
-
 
     public function getFancyBetPositionForMatchDeclare($fancyName, $mid, $eventid, $uid, $fancy_result)
     {
@@ -1215,6 +954,267 @@ class SettingController extends Controller
 
     }
 
+    public function premiumResultDeclare(Request $request){
+        return $this->updatePremiumWinner($request->event_id,$request->market_id,$request->team_winner);
+    }
+
+    public function premiumResultRollback(Request $request){
+        return $this->updatePremiumWinnerRollback($request->event_id, $request->market_id);
+    }
+
+    public function updatePremiumWinnerRollback($eventId,$marketId){
+        $match = Match::where("event_id",$eventId)->first();
+        if(!empty($match))
+        {
+            $masterAdmin = User::where("agent_level","COM")->first();
+            $settings = setting::latest('id')->first();
+            $adm_balance = $settings->balance;
+            $admin_profit = 0; $admin_loss = 0;
+
+            $bets = MyBets::where('match_id', $eventId)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->where('result_declare', 1)->groupby('user_id')->get();
+            foreach ($bets as $bet) {
+
+                $userExposerLog = UserExposureLog::where("match_id",$match->id)->where("user_id",$bet->user_id)->where("bet_type",'PREMIUM')->first();
+                if(!empty($userExposerLog)){
+                    if($userExposerLog->win_type == 'Loss'){
+                        $lose = $userExposerLog->loss;
+                        $profit = 0;
+                        $exposerToBeReturn = 0;
+                    }else{
+                        $profit = $userExposerLog->profit;
+                        $lose = 0;
+                        $exposerToBeReturn = 0;
+                    }
+                }
+
+                MyBets::where('match_id', $eventId)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->where('result_declare', 1)->where('user_id',$bet->user_id)->update(['result_declare'=>0]);
+
+                $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($eventId, $bet->user_id,"PREMIUM",$marketId);
+                if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
+
+                    if(isset($oddsBookmakerExposerArr) && isset($oddsBookmakerExposerArr['PREMIUM'][$marketId])){
+
+//                        dd($oddsBookmakerExposerArr);
+
+                        foreach ($oddsBookmakerExposerArr['PREMIUM'][$marketId] as $teamName => $item){
+                            if($teamName == $bet->winner)
+                            {
+                                $totalExposer = $oddsBookmakerExposerArr['exposer'];
+
+                                if($item['PREMIUM_profitLost'] > 0){
+                                    $lose = $item['PREMIUM_profitLost'];
+                                    $profit = 0;
+                                }else{
+                                    $profit = abs($item['PREMIUM_profitLost']);
+                                    $lose = 0;
+                                }
+
+                                $upd = CreditReference::where('player_id', $bet->user_id)->first();
+//                                $upd->exposure = $upd->exposure + $totalExposer;
+
+                                if($profit > 0){
+                                    $upd->available_balance_for_D_W = $upd->available_balance_for_D_W - $profit;
+                                    $upd->remain_bal  =  $upd->remain_bal - $profit;
+                                    $admin_profit+=$profit;
+                                }
+                                else
+                                {
+                                    $upd->remain_bal  =  $upd->remain_bal + $lose;
+                                    $admin_loss+=$lose;
+                                }
+
+                                $_update = $upd->update();
+
+                                $this->SaveBalance($bet->user_id);
+                            }
+                        }
+                    }
+                }
+
+                UsersAccount::where([
+                    'match_id' => $match->id,
+                    'user_exposure_log_id' => $userExposerLog->id
+                ])->delete();
+
+                UserExposureLog::where("match_id",$match->id)->where("user_id",$bet->user_id)->where("bet_type",'PREMIUM')->delete();
+            }
+
+            //calculating admin balance
+            if($admin_loss > 0 || $admin_profit > 0){
+                $settings = setting::latest('id')->first();
+                $adm_balance = $settings->balance;
+                $new_balance = $adm_balance + $admin_profit - $admin_loss;
+                $adminData = setting::find($settings->id);
+                $adminData->balance = $new_balance;
+                $adminData->update();
+            }
+            //update in my_bet table for bet winner
+            MyBets::where("match_id", $match->event_id)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->update(["result_declare" => 0,'winner'=>NULL]);
+
+            return ['status'=>true,'message' => 'Success'];
+        }
+        return ['status'=>false,'message' => 'Match Not Found!'];
+    }
+
+    public function updatePremiumWinner($eventId,$marketId,$winner){
+        $match = Match::where("event_id",$eventId)->first();
+        if(!empty($match))
+        {
+
+            $masterAdmin = User::where("agent_level","COM")->first();
+            $settings = setting::latest('id')->first();
+            $adm_balance = $settings->balance;
+            $admin_profit = 0; $admin_loss = 0;
+
+            $bets = MyBets::where('match_id', $eventId)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->where('result_declare', 0)->groupby('user_id')->get();
+            foreach ($bets as $bet) {
+//                echo "<pre>".$bet->user_id."==".$bet->team_name;
+                $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($eventId, $bet->user_id,"PREMIUM",$marketId);
+                if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
+//                    print_r($oddsBookmakerExposerArr);
+
+                    if(isset($oddsBookmakerExposerArr) && isset($oddsBookmakerExposerArr['PREMIUM'][$marketId])){
+                        foreach ($oddsBookmakerExposerArr['PREMIUM'][$marketId] as $teamName => $item){
+                            if($teamName == $winner)
+                            {
+                                $totalExposer = $oddsBookmakerExposerArr['exposer'];
+
+                                if($item['PREMIUM_profitLost'] > 0){
+                                    $lose = $item['PREMIUM_profitLost'];
+                                    $profit = 0;
+                                    $exposerToBeReturn = 0;
+                                }else{
+                                    $profit = abs($item['PREMIUM_profitLost']);
+                                    $lose = 0;
+                                    $exposerToBeReturn = $totalExposer;
+                                }
+
+                                $betModel = new UserExposureLog();
+                                $betModel->match_id = $match->id;
+                                $betModel->user_id = $bet->user_id;
+                                $betModel->bet_type = "PREMIUM";
+                                $betModel->profit = $profit;
+                                $betModel->fancy_name = $bet->market_name;
+                                $betModel->loss = abs($lose);
+                                if ($profit > 0)
+                                    $betModel->win_type = 'Profit';
+                                else
+                                    $betModel->win_type = 'Loss';
+
+                                $check = $betModel->save();
+
+                                $upd = CreditReference::where('player_id', $bet->user_id)->first();
+                                $cExoser = $upd->exposure;
+                                $available_balance = $upd->available_balance_for_D_W;
+                                $upd->exposure = $upd->exposure - $totalExposer;
+
+                                $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposerToBeReturn));
+
+                                ExposerDeductLog::createLog([
+                                    'user_id' => $bet->user_id,
+                                    'action' => 'Declare Premium Bet Result',
+                                    'current_exposer' => $cExoser,
+                                    'new_exposer' => $upd->exposure,
+                                    'exposer_deduct' => $totalExposer,
+                                    'match_id' => $match->id,
+                                    'bet_type' => 'PREMIUM',
+                                    'bet_amount' => 0,
+                                    'odds_value' => 0,
+                                    'odds_volume' => 0,
+                                    'profit' => $profit,
+                                    'lose' => $lose,
+                                    'available_balance' => $upd->available_balance_for_D_W
+                                ]);
+
+                                if($profit > 0){
+
+                                    $upd->remain_bal  =  $upd->remain_bal + $profit;
+
+                                    UsersAccount::create([
+                                        'user_id' => $bet->user_id,
+                                        'from_user_id' => $bet->user_id,
+                                        'to_user_id' => $bet->user_id,
+                                        'credit_amount' => $profit,
+                                        'balance' => $available_balance,
+                                        'closing_balance' => $available_balance + $profit,
+                                        'remark' => "",
+                                        'bet_user_id' => $bet->user_id,
+                                        'match_id' => $match->id,
+                                        'user_exposure_log_id' => $betModel->id
+                                    ]);
+
+                                    UsersAccount::create([
+                                        'user_id' => $masterAdmin->id,
+                                        'from_user_id' => $bet->user_id,
+                                        'to_user_id' => $masterAdmin->id,
+                                        'debit_amount' => $profit,
+                                        'balance' => $adm_balance,
+                                        'closing_balance' => $adm_balance - $profit,
+                                        'remark' => "",
+                                        'bet_user_id' => $bet->user_id,
+                                        'casino_id' => $match->id,
+                                        'user_exposure_log_id' => $betModel->id
+                                    ]);
+
+                                    $admin_loss+=$profit;
+                                }
+                                else
+                                {
+                                    $upd->remain_bal  =  $upd->remain_bal - $lose;
+
+                                    UsersAccount::create([
+                                        'user_id' => $bet->user_id,
+                                        'from_user_id' => $bet->user_id,
+                                        'to_user_id' => $bet->user_id,
+                                        'debit_amount' => $lose,
+                                        'balance' => $available_balance,
+                                        'closing_balance' => $available_balance - $lose,
+                                        'remark' => "",
+                                        'bet_user_id' => $bet->user_id,
+                                        'match_id' => $match->id,
+                                        'user_exposure_log_id' => $betModel->id
+                                    ]);
+                                    UsersAccount::create([
+                                        'user_id' => $masterAdmin->id,
+                                        'from_user_id' => $bet->user_id,
+                                        'to_user_id' => $masterAdmin->id,
+                                        'credit_amount' => $lose,
+                                        'balance' => $adm_balance,
+                                        'closing_balance' => $adm_balance + $lose,
+                                        'remark' => "",
+                                        'bet_user_id' => $bet->user_id,
+                                        'match_id' => $match->id,
+                                        'user_exposure_log_id' => $betModel->id
+                                    ]);
+
+                                    $admin_profit+=$lose;
+                                }
+
+                                $update_ = $upd->update();
+                            }
+                        }
+                    }
+                }
+            }
+//            die();
+
+            //calculating admin balance
+            if($admin_loss > 0 || $admin_profit > 0){
+                $settings = setting::latest('id')->first();
+                $adm_balance = $settings->balance;
+                $new_balance = $adm_balance + $admin_profit - $admin_loss;
+                $adminData = setting::find($settings->id);
+                $adminData->balance = $new_balance;
+                $adminData->update();
+            }
+//            //update in my_bet table for bet winner
+            MyBets::where("match_id", $match->event_id)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->update(["result_declare" => 1,'winner'=>$winner]);
+
+            return ['status'=>true,'message' => 'Success'];
+        }
+        return ['status'=>false,'message' => 'Match Not Found!'];
+    }
+
     public function resultDeclare(Request $request)
     {
 
@@ -1298,7 +1298,7 @@ class SettingController extends Controller
     public function privilege()
     {
         $users = User::where('agent_level', 'SL')->get();
-        return view('backpanel/privilege', compact('users'));
+        return view('backpanel.privilege', compact('users'));
     }
 
     public function deleteprvlg(Request $request)
@@ -1350,13 +1350,13 @@ class SettingController extends Controller
     public function main_market()
     {
         $sports = Sport::get();
-        return view('backpanel/main_market', compact('sports'));
+        return view('backpanel.main_market', compact('sports'));
     }
 
     public function match($id)
     {
         $sports = Sport::get();
-        return view('backpanel/match', compact('id'));
+        return view('backpanel.match', compact('id'));
     }
 
     public function addMatch(Request $request, $id)
@@ -1375,7 +1375,7 @@ class SettingController extends Controller
 
     public function sports()
     {
-        return view('backpanel/sports');
+        return view('backpanel.sports');
     }
 
     public function addSport(Request $request)
@@ -1389,14 +1389,14 @@ class SettingController extends Controller
     {
         $sports = Sport::get();
         $matchList = Match::where('sports_id', $id)->get();
-        return view('backpanel/listmatch', compact('matchList', 'sports'));
+        return view('backpanel.listmatch', compact('matchList', 'sports'));
     }
 
     public function risk_management()
     {
         $sports = Sport::get();
         $matchList = Match::get();
-        return view('backpanel/risk-management', compact('matchList', 'sports'));
+        return view('backpanel.risk-management', compact('matchList', 'sports'));
     }
 
     function GetChildofAgent($id)
@@ -1441,12 +1441,13 @@ class SettingController extends Controller
             foreach ($matches as $match) {
                 $item = [];
 
-                $my_placed_bets = MyBets::where('match_id', $match['event_id'])->where('bet_type', '!=', 'SESSION')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->get();
+                $my_placed_bets = MyBets::where('match_id', $match['event_id'])->whereNotIn('bet_type', ['SESSION','PREMIUM'])->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->get();
+                $premium_placed_bets = MyBets::where('match_id', $match['event_id'])->where('bet_type', 'PREMIUM')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->get();
                 $my_placed_bets_session = MyBets::where('match_id', $match['event_id'])->where('bet_type', '=', 'SESSION')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->count();
                 $team2_bet_total = 0;
                 $team1_bet_total = 0;
                 $team_draw_bet_total = 0;
-                if ($my_placed_bets->count() > 0 || $my_placed_bets_session > 0) {
+                if ($my_placed_bets->count() > 0 || $my_placed_bets_session > 0 || $premium_placed_bets->count() > 0) {
                     if ($my_placed_bets->count() > 0) {
                         foreach ($my_placed_bets as $bet) {
                             $abc = json_decode($bet->extra, true);
@@ -1468,7 +1469,8 @@ class SettingController extends Controller
                                             }
                                             $team2_bet_total = $team2_bet_total - ($bet->bet_amount);
                                         }
-                                    } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
+                                    }
+                                    else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
                                         //bet on team1
                                         if ($bet->bet_side == 'back') {
                                             $team1_bet_total = $team1_bet_total - $bet->bet_profit;
@@ -1484,7 +1486,8 @@ class SettingController extends Controller
                                             }
                                             $team2_bet_total = $team2_bet_total - ($bet->bet_amount);
                                         }
-                                    } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
+                                    }
+                                    else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
                                         //bet on team2
                                         if ($bet->bet_side == 'back') {
                                             $team2_bet_total = $team2_bet_total - ($bet->bet_profit);
@@ -1512,7 +1515,8 @@ class SettingController extends Controller
                                             $team2_bet_total = $team2_bet_total + $bet->exposureAmt;
                                             $team1_bet_total = $team1_bet_total - $bet->bet_amount;
                                         }
-                                    } else {
+                                    }
+                                    else {
                                         //bet on team1
                                         if ($bet->bet_side == 'back') {
                                             $team1_bet_total = $team1_bet_total - $bet->bet_profit;
@@ -1562,7 +1566,7 @@ class SettingController extends Controller
                     $item['match_detail']['team_one'] = $teamone;
                     $item['match_detail']['team_two'] = $teamtwo;
                     $item['match_detail']['team_draw'] = $team_draw;
-                    $item['match_detail']['total_bets'] = $my_placed_bets->count() + $my_placed_bets_session;
+                    $item['match_detail']['total_bets'] = $my_placed_bets->count() + $premium_placed_bets->count() + $my_placed_bets_session;
                     $item['match_detail']['team1_bet_total'] = round($team1_bet_total, 2);
                     $item['match_detail']['team2_bet_total'] = round($team2_bet_total, 2);
                     $item['match_detail']['team_draw_bet_total'] = round($team_draw_bet_total, 2);
@@ -3185,19 +3189,6 @@ class SettingController extends Controller
 
         $website = UsersAccount::getWebsite();
 
-        if ($loginUser->agent_level == 'COM') {
-            $user = 'AD';
-        } elseif ($loginUser->agent_level == 'AD') {
-            $user = 'SP';
-        } elseif ($loginUser->agent_level == 'SP') {
-            $user = 'SMDL';
-        } elseif ($loginUser->agent_level == 'SMDL') {
-            $user = 'MDL';
-        } elseif ($loginUser->agent_level == 'MDL') {
-            $user = 'DL';
-        } elseif ($loginUser->agent_level == 'DL') {
-            $user = 'PL';
-        }
         $matchList = Match::where('id', $id)->first();
         $match = $matchList;
 
@@ -3270,7 +3261,8 @@ class SettingController extends Controller
                 $inplay = 'False';
             }
             $page = 'backpanel.risk-management-details';
-        }else {
+        }
+        else {
             $page = 'backpanel.risk-management-details2';
             $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
 
@@ -3279,8 +3271,6 @@ class SettingController extends Controller
             }
         }
 
-//        dd($matchDataFound);
-
         $list = User::where('parentid', $loginUser->id)->orderBy('user_name')->get();
 
         $team1_bet_total = 0;
@@ -3288,9 +3278,8 @@ class SettingController extends Controller
         $team_draw_bet_total = 0;
         //odds bet
         $my_placed_bets = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'ODDS')->where('result_declare', 0)->whereIn('user_id', $all_child)->get();
-        $html = '';
-        foreach ($my_placed_bets as $bet) {
 
+        foreach ($my_placed_bets as $bet) {
             $abc = json_decode($bet->extra, true);
             if (count($abc) >= 2) {
                 if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
@@ -3366,179 +3355,6 @@ class SettingController extends Controller
                     }
                 }
             }
-
-            $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
-            /*echo $player;
-			exit;*/
-            $getUserparent = User::where('id', $player->parentid)->first();
-            /*echo $getUserparent;
-			exit;*/
-            $ad = '-';
-            $sp = '-';
-            $smdl = '-';
-            $mdl = '-';
-            $dl = '-';
-            $com = '-';
-            if ($getUserparent->agent_level == 'AD') {
-                $ad = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'SP') {
-                $sp = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'SMDL') {
-                $smdl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'MDL') {
-                $mdl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'DL') {
-                $dl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'COM') {
-                $com = $getUserparent->user_name;
-            }
-            if (!empty($getUserparent->parentid)) {
-                /*echo "aab->";
-        	echo $getUserparent->parentid;
-        	exit;*/
-                $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
-                if ($getUserparent2->agent_level == 'AD') {
-                    $ad = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'SP') {
-                    $sp = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'SMDL') {
-                    $smdl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'MDL') {
-                    $mdl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'DL') {
-                    $dl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'COM') {
-                    $com = $getUserparent2->user_name;
-                }
-            }
-
-            if (!empty($getUserparent2->parentid)) {
-                $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
-                if ($getUserparent3->agent_level == 'AD') {
-                    $ad = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'SP') {
-                    $sp = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'SMDL') {
-                    $smdl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'MDL') {
-                    $mdl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'DL') {
-                    $dl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'COM') {
-                    $com = $getUserparent3->user_name;
-                }
-            }
-
-            if (!empty($getUserparent3->parentid)) {
-
-                $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
-
-                if ($getUserparent4->agent_level == 'AD') {
-                    $ad = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'SP') {
-                    $sp = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'SMDL') {
-                    $smdl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'MDL') {
-                    $mdl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'DL') {
-                    $dl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'COM') {
-                    $com = $getUserparent4->user_name;
-                }
-            }
-
-            if (!empty($getUserparent4->parentid)) {
-                $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
-
-                if ($getUserparent5->agent_level == 'AD') {
-                    $ad = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'SP') {
-                    $sp = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'SMDL') {
-                    $smdl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'MDL') {
-                    $mdl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'DL') {
-                    $dl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'COM') {
-                    $com = $getUserparent5->user_name;
-                }
-            }
-
-            if (!empty($getUserparent5->parentid)) {
-                $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
-
-                if ($getUserparent6->agent_level == 'AD') {
-                    $ad = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'SP') {
-                    $sp = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'SMDL') {
-                    $smdl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'MDL') {
-                    $mdl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'DL') {
-                    $dl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'COM') {
-                    $com = $getUserparent6->user_name;
-                }
-            }
-
-            $bet_type_cls = '';
-            $bet_type = '';
-            if ($bet->bet_side == 'lay') {
-                $bet_type_cls = 'pink-bg';
-                $bet_type = 'Lay';
-            } else {
-                $bet_type_cls = 'cyan-bg';
-                $bet_type = 'Back';
-            }
-
-            $is_delete = '';
-            if ($bet->isDeleted == 0) {
-                $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-                $is_delete .= '<a style="display:none" id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-            } else {
-                $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-                $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-            }
-
-            $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
-            $html .= '<tr class="' . $bet_type_cls . '">
-			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
-                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
-                <td class="text-center"><b>' . $bet->team_name . '</b></td>
-				<td class="text-center">' . $bet_type . '</td>
-                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
-                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
-                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
-                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>
-                <td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
-            if ($loginUser->agent_level == 'COM') {
-                $html .= '<td id="action_' . $bet->id . '">
-	                	' . $is_delete . '
-	               	</td>';
-            }
-            if ($loginUser->agent_level == 'COM') {
-                $html .= '<td class="text-center">' . $com . '</td>';
-            }
-            if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
-                $html .= '<td class="text-center">' . $ad . '</td>';
-            }
-            if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
-                $html .= '<td class="text-center">' . $sp . '</td>';
-            }
-            if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
-                $html .= '<td class="text-center">' . $smdl . '</td>';
-            }
-            if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
-                $html .= '<td class="text-center">' . $mdl . '</td>';
-            }
-            if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
-                $html .= '<td class="text-center">' . $dl . '</td>';
-            }
-
-            $html .= '</tr>';
         }
 
         $bet_total = [];
@@ -3546,12 +3362,15 @@ class SettingController extends Controller
         $bet_total['team2_bet_total'] = round($team2_bet_total,2);
         $bet_total['team_draw_bet_total'] = round($team_draw_bet_total,2);
 
+        $totalBets = [];
+        $totalBets['odds'] = $my_placed_bets->count();
+
         $team1_bet_totalB = 0;
         $team2_bet_totalB = 0;
         $team_draw_bet_totalB = 0;
         //bookmaker bet
         $my_placed_bets_BM = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->whereIn('user_id', $all_child)->get();
-        $html_BM = '';
+        $totalBets['bookmaker'] = $my_placed_bets_BM->count();
         foreach ($my_placed_bets_BM as $bet) {
             $abc = json_decode($bet->extra, true);
             if (count($abc) >= 2) {
@@ -3628,191 +3447,6 @@ class SettingController extends Controller
                     }
                 }
             }
-
-            $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
-            $bet_type_cls = '';
-            $bet_type = '';
-            if ($bet->bet_side == 'lay') {
-                $bet_type_cls = 'pink-bg';
-                $bet_type = 'Lay';
-            } else {
-                $bet_type_cls = 'cyan-bg';
-                $bet_type = 'Back';
-            }
-
-            /*echo $player;
-			exit;*/
-            $getUserparent = User::where('id', $player->parentid)->first();
-            /*echo $getUserparent;
-			exit;*/
-            $ad = '-';
-            $sp = '-';
-            $smdl = '-';
-            $mdl = '-';
-            $dl = '-';
-            $com = '-';
-            if ($getUserparent->agent_level == 'AD') {
-                $ad = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'SP') {
-                $sp = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'SMDL') {
-                $smdl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'MDL') {
-                $mdl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'DL') {
-                $dl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'COM') {
-                $com = $getUserparent->user_name;
-            }
-            if (!empty($getUserparent->parentid)) {
-                /*echo "aab->";
-        	echo $getUserparent->parentid;
-        	exit;*/
-                $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
-                if ($getUserparent2->agent_level == 'AD') {
-                    $ad = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'SP') {
-                    $sp = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'SMDL') {
-                    $smdl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'MDL') {
-                    $mdl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'DL') {
-                    $dl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'COM') {
-                    $com = $getUserparent2->user_name;
-                }
-            }
-
-            if (!empty($getUserparent2->parentid)) {
-                /*	echo "aam->";
-      	echo $getUserparent2->parentid;
-      	exit;*/
-                $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
-                if ($getUserparent3->agent_level == 'AD') {
-                    $ad = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'SP') {
-                    $sp = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'SMDL') {
-                    $smdl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'MDL') {
-                    $mdl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'DL') {
-                    $dl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'COM') {
-                    $com = $getUserparent3->user_name;
-                }
-            }
-
-            if (!empty($getUserparent3->parentid)) {
-                /*echo "aam->";
-      	echo $getUserparent3->parentid;
-      	exit;*/
-                $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
-
-                if ($getUserparent4->agent_level == 'AD') {
-                    $ad = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'SP') {
-                    $sp = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'SMDL') {
-                    $smdl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'MDL') {
-                    $mdl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'DL') {
-                    $dl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'COM') {
-                    $com = $getUserparent4->user_name;
-                }
-            }
-
-            if (!empty($getUserparent4->parentid)) {
-                /*echo "aam->";
-      	echo $getUserparent4->parentid;
-      	exit;*/
-                $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
-
-                if ($getUserparent5->agent_level == 'AD') {
-                    $ad = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'SP') {
-                    $sp = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'SMDL') {
-                    $smdl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'MDL') {
-                    $mdl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'DL') {
-                    $dl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'COM') {
-                    $com = $getUserparent5->user_name;
-                }
-            }
-
-            /*echo "-->".$ad;
-      exit;*/
-
-            if (!empty($getUserparent5->parentid)) {
-                $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
-
-                if ($getUserparent6->agent_level == 'AD') {
-                    $ad = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'SP') {
-                    $sp = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'SMDL') {
-                    $smdl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'MDL') {
-                    $mdl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'DL') {
-                    $dl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'COM') {
-                    $com = $getUserparent6->user_name;
-                }
-            }
-
-            $is_delete = '';
-            if ($bet->isDeleted == 0) {
-                $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-                $is_delete .= '<a style="display:none" id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-            } else {
-                $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-                $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-            }
-            $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
-            $html_BM .= '<tr class="' . $bet_type_cls . '">
-			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
-                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
-                <td class="text-center"><b>' . $bet->team_name . '</b></td>
-				<td class="text-center">' . $bet_type . '</td>
-                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
-                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
-                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
-                <td><b>Matched</b></td>
-                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>
-                <td class="text-center">' . $matchList->event_id . '</td>
-                <td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
-            if ($loginUser->agent_level == 'COM') {
-                $html_BM .= '<td id="action_' . $bet->id . '">
-                	' . $is_delete . '
-               	</td>';
-            }
-            if ($loginUser->agent_level == 'COM') {
-                $html_BM .= '<td class="text-center">' . $com . '</td>';
-            }
-            if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
-                $html_BM .= '<td class="text-center">' . $ad . '</td>';
-            }
-            if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
-                $html_BM .= '<td class="text-center">' . $sp . '</td>';
-            }
-            if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
-                $html_BM .= '<td class="text-center">' . $smdl . '</td>';
-            }
-            if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
-                $html_BM .= '<td class="text-center">' . $mdl . '</td>';
-            }
-            if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
-                $html_BM .= '<td class="text-center">' . $dl . '</td>';
-            }
-
-            $html_BM .= '</tr>';
         }
         $bet_total['team1_BM_total'] = round($team1_bet_totalB, 2);
         $bet_total['team2_BM_total'] = round($team2_bet_totalB, 2);
@@ -3820,187 +3454,103 @@ class SettingController extends Controller
 
         //Fancy bet
         $my_placed_bets_fancy = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'SESSION')->where('result_declare', 0)->whereIn('user_id', $all_child)->get();
-        $html_Fancy = '';
-        foreach ($my_placed_bets_fancy as $bet) {
-            $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
-            $bet_type_cls = '';
-            $bet_type = '';
-            if ($bet->bet_side == 'lay') {
-                $bet_type_cls = 'pink-bg';
-                $bet_type = 'N';
-            } else {
-                $bet_type_cls = 'cyan-bg';
-                $bet_type = 'Y';
-            }
-            $getUserparent = User::where('id', $player->parentid)->first();
-            /*echo $getUserparent;
-			exit;*/
-            $ad = '-';
-            $sp = '-';
-            $smdl = '-';
-            $mdl = '-';
-            $dl = '-';
-            $com = '-';
-            if ($getUserparent->agent_level == 'AD') {
-                $ad = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'SP') {
-                $sp = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'SMDL') {
-                $smdl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'MDL') {
-                $mdl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'DL') {
-                $dl = $getUserparent->user_name;
-            } elseif ($getUserparent->agent_level == 'COM') {
-                $com = $getUserparent->user_name;
-            }
-            if (!empty($getUserparent->parentid)) {
-                /*echo "aab->";
-        	echo $getUserparent->parentid;
-        	exit;*/
-                $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
-                if ($getUserparent2->agent_level == 'AD') {
-                    $ad = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'SP') {
-                    $sp = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'SMDL') {
-                    $smdl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'MDL') {
-                    $mdl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'DL') {
-                    $dl = $getUserparent2->user_name;
-                } elseif ($getUserparent2->agent_level == 'COM') {
-                    $com = $getUserparent2->user_name;
+        $totalBets['fancy'] = $my_placed_bets_fancy->count();
+        if(isset($match_data['t3']) && count($match_data['t3']) > 0) {
+            $fancyArray = $match_data['t3'];
+            foreach ($fancyArray as $key => $value) {
+
+                if ($server == 1) {
+                    $fancyName = $value['nat'];
+                    $sId = $value['sid'];
+                } elseif ($server == 2) {
+                    $fancyName = $value['nat'];
+                    $sId = $value['sId'];
+                } else {
+                    $fancyName = $value['RunnerName'];
+                    $sId = $value['SelectionId'];
+                }
+
+                $final_exposer = 0;
+                $my_placed_bets = MyBets::where('match_id', $matchList->event_id)->where('team_name', $fancyName)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderBy('created_at', 'asc')->get();
+                if (sizeof($my_placed_bets) > 0) {
+                    $run_arr = array();
+                    foreach ($my_placed_bets as $bet) {
+                        $down_position = $bet->bet_odds - 1;
+                        if (!in_array($down_position, $run_arr)) {
+                            $run_arr[] = $down_position;
+                        }
+                        $level_position = $bet->bet_odds;
+                        if (!in_array($level_position, $run_arr)) {
+                            $run_arr[] = $level_position;
+                        }
+                        $up_position = $bet->bet_odds + 1;
+                        if (!in_array($up_position, $run_arr)) {
+                            $run_arr[] = $up_position;
+                        }
+                    }
+                    array_unique($run_arr);
+                    sort($run_arr);
+
+                    $min_val = min($run_arr);
+                    $max_val = max($run_arr);
+
+                    $newArr = array();
+
+                    for ($z = $min_val; $z <= $max_val; ++$z) {
+                        $new = $z;
+                        $newArr[] = $new;
+                    }
+
+                    $run_arr = array();
+                    $run_arr = $newArr;
+
+                    $bet_chk = '';
+                    for ($kk = 0; $kk < sizeof($run_arr); $kk++) {
+                        $bet_deduct_amt = 0;
+                        $placed_bet_type = '';
+                        foreach ($my_placed_bets as $bet) {
+                            if ($bet->bet_side == 'back') {
+                                if ($bet->bet_odds == $run_arr[$kk]) {
+
+                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                } else if ($bet->bet_odds < $run_arr[$kk]) {
+
+                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_profit;
+                                } else if ($bet->bet_odds > $run_arr[$kk]) {
+
+                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                }
+                            } else if ($bet->bet_side == 'lay') {
+                                if ($bet->bet_odds == $run_arr[$kk]) {
+
+                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                } else if ($bet->bet_odds < $run_arr[$kk]) {
+
+                                    $bet_deduct_amt = $bet_deduct_amt - $bet->exposureAmt;
+                                } else if ($bet->bet_odds > $run_arr[$kk]) {
+
+                                    $bet_deduct_amt = $bet_deduct_amt + $bet->bet_amount;
+                                }
+                            }
+                        }
+                        if ($final_exposer == "")
+                            $final_exposer = $bet_deduct_amt;
+                        else {
+                            if ($final_exposer > $bet_deduct_amt) {
+                                $final_exposer = $bet_deduct_amt;
+                            }
+                        }
+                    }
+                }
+
+                if ($final_exposer != 0) {
+                    $bet_total['fancy_' . $sId] = round(abs($final_exposer), 2);
                 }
             }
-
-            if (!empty($getUserparent2->parentid)) {
-                /*	echo "aam->";
-      	echo $getUserparent2->parentid;
-      	exit;*/
-                $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
-                if ($getUserparent3->agent_level == 'AD') {
-                    $ad = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'SP') {
-                    $sp = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'SMDL') {
-                    $smdl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'MDL') {
-                    $mdl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'DL') {
-                    $dl = $getUserparent3->user_name;
-                } elseif ($getUserparent3->agent_level == 'COM') {
-                    $com = $getUserparent3->user_name;
-                }
-            }
-
-            if (!empty($getUserparent3->parentid)) {
-                /*echo "aam->";
-      	echo $getUserparent3->parentid;
-      	exit;*/
-                $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
-
-                if ($getUserparent4->agent_level == 'AD') {
-                    $ad = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'SP') {
-                    $sp = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'SMDL') {
-                    $smdl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'MDL') {
-                    $mdl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'DL') {
-                    $dl = $getUserparent4->user_name;
-                } elseif ($getUserparent4->agent_level == 'COM') {
-                    $com = $getUserparent4->user_name;
-                }
-            }
-
-            if (!empty($getUserparent4->parentid)) {
-                /*echo "aam->";
-      	echo $getUserparent4->parentid;
-      	exit;*/
-                $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
-
-                if ($getUserparent5->agent_level == 'AD') {
-                    $ad = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'SP') {
-                    $sp = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'SMDL') {
-                    $smdl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'MDL') {
-                    $mdl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'DL') {
-                    $dl = $getUserparent5->user_name;
-                } elseif ($getUserparent5->agent_level == 'COM') {
-                    $com = $getUserparent5->user_name;
-                }
-            }
-
-            /*echo "-->".$ad;
-      exit;*/
-
-            if (!empty($getUserparent5->parentid)) {
-                $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
-
-                if ($getUserparent6->agent_level == 'AD') {
-                    $ad = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'SP') {
-                    $sp = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'SMDL') {
-                    $smdl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'MDL') {
-                    $mdl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'DL') {
-                    $dl = $getUserparent6->user_name;
-                } elseif ($getUserparent6->agent_level == 'COM') {
-                    $com = $getUserparent6->user_name;
-                }
-            }
-            $is_delete = '';
-            if ($bet->isDeleted == 0) {
-                $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-                $is_delete .= '<a style="display:none" id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-            } else {
-                $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-                $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-            }
-
-            $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
-            $html_Fancy .= '<tr class="' . $bet_type_cls . '">
-			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
-                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
-                <td class="text-center"><b>' . $bet->team_name . '</b></td>
-				<td class="text-center">' . $bet_type . '</td>
-                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
-                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
-				<td><b>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</b></td>
-				<td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
-            if ($loginUser->agent_level == 'COM') {
-                $html_Fancy .= '<td id="action_' . $bet->id . '">
-                	' . $is_delete . '
-               	</td>';
-            }
-            if ($loginUser->agent_level == 'COM') {
-                $html_Fancy .= '<td class="text-center">' . $com . '</td>';
-            }
-            if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
-                $html_Fancy .= '<td class="text-center">' . $ad . '</td>';
-            }
-            if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
-                $html_Fancy .= '<td class="text-center">' . $sp . '</td>';
-            }
-            if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
-                $html_Fancy .= '<td class="text-center">' . $smdl . '</td>';
-            }
-            if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
-                $html_Fancy .= '<td class="text-center">' . $mdl . '</td>';
-            }
-            if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
-                $html_Fancy .= '<td class="text-center">' . $dl . '</td>';
-            }
-            $html_Fancy .= '</tr>';
         }
 
+        $premium_placed_bets = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'PREMIUM')->where('result_declare', 0)->whereIn('user_id', $all_child)->get();
+        $totalBets['premium'] = $premium_placed_bets->count();
         // admin book cal start
 
         $resp = $this->getMatchDetailAdminBkUserHtml($matchList, $loginUser, $website);
@@ -4016,10 +3566,16 @@ class SettingController extends Controller
         $oddsLimit['max_bookmaker_limit'] = $matchList->max_bookmaker_limit;
         $oddsLimit['min_fancy_limit'] = $matchList->min_fancy_limit;
         $oddsLimit['max_fancy_limit'] = $matchList->max_fancy_limit;
+        $premium_bet_total = [];
 
-//        dd($page);
+        $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($matchList->event_id);
+        if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
+            $premium_bet_total = $oddsBookmakerExposerArr['PREMIUM'];
+        }
 
-        return view($page, compact('inplay','server','matchDataFound', 'team','match','matchList','oddsLimit','bet_total', 'my_placed_bets', 'html', 'my_placed_bets_BM', 'html_BM', 'html_Fancy', 'managetv', 'list', 'my_placed_bets_fancy', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
+        $stkval = array('100', '200', '300', '400', '500', '600');
+
+        return view($page, compact('inplay','server','matchDataFound', 'premium_bet_total', 'stkval', 'team','match','matchList','oddsLimit','bet_total', 'managetv', 'list', 'totalBets', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
     }
 
     public function risk_management_book_bm_book(Request $request)
@@ -4635,14 +4191,21 @@ class SettingController extends Controller
         //get all child of agent
         $loginUser = Auth::user();
         $ag_id = $loginUser->id;
-        $all_child = $this->GetChildofAgent($ag_id);
+
+        $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+
+        if (!empty($hirUser)) {
+            $all_child = explode(',', $hirUser->sub_user);
+        }else {
+            $all_child = $this->GetChildofAgent($ag_id);
+        }
         if (!empty($valodd)) {
             $srhdata = User::where('user_name', 'LIKE', '%' . $valodd . '%')
                 ->orWhere('first_name', 'LIKE', '%' . $valodd . '%')
-                ->get();
+                ->pluck('id');
 
-            foreach ($srhdata as $value) {
-                $child_array[] = $value->id;
+            if(!empty($srhdata)) {
+                $child_array = $srhdata->toArray();
             }
 
             $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'ODDS')->where('result_declare', 0)->whereIn('user_id', $child_array)->orderby('id', 'DESC')->get();
@@ -4651,7 +4214,6 @@ class SettingController extends Controller
             $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'ODDS')->where('result_declare', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
         }
 
-        //$my_placed_bets = MyBets::where('match_id',$matchList['event_id'])->where('bet_type','ODDS')->where('result_declare',0)->orderby('id','DESC')->get();
         $html = '';
         foreach ($my_placed_bets as $bet) {
             $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
@@ -4832,6 +4394,8 @@ class SettingController extends Controller
             }
             $html .= '</tr>';
         }
+
+
         //BM
         $html_two = '';
         if (!empty($valbm)) {
@@ -5028,6 +4592,8 @@ class SettingController extends Controller
             }
             $html_two .= '</tr>';
         }
+
+
         //Fancy
         $html_three = '';
         if (!empty($valfnc)) {
@@ -5230,20 +4796,149 @@ class SettingController extends Controller
         $loginUser = Auth::user();
         $matchList = Match::where('match_id', $request->matchid)->first();
 
-        $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
-            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
-            ->get();
-        //echo"<pre>"; print_r($srhdata); exit;
-        if (!empty($srhdata)) {
-            foreach ($srhdata as $value) {
-                $child_array[] = $value->id;
+        if(!empty($request->search)){
+            $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+                ->pluck('id');
+
+            if (!empty($srhdata)) {
+                $all_child[] = $srhdata->toArray();
+            }else{
+                $all_child = [];
             }
+        }else {
+            $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
 
-            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'ODDS')->where('result_declare', 0)->whereIn('user_id', $child_array)->orderby('id', 'DESC')->get();
+            if (!empty($hirUser)) {
+                $all_child = explode(',', $hirUser->sub_user);
+            } else {
+                $all_child = $this->GetChildofAgent($ag_id);
+            }
+        }
 
-            $html = '';
+        $html = "";
+        if (!empty($all_child)) {
+
+            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'ODDS')->where('result_declare', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
+
             foreach ($my_placed_bets as $bet) {
                 $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
+                /*echo $player;
+                exit;*/
+                $getUserparent = User::where('id', $player->parentid)->first();
+                /*echo $getUserparent;
+                exit;*/
+                $ad = '-';
+                $sp = '-';
+                $smdl = '-';
+                $mdl = '-';
+                $dl = '-';
+                $com = '-';
+                if ($getUserparent->agent_level == 'AD') {
+                    $ad = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SP') {
+                    $sp = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SMDL') {
+                    $smdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'MDL') {
+                    $mdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'DL') {
+                    $dl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'COM') {
+                    $com = $getUserparent->user_name;
+                }
+                if (!empty($getUserparent->parentid)) {
+                    /*echo "aab->";
+                echo $getUserparent->parentid;
+                exit;*/
+                    $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
+                    if ($getUserparent2->agent_level == 'AD') {
+                        $ad = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SP') {
+                        $sp = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SMDL') {
+                        $smdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'MDL') {
+                        $mdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'DL') {
+                        $dl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'COM') {
+                        $com = $getUserparent2->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent2->parentid)) {
+                    $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
+                    if ($getUserparent3->agent_level == 'AD') {
+                        $ad = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SP') {
+                        $sp = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SMDL') {
+                        $smdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'MDL') {
+                        $mdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'DL') {
+                        $dl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'COM') {
+                        $com = $getUserparent3->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent3->parentid)) {
+
+                    $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
+
+                    if ($getUserparent4->agent_level == 'AD') {
+                        $ad = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SP') {
+                        $sp = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SMDL') {
+                        $smdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'MDL') {
+                        $mdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'DL') {
+                        $dl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'COM') {
+                        $com = $getUserparent4->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent4->parentid)) {
+                    $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
+
+                    if ($getUserparent5->agent_level == 'AD') {
+                        $ad = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SP') {
+                        $sp = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SMDL') {
+                        $smdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'MDL') {
+                        $mdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'DL') {
+                        $dl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'COM') {
+                        $com = $getUserparent5->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent5->parentid)) {
+                    $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
+
+                    if ($getUserparent6->agent_level == 'AD') {
+                        $ad = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SP') {
+                        $sp = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SMDL') {
+                        $smdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'MDL') {
+                        $mdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'DL') {
+                        $dl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'COM') {
+                        $com = $getUserparent6->user_name;
+                    }
+                }
+
                 $bet_type_cls = '';
                 $bet_type = '';
                 if ($bet->bet_side == 'lay') {
@@ -5253,6 +4948,7 @@ class SettingController extends Controller
                     $bet_type_cls = 'cyan-bg';
                     $bet_type = 'Back';
                 }
+
                 $is_delete = '';
                 if ($bet->isDeleted == 0) {
                     $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
@@ -5261,22 +4957,42 @@ class SettingController extends Controller
                     $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
                     $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
                 }
+
                 $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
                 $html .= '<tr class="' . $bet_type_cls . '">
-
-	                <td class="text-center"><b>' . ucfirst($player['first_name']) . '[' . $player['user_name'] . ']</b></td>
-	                <td class="text-center"><b>' . $bet->team_name . '</b></td>
-					<td class="text-center">' . $bet_type . '</td>
-	                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
-	                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
-	                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
-	                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>
-	                <td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
+			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
+                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
+                <td class="text-center"><b>' . $bet->team_name . '</b></td>
+				<td class="text-center">' . $bet_type . '</td>
+                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
+                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>
+                <td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
                 if ($loginUser->agent_level == 'COM') {
                     $html .= '<td id="action_' . $bet->id . '">
-		                	' . $is_delete . '
-		               	</td>';
+	                	' . $is_delete . '
+	               	</td>';
                 }
+                if ($loginUser->agent_level == 'COM') {
+                    $html .= '<td class="text-center">' . $com . '</td>';
+                }
+                if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
+                    $html .= '<td class="text-center">' . $ad . '</td>';
+                }
+                if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
+                    $html .= '<td class="text-center">' . $sp . '</td>';
+                }
+                if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
+                    $html .= '<td class="text-center">' . $smdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
+                    $html .= '<td class="text-center">' . $mdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
+                    $html .= '<td class="text-center">' . $dl . '</td>';
+                }
+
                 $html .= '</tr>';
             }
         } else {
@@ -5290,77 +5006,29 @@ class SettingController extends Controller
         $loginUser = Auth::user();
         $matchList = Match::where('match_id', $request->matchid)->first();
 
-        $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
-            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
-            ->get();
-        //echo"<pre>"; print_r($srhdata); exit;
-        if (!empty($srhdata)) {
-            foreach ($srhdata as $value) {
-                $child_array[] = $value->id;
-            }
+        if(!empty($request->search)){
+            $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+                ->pluck('id');
 
-            $html = '';
-            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->whereIn('user_id', $child_array)->orderby('id', 'DESC')->get();
-            foreach ($my_placed_bets as $bet) {
-                $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
-                $bet_type_cls = '';
-                $bet_type = '';
-                if ($bet->bet_side == 'lay') {
-                    $bet_type_cls = 'pink-bg';
-                    $bet_type = 'Lay';
-                } else {
-                    $bet_type_cls = 'cyan-bg';
-                    $bet_type = 'Back';
-                }
-                $is_delete = '';
-                if ($bet->isDeleted == 0) {
-                    $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-                    $is_delete .= '<a style="display:none" id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-                } else {
-                    $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
-                    $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
-                }
-                $html .= '<tr class="' . $bet_type_cls . '">
-
-	                <td class="text-center"><b>' . ucfirst($player['first_name']) . '[' . $player['user_name'] . ']</b></td>
-	                <td class="text-center"><b>' . $bet->team_name . '</b></td>
-					<td class="text-center">' . $bet_type . '</td>
-	                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
-	                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
-	                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
-	                <td><b>Matched</b></td>
-	                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>
-	                <td class="text-center">' . $matchList->event_id . '</td>
-	                <td class="text-center"><i class="fas fa-mobile text-color-red"></i></td>';
-                if ($loginUser->agent_level == 'COM') {
-                    $html .= '<td id="action_' . $bet->id . '">
-		                	' . $is_delete . '
-		               	</td>';
-                }
-                $html .= '</tr>';
+            if (!empty($srhdata)) {
+                $all_child[] = $srhdata->toArray();
+            }else{
+                $all_child = [];
             }
-        } else {
-            $html .= '<h3>No Record Found</h3>';
+        }else {
+            $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+
+            if (!empty($hirUser)) {
+                $all_child = explode(',', $hirUser->sub_user);
+            } else {
+                $all_child = $this->GetChildofAgent($ag_id);
+            }
         }
-        echo $html;
-    }
 
-    public function risk_management_fancy_search(Request $request)
-    {
-        $loginUser = Auth::user();
-        $matchList = Match::where('match_id', $request->matchid)->first();
-
-        $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
-            ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
-            ->get();
-        //echo"<pre>"; print_r($srhdata); exit;
-        if (!empty($srhdata)) {
-            foreach ($srhdata as $value) {
-                $child_array[] = $value->id;
-            }
-
-            $html = '';
-            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'SESSION')->where('result_declare', 0)->whereIn('user_id', $child_array)->orderby('id', 'DESC')->get();
+        $html_BM = '';
+        if (!empty($all_child)) {
+            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
             foreach ($my_placed_bets as $bet) {
                 $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
                 $bet_type_cls = '';
@@ -5372,6 +5040,134 @@ class SettingController extends Controller
                     $bet_type_cls = 'cyan-bg';
                     $bet_type = 'Back';
                 }
+
+                /*echo $player;
+                exit;*/
+                $getUserparent = User::where('id', $player->parentid)->first();
+                /*echo $getUserparent;
+                exit;*/
+                $ad = '-';
+                $sp = '-';
+                $smdl = '-';
+                $mdl = '-';
+                $dl = '-';
+                $com = '-';
+                if ($getUserparent->agent_level == 'AD') {
+                    $ad = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SP') {
+                    $sp = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SMDL') {
+                    $smdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'MDL') {
+                    $mdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'DL') {
+                    $dl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'COM') {
+                    $com = $getUserparent->user_name;
+                }
+                if (!empty($getUserparent->parentid)) {
+                    /*echo "aab->";
+                echo $getUserparent->parentid;
+                exit;*/
+                    $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
+                    if ($getUserparent2->agent_level == 'AD') {
+                        $ad = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SP') {
+                        $sp = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SMDL') {
+                        $smdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'MDL') {
+                        $mdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'DL') {
+                        $dl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'COM') {
+                        $com = $getUserparent2->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent2->parentid)) {
+                    /*	echo "aam->";
+              echo $getUserparent2->parentid;
+              exit;*/
+                    $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
+                    if ($getUserparent3->agent_level == 'AD') {
+                        $ad = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SP') {
+                        $sp = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SMDL') {
+                        $smdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'MDL') {
+                        $mdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'DL') {
+                        $dl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'COM') {
+                        $com = $getUserparent3->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent3->parentid)) {
+                    /*echo "aam->";
+              echo $getUserparent3->parentid;
+              exit;*/
+                    $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
+
+                    if ($getUserparent4->agent_level == 'AD') {
+                        $ad = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SP') {
+                        $sp = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SMDL') {
+                        $smdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'MDL') {
+                        $mdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'DL') {
+                        $dl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'COM') {
+                        $com = $getUserparent4->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent4->parentid)) {
+                    /*echo "aam->";
+              echo $getUserparent4->parentid;
+              exit;*/
+                    $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
+
+                    if ($getUserparent5->agent_level == 'AD') {
+                        $ad = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SP') {
+                        $sp = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SMDL') {
+                        $smdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'MDL') {
+                        $mdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'DL') {
+                        $dl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'COM') {
+                        $com = $getUserparent5->user_name;
+                    }
+                }
+
+                /*echo "-->".$ad;
+          exit;*/
+
+                if (!empty($getUserparent5->parentid)) {
+                    $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
+
+                    if ($getUserparent6->agent_level == 'AD') {
+                        $ad = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SP') {
+                        $sp = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SMDL') {
+                        $smdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'MDL') {
+                        $mdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'DL') {
+                        $dl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'COM') {
+                        $com = $getUserparent6->user_name;
+                    }
+                }
+
                 $is_delete = '';
                 if ($bet->isDeleted == 0) {
                     $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
@@ -5381,260 +5177,543 @@ class SettingController extends Controller
                     $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
                 }
                 $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
-                $html .= '<tr class="' . $bet_type_cls . '">
-	                <td class="text-center"><b>' . ucfirst($player['first_name']) . '[' . $player['user_name'] . ']</b></td>
-	                <td class="text-center"><b>' . $bet->team_name . '</b></td>
-					<td class="text-center">' . $bet_type . '</td>
-	                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
-					<td class="text-center"><b>' . $bet->bet_amount . '</b></td>
-	                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>';
+                $html_BM .= '<tr class="' . $bet_type_cls . '">
+			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
+                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
+                <td class="text-center"><b>' . $bet->team_name . '</b></td>
+				<td class="text-center">' . $bet_type . '</td>
+                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
+                <td><b>Matched</b></td>
+                <td>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</td>
+                <td class="text-center">' . $matchList->event_id . '</td>
+                <td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
                 if ($loginUser->agent_level == 'COM') {
-                    $html .= '<td id="action_' . $bet->id . '">
-		                	' . $is_delete . '
-						</td>';
+                    $html_BM .= '<td id="action_' . $bet->id . '">
+                	' . $is_delete . '
+               	</td>';
+                }
+                if ($loginUser->agent_level == 'COM') {
+                    $html_BM .= '<td class="text-center">' . $com . '</td>';
+                }
+                if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
+                    $html_BM .= '<td class="text-center">' . $ad . '</td>';
+                }
+                if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
+                    $html_BM .= '<td class="text-center">' . $sp . '</td>';
+                }
+                if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
+                    $html_BM .= '<td class="text-center">' . $smdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
+                    $html_BM .= '<td class="text-center">' . $mdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
+                    $html_BM .= '<td class="text-center">' . $dl . '</td>';
                 }
 
-                $html .= '<td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>
-	            </tr>';
+                $html_BM .= '</tr>';
             }
         } else {
-            $html .= '<h3>No Record Found</h3>';
+            $html_BM .= '<h3>No Record Found</h3>';
         }
-        echo $html;
+        echo $html_BM;
     }
+
+    public function risk_management_fancy_search(Request $request)
+    {
+        $loginUser = Auth::user();
+        $matchList = Match::where('match_id', $request->matchid)->first();
+
+        if(!empty($request->search)){
+            $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+                ->pluck('id');
+
+            if (!empty($srhdata)) {
+                $all_child[] = $srhdata->toArray();
+            }else{
+                $all_child = [];
+            }
+        }else {
+            $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+
+            if (!empty($hirUser)) {
+                $all_child = explode(',', $hirUser->sub_user);
+            } else {
+                $all_child = $this->GetChildofAgent($ag_id);
+            }
+        }
+
+        $html_Fancy = '';
+
+        if (!empty($all_child)) {
+            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'SESSION')->where('result_declare', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
+            foreach ($my_placed_bets as $bet) {
+                $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
+                $bet_type_cls = '';
+                $bet_type = '';
+                if ($bet->bet_side == 'lay') {
+                    $bet_type_cls = 'pink-bg';
+                    $bet_type = 'N';
+                } else {
+                    $bet_type_cls = 'cyan-bg';
+                    $bet_type = 'Y';
+                }
+                $getUserparent = User::where('id', $player->parentid)->first();
+                /*echo $getUserparent;
+                exit;*/
+                $ad = '-';
+                $sp = '-';
+                $smdl = '-';
+                $mdl = '-';
+                $dl = '-';
+                $com = '-';
+                if ($getUserparent->agent_level == 'AD') {
+                    $ad = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SP') {
+                    $sp = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SMDL') {
+                    $smdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'MDL') {
+                    $mdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'DL') {
+                    $dl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'COM') {
+                    $com = $getUserparent->user_name;
+                }
+                if (!empty($getUserparent->parentid)) {
+                    /*echo "aab->";
+                echo $getUserparent->parentid;
+                exit;*/
+                    $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
+                    if ($getUserparent2->agent_level == 'AD') {
+                        $ad = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SP') {
+                        $sp = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SMDL') {
+                        $smdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'MDL') {
+                        $mdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'DL') {
+                        $dl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'COM') {
+                        $com = $getUserparent2->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent2->parentid)) {
+                    /*	echo "aam->";
+              echo $getUserparent2->parentid;
+              exit;*/
+                    $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
+                    if ($getUserparent3->agent_level == 'AD') {
+                        $ad = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SP') {
+                        $sp = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SMDL') {
+                        $smdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'MDL') {
+                        $mdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'DL') {
+                        $dl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'COM') {
+                        $com = $getUserparent3->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent3->parentid)) {
+                    /*echo "aam->";
+              echo $getUserparent3->parentid;
+              exit;*/
+                    $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
+
+                    if ($getUserparent4->agent_level == 'AD') {
+                        $ad = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SP') {
+                        $sp = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SMDL') {
+                        $smdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'MDL') {
+                        $mdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'DL') {
+                        $dl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'COM') {
+                        $com = $getUserparent4->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent4->parentid)) {
+                    /*echo "aam->";
+              echo $getUserparent4->parentid;
+              exit;*/
+                    $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
+
+                    if ($getUserparent5->agent_level == 'AD') {
+                        $ad = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SP') {
+                        $sp = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SMDL') {
+                        $smdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'MDL') {
+                        $mdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'DL') {
+                        $dl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'COM') {
+                        $com = $getUserparent5->user_name;
+                    }
+                }
+
+                /*echo "-->".$ad;
+          exit;*/
+
+                if (!empty($getUserparent5->parentid)) {
+                    $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
+
+                    if ($getUserparent6->agent_level == 'AD') {
+                        $ad = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SP') {
+                        $sp = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SMDL') {
+                        $smdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'MDL') {
+                        $mdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'DL') {
+                        $dl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'COM') {
+                        $com = $getUserparent6->user_name;
+                    }
+                }
+                $is_delete = '';
+                if ($bet->isDeleted == 0) {
+                    $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
+                    $is_delete .= '<a style="display:none" id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
+                } else {
+                    $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
+                    $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
+                }
+
+                $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
+                $html_Fancy .= '<tr class="' . $bet_type_cls . '">
+			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
+                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
+                <td class="text-center"><b>' . $bet->team_name . '</b></td>
+				<td class="text-center">' . $bet_type . '</td>
+                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
+				<td><b>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</b></td>
+				<td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
+                if ($loginUser->agent_level == 'COM') {
+                    $html_Fancy .= '<td id="action_' . $bet->id . '">
+                	' . $is_delete . '
+               	</td>';
+                }
+                if ($loginUser->agent_level == 'COM') {
+                    $html_Fancy .= '<td class="text-center">' . $com . '</td>';
+                }
+                if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
+                    $html_Fancy .= '<td class="text-center">' . $ad . '</td>';
+                }
+                if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
+                    $html_Fancy .= '<td class="text-center">' . $sp . '</td>';
+                }
+                if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
+                    $html_Fancy .= '<td class="text-center">' . $smdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
+                    $html_Fancy .= '<td class="text-center">' . $mdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
+                    $html_Fancy .= '<td class="text-center">' . $dl . '</td>';
+                }
+                $html_Fancy .= '</tr>';
+            }
+        } else {
+            $html_Fancy .= '<h3>No Record Found</h3>';
+        }
+        echo $html_Fancy;
+    }
+
+    public function risk_management_premium_search(Request $request)
+    {
+        $loginUser = Auth::user();
+        $matchList = Match::where('match_id', $request->matchid)->first();
+
+        if(!empty($request->search)){
+            $srhdata = User::where('user_name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('first_name', 'LIKE', '%' . $request->search . '%')
+                ->pluck('id');
+
+            if (!empty($srhdata)) {
+                $all_child[] = $srhdata->toArray();
+            }else{
+                $all_child = [];
+            }
+        }else {
+            $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+
+            if (!empty($hirUser)) {
+                $all_child = explode(',', $hirUser->sub_user);
+            } else {
+                $all_child = $this->GetChildofAgent($ag_id);
+            }
+        }
+
+        $html_Fancy = '';
+
+        if (!empty($all_child)) {
+            $my_placed_bets = MyBets::where('match_id', $matchList['event_id'])->where('bet_type', 'PREMIUM')->where('result_declare', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
+            foreach ($my_placed_bets as $bet) {
+                $player = User::where('id', $bet->user_id)->where('agent_level', 'PL')->first();
+                $bet_type_cls = '';
+                $bet_type = '';
+                if ($bet->bet_side == 'lay') {
+                    $bet_type_cls = 'pink-bg';
+                    $bet_type = 'N';
+                } else {
+                    $bet_type_cls = 'cyan-bg';
+                    $bet_type = 'Y';
+                }
+                $getUserparent = User::where('id', $player->parentid)->first();
+                /*echo $getUserparent;
+                exit;*/
+                $ad = '-';
+                $sp = '-';
+                $smdl = '-';
+                $mdl = '-';
+                $dl = '-';
+                $com = '-';
+                if ($getUserparent->agent_level == 'AD') {
+                    $ad = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SP') {
+                    $sp = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'SMDL') {
+                    $smdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'MDL') {
+                    $mdl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'DL') {
+                    $dl = $getUserparent->user_name;
+                } elseif ($getUserparent->agent_level == 'COM') {
+                    $com = $getUserparent->user_name;
+                }
+                if (!empty($getUserparent->parentid)) {
+                    /*echo "aab->";
+                echo $getUserparent->parentid;
+                exit;*/
+                    $getUserparent2 = User::where('id', $getUserparent->parentid)->first();
+                    if ($getUserparent2->agent_level == 'AD') {
+                        $ad = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SP') {
+                        $sp = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'SMDL') {
+                        $smdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'MDL') {
+                        $mdl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'DL') {
+                        $dl = $getUserparent2->user_name;
+                    } elseif ($getUserparent2->agent_level == 'COM') {
+                        $com = $getUserparent2->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent2->parentid)) {
+                    /*	echo "aam->";
+              echo $getUserparent2->parentid;
+              exit;*/
+                    $getUserparent3 = User::where('id', $getUserparent2->parentid)->first();
+                    if ($getUserparent3->agent_level == 'AD') {
+                        $ad = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SP') {
+                        $sp = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'SMDL') {
+                        $smdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'MDL') {
+                        $mdl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'DL') {
+                        $dl = $getUserparent3->user_name;
+                    } elseif ($getUserparent3->agent_level == 'COM') {
+                        $com = $getUserparent3->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent3->parentid)) {
+                    /*echo "aam->";
+              echo $getUserparent3->parentid;
+              exit;*/
+                    $getUserparent4 = User::where('id', $getUserparent3->parentid)->first();
+
+                    if ($getUserparent4->agent_level == 'AD') {
+                        $ad = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SP') {
+                        $sp = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'SMDL') {
+                        $smdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'MDL') {
+                        $mdl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'DL') {
+                        $dl = $getUserparent4->user_name;
+                    } elseif ($getUserparent4->agent_level == 'COM') {
+                        $com = $getUserparent4->user_name;
+                    }
+                }
+
+                if (!empty($getUserparent4->parentid)) {
+                    /*echo "aam->";
+              echo $getUserparent4->parentid;
+              exit;*/
+                    $getUserparent5 = User::where('id', $getUserparent4->parentid)->first();
+
+                    if ($getUserparent5->agent_level == 'AD') {
+                        $ad = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SP') {
+                        $sp = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'SMDL') {
+                        $smdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'MDL') {
+                        $mdl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'DL') {
+                        $dl = $getUserparent5->user_name;
+                    } elseif ($getUserparent5->agent_level == 'COM') {
+                        $com = $getUserparent5->user_name;
+                    }
+                }
+
+                /*echo "-->".$ad;
+          exit;*/
+
+                if (!empty($getUserparent5->parentid)) {
+                    $getUserparent6 = User::where('id', $getUserparent5->parentid)->first();
+
+                    if ($getUserparent6->agent_level == 'AD') {
+                        $ad = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SP') {
+                        $sp = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'SMDL') {
+                        $smdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'MDL') {
+                        $mdl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'DL') {
+                        $dl = $getUserparent6->user_name;
+                    } elseif ($getUserparent6->agent_level == 'COM') {
+                        $com = $getUserparent6->user_name;
+                    }
+                }
+                $is_delete = '';
+                if ($bet->isDeleted == 0) {
+                    $is_delete .= '<a id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
+                    $is_delete .= '<a style="display:none" id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
+                } else {
+                    $is_delete .= '<a id="rollback_row_' . $bet->id . '" onclick="rollback_bet(' . $bet->id . ')" class="btn times_btn green-bg text-color-white"><i class="fas fa-check"></i></a>';
+                    $is_delete .= '<a style="display:none" id="delete_row_' . $bet->id . '" onclick="delete_bet(' . $bet->id . ')" class="btn times_btn red-bg text-color-white"><i class="fas fa-times"></i></a>';
+                }
+
+                $binfo = $bet->browser_details . ' &#013; ' . $bet->ip_address;
+                $html_Fancy .= '<tr class="' . $bet_type_cls . '">
+			    <td><input type="checkbox" id="select_all" name="filter-checkbox" value=""></td>
+                <td class="text-center"><b>' . ucfirst($player['user_name']) . '[' . $player['first_name'] . ']</b></td>
+                <td class="text-center"><b>' . $bet->team_name . '</b></td>
+				<td class="text-center">' . $bet_type . '</td>
+                <td class="text-center"><b>' . $bet->bet_odds . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_amount . '</b></td>
+                <td class="text-center"><b>' . $bet->bet_profit . '</b></td>
+				<td><b>' . date('d-m-Y H:i:s A', strtotime($bet->created_at)) . '</b></td>
+				<td class="text-center"><i class="fas fa-mobile text-color-red" data-toggle="tooltip" data-placement="top" title="' . $binfo . '"></i></td>';
+                if ($loginUser->agent_level == 'COM') {
+                    $html_Fancy .= '<td id="action_' . $bet->id . '">
+                	' . $is_delete . '
+               	</td>';
+                }
+                if ($loginUser->agent_level == 'COM') {
+                    $html_Fancy .= '<td class="text-center">' . $com . '</td>';
+                }
+                if ($loginUser->agent_level == 'AD' || $loginUser->agent_level == 'COM') {
+                    $html_Fancy .= '<td class="text-center">' . $ad . '</td>';
+                }
+                if ($loginUser->agent_level == 'SP' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD') {
+                    $html_Fancy .= '<td class="text-center">' . $sp . '</td>';
+                }
+                if ($loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP') {
+                    $html_Fancy .= '<td class="text-center">' . $smdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'MDL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL') {
+                    $html_Fancy .= '<td class="text-center">' . $mdl . '</td>';
+                }
+                if ($loginUser->agent_level == 'DL' || $loginUser->agent_level == 'COM' || $loginUser->agent_level == 'AD' || $loginUser->agent_level == 'SP' || $loginUser->agent_level == 'SMDL' || $loginUser->agent_level == 'MDL') {
+                    $html_Fancy .= '<td class="text-center">' . $dl . '</td>';
+                }
+                $html_Fancy .= '</tr>';
+            }
+        } else {
+            $html_Fancy .= '<h3>No Record Found</h3>';
+        }
+        echo $html_Fancy;
+    }
+
+    public static function getBlanceAmount($id)
+    {
+        $depTot = CreditReference::where('player_id', $id)->first();
+        $totBalance = $depTot['remain_bal'];
+        return $totBalance;
+    }
+
+    public function getUserAllMatchFancyExposer($userId){
+        $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
+            ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
+
+        $total_fancy_expo = 0;
+        foreach ($my_placed_bets as $bet) {
+            $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
+            $total_fancy_expo = $total_fancy_expo + $sessionexposer;
+        }
+
+        return $total_fancy_expo;
+    }
+
+    public function getUserExposer($userId){
+
+        $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer(0,$userId);
+//        $exposer = SELF::getExAmount('',$userId);
+        $exposer = $oddsBookmakerExposerArr['exposer'];
+        Log::info("exposer: " . $exposer . "\n");
+
+        $total_fancy_expo = $this->getUserAllMatchFancyExposer($userId);
+        Log::info("total_fancy_expo: " . $total_fancy_expo . "\n");
+
+        $casinoExposerCalculated = CasinoCalculationController::getCasinoExAmount($userId);
+
+        $casinoExposer =  $casinoExposerCalculated['exposer'];
+
+        Log::info("casinoExposer: " . $casinoExposer . "\n");
+
+        return ($exposer+$total_fancy_expo+$casinoExposer);
+    }
+
+    public function SaveBalance($userId)
+    {
+
+        $creditref = CreditReference::where(['player_id' => $userId])->first();
+
+        $balance = SELF::getBlanceAmount($userId);
+        $exposer = $this->getUserExposer($userId);
+
+        $upd = CreditReference::find($creditref['id']);
+        $upd->exposure = $exposer;
+        $upd->available_balance_for_D_W = ($balance - $exposer);
+        $upd->update();
+        return $exposer;
+    }
+
 
     public function delete_user_bet(Request $request)
     {
         $bid = $request->bid;
         $userData = MyBets::find($bid);
-        $expamt = $userData->exposureAmt;
-        $getc = CreditReference::where('player_id', $userData->user_id)->first();
-        $creid = $getc['id'];
-        $updc = CreditReference::find($creid);
-
-        //calculate original exposure for this match
-        $userId = $userData->user_id;
-        $event_id = $userData->match_id;
-//        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', 'ODDS')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-        $team2_bet_total = 0;
-        $team1_bet_total = 0;
-        $team_draw_bet_total = 0;
-
-        if (sizeof($my_placed_bets) > 0) {
-            foreach ($my_placed_bets as $bet) {
-                $abc = json_decode($bet->extra, true);
-                $total_team_count = count($abc);
-                if (!empty($abc)) {
-                    if (count($abc) >= 2) {
-                        if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
-                            //bet on draw
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_profit;
-                                }
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
-                            //bet on team1
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                }
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
-                            //bet on team2
-                            if ($bet->bet_side == 'back') {
-                                $team2_bet_total = $team2_bet_total + $bet->bet_profit; ///nnn 16-7-2021
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                }
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                            }
-                        }
-                    } else if (count($abc) == 1) {
-                        if (array_key_exists("teamname1", $abc)) {
-                            //bet on team2
-                            if ($bet->bet_side == 'back') {
-                                $team2_bet_total = $team2_bet_total + $bet->bet_profit;
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                            }
-                        } else {
-                            //bet on team1
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        $expo = min($team1_bet_total, $team2_bet_total, $team_draw_bet_total);
-        $original_expo = 0;
-        if ($expo < 0) {
-            $original_expo = $expo;
-        }
-
-        $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
-            ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
-
-        $original_total_fancy_expo = 0;
-        foreach ($my_placed_bets as $bet) {
-            $or_sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
-            $original_total_fancy_expo = $original_total_fancy_expo + $or_sessionexposer;
-        }
-
-        $userData = MyBets::find($bid);
         $userData->isDeleted = 1;
         $del = $userData->update();
         if ($del) {
-//            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', 'ODDS')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-            $team2_bet_total = 0;
-            $team1_bet_total = 0;
-            $team_draw_bet_total = 0;
-
-            if (sizeof($my_placed_bets) > 0) {
-                foreach ($my_placed_bets as $bet) {
-                    $abc = json_decode($bet->extra, true);
-                    $total_team_count = count($abc);
-                    if (!empty($abc)) {
-                        if (count($abc) >= 2) {
-                            if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
-                                //bet on draw
-                                if ($bet->bet_side == 'back') {
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_profit;
-                                    }
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                    }
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                                }
-                            } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
-                                //bet on team1
-                                if ($bet->bet_side == 'back') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                    }
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                    }
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                                }
-                            } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
-                                //bet on team2
-                                if ($bet->bet_side == 'back') {
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_profit; ///nnn 16-7-2021
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                    }
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                    }
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                }
-                            }
-                        } else if (count($abc) == 1) {
-                            if (array_key_exists("teamname1", $abc)) {
-                                //bet on team2
-                                if ($bet->bet_side == 'back') {
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_profit;
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                }
-                            } else {
-                                //bet on team1
-                                if ($bet->bet_side == 'back') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            $expo = min($team1_bet_total, $team2_bet_total, $team_draw_bet_total);
-            $new_expo = 0;
-            if ($expo < 0) {
-                $new_expo = $expo;
-            }
-
-            $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
-                ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
-
-            $total_fancy_expo = 0;
-            foreach ($my_placed_bets as $bet) {
-                $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
-                $total_fancy_expo = $total_fancy_expo + $sessionexposer;
-            }
-
-            $updc->exposure = ($getc->exposure - abs($original_expo) - $original_total_fancy_expo) + abs($new_expo) + $total_fancy_expo;
-            $updc->available_balance_for_D_W = ($getc->available_balance_for_D_W + abs($original_expo) + $original_total_fancy_expo) - abs($new_expo) - $total_fancy_expo;
-            $upd = $updc->update();
-
-            if ($upd)
-                return 'Success';
-            else
-                return 'Fail';
+            $this->SaveBalance($userData->user_id);
+            return 'Success';
         } else {
             return 'Fail';
         }
@@ -5745,277 +5824,16 @@ class SettingController extends Controller
     {
         $bid = $request->bid;
         $userData = MyBets::find($bid);
-        $expamt = $userData->exposureAmt;
-        $getc = CreditReference::where('player_id', $userData->user_id)->first();
-        $creid = $getc['id'];
-        $updc = CreditReference::find($creid);
-
-        //calculate original exposure for this match
-        $userId = $userData->user_id;
-        $event_id = $userData->match_id;
-        $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-        $team2_bet_total = 0;
-        $team1_bet_total = 0;
-        $team_draw_bet_total = 0;
-
-        if (sizeof($my_placed_bets) > 0) {
-            foreach ($my_placed_bets as $bet) {
-                $abc = json_decode($bet->extra, true);
-                $total_team_count = count($abc);
-                if (!empty($abc)) {
-                    if (count($abc) >= 2) {
-                        if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
-                            //bet on draw
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_profit;
-                                }
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
-                            //bet on team1
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                }
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
-                            //bet on team2
-                            if ($bet->bet_side == 'back') {
-                                $team2_bet_total = $team2_bet_total + $bet->bet_profit; ///nnn 16-7-2021
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                }
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                if (count($abc) >= 2) {
-                                    $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                }
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                            }
-                        }
-                    } else if (count($abc) == 1) {
-                        if (array_key_exists("teamname1", $abc)) {
-                            //bet on team2
-                            if ($bet->bet_side == 'back') {
-                                $team2_bet_total = $team2_bet_total + $bet->bet_profit;
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                            }
-                        } else {
-                            //bet on team1
-                            if ($bet->bet_side == 'back') {
-                                $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-                                $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                            }
-                            if ($bet->bet_side == 'lay') {
-                                $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        //echo $team1_bet_total.','.$team2_bet_total.','.$team_draw_bet_total; echo "<br>";
-        $expo = min($team1_bet_total, $team2_bet_total, $team_draw_bet_total);
-        $original_expo = 0;
-        if ($expo < 0) {
-            $original_expo = $expo;
-        }
-
-        $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
-            ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
-
-        $original_total_fancy_expo = 0;
-        foreach ($my_placed_bets as $bet) {
-            $or_sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
-            $original_total_fancy_expo = $original_total_fancy_expo + $or_sessionexposer;
-        }
-
-
-        $userData = MyBets::find($bid);
         $userData->isDeleted = 0;
         $del = $userData->update();
         if ($del) {
-            $my_placed_bets = MyBets::where('user_id', $userId)->where('match_id', $event_id)->where('bet_type', "!=", 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->orderby('id', 'DESC')->get();
-            $team2_bet_total = 0;
-            $team1_bet_total = 0;
-            $team_draw_bet_total = 0;
-
-            if (sizeof($my_placed_bets) > 0) {
-                foreach ($my_placed_bets as $bet) {
-                    $abc = json_decode($bet->extra, true);
-                    $total_team_count = count($abc);
-                    if (!empty($abc)) {
-                        if (count($abc) >= 2) {
-                            if (array_key_exists("teamname1", $abc) && array_key_exists("teamname2", $abc)) {
-                                //bet on draw
-                                if ($bet->bet_side == 'back') {
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_profit;
-                                    }
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                    }
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                                }
-                            } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname2", $abc)) {
-                                //bet on team1
-                                if ($bet->bet_side == 'back') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                    }
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                    }
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                                }
-                            } else if (array_key_exists("teamname3", $abc) && array_key_exists("teamname1", $abc)) {
-                                //bet on team2
-                                if ($bet->bet_side == 'back') {
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_profit; ///nnn 16-7-2021
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total - $bet->exposureAmt;
-                                    }
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                    if (count($abc) >= 2) {
-                                        $team_draw_bet_total = $team_draw_bet_total + $bet->bet_amount;
-                                    }
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                }
-                            }
-                        } else if (count($abc) == 1) {
-                            if (array_key_exists("teamname1", $abc)) {
-                                //bet on team2
-                                if ($bet->bet_side == 'back') {
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_profit;
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_amount;
-                                }
-                            } else {
-                                //bet on team1
-                                if ($bet->bet_side == 'back') {
-                                    $team1_bet_total = $team1_bet_total + $bet->bet_profit;
-                                    $team2_bet_total = $team2_bet_total - $bet->exposureAmt;
-                                }
-                                if ($bet->bet_side == 'lay') {
-                                    $team1_bet_total = $team1_bet_total - $bet->exposureAmt;
-                                    $team2_bet_total = $team2_bet_total + $bet->bet_amount;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            $expo = min($team1_bet_total, $team2_bet_total, $team_draw_bet_total);
-            $new_expo = 0;
-            if ($expo < 0) {
-                $new_expo = $expo;
-            }
-
-
-            $my_placed_bets = MyBets::select('user_id', 'match_id', 'bet_type', 'bet_side', 'bet_odds', 'bet_oddsk', 'bet_amount', 'bet_profit', 'team_name', 'exposureAmt')
-                ->where('user_id', $userId)->where('bet_type', 'SESSION')->where('isDeleted', 0)->where('result_declare', 0)->groupby('team_name', 'match_id')->orderBy('created_at', 'asc')->get();
-
-            $total_fancy_expo = 0;
-            foreach ($my_placed_bets as $bet) {
-                $sessionexposer = SELF::getAllSessionExposure($userId, $bet->team_name, $bet->match_id);
-                $total_fancy_expo = $total_fancy_expo + $sessionexposer;
-            }
-
-            $updc->exposure = ($getc->exposure - abs($original_expo) - $original_total_fancy_expo) + abs($new_expo) + $total_fancy_expo;
-            $updc->available_balance_for_D_W = ($getc->available_balance_for_D_W + abs($original_expo) + $original_total_fancy_expo) - abs($new_expo) - $total_fancy_expo;
-            $upd = $updc->update();
-
-
-//            $updc->exposure = $getc->exposure - abs($original_expo) + abs($new_expo);
-//            $updc->available_balance_for_D_W = $getc->available_balance_for_D_W + abs($original_expo) - abs($new_expo);
-//            $upd = $updc->update();
-            if ($upd)
-                return 'Success';
-            else
-                return 'Fail';
+            $this->SaveBalance($userData->user_id);
+            return 'Success';
         } else {
             return 'Fail';
         }
     }
 
-    /*public function rollback_user_bet(Request $request)
-	{
-		$bid=$request->bid;
-		$userData = MyBets::find($bid);
-		$expamt=$userData->exposureAmt;
-		$getc=CreditReference::where('player_id',$userData->user_id)->first();
-		$creid=$getc['id'];
-		$updc=CreditReference::find($creid);
-		$updc->exposure = $getc->exposure+$expamt;
-		$chk=$getc->available_balance_for_D_W-$expamt;
-		if($chk>0 && $getc->available_balance_for_D_W>0 && $getc->available_balance_for_D_W>$expamt)
-		{
-			$updc->available_balance_for_D_W = $getc->available_balance_for_D_W-$expamt;
-			$upd=$updc->update();
-			if($upd)
-			{
-				$userData = MyBets::find($bid);
-				$userData->isDeleted = 0;
-				$del=$userData->update();
-				if($del)
-					return 'Success';
-				else
-					return 'Fail';
-			}
-			else
-			{
-				return 'Fail';
-			}
-		}
-		else
-		{
-			return 'Fail';
-		}
-	}*/
     public function risk_management_details_ajax($id, Request $request)
     {
 
@@ -7055,7 +6873,8 @@ class SettingController extends Controller
             }
             $html .= '</table>';
             return $html;
-        } else {
+        }
+        else {
             $split = explode(" v ", $matchname);
             if (@count($split) > 0) {
                 $teamone = $split[0];
@@ -7175,7 +6994,7 @@ class SettingController extends Controller
 
         $agent = User::where('parentid', $getuser->id)->where('agent_level', '!=', 'PL')->get();
         $player = User::where('parentid', $getuser->id)->where('agent_level', 'PL')->orderBy('user_name')->get();
-        return view('backpanel/player-banking', compact('player', 'settings', 'balance'));
+        return view('backpanel.player-banking', compact('player', 'settings', 'balance'));
     }
 
     public function agent_banking()
@@ -7192,7 +7011,7 @@ class SettingController extends Controller
         }
         $agent = User::where('parentid', $getuser->id)->whereNotIn('agent_level', ['PL', 'SL'])->orderBy('user_name')->get();
 //        $player = User::where('parentid', $getuser->id)->where('agent_level', 'PL')->get();
-        return view('backpanel/agent-banking', compact('agent', 'settings', 'balance'));
+        return view('backpanel.agent-banking', compact('agent', 'settings', 'balance'));
     }
 
     public function addPlayerBanking(Request $request)
@@ -7690,7 +7509,20 @@ class SettingController extends Controller
         $sports = Sport::where('status', 'active')->where('sId', '4')->get();
         $matchList = Match::get();
 
-        return view('backpanel/manage_fancy', compact('sports', 'matchList'));
+        return view('backpanel.manage_fancy', compact('sports', 'matchList'));
+    }
+
+    public function managePremium()
+    {
+        $sports = Sport::where('status', 'active')->get();
+        $type= 'matches';
+        return view('backpanel.manage_premium', compact('sports','type'));
+    }
+    public function managePremiumHistory()
+    {
+        $sports = Sport::where('status', 'active')->get();
+        $type= 'history';
+        return view('backpanel.manage_premium', compact('sports','type'));
     }
 
     public function getFancyBetPosition($fancyName, $mid, $eventid, $uid, $fancy_result)
@@ -7799,6 +7631,110 @@ class SettingController extends Controller
 
         return response()->json(array('success'=> 'error'));
 
+    }
+
+    public static function getOddsAndBookmakerExposer($eventId=0,$userId=0,$betType='',$marketId=0){
+        $query = MyBets::select('my_bets.id','my_bets.user_id', 'my_bets.sportID', 'my_bets.created_at', 'match.*')->join('match', 'match.event_id', '=', 'my_bets.match_id')
+            ->where('my_bets.result_declare', 0)
+            ->where('my_bets.isDeleted', 0)
+            ->whereNull('match.winner')
+            ->orderBy('my_bets.id', 'Desc')
+            ->groupby('my_bets.match_id');
+
+        if($userId > 0){
+            $query->where("my_bets.user_id",$userId);
+        }
+
+        if($marketId > 0){
+            $query->where("my_bets.market_id",$marketId);
+        }
+
+        if(!empty($betType)){
+            $query->where("my_bets.bet_type",$betType);
+        }else{
+            $query->where('my_bets.bet_type', '!=', 'SESSION');
+        }
+
+        if($eventId!=0){
+            if(isset($conditionalParameters['match_id'])){
+                $query->where("my_bets.match_id",$conditionalParameters['match_id'], $eventId);
+            }else {
+                $query->where("my_bets.match_id", $eventId);
+            }
+        }
+
+        $sportsModel = $query->get();
+
+//        dd($sportsModel->toArray());
+
+        $exposerArray = [
+            'exposer' => 0
+        ];
+
+        foreach ($sportsModel as $bet) {
+
+            if($userId > 0){
+                $exAmtArr = self::getExAmountCricketAndTennisBackend('', $bet->event_id, $bet->user_id);
+            }else{
+                $exAmtArr = self::getExAmountCricketAndTennisBackend('', $bet->event_id, '');
+            }
+
+            if (isset($exAmtArr['ODDS'])) {
+                $arr = array();
+                foreach ($exAmtArr['ODDS'] as $key => $profitLos) {
+                    if ($profitLos['ODDS_profitLost'] < 0) {
+                        $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                    }
+                }
+                if (is_array($arr) && count($arr) > 0) {
+                    $exposerArray['exposer'] += max($arr);
+                }
+
+                $exposerArray['ODDS'] = $exAmtArr['ODDS'];
+            }
+
+            if (isset($exAmtArr['BOOKMAKER'])) {
+                $arrB = array();
+                foreach ($exAmtArr['BOOKMAKER'] as $key => $profitLos) {
+                    if ($profitLos['BOOKMAKER_profitLost'] < 0) {
+                        $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                    }
+                }
+
+                $exposerArray['BOOKMAKER'] = $exAmtArr['BOOKMAKER'];
+
+                if (is_array($arrB) && count($arrB) > 0) {
+                    $exposerArray['exposer'] += max($arrB);
+                }
+            }
+
+            if (isset($exAmtArr['PREMIUM'])) {
+
+                foreach ($exAmtArr['PREMIUM'] as $marketName => $teams) {
+                    $arrB = array();
+                    if(($marketId > 0 && $marketName == $marketId) || $marketId <= 0) {
+                        foreach ($teams as $key => $profitLos) {
+                            if ($profitLos['PREMIUM_profitLost'] < 0) {
+                                $arrB[abs($profitLos['PREMIUM_profitLost'])] = abs($profitLos['PREMIUM_profitLost']);
+                                $exAmtArr['PREMIUM'][$marketName][$key]['PREMIUM_profitLost'] = abs($profitLos['PREMIUM_profitLost']);
+                            } else {
+                                $exAmtArr['PREMIUM'][$marketName][$key]['PREMIUM_profitLost'] = ($profitLos['PREMIUM_profitLost']) * -1;
+                            }
+                        }
+                        if (is_array($arrB) && count($arrB) > 0) {
+                            $exposerArray['exposer'] += max($arrB);
+                        }
+                    }
+                }
+                if($marketId > 0){
+                    $exposerArray['PREMIUM'][$marketId] = $exAmtArr['PREMIUM'][$marketId];
+                }else {
+                    $exposerArray['PREMIUM'] = $exAmtArr['PREMIUM'];
+                }
+            }
+        }
+
+        return $exposerArray;
     }
 
     public function updateFancyResultRollback($id)
@@ -8104,13 +8040,31 @@ class SettingController extends Controller
 
 //        dd($match->toArray());
 
-        return view('backpanel/managefancy-history-details', compact('match'));
+        return view('backpanel.managefancy-history-details', compact('match'));
+    }
+
+    public function managePremiumDetail($id)
+    {
+        $match = Match::where('id', $id)->first();
+
+        $bets = MyBets::where('match_id', $match->event_id)->where('bet_type', 'PREMIUM')->whereNull('winner')->groupBy('my_bets.market_id')->get();
+
+        return view('backpanel.manage-premium-details', compact('match','bets'));
+    }
+
+    public function managePremiumHistoryDetail($id)
+    {
+        $match = Match::where('id', $id)->first();
+
+        $bets = MyBets::where('match_id', $match->event_id)->where('bet_type', 'PREMIUM')->whereNotNull('winner')->groupBy('my_bets.market_id')->get();
+
+        return view('backpanel.manage-premium-history-details', compact('match','bets'));
     }
 
     public function fancyHistoryDetail($id)
     {
         $fancyResult = FancyResult::where('match_id', $id)->get();
-        return view('backpanel/fancyHistoryDetail', compact('fancyResult'));
+        return view('backpanel.fancyHistoryDetail', compact('fancyResult'));
     }
 
     public function fancyuser($id)
@@ -8118,7 +8072,7 @@ class SettingController extends Controller
         $fancyResult = FancyResult::where('id', $id)->first();
         $betdata = MyBets::where('match_id', $fancyResult->eventid)->where('team_name', $fancyResult->fancy_name)->get();
 
-        return view('backpanel/fancyuser', compact('betdata'));
+        return view('backpanel.fancyuser', compact('betdata'));
     }
 
     public function getFancy($id)
@@ -8169,7 +8123,7 @@ class SettingController extends Controller
 
 //        dd($sports->toArray());
 
-        return view('backpanel/sports-list', compact('sports'));
+        return view('backpanel.sports-list', compact('sports'));
     }
 
     public function resultRollbackMatch(Request $request)
@@ -8503,6 +8457,25 @@ class SettingController extends Controller
             echo 'Fail';
     }
 
+    public function saveMatchPremiumMinMaxLimit(Request $request)
+    {
+
+        $settingData = Match::find($request->fid);
+        if($request->has('min')){
+            $settingData->min_premium_limit = $request->min;
+        }
+
+        if($request->has('max')){
+            $settingData->max_premium_limit = $request->max;
+        }
+
+        $upd = $settingData->update();
+        if ($upd)
+            echo 'Success';
+        else
+            echo 'Fail';
+    }
+
     public function saveMatchBmMinLimit(Request $request)
     {
         $fid = $request->fid;
@@ -8565,7 +8538,9 @@ class SettingController extends Controller
 
     public static function getExAmountCricketAndTennisBackend($sportID = '', $matchid = '', $userID = '')
     {
-        if (empty($sportID) && empty($matchid)) {
+        if (empty($sportID) && empty($userID)) {
+            $myBetsModel = MyBets::where(['match_id' => $matchid, 'active' => 1, 'isDeleted' => 0, 'result_declare' => 0])->orderby('id', 'DESC')->get();
+        }else if (empty($sportID) && empty($matchid)) {
             $myBetsModel = MyBets::where(['user_id' => $userID, 'active' => 1, 'isDeleted' => 0, 'result_declare' => 0])->orderby('id', 'DESC')->get();
         } elseif (empty($matchid)) {
             $myBetsModel = MyBets::where(['sportID' => $sportID, 'user_id' => $userID, 'active' => 1, 'isDeleted' => 0, 'result_declare' => 0])->orderby('id', 'DESC')->get();
@@ -8574,6 +8549,9 @@ class SettingController extends Controller
         } else {
             $myBetsModel = MyBets::where(['sportID' => $sportID, 'match_id' => $matchid, 'user_id' => $userID, 'active' => 1, 'isDeleted' => 0, 'result_declare' => 0])->orderby('id', 'DESC')->get();
         }
+
+//        dd($matchid,$userID,$myBetsModel->toArray());
+
         $response = array();
         $arr = array();
         foreach ($myBetsModel as $key => $bet) {
@@ -8718,7 +8696,52 @@ class SettingController extends Controller
                     }
                     break;
                 }
+                case 'PREMIUM':
+                {
 
+                    if ($bet['bet_side'] == 'lay') {
+                        $profitAmt = $bet['exposureAmt'];
+                        $profitAmt = ($profitAmt * (-1));
+
+                        foreach ($extra as $teamName){
+
+                            if($teamName == $bet['team_name']) {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] = $profitAmt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] += $profitAmt;
+                                }
+                            }else {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] = $bet['bet_amount'];
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] += $bet['bet_amount'];
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $profitAmt = $bet['bet_profit']; ////nnn
+                        $bet_amt = ($bet['bet_amount'] * (-1));
+
+                        foreach ($extra as $teamName){
+                            if($teamName == $bet['team_name']) {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] = $profitAmt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$bet['team_name']]['PREMIUM_profitLost'] += $profitAmt;
+                                }
+                            }else {
+                                if (!isset($response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'])) {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] = $bet_amt;
+                                } else {
+                                    $response['PREMIUM'][$bet['market_id']][$teamName]['PREMIUM_profitLost'] += $bet_amt;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
             }
         }
         return $response;
@@ -11106,7 +11129,7 @@ class SettingController extends Controller
             $agent = User::where('parentid', $getuser->id)->where('agent_level', '!=', 'PL')->get();
             $player = User::where('parentid', $getuser->id)->where('agent_level', 'PL')->get();
         }
-        return view('backpanel/downline_list', compact('agent', 'player'));
+        return view('backpanel.downline_list', compact('agent', 'player'));
     }
 
     public function getAgentChildAgent(Request $request)
@@ -11241,7 +11264,7 @@ class SettingController extends Controller
     public function managetv()
     {
         $tv = ManageTv::latest()->first();
-        return view('backpanel/managetv', compact('tv'));
+        return view('backpanel.managetv', compact('tv'));
     }
 
     public function addManageTv(Request $request)
@@ -11349,13 +11372,13 @@ class SettingController extends Controller
             ]);
         }
         $banner = Banner::get();
-        return view('backpanel/socialmedia', compact('sm', 'banner'));
+        return view('backpanel.socialmedia', compact('sm', 'banner'));
     }
 
     public function banner()
     {
         $banner = Banner::get();
-        return view('backpanel/banner', compact('banner'));
+        return view('backpanel.banner', compact('banner'));
     }
 
     public function delBanner($id)
@@ -11516,7 +11539,7 @@ class SettingController extends Controller
     public function websetting()
     {
         $list = Website::get();
-        return view('backpanel/websetting', compact('list'));
+        return view('backpanel.websetting', compact('list'));
     }
 
     public function addWebsite(Request $request)
@@ -11586,7 +11609,7 @@ class SettingController extends Controller
     public function WebsettingData($id)
     {
         $list = Website::where('id', $id)->first();
-        return view('backpanel/editwebsetting', compact('list'));
+        return view('backpanel.editwebsetting', compact('list'));
     }
 
     public function updateWebsettingData(Request $request)

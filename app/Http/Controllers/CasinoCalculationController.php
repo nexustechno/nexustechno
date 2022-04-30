@@ -450,7 +450,6 @@ class CasinoCalculationController extends Controller
             $upd = CreditReference::where('player_id', $bet->user_id)->first();
             $cExoser = $upd->exposure;
             $available_balance = $upd->available_balance_for_D_W;
-
             $upd->exposure = $upd->exposure - $totalExposer;
 
             $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposerToBeReturn));
@@ -563,8 +562,6 @@ class CasinoCalculationController extends Controller
                     }
                 }
             }
-
-//            dd($bet->toArray(),$winner);
 
             CasinoBet::where('casino_name',$bet->casino_name)->where("roundid",$bet->roundid)->update(['winner'=>$winner]);
         }

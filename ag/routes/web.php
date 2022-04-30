@@ -185,6 +185,7 @@ Route::group(['middleware' => ['backendnexusapi','auth']], function () {
     Route::post('risk_management_odds_search', 'SettingController@risk_management_odds_search')->name('risk_management_odds_search');
     Route::post('risk_management_bm_search', 'SettingController@risk_management_bm_search')->name('risk_management_bm_search');
     Route::post('risk_management_fancy_search', 'SettingController@risk_management_fancy_search')->name('risk_management_fancy_search');
+    Route::post('risk_management_premium_search', 'SettingController@risk_management_premium_search')->name('risk_management_premium_search');
 // block unblock
     Route::get('blockMatch/{id}', 'SettingController@blockMatch')->name('blockMatch');
     Route::get('unblockMatch/{id}', 'SettingController@unblockMatch')->name('unblockMatch');
@@ -222,8 +223,14 @@ Route::group(['middleware' => ['backendnexusapi','auth']], function () {
     Route::post('saveMatchAction', 'SettingController@saveMatchAction')->name('saveMatchAction');
     Route::post('saveMatchOddsLimit', 'SettingController@saveMatchOddsLimit')->name('saveMatchOddsLimit');
     Route::get('manage_fancy', 'SettingController@manage_fancy')->name('manage_fancy');
+    Route::get('manage/premium', 'SettingController@managePremium')->name('manage.premium');
+    Route::get('manage/premium/history', 'SettingController@managePremiumHistory')->name('manage.premium.history');
     Route::get('manageFancyDetail/{id}', 'SettingController@manageFancyDetail')->name('manageFancyDetail');
+    Route::get('manage/premium/detail/{id}', 'SettingController@managePremiumDetail')->name('manage.premium.detail');
+    Route::get('manage/premium/history/{id}', 'SettingController@managePremiumHistoryDetail')->name('manage.premium.history.detail');
     Route::post('getFancy/{id}', 'SettingController@getFancy')->name('getFancy');
+    Route::post('premium/result/declare', 'SettingController@premiumResultDeclare')->name('premiumResultDeclare');
+    Route::post('premium/result/rollback', 'SettingController@premiumResultRollback')->name('premiumResultRollback');
     Route::post('resultDeclare', 'SettingController@resultDeclare')->name('resultDeclare');
     Route::post('resultDeclarecancel', 'SettingController@resultDeclarecancel')->name('resultDeclarecancel');
     Route::post('saveMatchBetsMinLimit', 'SettingController@saveMatchBetsMinLimit')->name('saveMatchBetsMinLimit');
@@ -232,6 +239,7 @@ Route::group(['middleware' => ['backendnexusapi','auth']], function () {
     Route::post('saveMatchBmMaxLimit', 'SettingController@saveMatchBmMaxLimit')->name('saveMatchBmMaxLimit');
     Route::post('saveMatchFancyMinLimit', 'SettingController@saveMatchFancyMinLimit')->name('saveMatchFancyMinLimit');
     Route::post('saveMatchFancyMaxLimit', 'SettingController@saveMatchFancyMaxLimit')->name('saveMatchFancyMaxLimit');
+    Route::post('saveMatchPremiumMinMaxLimit', 'SettingController@saveMatchPremiumMinMaxLimit')->name('saveMatchPremiumMinMaxLimit');
     Route::post('decideMatchWinner', 'SettingController@decideMatchWinner')->name('decideMatchWinner');
     Route::post('delete_user_bet', 'SettingController@delete_user_bet')->name('delete_user_bet');
     Route::post('rollback_user_bet', 'SettingController@rollback_user_bet')->name('rollback_user_bet');

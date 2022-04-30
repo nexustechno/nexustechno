@@ -517,13 +517,15 @@
                                                           bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                           :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
 
-                                    <cricketoddsfancy status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                    <cricketoddsfancy stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                       bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                       clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
                                                       infoicon="{{ asset('asset/front/img/info-icon.png') }}"
                                                       min_bet_fancy_limit="{{$oddsLimit['min_fancy_limit']}}"
                                                       max_bet_fancy_limit="{{ $oddsLimit['max_fancy_limit'] }}"
+                                                      max_premium_limit="{{$oddsLimit['max_premium_limit']}}"
+                                                      min_premium_limit="{{ $oddsLimit['min_premium_limit'] }}"
                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                       :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
 
@@ -537,6 +539,18 @@
                                                       min_bet_odds_limit="{{ $oddsLimit['min_bet_odds_limit'] }}"
                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                       :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
+
+                                    <cricketoddsfancy stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                                      pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
+                                                      bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
+                                                      clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
+                                                      infoicon="{{ asset('asset/front/img/info-icon.png') }}"
+                                                      min_bet_fancy_limit="{{$oddsLimit['min_fancy_limit']}}"
+                                                      max_bet_fancy_limit="{{ $oddsLimit['max_fancy_limit'] }}"
+                                                      max_premium_limit="{{$oddsLimit['max_premium_limit']}}"
+                                                      min_premium_limit="{{ $oddsLimit['min_premium_limit'] }}"
+                                                      bar_image="{{ asset('asset/front/img/bars.png') }}"
+                                                      :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
                                 @endif
                             @else
                                 <p class="text-center p-2">No data available!</p>
@@ -594,108 +608,8 @@
                                     <ul class="betslip_head lightblue-bg1">
                                         <li class="col-bet"><strong>Matched</strong></li>
                                     </ul>
-                                    <div id="divbetlist">
-
-                                        @php
-                                            $j=0; $k=0;
-                                        @endphp
-                                        @foreach($my_placed_bets_all as $bet)
-                                            @if($bet->bet_side=='back')
-                                                @if($j==0)
-                                                    <ul class="betslip_head">
-                                                        <li class="col-bet bet_type_uppercase">Back (Bet For)</li>
-                                                        <li class="col-odd">Odds</li>
-                                                        <li class="col-stake">Stake</li>
-                                                        <li class="col-profit">Profit</li>
-                                                    </ul>
-                                                @endif
-                                                <div class="betslip_box light-blue-bg-1" id="backbet">
-                                                    <div class="betn">
-                                                        <span class="slip_type lightblue-bg2">
-                                                            @if($bet->bet_type=='ODDS' || $bet->bet_type=='BOOKMAKER')
-                                                                BACK
-                                                            @elseif($bet->bet_type=='SESSION')
-                                                                YES
-                                                            @endif
-                                                        </span>
-                                                        <span class="shortamount">{{$bet->team_name}}</span>
-                                                        <span>
-                                                            {{$bet->bet_type}}
-                                                        </span>
-                                                    </div>
-                                                    <div class="col-odd text-color-blue-2 text-center">
-                                                        @if(!empty($bet->bet_oddsk))
-                                                            {{$bet->bet_odds}}
-                                                            <br>
-                                                            ({{$bet->bet_oddsk}})
-                                                        @else
-                                                            {{$bet->bet_odds}}
-                                                        @endif
-
-                                                    </div>
-                                                    <div class="col-stake text-color-blue-2 text-center">
-                                                        {{($bet->bet_amount)}}
-                                                    </div>
-                                                    <div class="col-profit">
-                                                        @if($bet->bet_type=='ODDS')
-                                                            {{($bet->bet_profit)}}
-                                                        @elseif($bet->bet_type=='SESSION')
-                                                            {{($bet->bet_profit)}}
-                                                        @elseif($bet->bet_type=='BOOKMAKER')
-                                                            {{(number_format($bet->bet_profit,2))}}
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                @php $j++  @endphp
-                                            @endif
-                                        @endforeach
-                                        @foreach($my_placed_bets_all as $bet)
-                                            @if($bet->bet_side=='lay')
-                                                @if($k==0)
-                                                    <ul class="betslip_head">
-                                                        <li class="col-bet bet_type_uppercase">Lay (Bet Against)</li>
-                                                        <li class="col-odd">Odds</li>
-                                                        <li class="col-stake">Stake</li>
-                                                        <li class="col-profit">Liability</li>
-                                                    </ul>
-                                                @endif
-                                                <div class="betslip_box lightpink-bg2" id="laybet">
-                                                    <div class="betn">
-                                                    <span class="slip_type lightpink-bg1">
-                                                        @if($bet->bet_type=='ODDS' || $bet->bet_type=='BOOKMAKER')
-                                                            LAY
-                                                        @elseif($bet->bet_type=='SESSION')
-                                                            NO
-                                                        @endif</span>
-                                                        <span class="shortamount">{{$bet->team_name}}</span>
-                                                        <span>{{$bet->bet_type}}</span>
-                                                    </div>
-                                                    <div class="col-odd text-color-blue-2 text-center">
-                                                        @if(!empty($bet->bet_oddsk))
-                                                            {{$bet->bet_odds}}
-                                                            <br>
-                                                            ({{$bet->bet_oddsk}})
-                                                        @else
-                                                            {{$bet->bet_odds}}
-                                                        @endif
-                                                    </div>
-                                                    <div class="col-stake text-color-blue-2 text-center">
-                                                        {{($bet->bet_amount)}}
-                                                    </div>
-                                                    <div class="col-profit">
-                                                        @if($bet->bet_type=='ODDS')
-                                                            {{($bet->exposureAmt)}}
-                                                        @elseif($bet->bet_type=='SESSION')
-                                                            {{($bet->exposureAmt)}}
-                                                            {{--                                                        {{$bet->bet_oddsk}}--}}
-                                                        @elseif($bet->bet_type=='BOOKMAKER')
-                                                            {{(number_format($bet->exposureAmt,2))}}
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                @php $k++ @endphp
-                                            @endif
-                                        @endforeach
+                                    <div id="divbetlist5">
+                                        asdsadasasd
                                     </div>
                                     <ul class="slip-option">
                                         <li>
@@ -713,7 +627,7 @@
         </div>
         <div class="modal rulesfancy_betsmodal" id="rulesFancyBetsModal">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content p-    0">
                     <div class="modal-header black-bg3">
                         <h4 class="modal-title text-color-yellow1">Rules of Fancy Bets</h4>
                         <button type="button" class="close" data-dismiss="modal"><img
@@ -1289,7 +1203,7 @@
             });
         }
 
-        function loadDetailPageContent() {
+        function loadDetailPageContent555() {
             var fancystack = $('#inputStake_mobile').val();
 
             var _token = $("input[name='_token']").val();
@@ -1898,10 +1812,11 @@
 
             if (getUser != '') {
                 getBalance();
+
                 var match_sel = $('#select_bet_on_match').val();
-                if (match_sel == "") {
+                if (match_sel == "" || match_sel == null)
                     match_sel = '{{$match->event_id}}~~' + 'All';
-                }
+
                 call_display_bet_list(match_sel);
             }
             var hid_fancy = $('#hid_fancy').val();
@@ -1981,65 +1896,26 @@
         });
 
         $(document).ready(function () {
-            //ScoreBoard();
-            // loadDetailPageContent();
-
             if (getUser != '') {
-
                 setInterval(function () {
                     matchDeclareRedirect();
-                    //ScoreBoard();
-
-                    var match_sel = $('#select_bet_on_match').val();
-                    if (match_sel == "") {
-                        match_sel = '{{$match->event_id}}~~' + 'All';
-                    }
-                    call_display_bet_list(match_sel);
-
                 }, 10000);
-
-                // setInterval(function () {
-                //     loadDetailPageContent();
-                // }, 1000);
             }
 
             $(document).on("click", '.openfancymodel_dynamic', function (event) {
                 var id = $(this).data("target");
                 $('#opened_fancy_model_id').val(id);
             });
-            // $(document).on("click", '.modelclose', function (event) {
-            //     $('#opened_fancy_model_id').val('');
-            //     $(mid).modal('hide');
-            // });
-            //default call
-            var _token = $("input[name='_token']").val();
-            var match_type = '{{$match->sports_id}}';
-            var matchid = '{{$match->match_id}}';
-            var matchname = '{{$match->match_name}}';
-            var event_id = '{{$match->event_id}}';
-            var match_id = '{{$match->id}}';
-            var match_m = '{{$match->suspend_m}}';
-            var match_b = '{{$match->suspend_b}}';
-            var match_f = '{{$match->suspend_f}}';
 
             setInterval(function () {
                 $("td").removeClass("spark");
                 $("td").removeClass("sparkLay");
             }, 500);
-            /*setInterval(function() {
-            $(".alert").alert('close');
-        }, 1000);*/
 
             $('#odds_val').val(' ');
             $('#inputStake').val(' ');
             document.getElementById('betform').reset();
-            $("#collapseExample1").load(location.href + " #collapseExample1");
         });
-
-        //function ScoreBoard()
-        //{
-
-        //}
 
         function opnForm(vl) {
             if (getUser == undefined || getUser == null || getUser == '') {
@@ -5642,6 +5518,7 @@
 
             $("#odds_val").attr('readonly', true);
         });
+
         $(document).on('click', '.FancyLay', function () {
 
             var teamname1 = $('.team1').text();
@@ -5668,24 +5545,25 @@
                 type: "POST",
                 url: '{{route("GetOtherMatchBet")}}',
                 data: {
-                    match_id: dval,
-                    _token: _token
+                    _token: _token,
+                    match_id: dval
                 },
                 timeout: 10000,
                 success: function (data) {
-
-                    $('#divbetlist').html(data);
+                    $('#divbetlist5').html(data);
                 }
             });
         }
 
-        setTimeout(() => {
-            var match_sel = $('#select_bet_on_match').val();
-            if (match_sel == "" || match_sel == null)
-                match_sel = '{{$match->event_id}}~~' + 'All';
+        $(document).ready(function () {
+            // setTimeout( () => {
+                var match_sel = $('#select_bet_on_match').val();
+                if (match_sel == "" || match_sel == null)
+                    match_sel = '{{$match->event_id}}~~' + 'All';
 
-            call_display_bet_list(match_sel);
-        }, 10);
+                call_display_bet_list(match_sel);
+            // }, 100);
+        });
 
         function saveBetcall(confirmBet) {
             var bet_type = $('#betTypeAdd').val();
@@ -5863,6 +5741,7 @@
                     return false;
                 }
             }
+
             if (bet_type == 'ODDS' || bet_type == 'BOOKMAKER') {
                 if (bet_odds == '' || bet_odds <= 0 || isNaN(bet_odds)) {
                     var width = $(window).width();
@@ -6994,6 +6873,7 @@
             }
         });
     </script>
+
     <script type="text/javascript">
 
         // odds
@@ -7386,30 +7266,6 @@
     </script>
 
     <script defer>
-        if(this.sports_id == 4) {
-            var LaravelEcho = window.Echo;
-        }else{
-            var LaravelEcho = window.Echo2;
-        }
-
-        // LaravelEcho.connector.socket.on('connect', function() {
-        //     console.log('info', `Echo server running`);
-        // })
-        // LaravelEcho.connector.socket.on('disconnect', function() {
-        //     alert(`Echo server disconnected`);
-        //     console.log('warn', `Echo server disconnected`);
-        //
-        //     $.ajax({
-        //         type: "GET",
-        //         url: '/api/disconnect/match',
-        //         data: {},
-        //         timeout: 10000,
-        //         success: function (data) {
-        //             console.log(data);
-        //         }
-        //     });
-        // });
-
         lifecycle.addEventListener('statechange', function(event) {
             // console.log(event.oldState, event.newState);
             var match_id = '{{$match->match_id}}';

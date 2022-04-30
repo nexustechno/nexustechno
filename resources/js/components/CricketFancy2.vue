@@ -1,23 +1,29 @@
 <template>
     <div v-if="!loading" class="fancy-section">
-        <div id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px">
-            <div id="fancyBetHead" class="" :class="fancyType=='premium' ? 'sportsbook_bet-head':'fancy_bet-head'" style="">
-<!--                <template v-if="fancyType=='premium'">-->
-<!--                    <h4 @click="fancyType='premium'" class="fa-in-play">-->
-<!--                        <span>Premium F</span>-->
-<!--                        <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>-->
-<!--                    </h4>-->
-<!--                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='general'">Fancy Bet</a>-->
-<!--                </template>-->
-                <template >
+        <div id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px" v-if="t4.length > 0 || match.t3.length > 0">
+            <div id="fancyBetHead" class=""  :class="fancyType=='premium' ? 'sportsbook_bet-head':'fancy_bet-head'" style="">
+                <template v-if="fancyType=='premium'">
+                    <h4 @click="fancyType='premium'" v-if="t4.length > 0" class="fa-in-play">
+                        <span>Premium</span>
+                        <a href="#feeds_premium" data-toggle="collapse" class="btn-head_rules">Rules</a>
+                        <div id="feeds_premium" class="collapse premium_minmax_info text-left">
+                            <dl>
+                                <dt>Min / Max</dt>
+                                <dd> {{min_premium_limit}} / {{max_premium_limit}} </dd>
+                            </dl>
+                        </div>
+                    </h4>
+                    <a id="showSportsBookBtn" v-if="match.t3.length > 0" class="other-tab" style="" @click="fancyType='general'">Fancy Bet</a>
+                </template>
+                <template v-else>
                     <h4 @click="fancyType='general'" class="fa-in-play">
                         <span>Fancy Bet</span>
                         <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
                     </h4>
-<!--                    <a id="showSportsBookBtn" class="other-tab" style="" @click="fancyType='premium'"><span class="tag-new">New</span>Premium F</a>-->
+                    <a id="showSportsBookBtn" class="other-tab" style="" v-if="t4.length > 0" @click="fancyType='premium'"><span class="tag-new">New</span>Premium</a>
                 </template>
             </div>
-            <div id="fancyBetTabWrap" :class="fancyType" class="fancy_bet_tab-wrap" style="">
+            <div id="fancyBetTabWrap" v-if="t4.length > 0 || match.t3.length > 0" :class="fancyType" class="fancy_bet_tab-wrap" style="">
                 <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-all" role="tab" aria-controls="pills-all" aria-selected="true">All</a>
@@ -41,14 +47,14 @@
             </div>
         </div>
 
-        <p v-if="fancyType=='general' && match.t3!=undefined" class="fancyBetSpecialBet">
+        <p v-if="fancyType=='general' && match.t3!=undefined && match.t3.length > 0" class="fancyBetSpecialBet">
             <i class="fas fa-thumbtack"></i>
             Fancy Bet
         </p>
 
-        <table v-if="fancyType=='general' && match.t3!=undefined" class="table custom-table inplay-table w1-table " id="inplay-tableblock-fancy" style="margin-top:0px;">
+        <table v-if="match.t3!=undefined" :class="fancyType=='premium' ? 'collapse':'' " class="table custom-table inplay-table w1-table " id="inplay-tableblock-fancy" style="margin-top:0px;">
             <tbody>
-            <tr class="bets-fancy desktop-ui-tr white-bg">
+            <tr class="bets-fancy desktop-ui-tr white-bg" v-if="match.t3.length > 0">
                 <td colspan="3">
                     <div class="minmax-txt minmaxmobile" style="padding-left:0px">
                         <span>Min</span>
@@ -92,7 +98,7 @@
                 </td>
                 <td colspan="1"></td>
             </tr>
-            <tr class="bets-fancy mobile-ui-tr collapse white-bg">
+            <tr class="bets-fancy mobile-ui-tr collapse white-bg" v-if="match.t3.length > 0">
                 <td colspan="3"></td>
                 <td style="min-width: 70px;">
                     <span style="">No</span>
@@ -179,63 +185,78 @@
             </tbody>
         </table>
 
-        <table v-if="fancyType=='premium' && t4!=undefined" id="sportsBookMarket_2_2054811_136864975" class="bets" style="">
-
-            <tr class="special_bet">
-                <td colspan="7">
-                    <h3 id="marketHeader">
-                        <a id="multiMarketPin" class="add-pin" title="Add to Multi Markets">
-                            <i class="fas fa-thumbtack"></i>
-                        </a>
-                        <a id="marketName" class="to-expand">Winner (incl. super over)</a>
-                    </h3>
+        <table v-if="t4!=undefined" :class="fancyType=='general' ? 'collapse':'w-100'">
+            <tr>
+                <td>
+                    <table class="bets w-100" v-for="(match,index) in t4" :key="match.id">
+                        <tr class="special_bet">
+                            <td colspan="7" @click="showHideTeam('.collapsable_'+match.id)" style="cursor: pointer;">
+                                <h3 class="marketHeader">
+                                    <a id="" class="add-pin multiMarketPin" title="Add to Multi Markets">
+                                        <i class="fas fa-thumbtack"></i>
+                                    </a>
+                                    <a class="marketName">{{match.marketName}}</a>
+                                </h3>
+                            </td>
+                        </tr>
+                        <template v-for="(runner, index2) in match.sub_sb">
+                            <tr :key="runner.sId" :class="index < 5 ? 'collapsable_'+match.id : 'collapse collapsable_'+match.id">
+                                <th class="" colspan="3">
+                                    <dl class="fancy-th-layout" >
+                                        <dt>
+                                            <p class="selectionName">{{runner.nat}}</p>
+                                            <span :class="'premium_total'+index2">
+                                                <span class="" :id="'premium_total'+index2" :class="getPremiumBetValue(match.id,runner.nat) < 0 ? 'tolose text-color-red':'towin text-color-green'">{{ getPremiumBetValue(match.id,runner.nat) }}</span>
+                                                <span class="new-fancy-total collapse" :id="'premium_total'+index2">0</span>
+                                            </span>
+                                        </dt>
+                                    </dl>
+                                </th>
+                                <td class="back-1 no-liq" colspan="2">
+                                    <a class="info" @click="openBetForm(match,runner)" :data-team="runner.nat" :data-val="runner.odds">{{runner.odds}}</a>
+                                </td>
+                                <td class="refer-book" colspan="2"></td>
+                            </tr>
+                            <tr class="fancy-suspend-tr collapse">
+                                <th colspan="3"></th>
+                                <td class="fancy-suspend-td" colspan="2">
+                                    <div class="fancy-suspend-white"><span>Suspend</span></div>
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr class="fancy-quick-tr" v-if="premiumBetForm.selection_sid == runner.sId">
+                                <td colspan="7">
+                                    <!-- Quick Bet Wrap -->
+                                    <dl class="quick_bet-wrap slip-book">
+                                        <dt id="sportsBookBetHeader" class="">
+                                        </dt>
+                                        <dd class="col-btn"><a id="cancel" class="btn font-weight-bold" @click="cancleBetForm()">Cancel</a></dd>
+                                        <dd id="oddsHeader" class="col-odd">
+                                            <ul class="quick-bet-confirm">
+                                                <li id="odds">{{ premiumBetForm.bet_odds }}</li>
+                                                <li class="quick-bet-confirm-title">odds</li>
+                                            </ul>
+                                        </dd>
+                                        <dd class="col-stake">
+                                            <input class="inputStake text-center" type="text" v-model="premiumBetForm.bet_amount">
+                                        </dd>
+                                        <dd class="col-send">
+                                            <a id="placeBet" class="btn-black" v-if="betLoading">Loading...</a>
+                                            <a id="placeBet" class="btn-black" v-else @click="placeBet()">Place Bets</a>
+                                        </dd>
+                                        <dd id="stakePopupList" class="col-stake_list">
+                                            <ul>
+                                                <li v-for="(stack, sIndex) in preDefinedStacks" :key="sIndex"><a class="btn" :data-stake="stack" @click="setDefaultStack(stack)" style="cursor:pointer;">{{stack}}</a></li>
+                                            </ul>
+                                        </dd>
+                                    </dl>
+                                    <!-- Quick Bet Wrap End -->
+                                </td>
+                            </tr>
+                        </template>
+                    </table>
                 </td>
             </tr>
-            <tr id="sportsBookSuspend_2_2054811_136864975_1836061101" class="fancy-suspend-tr" style="" eventid="2054811" isactive="1" status="1">
-                <th colspan="3"></th>
-                <td class="fancy-suspend-td" colspan="2">
-                    <div id="suspendClass" class="fancy-suspend-white"><span>Suspend</span></div>
-                </td>
-                <td colspan="2"></td>
-            </tr>
-            <tr id="sportsBookSelection_2_2054811_136864975_1836061101" style="display: table-row;" marketpk="2_2054811_136864975" isactive="1" status="1">
-                <th class="" colspan="3">
-                    <dl class="fancy-th-layout">
-                        <dt>
-                            <p id="selectionName">Delhi Capitals</p>
-                            <span id="before" class="win" style="display: none;"></span>
-                            <span id="after" class="to-lose" style="display: none;"></span>
-                        </dt>
-                    </dl>
-                </th>
-                <td id="back_1" class="back-1 no-liq" colspan="2">
-                    <a id="info">1.96</a>
-                </td>
-                <td class="refer-book" colspan="2"></td>
-            </tr>
-            <tr id="sportsBookSuspend_2_2054811_136864975_1836061102" class="fancy-suspend-tr" style="display: none;" eventid="2054811" isactive="1" status="1">
-                <th colspan="3"></th>
-                <td class="fancy-suspend-td" colspan="2">
-                    <div id="suspendClass" class="fancy-suspend-white"><span>Suspend</span></div>
-                </td>
-                <td colspan="2"></td>
-            </tr>
-            <tr id="sportsBookSelection_2_2054811_136864975_1836061102" style="display: table-row;" marketpk="2_2054811_136864975" isactive="1" status="1">
-                <th class="" colspan="3">
-                    <dl class="fancy-th-layout">
-                        <dt>
-                            <p id="selectionName">Punjab Kings</p>
-                            <span id="before" class="win" style="display: none;"></span>
-                            <span id="after" class="to-lose" style="display: none;"></span>
-                        </dt>
-                    </dl>
-                </th>
-                <td id="back_1" class="back-1 no-liq" colspan="2">
-                    <a id="info">1.86</a>
-                </td>
-                <td class="refer-book" colspan="2"></td>
-            </tr>
-
         </table>
     </div>
     <!--    <div class="fancy-section w-100" v-else-if="loading">-->
@@ -250,22 +271,58 @@
 </template>
 
 <script>
+    import axios from 'axios';
     export default {
-        props: ['event_id', 'bar_image', 'clockgreenicon', 'infoicon','min_bet_fancy_limit', 'max_bet_fancy_limit','pinkbg1_fancy','bluebg1_fancy','bet_total','sports_id','status_f'],
+        props: ['event_id', 'bar_image', 'clockgreenicon', 'infoicon','premium_bet_total','min_bet_fancy_limit', 'max_bet_fancy_limit','min_premium_limit','max_premium_limit','pinkbg1_fancy','bluebg1_fancy','bet_total','sports_id','status_f','stakval'],
         data() {
             return {
                 match: [],
-                fancyType:'general',
+                fancyType:'',
                 t4:[],
                 loading:true,
+                premiumBetTotal:[],
+                betLoading:false,
+                premiumBetForm:{
+                    market_id:null,
+                    match_id:null,
+                    market_name:null,
+                    team_name:'',
+                    selection_sid:'',
+                    bet_amount:'',
+                    bet_odds:0,
+                    bet_type:'PREMIUM',
+                    bet_side:'back',
+                    extra:[]
+                },
             };
         },
         computed:{
             betTotalValue(){
                 return JSON.parse(this.bet_total)
+            },
+            premiumBetTotalValue:{
+                // getter
+                get() {
+                    return this.premiumBetTotal;
+                },
+                // setter
+                set(newValue) {
+                    // Note: we are using destructuring assignment syntax here.
+                    this.premiumBetTotal = newValue;
+                }
+            },
+            preDefinedStacks(){
+                return JSON.parse(this.stakval)
             }
         },
         mounted() {
+            if(this.sports_id == 4){
+                this.fancyType = 'general';
+            }else{
+                this.fancyType = 'premium';
+            }
+
+                this.premiumBetTotal = JSON.parse(this.premium_bet_total);
             // if(this.fancyType == 'general') {
                 window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
                     this.loading = false;
@@ -282,23 +339,109 @@
                     // console.log("match ",data.records)
                 });
             // }else {
-            //     window.Echo.channel('premium-detail').listen('.' + this.event_id, (data) => {
-            //         this.loading = false;
-            //
-            //         // $(".mobileBack td.mobile_tr_common_class").html("");
-            //
-            //         if(data.records.matches.t4!=undefined) {
-            //             // var records = data.records;
-            //             var t4 = this.sortedArray(data.records.matches.t4);
-            //             this.t4 = t4;
-            //         }else{
-            //             // this.match = data.records;
-            //         }
-            //         // console.log("match ", data.records)
-            //     });
+                window.Echo.channel('premium-detail').listen('.' + this.event_id, (data) => {
+                    this.loading = false;
+
+                    // $(".mobileBack td.mobile_tr_common_class").html("");
+
+                    if(data.records.matches.t4!=undefined) {
+                        // var records = data.records;
+                        var t4 = this.sortedArray(data.records.matches.t4);
+                        this.t4 = t4;
+                    }else{
+                        // this.match = data.records;
+                    }
+                    // console.log("match ", data.records)
+                });
             // }
         },
         methods: {
+            getPremiumBetValue(marketName,teamName){
+                if(this.premiumBetTotalValue[marketName]!=undefined && this.premiumBetTotalValue[marketName][teamName]!=undefined){
+                    return this.roundFloatVal(this.premiumBetTotalValue[marketName][teamName]['PREMIUM_profitLost']);
+                }
+                return 0;
+            },
+            placeBet(){
+                if (getUser == undefined || getUser == null || getUser == '') {
+                    $("#myLoginModal").modal('show');
+                }else {
+                    this.betLoading = true;
+                    if (this.premiumBetForm.stack < this.min_premium_limit) {
+                        toastr.error('Minimum bets is ' + this.min_premium_limit + '!');
+                        return false;
+                    }
+                    if (this.premiumBetForm.stack > this.max_premium_limit) {
+                        toastr.error('Minimum bets is ' + this.max_premium_limit + '!');
+                        return false;
+                    }
+                    this.premiumBetForm.match_id = this.event_id;
+
+                    axios({
+                        method: 'POST',
+                        url: "/MyBetStore",
+                        data: this.premiumBetForm
+                    }).then((response) => {
+                        console.log("response", response.data);
+                        if(response.data.status == 'false'){
+                            toastr.error(response.data.msg);
+                            this.betLoading = false;
+                        }else if(response.data.status == 'true'){
+                            toastr.success(response.data.msg);
+                            this.premiumBetTotal = response.data.oddsBookmakerExposerArr['PREMIUM'];
+                            this.betLoading = false;
+                            this.cancleBetForm();
+                        }
+                    });
+                }
+            },
+            setDefaultStack(stack){
+                this.premiumBetForm.bet_amount = stack;
+            },
+            cancleBetForm(){
+                this.premiumBetForm = {
+                    market_id:null,
+                    match_id:null,
+                    market_name:null,
+                    team_name:'',
+                    selection_sid:'',
+                    bet_amount:'',
+                    bet_type:'PREMIUM',
+                    bet_side:'back',
+                    bet_odds:0,
+                    extra:[]
+                };
+            },
+            openBetForm(match,runner){
+                if (getUser == undefined || getUser == null || getUser == '') {
+                    $("#myLoginModal").modal('show');
+                }else {
+                    this.cancleBetForm();
+                    this.premiumBetForm.market_id = match.id;
+                    this.premiumBetForm.market_name = match.marketName;
+                    this.premiumBetForm.team_name = runner.nat;
+                    this.premiumBetForm.selection_sid = runner.sId;
+                    this.premiumBetForm.bet_odds = runner.odds;
+
+                    for (var i = 0; i < match.sub_sb.length; i++) {
+                        // if (match.sub_sb[i].nat != runner.nat) {
+                            this.premiumBetForm.extra.push(match.sub_sb[i].nat);
+                        // }
+                    }
+                }
+            },
+            roundFloatVal(price) {
+                if(price!='' && price!=undefined && price > 0 && price!='0') {
+                    if(price.toString().includes('.')) {
+                        return Math.round(price * 100) / 100;
+                    }
+                    return price;
+                }
+                return price;
+            },
+            showHideTeam(target){
+                $(target).toggle();
+            },
             getFancyStatus(gstatus,index){
                 if(gstatus=='BALL RUNNING' || gstatus=='Ball Running' || gstatus=='SUSPENDE' || gstatus=='SUSPEND'){
                     $(".tr_team"+index+"_fancy_td_mobile").html("");
@@ -348,7 +491,9 @@
     }
 </script>
 <style>
-
+    .bets{
+        margin: 0 !important;
+    }
     .bets .fancy-suspend-tr th{
         position: relative;
         height: 0;
@@ -394,19 +539,19 @@
         height: inherit;
         padding: 0;
     }
-    a#marketName, a#multiMarketPin {
-        display: table-cell;
-        font-size: 15px;
-        padding: 5px;
+    .marketName, .multiMarketPin {
+        display: table-cell !important;
+        font-size: 15px !important;
+        padding: 5px !important;
     }
 
     .bets .back-1{
         background-color: #72E3A0;
     }
 
-    a#multiMarketPin {
-        background: #202f38;
-        padding: 5px 10px;
+    .multiMarketPin {
+        background: #202f38 !important;
+        padding: 5px 10px !important;
     }
     .bets td, .bets-HS td, .bets-GH td {
         width: 20%;
@@ -420,9 +565,9 @@
         margin-bottom: 0px;
     }
     .fancy-section tr.fancy-suspend-tr {
-        position: absolute;
-        width: 100%;
-        display: inline-table;
+        /*position: absolute;*/
+        /*width: 100%;*/
+        /*display: inline-table;*/
     }
     .fancy-th-layout dt {
         flex: 1;
@@ -433,9 +578,9 @@
     .fancy-th-layout dt, .fancy-th-layout dd {
         align-items: center;
     }
-    h3#marketHeader {
+    h3.marketHeader {
         line-height: 1;
-        padding: 0;
+        padding: 0 !important;
     }
     .bets td a, .bets-HS td a, .bets-GH td a {
         position: relative;
@@ -586,5 +731,221 @@
         /*background-color: #E4550F !important;*/
     }
 
+    .fancy_bet .fancy-quick-tr{
+        border-width: 0;
+    }
+    .quick_bet-wrap {
+        border: 1px solid #7E97A7;
+        border-width: 1px 0 1px 0;
+        box-shadow: inset 0 2px 0 rgb(0 0 0 / 10%);
+        padding: 0 2px 0 7px;
+    }
+    .slip-book {
+        background-color: #d3edd0;
+        border-bottom: 1px solid #9fd899;
+        display: inline-table;
+        width: 100%;
+    }
+    .quick_bet-wrap dt {
+        width: 53.79665%;
+        height: auto;
+        line-height: 22px;
+        padding: 13px 5px 12px 0;
+    }
+    .quick_bet-wrap dt, .quick_bet-wrap dd {
+        box-sizing: border-box;
+        float: left;
+    }
+    .slip-back dt, .slip-lay dt, .slip-book dt {
+        position: relative;
+        width: 42.0904%;
+        font-weight: bold;
+        padding-left: 5px;
+    }
 
+    .quick_bet-wrap .col-btn {
+        width: 9.00901%;
+    }
+    .quick_bet-wrap dd {
+        padding: 7px 5px 0px 0;
+        margin: 0;
+    }
+    .quick_bet-wrap dt, .quick_bet-wrap dd {
+        box-sizing: border-box;
+    }
+    .slip-back dd, .slip-lay dd, .slip-book dd {
+        position: relative;
+        color: #243a48;
+        padding: 5px 0;
+        line-height: 22px;
+    }
+    .quick_bet-wrap .col-odd {
+        width: 8.36551%;
+    }
+    .quick_bet-wrap dd {
+        padding: 7px 5px 7px 0;
+    }
+    .quick_bet-wrap dt, .quick_bet-wrap dd {
+        box-sizing: border-box;
+    }
+    .slip-back dd, .slip-lay dd, .slip-book dd {
+        position: relative;
+        color: #243a48;
+        padding: 5px 0;
+        line-height: 22px;
+    }
+    .quick_bet-wrap .col-stake {
+        width: 10.29601%;
+        padding-left: 0;
+    }
+    .quick_bet-wrap .col-send {
+        width: 18.01802%;
+    }
+    .quick_bet-wrap .col-stake_list {
+        width: calc(100% + 7px + 2px);
+        padding: 5px 0;
+        margin-left: -7px;
+    }
+    .slip-book .col-stake_list {
+        border-top: 1px solid #9fd899;
+        background-color: #e4f4e2;
+    }
+
+    .sportsbook_bet .fancy-quick-tr dt span {
+        display: inline-block;
+    }
+    .quick_bet-wrap dt .bet-check {
+        font-size: 12px;
+        opacity: 1;
+    }
+    .quick_bet-wrap .max-bet {
+        margin-right: 15px;
+        opacity: 1;
+    }
+    .quick_bet-wrap input, .quick_bet-wrap textarea {
+        line-height: 33px;
+        height: 33px;
+    }
+    .quick_bet-wrap .max-bet a {
+        display: inline-block;
+        width: 50px;
+        height: 18px;
+        background-color: rgba(0,0,0,0.1);
+        font-size: 11px;
+        font-weight: bold;
+        line-height: 18px;
+        margin-right: 5px;
+        border-radius: 3px;
+    }
+
+    .col-stake_list li{
+        float: left;
+        display: block;
+    }
+    .slip-back .col-stake_list li, .slip-lay .col-stake_list li, .slip-book .col-stake_list li {
+        width: calc(100% / 6);
+    }
+    .fancy_bet .fancy-quick-tr td a, .sportsbook_bet .fancy-quick-tr td a, .bookmaker_bet .fancy-quick-tr td a {
+        padding: 0;
+    }
+    .quick_bet-wrap .col-stake_list a {
+        height: auto;
+        line-height: 23px;
+        font-size: 12px;
+    }
+
+    .col-stake_list a, .col-btn a {
+        font-size: 11px;
+        line-height: 18px;
+        font-weight: normal;
+        margin: 0 5px 0 0;
+        background-color: white;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .quick_bet-wrap .col-stake_list ul {
+        width: 70%;
+        padding-right: 5px;
+    }
+    .col-stake_list ul {
+        padding-left: 5px;
+        float: right;
+    }
+    .quick-bet-confirm li {
+        width: calc(100% - 10px);
+        list-style: none;
+        line-height: 18px;
+        color: #1e1e1e;
+        padding: 0 5px;
+        text-align: right;
+    }
+    .quick-bet-confirm {
+        width: 100%;
+        height: 33px;
+        border-radius: 4px;
+        background-color: rgba(255,255,255,0.5);
+        flex-direction: column;
+        justify-content: center;
+    }
+    .quick_bet-wrap dd {
+        padding: 7px 5px 7px 0;
+    }
+
+    .quick-bet-confirm .quick-bet-confirm-title {
+        font-size: 10px;
+        line-height: 12px;
+        color: #222;
+        opacity: 0.5;
+    }
+    .quick_bet-wrap input, .quick_bet-wrap textarea {
+        line-height: 33px;
+        height: 33px;
+        padding: 0 6px 0 0;
+        width: 100%;
+        font-family: Tahoma, Helvetica, sans-serif;
+        color: #1e1e1e;
+        font-size: 12px;
+        border: 0px #aaa solid;
+        background: #fff;
+        box-shadow: inset 0px 1px 0px rgb(0 0 0 / 50%);
+        border-radius: 4px;
+        padding: 5px;
+        margin: 0 5px 5px 0;
+        box-sizing: border-box;
+    }
+    .premium_minmax_info {
+        position: absolute;
+        right: 0;
+        top: 20px;
+        background: white;
+        color: #000;
+        width: 100px;
+        text-align: center;
+        padding: 5px;
+        border-radius: 7px;
+    }
+    .premium_minmax_info dl, .premium_minmax_info dd {
+        margin: 0;
+    }
+    .bets td a {
+        position: relative;
+        height: 35px;
+        color: #1e1e1e;
+        padding: 3px 0 2px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: column;
+    }
+    .bets th {
+        position: relative;
+        padding: 6px 10px;
+        border-bottom: 1px solid #7e97a7;
+    }
+    .bets th p {
+        /* width: 292px; */
+        margin-bottom: 0;
+    }
 </style>

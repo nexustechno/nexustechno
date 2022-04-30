@@ -136,7 +136,12 @@ use App\MyBets;
                                             <tr class="white-bg">
                                                 <td width="9%"><img src="{{ URL::to('asset/front/img/plus-icon.png') }}"> <a class="text-color-blue-light">{{$data->id}}</a></td>
                                                 <td width="9%">{{$loginUser->user_name}}</td>
-                                                <td>{{$sports->sport_name}}<i class="fas fa-caret-right text-color-grey"></i> <strong>{{$matchdata->match_name}}</strong> <i class="fas fa-caret-right text-color-grey"></i>{{$data->bet_type}}</td>
+                                                <td>
+                                                    {{$sports->sport_name}}<i class="fas fa-caret-right text-color-grey"></i> <strong>{{$matchdata->match_name}}</strong> <i class="fas fa-caret-right text-color-grey"></i> {{$data->bet_type}}
+                                                    @if($data->bet_type == 'PREMIUM')
+                                                        <i class="fas fa-caret-right text-color-grey"></i> <strong>{{$data->market_name}}</strong>
+                                                    @endif
+                                                </td>
                                                 <td width="12%" class="text-right">{{$data->team_name}}</td>
                                                 @if($data->bet_side == 'lay')
                                                 	@if($data->bet_type=='SESSION')
@@ -264,11 +269,11 @@ use App\MyBets;
                                 Specify the time period during which your bets were placed, the type of markets on which the bets were placed, and the sport. <br>
                                 Betting History is available online for the past 30 days.
                             </p>
-                            <ul class="paginationn-full">
-                                <li id="prev"> <a href="javascript:void(0);" class="disable-bg disable-color">Prev</a> </li>
-                                <li id="pageNumber"> <a href="javascript:void(0);" class="linkitem black-bg2 text-color-yellow">1</a> </li>
-                                <li id="next"> <a href="javascript:void(0);" class="disable-bg disable-color">Next</a> </li>
-                            </ul>
+{{--                            <ul class="paginationn-full">--}}
+{{--                                <li id="prev"> <a href="javascript:void(0);" class="disable-bg disable-color">Prev</a> </li>--}}
+{{--                                <li id="pageNumber"> <a href="javascript:void(0);" class="linkitem black-bg2 text-color-yellow">1</a> </li>--}}
+{{--                                <li id="next"> <a href="javascript:void(0);" class="disable-bg disable-color">Next</a> </li>--}}
+{{--                            </ul>--}}
                         </div>
                     </div>
 
@@ -367,11 +372,11 @@ use App\MyBets;
                             </table>
                             <p>Profit and Loss is shown net of commission.</p>
 
-                            <ul class="paginationn-full">
-                                <li id="prev"> <a href="javascript:void(0);" class="disable-bg disable-color">Prev</a> </li>
-                                <li id="pageNumber"> <a href="javascript:void(0);" class="linkitem black-bg2 text-color-yellow">1</a> </li>
-                                <li id="next"> <a href="javascript:void(0);" class="disable-bg disable-color">Next</a> </li>
-                            </ul>
+{{--                            <ul class="paginationn-full">--}}
+{{--                                <li id="prev"> <a href="javascript:void(0);" class="disable-bg disable-color">Prev</a> </li>--}}
+{{--                                <li id="pageNumber"> <a href="javascript:void(0);" class="linkitem black-bg2 text-color-yellow">1</a> </li>--}}
+{{--                                <li id="next"> <a href="javascript:void(0);" class="disable-bg disable-color">Next</a> </li>--}}
+{{--                            </ul>--}}
                         </div>
                     </div>
                 </div>

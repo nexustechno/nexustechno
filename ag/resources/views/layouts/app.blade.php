@@ -257,6 +257,17 @@ if ($auth_type == 'COM') {
                                                 </li>
                                             @endif
 
+                                            @if($ttuser->manage_fancy==1 || $ttuser->agent_level == 'COM')
+                                                <li>
+                                                    <a href="{{route('manage.premium')}}" class="text-color-yellow1">Manage Premium</a>
+                                                </li>
+                                            @endif
+                                            @if($ttuser->manage_fancy==1 || $ttuser->agent_level == 'COM')
+                                                <li>
+                                                    <a href="{{route('manage.premium.history')}}" class="text-color-yellow1">Premium History</a>
+                                                </li>
+                                            @endif
+
                                             @if($ttuser->match_history==1 || $ttuser->agent_level == 'COM')
                                                 <li>
                                                     <a href="{{route('match_history')}}" class="text-color-yellow1">

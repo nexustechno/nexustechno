@@ -144,7 +144,7 @@
                                                                           bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                                           :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
 
-                                                    <cricketoddsfancy status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                                    <cricketoddsfancy stakval={{json_encode($stkval)}} premium_bet_total="{{json_encode($premium_bet_total)}}" status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
                                                                       bluebg1_fancy="{{ asset('asset/front/img/bluebg1_fancy.png') }}"
                                                                       clockgreenicon="{{ asset('asset/front/img/clock-green-icon.png') }}"
@@ -228,39 +228,31 @@
                                         </div>
                                     @endif
 
-
-                                    <div class="panel panel-default">
+                                    <div class="panel panel-default mb-3">
                                         <div class="panel-heading darkblue-bg" role="tab">
                                             <h2 class="panel-title">
                                                 <a class="text-color-white" role="button" data-toggle="collapse"
-                                                   data-parent="#accordion" href="#risk3" aria-expanded="true"
-                                                   aria-controls="risk3">
-                                                    Matched Bets [{{count($my_placed_bets)}}]
-
+                                                   data-parent="#accordion" href="#risk1" aria-expanded="true"
+                                                   aria-controls="risk1">
+                                                    Matched Bets [{{$totalBets['odds']}}]
                                                 </a>
                                             </h2>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-4 col-xs-8 p-0">
-                                                <form class="ng-pristine ng-valid">
-                                                    <input type="text" name="userId"
-                                                           class="form-control ng-pristine ng-untouched ng-valid ng-empty"
-                                                           id="userSearchodd" placeholder="Find Client Name"
-                                                           style="border-radius: 3px;">
-                                                </form>
+
+                                        <div id="risk1" class="panel-collapse collapse show" role="tabpanel">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xs-8 p-0">
+                                                    <form class="ng-pristine ng-valid">
+                                                        <input type="text" name="userId"
+                                                               class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                                                               id="userSearchodd" placeholder="Find Client Name"
+                                                               style="border-radius: 3px;">
+                                                    </form>
+                                                </div>
                                             </div>
-                                            {{--                                            @if($loginUser->agent_level=='COM')--}}
-                                            {{--                                                <div class="col-md-4 col-xs-4">--}}
-                                            {{--                                                    <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
-                                            {{--                                                            data-target="#Reject-Multiple-Bet">Reject All Bets--}}
-                                            {{--                                                    </button>--}}
-                                            {{--                                                </div>--}}
-                                            {{--                                            @endif--}}
-                                        </div>
-                                        <div id="risk3" class="panel-collapse collapse show" role="tabpanel">
                                             <div class="row unmatch_wrap">
                                             </div>
-                                            <div class="custom_table_scroll">
+                                            <div class="custom_table_scroll1">
                                                 <div class="table-responsive">
                                                     <table class="table table-bordered">
                                                         <thead>
@@ -301,9 +293,7 @@
 
                                                         </tr>
                                                         </thead>
-                                                        <tbody id="match_odds_bet">
-                                                        {!!$html!!}
-                                                        </tbody>
+                                                        <tbody id="match_odds_bet"></tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -312,34 +302,27 @@
 
                                     @if($matchList->sports_id=='4')
                                         @if($matchList->bookmaker==1)
-                                            <div class="panel panel-default">
+                                            <div class="panel panel-default mb-3">
                                                 <div class="panel-heading darkblue-bg" role="tab">
                                                     <h2 class="panel-title">
                                                         <a class="text-color-white" role="button" data-toggle="collapse"
                                                            data-parent="#accordion" href="#risk4" aria-expanded="true"
                                                            aria-controls="risk4">
-                                                            Book Making Bets [{{count($my_placed_bets_BM)}}]
+                                                            Book Making Bets [{{$totalBets['bookmaker']}}]
                                                         </a>
                                                     </h2>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-8 p-0">
-                                                        <form class="ng-pristine ng-valid">
-                                                            <input type="text" name="userId"
-                                                                   class="form-control ng-pristine ng-untouched ng-valid ng-empty"
-                                                                   id="userSearchbm" placeholder="Find Client Name"
-                                                                   style="border-radius: 3px;">
-                                                        </form>
-                                                    </div>
-                                                    {{--                                                    @if($loginUser->agent_level=='COM')--}}
-                                                    {{--                                                        <div class="col-md-4 col-xs-4">--}}
-                                                    {{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
-                                                    {{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
-                                                    {{--                                                            </button>--}}
-                                                    {{--                                                        </div>--}}
-                                                    {{--                                                    @endif--}}
-                                                </div>
                                                 <div id="risk4" class="panel-collapse collapse show" role="tabpanel">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-xs-8 p-0">
+                                                            <form class="ng-pristine ng-valid">
+                                                                <input type="text" name="userId"
+                                                                       class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                                                                       id="userSearchbm" placeholder="Find Client Name"
+                                                                       style="border-radius: 3px;">
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                     <div class="row unmatch_wrap">
                                                     </div>
                                                     <div class="table-responsive">
@@ -382,45 +365,37 @@
                                                                 @endif
                                                             </tr>
                                                             </thead>
-                                                            <tbody id="match_bm_bet"> {!!$html_BM!!}</tbody>
+                                                            <tbody id="match_bm_bet"></tbody>
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endif
                                         @if($matchList->fancy==1)
-                                            <div class="panel panel-default">
+                                            <div class="panel panel-default mb-3">
                                                 <div class="panel-heading darkblue-bg" role="tab">
                                                     <h2 class="panel-title">
                                                         <a class="text-color-white" role="button" data-toggle="collapse"
                                                            data-parent="#accordion" href="#risk3" aria-expanded="true"
                                                            aria-controls="risk3">
-                                                            Fancy Bets [{{count($my_placed_bets_fancy)}}]
+                                                            Fancy Bets [{{$totalBets['fancy']}}]
                                                         </a>
                                                     </h2>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-8 p-0">
-                                                        <form class="ng-pristine ng-valid">
-                                                            <input type="text" name="userId"
-                                                                   class="form-control ng-pristine ng-untouched ng-valid ng-empty"
-                                                                   id="userSearchfnc" placeholder="Find Client Name"
-                                                                   style="border-radius: 3px;">
-                                                        </form>
-                                                    </div>
-                                                    {{--                                                    @if($loginUser->agent_level=='COM')--}}
-                                                    {{--                                                        <div class="col-md-4 col-xs-4">--}}
-                                                    {{--                                                            <button class="btn btn-danger btn-sm" data-toggle="modal"--}}
-                                                    {{--                                                                    data-target="#Reject-Multiple-Bet">Reject All Bets--}}
-                                                    {{--                                                            </button>--}}
-                                                    {{--                                                        </div>--}}
-                                                    {{--                                                    @endif--}}
-                                                </div>
                                                 <div id="risk3" class="panel-collapse collapse show" role="tabpanel">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-xs-8 p-0">
+                                                            <form class="ng-pristine ng-valid">
+                                                                <input type="text" name="userId"
+                                                                       class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                                                                       id="userSearchfnc" placeholder="Find Client Name"
+                                                                       style="border-radius: 3px;">
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                     <div class="row unmatch_wrap">
                                                     </div>
                                                     <div class="table-responsive">
-
                                                         <table class="table table-bordered">
                                                             <thead>
                                                             <tr>
@@ -456,17 +431,86 @@
                                                                 @if($loginUser->agent_level=='DL' || $loginUser->agent_level=='COM' || $loginUser->agent_level=='AD' || $loginUser->agent_level=='SP' || $loginUser->agent_level=='SMDL' || $loginUser->agent_level=='MDL')
                                                                     <th class="light-grey-bg">DL</th>
                                                                 @endif
-
-
                                                             </tr>
                                                             </thead>
-                                                            <tbody id="match_fancy_bet"> {!!$html_Fancy!!}</tbody>
+                                                            <tbody id="match_fancy_bet"></tbody>
                                                         </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endif
                                     @endif
+
+                                    <div class="panel panel-default mb-3">
+                                        <div class="panel-heading darkblue-bg" role="tab">
+                                            <h2 class="panel-title">
+                                                <a class="text-color-white" role="button" data-toggle="collapse"
+                                                   data-parent="#accordion" href="#risk1" aria-expanded="true"
+                                                   aria-controls="risk1">
+                                                    Premium Bets [{{$totalBets['premium']}}]
+                                                </a>
+                                            </h2>
+                                        </div>
+
+                                        <div id="risk1" class="panel-collapse collapse show" role="tabpanel">
+                                            <div class="row">
+                                                <div class="col-md-4 col-xs-8 p-0">
+                                                    <form class="ng-pristine ng-valid">
+                                                        <input type="text" name="userSearchPremium"
+                                                               class="form-control ng-pristine ng-untouched ng-valid ng-empty"
+                                                               id="userSearchPremium" placeholder="Find Client Name"
+                                                               style="border-radius: 3px;">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="row unmatch_wrap">
+                                            </div>
+                                            <div class="custom_table_scroll1">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>
+                                                                <input type="checkbox" id="select_all" name="filter-checkbox" value="">
+                                                            </th>
+                                                            <th class="text-center">Client</th>
+                                                            <th class="text-center">Selection</th>
+                                                            <th class="text-center">B/L</th>
+                                                            <th class="text-center">Odds</th>
+                                                            <th class="text-center">Stake</th>
+                                                            <th class="text-center">P&L</th>
+                                                            <th>Placed Time</th>
+                                                            <th class="text-center">Info</th>
+                                                            @if($loginUser->agent_level =='COM')
+                                                                <th>DLT</th>
+                                                            @endif
+                                                            @if($loginUser->agent_level=='COM')
+                                                                <th class="light-grey-bg">COM</th>
+                                                            @endif
+                                                            @if($loginUser->agent_level=='AD' || $loginUser->agent_level=='COM')
+                                                                <th class="light-grey-bg">AD</th>
+                                                            @endif
+                                                            @if($loginUser->agent_level=='SP' || $loginUser->agent_level=='COM' || $loginUser->agent_level=='AD')
+                                                                <th class="light-grey-bg">SP</th>
+                                                            @endif
+                                                            @if($loginUser->agent_level=='SMDL' || $loginUser->agent_level=='COM' || $loginUser->agent_level=='AD' || $loginUser->agent_level=='SP')
+                                                                <th class="light-grey-bg">SMDL</th>
+                                                            @endif
+                                                            @if($loginUser->agent_level=='MDL' || $loginUser->agent_level=='COM' || $loginUser->agent_level=='AD' || $loginUser->agent_level=='SP' || $loginUser->agent_level=='SMDL')
+                                                                <th class="light-grey-bg">MDL</th>
+                                                            @endif
+                                                            @if($loginUser->agent_level=='DL' || $loginUser->agent_level=='COM' || $loginUser->agent_level=='AD' || $loginUser->agent_level=='SP' || $loginUser->agent_level=='SMDL' || $loginUser->agent_level=='MDL')
+                                                                <th class="light-grey-bg">DL</th>
+                                                            @endif
+
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="match_premium_bet"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <?php
                                     $matchname = explode('v', $matchList->match_name);
@@ -530,8 +574,7 @@
                                                 <ul id="risk35" class="panel-collapse collapse show submenu"
                                                     role="tabpanel">
                                                     <li>
-                                                        <div class="ibox float-e-margins"
-                                                             style="max-height: 300px;overflow-y: auto;padding: 5px">
+                                                        <div class="ibox float-e-margins"style="max-height: 300px;overflow-y: auto;padding: 5px">
                                                             <div class="table-responsive">
                                                                 <table
                                                                     class="table table-striped table-bordered table-hover">
@@ -791,71 +834,123 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <script type="text/javascript">
         var _token = $("input[name='_token']").val();
-        $(document).ready(function () {
-            var matchid = '{{$matchList->match_id}}';
-            $('#userSearchodd').keyup(function () {
-                var val = $('#userSearchodd').val();
-                $.ajax({
-                    type: "post",
-                    url: '{{route("risk_management_odds_search")}}',
-                    data: {
-                        _token: _token,
-                        search: val,
-                        matchid: matchid,
-                    },
+        var matchid = '{{$matchList->match_id}}';
+        function loadOddsBet(){
+            var val = $('#userSearchodd').val();
+            $.ajax({
+                type: "post",
+                url: '{{route("risk_management_odds_search")}}',
+                data: {
+                    _token: _token,
+                    search: val,
+                    matchid: matchid,
+                },
 
-                    beforeSend: function () {
-                        $('#site_bet_loading1').show();
-                    },
-                    complete: function () {
-                        $('#site_bet_loading1').hide();
-                    },
-                    success: function (data) {
-                        $("#match_odds_bet").html(data);
+                beforeSend: function () {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function () {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function (data) {
+                    $("#match_odds_bet").html(data);
+                }
+            });
+        }
+
+        function loadBookmakerBets(){
+            var val = $('#userSearchbm').val();
+            $.ajax({
+                type: "post",
+                url: '{{route("risk_management_bm_search")}}',
+                data: {
+                    _token: _token,
+                    search: val,
+                    matchid: matchid,
+                },
+                beforeSend: function () {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function () {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function (data) {
+                    $("#match_bm_bet").html(data);
+                }
+            });
+        }
+
+        function loadFancyBets(){
+            var val = $('#userSearchfnc').val();
+            $.ajax({
+                type: "post",
+                url: '{{route("risk_management_fancy_search")}}',
+                data: {
+                    _token: _token,
+                    search: val,
+                    matchid: matchid,
+                },
+                beforeSend: function () {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function () {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function (data) {
+                    $("#match_fancy_bet").html(data);
+                }
+            });
+        }
+
+        function loadPremiumBets(){
+            var val = $('#userSearchPremium').val();
+            $.ajax({
+                type: "post",
+                url: '{{route("risk_management_premium_search")}}',
+                data: {
+                    _token: _token,
+                    search: val,
+                    matchid: matchid,
+                },
+                beforeSend: function () {
+                    $('#site_bet_loading1').show();
+                },
+                complete: function () {
+                    $('#site_bet_loading1').hide();
+                },
+                success: function (data) {
+                    $("#match_premium_bet").html(data);
+                }
+            });
+        }
+
+        function loadAdminBooks(){
+            //admin book and admin bm book data
+            $.ajax({
+                type: "POST",
+                url: '{{route("risk_management_book_bm_book")}}',
+                data: {_token: _token, matchid: matchid},
+                success: function (data) {
+                    if (data != '') {
+                        $("#adminBookUser").html(data.adminBookUser);
+                        $("#adminBookUserBM").html(data.adminBookUserBM);
                     }
-                });
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#userSearchodd').keyup(function () {
+                loadOddsBet();
             });
             $('#userSearchbm').keyup(function () {
-                var val = $('#userSearchbm').val();
-                $.ajax({
-                    type: "post",
-                    url: '{{route("risk_management_bm_search")}}',
-                    data: {
-                        _token: _token,
-                        search: val,
-                        matchid: matchid,
-                    },
-                    beforeSend: function () {
-                        $('#site_bet_loading1').show();
-                    },
-                    complete: function () {
-                        $('#site_bet_loading1').hide();
-                    },
-                    success: function (data) {
-                        $("#match_bm_bet").html(data);
-                    }
-                });
+                loadBookmakerBets();
             });
             $('#userSearchfnc').keyup(function () {
-                var val = $('#userSearchfnc').val();
-                $.ajax({
-                    type: "post",
-                    url: '{{route("risk_management_fancy_search")}}',
-                    data: {
-                        _token: _token,
-                        search: val,
-                        matchid: matchid,
-                    },
-                    beforeSend: function () {
-                        $('#site_bet_loading1').show();
-                    },
-                    complete: function () {
-                        $('#site_bet_loading1').hide();
-                    },
-                    success: function (data) {
-                        $("#match_fancy_bet").html(data);
-                    }
-                });
+                loadFancyBets();
+            });
+            $('#userSearchPremium').keyup(function () {
+                loadPremiumBets();
             });
         });
         $(".userWiseLock").change(function () {
@@ -972,136 +1067,20 @@
         }
 
         $(document).ready(function () {
+            loadOddsBet();
+            loadBookmakerBets();
+            loadFancyBets();
+            loadPremiumBets();
+            loadAdminBooks();
 
-            $('#site_bet_loading1').show();
-
-            // getMatchOddsData();
             setInterval(function () {
-                // getMatchOddsData();
-                // matchDeclareRedirect();
-            }, 1000);
+                loadOddsBet();
+                loadBookmakerBets();
+                loadFancyBets();
+                loadPremiumBets();
+                loadAdminBooks();
+            }, 4000);
         });
-
-        function getMatchOddsData(){
-            //default call
-            var _token = $("input[name='_token']").val();
-            var match_type = '{{$matchList->sports_id}}';
-            var matchid = '{{$matchList->match_id}}';
-            var matchname = '{{$matchList->match_name}}';
-            var event_id = '{{$matchList->event_id}}';
-            var match_m = '{{$matchList->suspend_m}}';
-            var match_b = '{{$matchList->suspend_b}}';
-            var match_f = '{{$matchList->suspend_f}}';
-
-            if($("body").hasClass('modal-open')){}
-            else {
-                $.ajax({
-                    type: "POST",
-                    url: '{{route("risk_management_details_ajax",$matchList->match_id)}}',
-                    data: {
-                        _token: _token,
-                        matchtype: match_type,
-                        matchid: matchid,
-                        matchname: matchname,
-                        event_id: event_id,
-                        match_m: match_m
-                    },
-                    beforeSend: function () {
-
-                    },
-                    complete: function () {
-                        $('#site_bet_loading1').hide();
-                    },
-                    success: function (data) {
-                        $("#inplay-tableblock").html(data.odds);
-                        if(match_type == 4) {
-                            if ($("body").hasClass('modal-open')) {
-
-                            } else {
-                                if (data.boomaker == '') {
-                                    $('.bookmakerHide').css('display', 'none');
-                                } else {
-                                    // $("#inplay-tableblock-bookmaker").html(data.boomaker);
-                                }
-                                // $("#inplay-tableblock-fancy").html(data.fancy);
-                            }
-                        }
-                    }
-                });
-            }
-
-            if(match_type == 4) {
-                //fancy and bookmaker
-
-                if($("body").hasClass('modal-open')){
-
-                }else {
-                    {{--$.ajax({--}}
-                    {{--    type: "POST",--}}
-                    {{--    url: '{{route("risk_management_matchCallForFancyNBM",$matchList->match_id)}}',--}}
-                    {{--    data: {--}}
-                    {{--        _token: _token,--}}
-                    {{--        matchtype: match_type,--}}
-                    {{--        event_id: event_id,--}}
-                    {{--        matchname: matchname,--}}
-                    {{--        matchid: matchid,--}}
-                    {{--        match_b: match_b,--}}
-                    {{--        match_f: match_f--}}
-                    {{--    },--}}
-                    {{--    beforeSend: function () {--}}
-                    {{--        // $('#site_bet_loading1').show();--}}
-                    {{--    },--}}
-                    {{--    complete: function () {--}}
-                    {{--        $('#site_bet_loading1').hide();--}}
-                    {{--    },--}}
-                    {{--    success: function (data) {--}}
-                    {{--        if (data == '~~') {--}}
-                    {{--            $('.noData').css('display', 'none');--}}
-                    {{--        }--}}
-                    {{--        if (data != '') {--}}
-                    {{--            var spl = data.split('~~');--}}
-                    {{--            if (spl[0] == '') {--}}
-                    {{--                $('.bookmakerHide').css('display', 'none');--}}
-                    {{--            }--}}
-                    {{--            $("#inplay-tableblock-bookmaker").html(spl[0]);--}}
-                    {{--            $("#inplay-tableblock-fancy").html(spl[1]);--}}
-                    {{--        }--}}
-                    {{--    }--}}
-                    {{--});--}}
-                }
-            }
-
-            //odds bets
-            var valodd = $('#userSearchodd').val();
-            var valbm = $('#userSearchbm').val();
-            var valfnc = $('#userSearchfnc').val();
-            $.ajax({
-                type: "POST",
-                url: '{{route("risk_management_odds_bet")}}',
-                data: {_token: _token, matchid: matchid, valodd: valodd, valbm: valbm, valfnc: valfnc},
-                success: function (data) {
-                    if (data != '') {
-                        var spl = data.split('~~');
-                        $("#match_odds_bet").html(spl[0]);
-                        $("#match_bm_bet").html(spl[1]);
-                        $("#match_fancy_bet").html(spl[2]);
-                    }
-                }
-            });
-
-            //admin book and admin bm book data
-            $.ajax({
-                type: "POST",
-                url: '{{route("risk_management_book_bm_book")}}',
-                data: {_token: _token, matchid: matchid},
-                success: function (data) {
-                    if (data != '') {
-                        $("#adminBookUser").html(data.adminBookUser);
-                        $("#adminBookUserBM").html(data.adminBookUserBM);
-                    }
-                }
-            });
-        }
 
         $(".chkaction").on('click', function (event) {
             var _token = $("input[name='_token']").val();

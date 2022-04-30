@@ -127,6 +127,8 @@
                         <th class="light-grey-bg">BM Stake</th>
                         <th class="light-grey-bg">Fancy P/L</th>
                         <th class="light-grey-bg">Fancy Stake</th>
+                        <th class="light-grey-bg">Premium P/L</th>
+                        <th class="light-grey-bg">Premium Stake</th>
                         <th class="light-grey-bg">Net P/L</th>
                     </tr>
                     </thead>

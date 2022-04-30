@@ -142,7 +142,26 @@ class MyaccountController extends Controller
 
                 $log = UserExposureLog::where("id", $data->user_exposure_log_id)->first();
 
-                if ($log->bet_type != 'SESSION') {
+                if ($log->bet_type == 'PREMIUM') {
+//                    dd($data->toArray(), $log->toArray(),$match->event_id);
+                    $bet = MyBets::where('user_id', $data->bet_user_id)
+                        ->where('result_declare', 1)
+                        ->where('isDeleted', 0)
+                        ->where('match_id', $match->event_id)
+                        ->groupBy('team_name')
+                        ->where('market_name', $log->fancy_name)
+                        ->where('bet_type', $log->bet_type)
+                        ->orderBy('created_at')
+                        ->first();
+//                    dd($bet->toArray());
+
+                    if(!empty($bet)) {
+                        $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->market_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' .$bet->market_name. ' / ' . $bet->winner . '</a></span>';
+                    }else{
+                        $remark = "Match bet not found here, contact to administrator";
+                    }
+                    $username = '';
+                }else if ($log->bet_type != 'SESSION') {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
                         ->where('result_declare', 1)
                         ->where('isDeleted', 0)
@@ -155,7 +174,7 @@ class MyaccountController extends Controller
                     if(empty($bet)){
                         continue;
                     }
-
+//                    $username = '';
                     $remark = '<span><a data-betuserid="' . $data->bet_user_id . '" data-id="' . $match->event_id . '" data-name="' . $bet->team_name . '" data-type="' . $bet->bet_type . '" class="text-dark" onclick="openMatchReport(this);" >' . $sprtnm->sport_name . ' / ' . $match->match_name . ' / ' . $bet->bet_type . ' / ' . $match->winner . '</a></span>';
                 } else {
                     $bet = MyBets::where('user_id', $data->bet_user_id)
@@ -250,6 +269,16 @@ class MyaccountController extends Controller
                 ->where('team_name', $tnm)
                 ->where('isDeleted', 0)
                 //->groupBy('team_name',$tnm)
+//                ->whereBetween('created_at', [$fromdate, $todate])
+                ->get();
+        }elseif ($btyp == 'PREMIUM') {
+            $gmdata = MyBets::where('user_id', $betuserid)
+                ->where('result_declare', 1)
+                ->where('match_id', $mid)
+                ->where('bet_type', $btyp)
+                ->where('market_name', $tnm)
+                ->where('isDeleted', 0)
+//                ->groupBy('team_name',$tnm)
                 ->whereBetween('created_at', [$fromdate, $todate])
                 ->get();
         } elseif ($btyp == 'casino') {
@@ -297,7 +326,8 @@ class MyaccountController extends Controller
                 }
 
                 $html .= '</td><td aria-colindex="9" role="cell" class="text-center">' . $data->created_at . '</td></tr>';
-            } else {
+            }
+            else {
                 $winner = strtolower($matchdata->winner);
 
                 $html .= '
@@ -326,6 +356,31 @@ class MyaccountController extends Controller
 	            <td aria-colindex="6" role="cell" class="text-right">' . $data->bet_amount . '</td>
 	            <td aria-colindex="7" role="cell" class="text-right">';
                 if ($data->bet_type == 'ODDS') {
+                    if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
+                        $sumAmt += $data->bet_profit;
+
+                        $html .= '<span class="text-success">
+			                    ' . $data->bet_profit . '
+			                </span> ';
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'back') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
+			                    ' . $data->exposureAmt . '
+			                </span> ';
+                    } else if ($winner != strtolower($data->team_name) && $data->bet_side == 'lay') {
+                        $sumAmt += $data->bet_profit;
+                        $html .= '<span class="text-success">
+			                    ' . $data->bet_profit . '
+			                </span> ';
+                    } else if ($winner == strtolower($data->team_name) && $data->bet_side == 'lay') {
+                        $sumAmt -= $data->exposureAmt;
+                        $html .= '<span class="text-danger">
+			                    ' . $data->exposureAmt . '
+			                </span> ';
+                    }
+                }
+                if ($data->bet_type == 'PREMIUM') {
+                    $winner = strtolower($data->winner);
                     if ($winner == strtolower($data->team_name) && $data->bet_side == 'back') {
                         $sumAmt += $data->bet_profit;
 
@@ -571,7 +626,8 @@ class MyaccountController extends Controller
         $totsumAmtbG = 0;
         $totsumAmtbR = 0;
         $totttlAmtb = 0;
-
+        $premiumTotalStackAmount = 0;
+        $premiumTotalPLAmount = 0;
         $totttlnp = 0;
         if ($val == 'today') {
             $fromdate = date('Y-m-d') . ' 09:00';
@@ -634,6 +690,10 @@ class MyaccountController extends Controller
                         $sumAmt1 = 0;
                         $sumAmt2 = 0;
                         $ttlodd = 0;
+
+                        $premiumTotalStackAmountForItem = 0;
+                        $premiumTotalPLAmountForItem = 0;
+
                         foreach ($subresult as $key => $value) {
                             if ($value->bet_type == 'SESSION') {
                                 $betlist1 = MyBets::where('user_id', $childlist)
@@ -680,10 +740,9 @@ class MyaccountController extends Controller
                                                 $sumAmt -= $exposer_fancy->loss;
                                         }
                                     }
-
-
                                 }
-                            } else if ($value->bet_type == 'ODDS') {
+                            }
+                            else if ($value->bet_type == 'ODDS') {
 
                                 $betlist1 = MyBets::where('user_id', $childlist)
                                     ->where('result_declare', 1)
@@ -698,7 +757,7 @@ class MyaccountController extends Controller
                                     $ttlAmto += $value1->bet_amount;
                                 }
                                 $totAmto += $ttlAmto;
-                                $expodds = UserExposureLog::where('match_id', $matchdata->id)->where('user_id', $childlist)->whereBetween('created_at', [$fromdate, $todate])->whereBetween('created_at', [$fromdate, $todate])->where('bet_type', 'ODDS')->first();
+                                $expodds = UserExposureLog::where('match_id', $matchdata->id)->where('user_id', $childlist)->whereBetween('created_at', [$fromdate, $todate])->where('bet_type', 'ODDS')->first();
 
 
                                 if ($expodds) {
@@ -717,7 +776,51 @@ class MyaccountController extends Controller
                                         }
                                     }
                                 }
-                            } else if ($value->bet_type == 'BOOKMAKER') {
+                            }
+                            else if ($value->bet_type == 'PREMIUM') {
+
+                                $betlist1 = MyBets::where('user_id', $childlist)
+                                    ->where('result_declare', 1)
+                                    ->where('bet_type', $value->bet_type)
+                                    ->where('isDeleted', 0)
+                                    ->groupBy('market_name')
+                                    ->where('match_id', $data->match_id)
+                                    //->whereBetween('created_at',[$fromdate,$todate])
+                                    ->orderBy('created_at')
+                                    ->get();
+
+                                $betlist2 = MyBets::where('user_id', $childlist)
+                                    ->where('result_declare', 1)
+                                    ->where('bet_type', $value->bet_type)
+                                    ->where('isDeleted', 0)
+                                    ->where('match_id', $data->match_id)
+                                    //->whereBetween('created_at',[$fromdate,$todate])
+                                    ->orderBy('created_at')
+                                    ->get();
+
+                                foreach ($betlist2 as $key => $value2) {
+                                    $premiumTotalStackAmountForItem += $value2->bet_amount;
+                                }
+                                $premiumTotalStackAmount += $premiumTotalStackAmountForItem;
+
+                                foreach ($betlist1 as $key => $value1) {
+
+                                    $exposer_fancy_a = UserExposureLog::where('match_id', $matchdata->id)->where('bet_type', $value->bet_type)->whereBetween('created_at', [$fromdate, $todate])->where('fancy_name', $value1->market_name)->whereIn('user_id', $childlist)->get();
+
+                                    foreach ($exposer_fancy_a as $key => $exposer_fancy) {
+                                        if (!empty($exposer_fancy)) {
+                                            $fancy_win_type = $exposer_fancy['win_type'];
+                                            if ($fancy_win_type == 'Profit')
+                                                $premiumTotalPLAmountForItem += $exposer_fancy->profit;
+                                            else
+                                                $premiumTotalPLAmountForItem -= $exposer_fancy->loss;
+                                        }
+                                    }
+                                }
+
+                                $premiumTotalPLAmount+=$premiumTotalPLAmountForItem;
+                            }
+                            else if ($value->bet_type == 'BOOKMAKER') {
                                 $betlist1 = MyBets::where('user_id', $childlist)
                                     ->where('result_declare', 1)
                                     ->where('bet_type', 'BOOKMAKER')
@@ -816,9 +919,15 @@ class MyaccountController extends Controller
                             $html .= '<td class="white-bg"> -- </td>';
                         }
 
-                        /*if(!empty($sumAmto))
-                            {*/
-                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt;
+                        if ($premiumTotalPLAmountForItem <= 0) {
+                            $html .= '<td class="white-bg text-color-red">' . round($premiumTotalPLAmountForItem, 2) . '</td>';
+                        } else {
+                            $html .= '<td class="white-bg text-color-green">' . round(abs($premiumTotalPLAmountForItem), 2) . '</td>';
+                        }
+
+                        $html .= '<td class="white-bg text-color-red">' . round($premiumTotalStackAmountForItem, 2) . '</td>';
+
+                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt + $premiumTotalPLAmountForItem;
                         if ($ttlnp > 0) {
                             $ttlnpsR += $ttlnp;
                             $html .= '<td class="white-bg text-color-red">' . round($ttlnp, 2) . '</td>';
@@ -827,21 +936,7 @@ class MyaccountController extends Controller
                             $html .= '<td class="white-bg text-color-green">' . round(abs($ttlnp), 2) . '</td>';
                         }
                         $ttlnps2 = abs($ttlnpsG) - abs($ttlnpsR);
-                        // }
-                        /*else if(empty($sumAmto)){
-                                $ttlnp=$sumAmtb+$sumAmt;
-                                if($ttlnp > 0)
-                                {
-                                    $html.='<td class="white-bg text-color-red">'.round($ttlnp,2).'</td>';
-                                }
-                                else{
-                                    $html.='<td class="white-bg text-color-green">'.round(abs($ttlnp),2).'</td>';
-                                }
-                            }
-                            else{
 
-                                $html.='<td class="white-bg"> -- </td>';
-                            }*/
                         $html .= '</tr>';
                     }
                 } else {
@@ -915,6 +1010,8 @@ class MyaccountController extends Controller
                         $sumAmt1 = 0;
                         $sumAmt2 = 0;
                         $ttlodd = 0;
+                        $premiumTotalStackAmountForItem = 0;
+                        $premiumTotalPLAmountForItem = 0;
                         foreach ($subresult as $key => $value) {
                             if ($value->bet_type == 'SESSION') {
                                 $betlist1 = MyBets::whereIn('user_id', $clist)
@@ -965,7 +1062,51 @@ class MyaccountController extends Controller
                                         }
                                     }
                                 }
-                            } else if ($value->bet_type == 'ODDS') {
+                            }
+                            else if ($value->bet_type == 'PREMIUM') {
+
+                                $betlist1 = MyBets::whereIn('user_id', $clist)
+                                    ->where('result_declare', 1)
+                                    ->where('bet_type', $value->bet_type)
+                                    ->where('isDeleted', 0)
+                                    ->groupBy('market_name')
+                                    ->where('match_id', $data->match_id)
+                                    //->whereBetween('created_at',[$fromdate,$todate])
+                                    ->orderBy('created_at')
+                                    ->get();
+
+                                $betlist2 = MyBets::whereIn('user_id', $clist)
+                                    ->where('result_declare', 1)
+                                    ->where('bet_type', $value->bet_type)
+                                    ->where('isDeleted', 0)
+                                    ->where('match_id', $data->match_id)
+                                    //->whereBetween('created_at',[$fromdate,$todate])
+                                    ->orderBy('created_at')
+                                    ->get();
+
+                                foreach ($betlist2 as $key => $value2) {
+                                    $premiumTotalStackAmountForItem += $value2->bet_amount;
+                                }
+                                $premiumTotalStackAmount += $premiumTotalStackAmountForItem;
+
+                                foreach ($betlist1 as $key => $value1) {
+
+                                    $exposer_fancy_a = UserExposureLog::where('match_id', $matchdata->id)->where('bet_type', $value->bet_type)->whereBetween('created_at', [$fromdate, $todate])->where('fancy_name', $value1->market_name)->whereIn('user_id', $childlist)->get();
+
+                                    foreach ($exposer_fancy_a as $key => $exposer_fancy) {
+                                        if (!empty($exposer_fancy)) {
+                                            $fancy_win_type = $exposer_fancy['win_type'];
+                                            if ($fancy_win_type == 'Profit')
+                                                $premiumTotalPLAmountForItem += $exposer_fancy->profit;
+                                            else
+                                                $premiumTotalPLAmountForItem -= $exposer_fancy->loss;
+                                        }
+                                    }
+                                }
+
+                                $premiumTotalPLAmount+=$premiumTotalPLAmountForItem;
+                            }
+                            else if ($value->bet_type == 'ODDS') {
                                 $betlist1 = MyBets::whereIn('user_id', $clist)
                                     ->where('result_declare', 1)
                                     ->where('bet_type', 'ODDS')
@@ -1015,7 +1156,8 @@ class MyaccountController extends Controller
                                         }
                                     }
                                 }
-                            } else if ($value->bet_type == 'BOOKMAKER') {
+                            }
+                            else if ($value->bet_type == 'BOOKMAKER') {
                                 $betlist1 = MyBets::whereIn('user_id', $clist)
                                     ->where('result_declare', 1)
                                     ->where('isDeleted', 0)
@@ -1129,9 +1271,19 @@ class MyaccountController extends Controller
                             $html .= '<td class="white-bg"> -- </td>';
                         }
 
+
+                        if ($premiumTotalPLAmountForItem <= 0) {
+                            $html .= '<td class="white-bg text-color-red">' . round($premiumTotalPLAmountForItem, 2) . '</td>';
+                        } else {
+                            $html .= '<td class="white-bg text-color-green">' . round(abs($premiumTotalPLAmountForItem), 2) . '</td>';
+                        }
+
+
+                        $html .= '<td class="white-bg text-color-red">' . round($premiumTotalStackAmountForItem, 2) . '</td>';
+
                         // if(!empty($ttlodd))
                         // {
-                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt;
+                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt + $premiumTotalPLAmountForItem;
                         if ($ttlnp > 0) {
                             $ttlnpR += $ttlnp;
                             $html .= '<td class="white-bg text-color-red">' . round($ttlnp, 2) . '</td>';
@@ -1216,7 +1368,8 @@ class MyaccountController extends Controller
                     $sumAmt1 = 0;
                     $sumAmt2 = 0;
                     $ttlodd = 0;
-
+                    $premiumTotalPLAmountForItem = 0;
+                    $premiumTotalStackAmountForItem = 0;
                     foreach ($subresult as $key => $value) {
                         if ($value->bet_type == 'SESSION') {
                             $betlist1 = MyBets::whereIn('user_id', $clist)
@@ -1357,6 +1510,51 @@ class MyaccountController extends Controller
 //                            }
 
                         }
+                        else if ($value->bet_type == 'PREMIUM') {
+                            $betlist1 = MyBets::whereIn('user_id', $clist)
+                                ->where('result_declare', 1)
+                                ->where('bet_type', $value->bet_type)
+                                ->where('isDeleted', 0)
+                                ->groupBy('market_name')
+                                ->where('match_id', $data->match_id)
+                                //->whereBetween('created_at',[$fromdate,$todate])
+                                ->orderBy('created_at')
+                                ->get();
+
+                            $betlist2 = MyBets::whereIn('user_id', $clist)
+                                ->where('result_declare', 1)
+                                ->where('bet_type', $value->bet_type)
+                                ->where('isDeleted', 0)
+                                ->where('match_id', $data->match_id)
+                                //->whereBetween('created_at',[$fromdate,$todate])
+                                ->orderBy('created_at')
+                                ->get();
+
+                            foreach ($betlist2 as $key => $value2) {
+                                $premiumTotalStackAmountForItem += $value2->bet_amount;
+                            }
+                            $premiumTotalStackAmount += $premiumTotalStackAmountForItem;
+
+//                            dd($betlist1->toArray());
+
+                            foreach ($betlist1 as $key => $value1) {
+
+                                \Illuminate\Support\Facades\DB::enableQueryLog();
+                                $exposer_fancy_a = UserExposureLog::where('match_id', $matchdata->id)->where('bet_type', $value->bet_type)->where('fancy_name', $value1->market_name)->whereIn('user_id', $clist)->get();
+
+                                foreach ($exposer_fancy_a as $key => $exposer_fancy) {
+                                    if (!empty($exposer_fancy)) {
+                                        $fancy_win_type = $exposer_fancy['win_type'];
+                                        if ($fancy_win_type == 'Profit')
+                                            $premiumTotalPLAmountForItem += $exposer_fancy->profit;
+                                        else
+                                            $premiumTotalPLAmountForItem -= $exposer_fancy->loss;
+                                    }
+                                }
+                            }
+
+                            $premiumTotalPLAmount+=$premiumTotalPLAmountForItem;
+                        }
                         else if ($value->bet_type == 'BOOKMAKER') {
                             $betlist1 = MyBets::whereIn('user_id', $clist)
                                 ->where('result_declare', 1)
@@ -1486,7 +1684,15 @@ class MyaccountController extends Controller
                             $html .= '<td class="white-bg"> -- </td>';
                         }
 
-                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt;
+                        if ($premiumTotalPLAmountForItem <= 0) {
+                            $html .= '<td class="white-bg text-color-red">' . round($premiumTotalPLAmountForItem, 2) . '</td>';
+                        } else {
+                            $html .= '<td class="white-bg text-color-green">' . round(abs($premiumTotalPLAmountForItem), 2) . '</td>';
+                        }
+
+                       $html .= '<td class="white-bg text-color-red">' . round($premiumTotalStackAmountForItem, 2) . '</td>';
+
+                        $ttlnp = $ttlodd + $sumAmtb + $sumAmt + $premiumTotalPLAmountForItem;
 
                         if ($ttlnp > 0) {
                             $ttlnpR += $ttlnp;
@@ -1585,10 +1791,13 @@ class MyaccountController extends Controller
             $totttlnpsClass = 'text-color-green';
         }
 
+        $premiumTotalPLAmountClass = $premiumTotalPLAmount > 0 ? 'text-color-green' : 'text-color-red';
+        $premiumTotalStackAmountClass = $premiumTotalStackAmount > 0 ? 'text-color-green' : 'text-color-red';
+
         $pagination = $getresult->links()->render();
 
         //$totAmto += $ttlAmto;
-        $html1 = '<tr><td>Total</td><td class=' . $totcmsClass . '>' . number_format(abs($totcms), 2) . '</td><td>' . number_format($totAmto, 2) . '</td><td class=' . $totsumAmtbClass . '>' . number_format($totsumAmtb, 2) . '</td><td>' . number_format($totttlAmtb, 2) . '</td><td class=' . $totsumAmtClass . '>' . number_format(abs($totsumAmt), 2) . '</td><td>' . number_format($ttlAmts, 2) . '</td><td class=' . $totttlnpsClass . '>' . number_format(abs($ttlnps), 2) . '</td></tr>';
+        $html1 = '<tr><td>Total</td><td class=' . $totcmsClass . '>' . number_format(abs($totcms), 2) . '</td><td>' . number_format($totAmto, 2) . '</td><td class=' . $totsumAmtbClass . '>' . number_format($totsumAmtb, 2) . '</td><td>' . number_format($totttlAmtb, 2) . '</td><td class=' . $totsumAmtClass . '>' . number_format(abs($totsumAmt), 2) . '</td><td>' . number_format($ttlAmts, 2) . '</td><td class=' . $premiumTotalPLAmountClass . '>' . number_format(abs($premiumTotalPLAmount), 2) . '</td><td>' . number_format($premiumTotalStackAmount, 2) . '</td><td class=' . $totttlnpsClass . '>' . number_format(abs($ttlnps), 2) . '</td></tr>';
         return $html . '~~' . $html1. '~~' . $pagination;
     }
 

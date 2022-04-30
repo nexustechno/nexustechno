@@ -53,5 +53,6 @@ class AppServiceProvider extends ServiceProvider
 
         // Sharing is caring
         View::share('website', $this->website);
+
     }
 }
