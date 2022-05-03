@@ -122,7 +122,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'sports_id', 'bar_image', 'pinkbg1', 'pinbg', 'pinbg1', 'bluebg1', 'min_bookmaker_limit', 'max_bookmaker_limit', 'min_bet_fancy_limit', 'max_bet_fancy_limit','bet_total','status_b'],
+        props: ['event_id', 'sports_id','userloggedin', 'bar_image', 'pinkbg1', 'pinbg', 'pinbg1', 'bluebg1', 'min_bookmaker_limit', 'max_bookmaker_limit', 'min_bet_fancy_limit', 'max_bet_fancy_limit','bet_total','status_b'],
         data() {
             return {
                 match: [],
@@ -143,40 +143,48 @@
             }
             LaravelEcho.channel('match-detail').listen('.' + this.event_id, (data) => {
                 // this.match = data.records[0];
-                var newRecords = data.records;
 
-                if(newRecords.t2!=undefined){
-                    newRecords.t2 = this.sortedArray(newRecords.t2);
-                    for (var i=0;i < newRecords.t2.length;i++) {
-                        //team1 spark changes
-                        if(this.bookmaker[i]!=undefined) {
-                            if ((this.bookmaker[i].b3 != newRecords.t2[i].b3)) {
-                                $(".td_team"+(i+1)+"_bm_back_2").addClass('spark');
-                            }
-                            if ((this.bookmaker[i].b2 != newRecords.t2[i].b2)) {
-                                $(".td_team"+(i+1)+"_bm_back_1").addClass('spark');
-                            }
-                            if ((this.bookmaker[i].b1 != newRecords.t2[i].b1)) {
-                                $(".td_team"+(i+1)+"_bm_back_0").addClass('spark');
+                if(this.userloggedin==0 && this.bookmaker.length > 0){}else {
+
+                    var newRecords = data.records;
+
+                    if (newRecords.t2 != undefined) {
+                        newRecords.t2 = this.sortedArray(newRecords.t2);
+                        for (var i = 0; i < newRecords.t2.length; i++) {
+                            //team1 spark changes
+                            if (this.bookmaker[i] != undefined) {
+                                if ((this.bookmaker[i].b3 != newRecords.t2[i].b3)) {
+                                    $(".td_team" + (i + 1) + "_bm_back_2").addClass('spark');
+                                }
+                                if ((this.bookmaker[i].b2 != newRecords.t2[i].b2)) {
+                                    $(".td_team" + (i + 1) + "_bm_back_1").addClass('spark');
+                                }
+                                if ((this.bookmaker[i].b1 != newRecords.t2[i].b1)) {
+                                    $(".td_team" + (i + 1) + "_bm_back_0").addClass('spark');
+                                }
+
+                                if ((this.bookmaker[i].l3 != newRecords.t2[i].l3)) {
+                                    $(".td_team" + (i + 1) + "_bm_lay_2").addClass('sparkLay');
+                                }
+                                if ((this.bookmaker[i].l2 != newRecords.t2[i].l2)) {
+                                    $(".td_team" + (i + 1) + "_bm_lay_1").addClass('sparkLay');
+                                }
+                                if ((this.bookmaker[i].l1 != newRecords.t2[i].l1)) {
+                                    $(".td_team" + (i + 1) + "_bm_lay_0").addClass('sparkLay');
+                                }
                             }
 
-                            if ((this.bookmaker[i].l3 != newRecords.t2[i].l3)) {
-                                $(".td_team"+(i+1)+"_bm_lay_2").addClass('sparkLay');
-                            }
-                            if ((this.bookmaker[i].l2 != newRecords.t2[i].l2)) {
-                                $(".td_team"+(i+1)+"_bm_lay_1").addClass('sparkLay');
-                            }
-                            if ((this.bookmaker[i].l1 != newRecords.t2[i].l1)) {
-                                $(".td_team"+(i+1)+"_bm_lay_0").addClass('sparkLay');
+                            if(newRecords.t2[i].b3 <= 0 && newRecords.t2[i].b2 <= 0 && newRecords.t2[i].b1 <=0 && newRecords.t2[i].l3 <= 0 && newRecords.t2[i].l2 <=0 && newRecords.t2[i].l1 <=0){
+                                newRecords.t2[i].status = 'SUSPEND';
                             }
                         }
-                    }
 
-                    this.bookmaker = newRecords.t2;
+                        this.bookmaker = newRecords.t2;
+                    }
+                    // this.bookmaker = data.records[0].bookmaker.runners;
+                    this.loading = false;
+                    // console.log("match ",data.records)
                 }
-                // this.bookmaker = data.records[0].bookmaker.runners;
-                this.loading = false;
-                // console.log("match ",data.records)
             });
         },
         methods: {

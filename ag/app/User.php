@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email','user_name', 'email', 'password','agent_level','first_name','last_name','commission','partnership_perc','time_zone','list_client','main_market','manage_fancy','fancy_history','match_history','parentid','first_login','dealy_time','ip_address','sports_main_market','my_account','my_report','bet_list','bet_list_live','live_casino','risk_management','player_banking','agent_banking','sports_leage','add_balance','message','casino_manage','check_updpass','token_val','odds','bookmaker','fancy','soccer','tennis'
+        'email','user_name', 'email', 'password','premium','agent_level','first_name','last_name','commission','partnership_perc','time_zone','list_client','main_market','manage_fancy','fancy_history','match_history','parentid','first_login','dealy_time','ip_address','sports_main_market','my_account','my_report','bet_list','bet_list_live','live_casino','risk_management','player_banking','agent_banking','sports_leage','add_balance','message','casino_manage','check_updpass','token_val','odds','bookmaker','fancy','soccer','tennis'
     ];
 
     /**

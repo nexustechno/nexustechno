@@ -439,24 +439,24 @@ class MyaccountController extends Controller
                                 if ($data->bet_odds <= $fancydata->result) {
                                     $sumAmt += $data->bet_profit;
                                     $html .= '<span class="text-success">
-									' . $sumAmt = $data->bet_profit . '
+									' . $data->bet_profit . '
 									</span> ';
                                 } else {
                                     $sumAmt -= $data->exposureAmt;
                                     $html .= '<span class="text-danger">
-									' . $sumAmt = $data->exposureAmt . '
+									' . $data->exposureAmt . '
 									</span> ';
                                 }
                             } else if ($data->bet_side == 'lay') {
                                 if ($data->bet_odds > $fancydata->result) {
                                     $sumAmt += $data->bet_profit;
                                     $html .= '<span class="text-success">
-									' . $sumAmt = $data->bet_profit . '
+									' . $data->bet_profit . '
 									</span> ';
                                 } else {
-                                    $sumAmt -= $data->exposureAmt;
+                                    $sumAmt -= floatval($data->exposureAmt);
                                     $html .= '<span class="text-danger">
-									' . $sumAmt = $data->exposureAmt . '
+									' . $data->exposureAmt . '
 									</span> ';
                                 }
                             }

@@ -81,7 +81,7 @@
 
 <script>
     export default {
-        props: ['event_id', 'bar_image', 'min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','bet_total','status_m'],
+        props: ['event_id', 'bar_image', 'userloggedin','min_bet_odds_limit', 'max_bet_odds_limit', 'pinkbg1','pinbg','pinbg1', 'bluebg1','min_bookmaker_limit','max_bookmaker_limit','min_bet_fancy_limit','max_bet_fancy_limit','bet_total','status_m'],
         data() {
             return {
                 match: [],
@@ -96,44 +96,50 @@
         },
         mounted() {
             window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
+                if(this.userloggedin==0 && this.teams.length > 0){}else {
+                    this.selections = 0;
+                    var newRecords = data.records;
 
-                this.selections = 0;
-                var newRecords = data.records;
+                    if (newRecords.t1 != undefined) {
+                        newRecords.t1 = this.sortedArray(newRecords.t1);
 
-                if(newRecords.t1!=undefined){
-                    newRecords.t1 = this.sortedArray(newRecords.t1);
-                    for (var i=0;i < newRecords.t1.length;i++) {
-                        //team1 spark changes
-                        if(this.teams[i]!=undefined) {
-                            if ((this.teams[i].b3 != newRecords.t1[i].b3)) {
-                                $(".td_team"+(i+1)+"_back_2").addClass('spark');
-                            }
-                            if ((this.teams[i].b2 != newRecords.t1[i].b2)) {
-                                $(".td_team"+(i+1)+"_back_1").addClass('spark');
-                            }
-                            if ((this.teams[i].b1 != newRecords.t1[i].b1)) {
-                                $(".td_team"+(i+1)+"_back_0").addClass('spark');
+                        for (var i = 0; i < newRecords.t1.length; i++) {
+                            //team1 spark changes
+                            if (this.teams[i] != undefined) {
+                                if ((this.teams[i].b3 != newRecords.t1[i].b3)) {
+                                    $(".td_team" + (i + 1) + "_back_2").addClass('spark');
+                                }
+                                if ((this.teams[i].b2 != newRecords.t1[i].b2)) {
+                                    $(".td_team" + (i + 1) + "_back_1").addClass('spark');
+                                }
+                                if ((this.teams[i].b1 != newRecords.t1[i].b1)) {
+                                    $(".td_team" + (i + 1) + "_back_0").addClass('spark');
+                                }
+
+                                if ((this.teams[i].l3 != newRecords.t1[i].l3)) {
+                                    $(".td_team" + (i + 1) + "_lay_2").addClass('sparkLay');
+                                }
+                                if ((this.teams[i].l2 != newRecords.t1[i].l2)) {
+                                    $(".td_team" + (i + 1) + "_lay_1").addClass('sparkLay');
+                                }
+                                if ((this.teams[i].l1 != newRecords.t1[i].l1)) {
+                                    $(".td_team" + (i + 1) + "_lay_0").addClass('sparkLay');
+                                }
                             }
 
-                            if ((this.teams[i].l3 != newRecords.t1[i].l3)) {
-                                $(".td_team"+(i+1)+"_lay_2").addClass('sparkLay');
-                            }
-                            if ((this.teams[i].l2 != newRecords.t1[i].l2)) {
-                                $(".td_team"+(i+1)+"_lay_1").addClass('sparkLay');
-                            }
-                            if ((this.teams[i].l1 != newRecords.t1[i].l1)) {
-                                $(".td_team"+(i+1)+"_lay_0").addClass('sparkLay');
+                            if(newRecords.t1[i].b3 <= 0 && newRecords.t1[i].b2 <= 0 && newRecords.t1[i].b1 <=0 && newRecords.t1[i].l3 <= 0 && newRecords.t1[i].l2 <=0 && newRecords.t1[i].l1 <=0){
+                                newRecords.t1[i].status = 'SUSPEND';
                             }
                         }
+
+                        this.teams = newRecords.t1;
                     }
 
-                    this.teams = newRecords.t1;
+                    // this.match = newRecords;
+
+                    this.selections = this.teams.length;
+                    // console.log("match ",data.records)
                 }
-
-                // this.match = newRecords;
-
-                this.selections = this.teams.length;
-                // console.log("match ",data.records)
             });
         },
         methods: {

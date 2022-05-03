@@ -98,7 +98,7 @@ if ($auth_type == 'COM') {
                                 <span class="black-bg text-color-white">Main</span><strong
                                     id="myadminbalance">{{ $website->currency }} {{number_format($balance,2, '.', '')}}</strong>
                             </a>
-                            <a class="refreshimg black-bg-rgb1" id="refreshpage">
+                            <a class="refreshimg black-bg-rgb1 " id="refreshpage">
                                 <i class="fas fa-redo"></i>
                             </a>
                         </li>
@@ -212,13 +212,13 @@ if ($auth_type == 'COM') {
                                     </li>
                                 @endif
 
-                                @if(\Request::get('admin') == 1)
+{{--                                @if(\Request::get('admin') == 1)--}}
                                     @if($ttuser->sports_leage ==  1 || $ttuser->agent_level == 'COM')
                                         <li class="{{ (request()->is('backpanel/sportLeage*' )) ? 'active' : '' }}">
                                             <a href="{{route('sportLeage')}}" class="text-color-white black-gradient-bg1">Sport-Leage</a>
                                         </li>
                                     @endif
-                                @endif
+{{--                                @endif--}}
 
                                 <?php
                                 $loginUser = $loginuser->agent_level;
@@ -586,12 +586,8 @@ if ($auth_type == 'COM') {
             }
         </style>
     </head>
-    <body style="background-image: url(/public/asset/img/maintance-image.jpg)">
-    <div class="txt_maintanence">
-        <h1 style="color: #fff;">
-            {{ setting::first()->maintanence_msg }}
-        </h1>
-    </div>
+    <body>
+        <img src="{{ asset('/asset/img/maintance-image.jpg') }}" alt="" style="width: 100%;height: 100%;object-fit: none;background-color: #24292f;">
     </body>
     </html>
 @endif

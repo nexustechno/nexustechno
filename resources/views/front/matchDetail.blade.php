@@ -229,7 +229,7 @@
                     @endif
                 @endif
 
-                @if($is_agent=='mobile')
+                @if($is_agent=='mobile' && $inplay === 'True')
 {{--                    @if(!empty($logindata))--}}
                         <div class="betslip-block mLiveTv fxsrc">
                             <!-- <a class="collape-link text-color-white blue-gradient-bg1" data-toggle="collapse" href="#live_tv" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -268,13 +268,13 @@
                                             $eventid = $match->event_id;
                                             $sprtid = $match->sports_id;
                                             ?>
-                                            @if($inplay === 'True')
+
                                                 <iframe
                                                     src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=1"
                                                     height="270" title="YouTube video player" frameborder="0"
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                     id="iframe"></iframe>
-                                            @endif
+
                                         </div>
                                     </div>
                                 </div>
@@ -306,32 +306,32 @@
                         </div>
                         @endif<?php */?>
                         <?php
-                        $match_date = '';
-                        if ($match_updated_date != '') {
-                            $dt = Carbon::parse($match_updated_date);
-                            // $dt->addMinutes(330);
-                            if (Carbon::parse($dt)->isToday())
-                                $match_date = date('h:i A', strtotime($dt));
-                            else if (Carbon::parse($dt)->isTomorrow())
-                                $match_date = 'Tomorrow ' . date('h:i A', strtotime($dt));
-                            else
-                                $match_date = $dt;
-                        } else {
-                            if (Carbon::parse($match['match_date'])->isToday())
-                                $match_date = date('h:i A', strtotime($match['match_date']));
-                            else if (Carbon::parse($match['match_date'])->isTomorrow())
-                                $match_date = 'Tomorrow ' . date('h:i A', strtotime($match['match_date']));
-                            else
-                                $match_date = $match['match_date'];
-                        }
+//                        $match_date = '';
+//                        if ($match_updated_date != '') {
+//                            $dt = Carbon::parse($match_updated_date);
+//                            // $dt->addMinutes(330);
+//                            if (Carbon::parse($dt)->isToday())
+//                                $match_date = date('h:i A', strtotime($dt));
+//                            else if (Carbon::parse($dt)->isTomorrow())
+//                                $match_date = 'Tomorrow ' . date('h:i A', strtotime($dt));
+//                            else
+//                                $match_date = $dt;
+//                        } else {
+//                            if (Carbon::parse($match['match_date'])->isToday())
+//                                $match_date = date('h:i A', strtotime($match['match_date']));
+//                            else if (Carbon::parse($match['match_date'])->isTomorrow())
+//                                $match_date = 'Tomorrow ' . date('h:i A', strtotime($match['match_date']));
+//                            else
+//                                $match_date = $match['match_date'];
+//                        }
 
-                        if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
-                            $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                        } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
-                            $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                        } else {
-                            $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
-                        }
+//                        if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
+//                            $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
+//                        } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
+//                            $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
+//                        } else {
+                            $match_time = "<span>" . date('H:i', strtotime($match['match_date'])) . "</span>";
+//                        }
                         ?>
                         @if($inplay == 'True')
                             <div class="match-innerbg-detail soccerbg live_score_card_{{ $match->sports_id }}">
@@ -409,7 +409,7 @@
                                     </li>
                                 </ul>
                                 <!-- Live TV Start -->
-                                @if($is_agent=='desktop')
+                                @if($is_agent=='desktop' && $inplay == 'True')
 {{--                                    @if(!empty($logindata))--}}
                                         <div class="betslip-block mb-2 mt-10">
                                             <a class="collape-link text-color-white blue-gradient-bg1"
@@ -429,14 +429,14 @@
                                                     <div class="tab-content">
                                                         <div class="tab-pane active" id="tabs-1" role="tabpanel">
 
-                                                            @if($inplay == 'True')
+
                                                                 <iframe
                                                                     src="https://richexchange.live/nexus/nexus.php?eventid=<?php echo $eventid;?>&sports_id=1"
                                                                     height="270" title="YouTube video player"
                                                                     frameborder="0"
                                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                                     id="iframe"></iframe>
-                                                            @endif
+
                                                         </div>
 
                                                     </div>
@@ -450,33 +450,33 @@
                                 <div class="twodiv-ireland">
                                     <div class="ireland-txt dark-grey-bg-1 text-color-blue-2">Match Odds</div>
                                     <?php
-                                    $match_date = '';
-                                    if ($match_updated_date != '') {
-                                        $dt = Carbon::parse($match_updated_date);
-                                        // $dt->addMinutes(330);
-
-                                        if (Carbon::parse($dt)->isToday())
-                                            $match_date = date('h:i A', strtotime($dt));
-                                        else if (Carbon::parse($dt)->isTomorrow())
-                                            $match_date = 'Tomorrow ' . date('h:i A', strtotime($dt));
-                                        else
-                                            $match_date = $dt;
-                                    } else {
-                                        if (Carbon::parse($match['match_date'])->isToday())
-                                            $match_date = date('h:i A', strtotime($match['match_date']));
-                                        else if (Carbon::parse($match['match_date'])->isTomorrow())
-                                            $match_date = 'Tomorrow ' . date('h:i A', strtotime($match['match_date']));
-                                        else
-                                            $match_date = $match['match_date'];
-                                    }
-
-                                    if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
-                                        $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                                    } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
-                                        $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
-                                    } else {
-                                        $match_time = "<span>" . date('h:i A', strtotime($match['match_date'])) . "</span>";
-                                    }
+//                                    $match_date = '';
+//                                    if ($match_updated_date != '') {
+//                                        $dt = Carbon::parse($match_updated_date);
+//                                        // $dt->addMinutes(330);
+//
+//                                        if (Carbon::parse($dt)->isToday())
+//                                            $match_date = date('h:i A', strtotime($dt));
+//                                        else if (Carbon::parse($dt)->isTomorrow())
+//                                            $match_date = 'Tomorrow ' . date('h:i A', strtotime($dt));
+//                                        else
+//                                            $match_date = $dt;
+//                                    } else {
+//                                        if (Carbon::parse($match['match_date'])->isToday())
+//                                            $match_date = date('h:i A', strtotime($match['match_date']));
+//                                        else if (Carbon::parse($match['match_date'])->isTomorrow())
+//                                            $match_date = 'Tomorrow ' . date('h:i A', strtotime($match['match_date']));
+//                                        else
+//                                            $match_date = $match['match_date'];
+//                                    }
+//
+//                                    if ($match['sports_id'] == 4 && isset($match_data['t1'][0][0]['iplay']) && $match_data['t1'][0][0]['iplay'] === 'True') {
+//                                        $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
+//                                    } else if ($match['sports_id'] != 4 && isset($match_data[0]['inplay']) && $match_data[0]['inplay'] == 1) {
+//                                        $match_time = " <span style='color:green' class='deskinplay' >In-Play</span>";
+//                                    } else {
+                                        $match_time = "<span>" . date('H:i', strtotime($match['match_date'])) . "</span>";
+//                                    }
 
                                     ?>
                                     <div class="timeblockireland"><img
@@ -497,7 +497,7 @@
                             @if($match_data_found)
                                 @if($match->sports_id=='4')
 
-                                    <cricketodds status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                    <cricketodds :userloggedin="{{ !empty($getUser) ? 1:0 }}" status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                  pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                  pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                  pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -508,7 +508,7 @@
                                                  :event_id="'{{ $match->event_id }}'"></cricketodds>
 
                                     @if($match->bookmaker == 1)
-                                        <cricketoddsbookmarks status_b="{{$match->status_b}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
+                                        <cricketoddsbookmarks :userloggedin="{{ !empty($getUser) ? 1:0 }}" status_b="{{$match->status_b}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}"
                                                               pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                               pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                               pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -518,7 +518,7 @@
                                                               bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                               :event_id="'{{ $match->event_id }}'"></cricketoddsbookmarks>
                                     @endif
-                                    <cricketoddsfancy :fancy_enable="{{$fancy_enable}}" :premium_enable="{{$premium_enable}}" stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                    <cricketoddsfancy :userloggedin="{{ !empty($getUser) ? 1:0 }}" :premium_delay_time="{{$premium_delay_time}}" :fancy_enable="{{$fancy_enable}}" :premium_enable="{{$premium_enable}}" stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
@@ -533,7 +533,7 @@
                                                       :event_id="'{{ $match->event_id }}'"></cricketoddsfancy>
 
                                 @else
-                                    <tennissoccerodds status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
+                                    <tennissoccerodds :userloggedin="{{ !empty($getUser) ? 1:0 }}" status_m="{{$match->status_m}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" :team="{{json_encode($team)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1="{{asset('asset/front/img/pinkbg1.png')}}"
@@ -543,7 +543,7 @@
                                                       bar_image="{{ asset('asset/front/img/bars.png') }}"
                                                       :event_id="'{{ $match->event_id }}'"></tennissoccerodds>
 
-                                    <cricketoddsfancy :fancy_enable="{{$fancy_enable}}" :premium_enable="{{$premium_enable}}" stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
+                                    <cricketoddsfancy :userloggedin="{{ !empty($getUser) ? 1:0 }}" :premium_delay_time="{{$premium_delay_time}}" :fancy_enable="{{$fancy_enable}}" :premium_enable="{{$premium_enable}}" stakval={{json_encode($stkval)}} status_f="{{$match->status_f}}" sports_id="{{$match->sports_id}}" bet_total="{{json_encode($bet_total)}}" premium_bet_total="{{json_encode($premium_bet_total)}}"
                                                       pinbg="{{ asset('asset/front/img/pin-bg.png') }}"
                                                       pinbg1="{{ asset('asset/front/img/pin-bg-1.png') }}"
                                                       pinkbg1_fancy="{{ asset('asset/front/img/pinkbg1_fancy.png') }}"
@@ -632,7 +632,7 @@
         </div>
         <div class="modal rulesfancy_betsmodal" id="rulesFancyBetsModal">
             <div class="modal-dialog">
-                <div class="modal-content p-    0">
+                <div class="modal-content p-0">
                     <div class="modal-header black-bg3">
                         <h4 class="modal-title text-color-yellow1">Rules of Fancy Bets</h4>
                         <button type="button" class="close" data-dismiss="modal"><img
@@ -1915,7 +1915,7 @@
             setInterval(function () {
                 $("td").removeClass("spark");
                 $("td").removeClass("sparkLay");
-            }, 500);
+            }, 1000);
 
             $('#odds_val').val(' ');
             $('#inputStake').val(' ');

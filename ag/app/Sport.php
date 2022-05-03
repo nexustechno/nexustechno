@@ -10,6 +10,6 @@ class Sport extends Model
     ];
 
     public function matches(){
-        return $this->hasMany(Match::class,'sports_id','sId')->where('winner', null)->orderby('match_date', 'asc');
+        return $this->hasMany(Match::class,'sports_id','sId')->where('event_id',">",0)->where('winner', null)->orderby('match_date', 'asc');
     }
 }

@@ -1422,7 +1422,13 @@ class SettingController extends Controller
     public function riskDetailsFormattedData()
     {
         $loginUser = Auth::user();
-        $all_child = $this->GetChildofAgent($loginUser->id);
+        $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+
+        if (!empty($hirUser)) {
+            $all_child = explode(',', $hirUser->sub_user);
+        }else {
+            $all_child = $this->GetChildofAgent($loginUser->id);
+        }
 
         $sports = Sport::all();
         $html = [];
@@ -3180,12 +3186,20 @@ class SettingController extends Controller
     public function risk_management_details($id)
     {
 
+//        dd("asd");
         $managetv = ManageTv::latest()->first();
         //$loginUser = Auth::user();
 
         $loginUser = Auth::user();
         $ag_id = $loginUser->id;
-        $all_child = $this->GetChildofAgent($ag_id);
+
+        $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+
+        if (!empty($hirUser)) {
+            $all_child = explode(',', $hirUser->sub_user);
+        }else {
+            $all_child = $this->GetChildofAgent($ag_id);
+        }
 
         $website = UsersAccount::getWebsite();
 
@@ -3194,7 +3208,6 @@ class SettingController extends Controller
 
         $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($matchList->event_id, $matchList->match_id, $matchList->sports_id);
 //        dd($match_data);
-
         $server = 0;
         if(isset($match_data['server'])){
             $server = $match_data['server'];
@@ -3272,7 +3285,6 @@ class SettingController extends Controller
         }
 
         $list = User::where('parentid', $loginUser->id)->orderBy('user_name')->get();
-
         $team1_bet_total = 0;
         $team2_bet_total = 0;
         $team_draw_bet_total = 0;
@@ -3356,7 +3368,6 @@ class SettingController extends Controller
                 }
             }
         }
-
         $bet_total = [];
         $bet_total['team1_bet_total'] = round($team1_bet_total,2);
         $bet_total['team2_bet_total'] = round($team2_bet_total,2);
@@ -3451,7 +3462,6 @@ class SettingController extends Controller
         $bet_total['team1_BM_total'] = round($team1_bet_totalB, 2);
         $bet_total['team2_BM_total'] = round($team2_bet_totalB, 2);
         $bet_total['draw_BM_total'] = round($team_draw_bet_totalB, 2);
-
         //Fancy bet
         $my_placed_bets_fancy = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'SESSION')->where('result_declare', 0)->whereIn('user_id', $all_child)->get();
         $totalBets['fancy'] = $my_placed_bets_fancy->count();
@@ -3552,13 +3562,11 @@ class SettingController extends Controller
         $premium_placed_bets = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'PREMIUM')->where('result_declare', 0)->whereIn('user_id', $all_child)->get();
         $totalBets['premium'] = $premium_placed_bets->count();
         // admin book cal start
-
         $resp = $this->getMatchDetailAdminBkUserHtml($matchList, $loginUser, $website);
         $adminBookUser = $resp['adminBookUser'];
         $adminBookUserBM = $resp['adminBookUserBM'];
         $adminBookUserTeamDrawEnable = $resp['adminBookUserTeamDrawEnable'];
         $adminBookBMUserTeamDrawEnable = $resp['adminBookBMUserTeamDrawEnable'];
-
         $oddsLimit = [];
         $oddsLimit['min_bet_odds_limit'] = $matchList->min_bet_odds_limit;
         $oddsLimit['max_bet_odds_limit'] = $matchList->max_bet_odds_limit;
@@ -3572,10 +3580,21 @@ class SettingController extends Controller
         if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
             $premium_bet_total = $oddsBookmakerExposerArr['PREMIUM'];
         }
-
         $stkval = array('100', '200', '300', '400', '500', '600');
 
-        return view($page, compact('inplay','server','matchDataFound', 'premium_bet_total', 'stkval', 'team','match','matchList','oddsLimit','bet_total', 'managetv', 'list', 'totalBets', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
+        $premium_enable = 0;
+        if($match->premium == 1) {
+            $premium_enable = 1;
+        }
+
+        $fancy_enable = 0;
+        if($match->fancy == 1) {
+            $fancy_enable = 1;
+        }
+
+        $premium_delay_time = 0;
+
+        return view($page, compact('inplay','server','premium_delay_time','fancy_enable','premium_enable','matchDataFound', 'premium_bet_total', 'stkval', 'team','match','matchList','oddsLimit','bet_total', 'managetv', 'list', 'totalBets', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
     }
 
     public function risk_management_book_bm_book(Request $request)
@@ -3593,7 +3612,13 @@ class SettingController extends Controller
     {
 
         $ag_id = $loginUser->id;
-        $all_child = $this->GetChildofAgent($ag_id);
+
+        $hirUser = UserHirarchy::where('agent_user', $loginUser->id)->first();
+        if (!empty($hirUser)) {
+            $all_child = explode(',', $hirUser->sub_user);
+        }else {
+            $all_child = $this->GetChildofAgent($ag_id);
+        }
 
         $adminBookUser = '';
         // display odds total for admin book
@@ -3843,9 +3868,12 @@ class SettingController extends Controller
                 $recordFound = true;
             } else {
                 $all_childs = UserHirarchy::where('agent_user', $value->id)->first();
-                $all_childsCount = UserHirarchy::where('agent_user', $value->id)->count();
-                if ($all_childsCount != 0) {
-                    $all_child = $this->GetChildofAgent($value->id);
+                if (!empty($all_childs)) {
+                    if (!empty($hirUser)) {
+                        $all_child = explode(',', $hirUser->sub_user);
+                    }else {
+                        $all_child = $this->GetChildofAgent($ag_id);
+                    }
                     $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'ODDS')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
                     $recordFound = true;
                 } else {
@@ -3993,7 +4021,16 @@ class SettingController extends Controller
                 $all_childsCount = UserHirarchy::where('agent_user', $value->id)->count();
                 if ($all_childsCount != 0) {
 
-                    $all_child = $this->GetChildofAgent($value->id);
+//                    $all_child = $this->GetChildofAgent($value->id);
+
+                    $hirUser = UserHirarchy::where('agent_user', $value->id)->first();
+
+                    if (!empty($hirUser)) {
+                        $all_child = explode(',', $hirUser->sub_user);
+                    }else {
+                        $all_child = $this->GetChildofAgent($value->id);
+                    }
+
                     $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
                     $recordFound = true;
                 } else {
@@ -8088,15 +8125,7 @@ class SettingController extends Controller
 			$fancyName[] = $value->team_name;
 		}*/
         $ev = $match->event_id;
-        $match_bet = MyBets::whereNotIn('team_name', function ($query) use ($ev) {
-            //DB::enableQueryLog();
-            //$query->select('fancy_name')->from('fancy_results');
-            $query->select('fancy_name')
-                ->from(with(new FancyResult)->getTable())
-                ->where('eventid', $ev);
-            //->whereRaw('fancy_results.eventid = '.$match->event_id)
-
-        })->where('match_id', $match->event_id)->where('bet_type', 'SESSION')->groupBy('my_bets.team_name')->get();
+        $match_bet = MyBets::where('result_declare',0)->where('match_id', $match->event_id)->where('bet_type', 'SESSION')->groupBy('my_bets.team_name')->get();
         //dd(DB::getQueryLog());
         foreach ($match_bet as $value) {
             $fancyName[] = $value->team_name;

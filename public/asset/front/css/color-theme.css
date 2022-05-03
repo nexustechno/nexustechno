@@ -408,11 +408,11 @@
 }
 
 .spark {
-    background:  #f8e71c;
+    background:  #f8e71c !important;
 }
 
 .sparkLay {
-    background: #26f1f8;
+    background: #26f1f8 !important;
 }
 
 .grey-gradient-bg1 {

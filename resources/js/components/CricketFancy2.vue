@@ -1,12 +1,11 @@
 <template>
     <div v-if="!loading" class="fancy-section">
-        <div id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px"
-             v-if="t4.length > 0 || match.t3.length > 0">
+        <div id="fancybetdiv" class="fancy-bet-txt " style="padding-top:10px" v-if="t4.length > 0 || (match.t3!=undefined && match.t3.length > 0)">
             <div id="fancyBetHead" class="" :class="fancyType=='premium' ? 'sportsbook_bet-head':'fancy_bet-head'"
                  style="">
                 <template v-if="fancyType=='premium'">
                     <h4 @click="fancyType='premium'" v-if="t4.length > 0" class="fa-in-play">
-                        <span>Premium</span>
+                        <span>Premium Cricket</span>
                         <a href="#feeds_premium" data-toggle="collapse" class="btn-head_rules">Rules</a>
                         <div id="feeds_premium" class="collapse premium_minmax_info text-left">
                             <dl>
@@ -24,7 +23,7 @@
                         <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
                     </h4>
                     <a id="showSportsBookBtn" class="other-tab" style="" v-if="t4.length > 0"
-                       @click="fancyType='premium'"><span class="tag-new">New</span>Premium</a>
+                       @click="fancyType='premium'"><span class="tag-new">New</span>Premium Cricket</a>
                 </template>
             </div>
             <div id="fancyBetTabWrap" v-if="t4.length > 0 || match.t3.length > 0" :class="fancyType"
@@ -262,7 +261,7 @@
                                         </dt>
                                     </dl>
                                 </th>
-                                <td class="back-1 no-liq" colspan="2">
+                                <td class="back-1 no-liq" :class="'spark_div_'+runner.sId" colspan="2">
                                     <a class="info" @click="openBetForm(match,runner)" :data-team="runner.nat"
                                        :data-val="runner.odds">{{runner.odds}}</a>
                                 </td>
@@ -329,7 +328,7 @@
     import axios from 'axios';
 
     export default {
-        props: ['event_id', 'bar_image', 'clockgreenicon', 'infoicon', 'pinbg', 'pinbg1', 'premium_bet_total', 'min_bet_fancy_limit', 'max_bet_fancy_limit', 'min_premium_limit', 'max_premium_limit', 'pinkbg1_fancy', 'bluebg1_fancy', 'bet_total', 'sports_id', 'status_f', 'stakval', 'fancy_enable', 'premium_enable'],
+        props: ['event_id', 'bar_image', 'clockgreenicon','userloggedin', 'infoicon', 'pinbg', 'pinbg1', 'premium_bet_total', 'min_bet_fancy_limit', 'max_bet_fancy_limit', 'min_premium_limit', 'max_premium_limit', 'pinkbg1_fancy', 'bluebg1_fancy', 'bet_total', 'sports_id', 'status_f', 'stakval', 'fancy_enable', 'premium_enable','premium_delay_time'],
         data() {
             return {
                 match: [],
@@ -385,14 +384,16 @@
                 window.Echo.channel('match-detail').listen('.' + this.event_id, (data) => {
                     this.loading = false;
 
-                    // $(".mobileBack td.mobile_tr_common_class").html("");
+                    if(this.userloggedin==0 && this.match.t3!=undefined){}else {
+                        // $(".mobileBack td.mobile_tr_common_class").html("");
 
-                    if (data.records.t3 != undefined) {
-                        var records = data.records;
-                        records.t3 = this.sortedArray(data.records.t3);
-                        this.match = records;
-                    } else {
-                        this.match = data.records;
+                        if (data.records.t3 != undefined) {
+                            var records = data.records;
+                            records.t3 = this.sortedArray(data.records.t3);
+                            this.match = records;
+                        } else {
+                            this.match = data.records;
+                        }
                     }
                     // console.log("match ",data.records)
                 });
@@ -402,13 +403,32 @@
                     this.loading = false;
 
                     // $(".mobileBack td.mobile_tr_common_class").html("");
+                    if(this.userloggedin==1){
+                        if (data.records.matches.t4 != undefined) {
+                            // var records = data.records;
+                            var t4 = this.sortedArray(data.records.matches.t4);
+                            if (this.t4.length > 0) {
+                                for (var i = 0; i < 4; i++) {
+                                    for (var j = 0; j < t4.length; j++) {
+                                        if (this.t4[i].id == t4[j].id) {
+                                            // console.log(this.t4[i].marketName, t4[j].marketName);
+                                            for (var k = 0; k < this.t4[i].sub_sb.length; k++) {
+                                                for (var n = 0; n < t4[j].sub_sb.length; n++) {
+                                                    // console.log(".spark_div_"+this.t4[i].sub_sb[k].sId, t4[j].sub_sb[n].sId);
+                                                    if (this.t4[i].sub_sb[k].sId == t4[j].sub_sb[n].sId && this.t4[i].sub_sb[k].odds != t4[j].sub_sb[n].odds) {
+                                                        $(".spark_div_" + this.t4[i].sub_sb[k].sId).addClass('spark');
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
-                    if (data.records.matches.t4 != undefined) {
-                        // var records = data.records;
-                        var t4 = this.sortedArray(data.records.matches.t4);
-                        this.t4 = t4;
-                    } else {
-                        // this.match = data.records;
+                            this.t4 = t4;
+                        } else {
+                            // this.match = data.records;
+                        }
                     }
                     // console.log("match ", data.records)
                 });
@@ -485,23 +505,25 @@
                     }
                     this.premiumBetForm.match_id = this.event_id;
 
-                    axios({
-                        method: 'POST',
-                        url: "/MyBetStore",
-                        data: this.premiumBetForm
-                    }).then((response) => {
-                        console.log("response", response.data);
-                        if (response.data.status == 'false') {
-                            toastr.error(response.data.msg);
-                            this.betLoading = false;
-                        } else if (response.data.status == 'true') {
-                            toastr.success(response.data.msg);
-                            this.premiumBetTotal = response.data.oddsBookmakerExposerArr['PREMIUM'];
-                            this.oldPremiumBetTotal = response.data.oddsBookmakerExposerArr['PREMIUM'];
-                            this.betLoading = false;
-                            this.cancleBetForm();
-                        }
-                    });
+                    setTimeout(()=>{
+                        axios({
+                            method: 'POST',
+                            url: "/MyBetStore",
+                            data: this.premiumBetForm
+                        }).then((response) => {
+                            console.log("response", response.data);
+                            if (response.data.status == 'false') {
+                                toastr.error(response.data.msg);
+                                this.betLoading = false;
+                            } else if (response.data.status == 'true') {
+                                toastr.success(response.data.msg);
+                                this.premiumBetTotal = response.data.oddsBookmakerExposerArr['PREMIUM'];
+                                this.oldPremiumBetTotal = response.data.oddsBookmakerExposerArr['PREMIUM'];
+                                this.betLoading = false;
+                                this.cancleBetForm();
+                            }
+                        });
+                    },this.premium_delay_time);
                 }
             },
             setDefaultStack(stack) {
@@ -824,24 +846,24 @@
         background-image: url('/asset/front/img/bg-sportsbook_rules.svg');
     }
 
-    .btn-head_rules:before {
-        content: '';
-        width: 4vw;
-        height: 4vw;
-        background-image: url('data:image/svg+xml,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6.35 10.9h1.3V9.6h-1.3v1.3zM7 .5A6.502 6.502 0 00.5 7c0 3.588 2.912 6.5 6.5 6.5s6.5-2.912 6.5-6.5S10.588.5 7 .5zm0 11.7A5.207 5.207 0 011.8 7c0-2.867 2.333-5.2 5.2-5.2s5.2 2.333 5.2 5.2-2.333 5.2-5.2 5.2zm0-9.1a2.6 2.6 0 00-2.6 2.6h1.3c0-.715.585-1.3 1.3-1.3.715 0 1.3.585 1.3 1.3 0 1.3-1.95 1.138-1.95 3.25h1.3c0-1.462 1.95-1.625 1.95-3.25A2.6 2.6 0 007 3.1z" fill="%23FFF" fill-rule="evenodd"/></svg>');
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
+    /*.btn-head_rules:before {*/
+    /*    content: '';*/
+    /*    width: 4vw;*/
+    /*    height: 4vw;*/
+    /*    background-image: url('data:image/svg+xml,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6.35 10.9h1.3V9.6h-1.3v1.3zM7 .5A6.502 6.502 0 00.5 7c0 3.588 2.912 6.5 6.5 6.5s6.5-2.912 6.5-6.5S10.588.5 7 .5zm0 11.7A5.207 5.207 0 011.8 7c0-2.867 2.333-5.2 5.2-5.2s5.2 2.333 5.2 5.2-2.333 5.2-5.2 5.2zm0-9.1a2.6 2.6 0 00-2.6 2.6h1.3c0-.715.585-1.3 1.3-1.3.715 0 1.3.585 1.3 1.3 0 1.3-1.95 1.138-1.95 3.25h1.3c0-1.462 1.95-1.625 1.95-3.25A2.6 2.6 0 007 3.1z" fill="%23FFF" fill-rule="evenodd"/></svg>');*/
+    /*    background-repeat: no-repeat;*/
+    /*    background-size: contain;*/
+    /*}*/
 
-    .btn-head_rules:before {
-        content: '';
-        width: 15px;
-        height: 15px;
-        background-image: url('data:image/svg+xml,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6.35 10.9h1.3V9.6h-1.3v1.3zM7 .5A6.502 6.502 0 00.5 7c0 3.588 2.912 6.5 6.5 6.5s6.5-2.912 6.5-6.5S10.588.5 7 .5zm0 11.7A5.207 5.207 0 011.8 7c0-2.867 2.333-5.2 5.2-5.2s5.2 2.333 5.2 5.2-2.333 5.2-5.2 5.2zm0-9.1a2.6 2.6 0 00-2.6 2.6h1.3c0-.715.585-1.3 1.3-1.3.715 0 1.3.585 1.3 1.3 0 1.3-1.95 1.138-1.95 3.25h1.3c0-1.462 1.95-1.625 1.95-3.25A2.6 2.6 0 007 3.1z" fill="%23FFF" fill-rule="evenodd"/></svg>');
-        background-repeat: no-repeat;
-        background-size: contain;
-        display: block;
-    }
+    /*.btn-head_rules:before {*/
+    /*    content: '';*/
+    /*    width: 15px;*/
+    /*    height: 15px;*/
+    /*    background-image: url('data:image/<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="%233B5160" fill-rule="evenodd" d="M6.76 5.246V3.732h1.48v1.514H6.76zm.74 8.276a5.86 5.86 0 0 0 3.029-.83 5.839 5.839 0 0 0 2.163-2.163 5.86 5.86 0 0 0 .83-3.029 5.86 5.86 0 0 0-.83-3.029 5.839 5.839 0 0 0-2.163-2.163 5.86 5.86 0 0 0-3.029-.83 5.86 5.86 0 0 0-3.029.83A5.839 5.839 0 0 0 2.308 4.47a5.86 5.86 0 0 0-.83 3.029 5.86 5.86 0 0 0 .83 3.029 5.839 5.839 0 0 0 2.163 2.163 5.86 5.86 0 0 0 3.029.83zM7.5 0c1.37 0 2.638.343 3.804 1.028a7.108 7.108 0 0 1 2.668 2.668A7.376 7.376 0 0 1 15 7.5c0 1.37-.343 2.638-1.028 3.804a7.108 7.108 0 0 1-2.668 2.668A7.376 7.376 0 0 1 7.5 15a7.376 7.376 0 0 1-3.804-1.028 7.243 7.243 0 0 1-2.668-2.686A7.343 7.343 0 0 1 0 7.5c0-1.358.343-2.62 1.028-3.786a7.381 7.381 0 0 1 2.686-2.686A7.343 7.343 0 0 1 7.5 0zm-.74 11.268V6.761h1.48v4.507H6.76z"></path></svg>');*/
+    /*    background-repeat: no-repeat;*/
+    /*    background-size: contain;*/
+    /*    display: block;*/
+    /*}*/
 
     .btn-head_rules {
         width: 32px;
@@ -860,7 +882,7 @@
         content: '';
         width: 15px;
         height: 15px;
-        background-image: url('data:image/svg+xml,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M6.35 10.9h1.3V9.6h-1.3v1.3zM7 .5A6.502 6.502 0 00.5 7c0 3.588 2.912 6.5 6.5 6.5s6.5-2.912 6.5-6.5S10.588.5 7 .5zm0 11.7A5.207 5.207 0 011.8 7c0-2.867 2.333-5.2 5.2-5.2s5.2 2.333 5.2 5.2-2.333 5.2-5.2 5.2zm0-9.1a2.6 2.6 0 00-2.6 2.6h1.3c0-.715.585-1.3 1.3-1.3.715 0 1.3.585 1.3 1.3 0 1.3-1.95 1.138-1.95 3.25h1.3c0-1.462 1.95-1.625 1.95-3.25A2.6 2.6 0 007 3.1z" fill="%23FFF" fill-rule="evenodd"/></svg>');
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><path fill="%233B5160" fill-rule="evenodd" d="M6.76 5.246V3.732h1.48v1.514H6.76zm.74 8.276a5.86 5.86 0 0 0 3.029-.83 5.839 5.839 0 0 0 2.163-2.163 5.86 5.86 0 0 0 .83-3.029 5.86 5.86 0 0 0-.83-3.029 5.839 5.839 0 0 0-2.163-2.163 5.86 5.86 0 0 0-3.029-.83 5.86 5.86 0 0 0-3.029.83A5.839 5.839 0 0 0 2.308 4.47a5.86 5.86 0 0 0-.83 3.029 5.86 5.86 0 0 0 .83 3.029 5.839 5.839 0 0 0 2.163 2.163 5.86 5.86 0 0 0 3.029.83zM7.5 0c1.37 0 2.638.343 3.804 1.028a7.108 7.108 0 0 1 2.668 2.668A7.376 7.376 0 0 1 15 7.5c0 1.37-.343 2.638-1.028 3.804a7.108 7.108 0 0 1-2.668 2.668A7.376 7.376 0 0 1 7.5 15a7.376 7.376 0 0 1-3.804-1.028 7.243 7.243 0 0 1-2.668-2.686A7.343 7.343 0 0 1 0 7.5c0-1.358.343-2.62 1.028-3.786a7.381 7.381 0 0 1 2.686-2.686A7.343 7.343 0 0 1 7.5 0zm-.74 11.268V6.761h1.48v4.507H6.76z"></path></svg>');
         background-repeat: no-repeat;
         background-size: contain;
         display: block;

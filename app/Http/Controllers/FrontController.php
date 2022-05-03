@@ -654,7 +654,12 @@ class FrontController extends Controller
             $fancy_enable = 1;
         }
 
-        return view($page, compact('match','team','match_data_found', 'server','premium_enable','fancy_enable','match_data','premium_bet_total', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
+        $premium_delay_time = 0;
+        if(isset($userId) && !empty($logindata)) {
+            $premium_delay_time = $logindata->premium * 1000;
+        }
+
+        return view($page, compact('match','team','match_data_found','premium_delay_time', 'server','premium_enable','fancy_enable','match_data','premium_bet_total', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
     }
 
     public function fancyUserCalculation(Request $request){

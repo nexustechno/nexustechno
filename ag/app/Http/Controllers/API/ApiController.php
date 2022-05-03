@@ -102,6 +102,8 @@ class ApiController extends Controller
         $update['max_bookmaker_limit'] = $request->max_bookmaker_limit;
         $update['min_fancy_limit'] = $request->min_fancy_limit;
         $update['max_fancy_limit'] = $request->max_fancy_limit;
+        $update['min_premium_limit'] = $request->premium_min_bet_odds_limit;
+        $update['max_premium_limit'] = $request->premium_max_bet_odds_limit;
 
         Match::where("sports_id",4)->update($update);
 
@@ -109,12 +111,16 @@ class ApiController extends Controller
         $update['odds_limit'] = $request->tennis_odds_limit;
         $update['min_bet_odds_limit'] = $request->tennis_min_bet_odds_limit;
         $update['max_bet_odds_limit'] = $request->tennis_max_bet_odds_limit;
+        $update['min_premium_limit'] = $request->tennis_premium_min_bet_odds_limit;
+        $update['max_premium_limit'] = $request->tennis_premium_max_bet_odds_limit;
         Match::where("sports_id",2)->update($update);
 
         $update = [];
         $update['odds_limit'] = $request->soccer_odds_limit;
         $update['min_bet_odds_limit'] = $request->soccer_min_bet_odds_limit;
         $update['max_bet_odds_limit'] = $request->soccer_max_bet_odds_limit;
+        $update['min_premium_limit'] = $request->soccer_premium_min_bet_odds_limit;
+        $update['max_premium_limit'] = $request->soccer_premium_max_bet_odds_limit;
         Match::where("sports_id",1)->update($update);
 
         return response()->json([
@@ -289,7 +295,7 @@ class ApiController extends Controller
             $matches->where('sports_id',1);
         }
 
-        $data = $matches->selectRaw('*, CONCAT(match_name,"[",match_date,"]==",is_draw) as new_title')->whereNull('winner')->orderby('match_date', 'asc')->pluck('new_title','event_id');
+        $data = $matches->selectRaw('*, CONCAT(match_name,"[",match_date,"]==",is_draw,"==",(SELECT count(*) FROM my_bets WHERE my_bets.match_id=match.event_id)) as new_title')->whereNull('winner')->orderby('match_date', 'asc')->pluck('new_title','event_id');
 
         return response()->json([
             'status' => 'success',
@@ -389,6 +395,9 @@ class ApiController extends Controller
         $data['max_bookmaker_limit'] = $request->max_bookmaker_limit;
         $data['min_fancy_limit'] = $request->min_fancy_limit;
         $data['max_fancy_limit'] = $request->max_fancy_limit;
+        $data['min_premium_limit'] = $request->min_premium_limit;
+        $data['max_premium_limit'] = $request->max_premium_limit;
+
         $data['status'] = 1;
 
         if(!empty($matchList) && $matchList->status == 0){

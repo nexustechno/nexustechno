@@ -14,6 +14,7 @@
                 <span style="color:green" v-if="match.inPlay == 'True'" class="deskinplay">In-Play</span>
                 <span class="game-live" v-if="match.tv == 'True'" id="streamingIcon" style="display: inline-flex;"></span>
                 <div class="mobileDate" v-if="match.inPlay != 'True'">{{ getMatchDate1(match.eventName) }}</div>
+                <span class="game-sportsbook" id="sportsBookIcon_2">Premium Cricket</span>
                 <span v-if="matchtype == 4 && match.f == 'True'" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>
                 <span v-if="matchtype == 4 && match.m1 == 'True'" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>
             </span>
@@ -60,6 +61,7 @@
                 <div class="mobileDate" v-if="match.inPlay != true">{{ getMatchDate2(match.openDate) }}</div>
                 <span v-if="matchtype == 4 && match.f == true" style="color:green" class="game-fancy game-f in-play blue-bg-3 text-color-white"></span>
                 <span v-if="matchtype == 4 && match.m1 == true" class="game-bookmaker in-play game-fancy" id="bookMakerIcon" style="cursor: pointer; display: inline-flex;"></span>
+                <span v-if="match.p == true && userloggedin == 1" class="game-sportsbook" id="sportsBookIcon_2" style="display: inline-flex;"></span>
             </span>
                 <span class="fir-col2" :class="'col1-back-lay'+match.gameId">
                 <a class="backbtn lightblue-bg2" v-if="match.back1 > 0">{{ match.back1 }}</a>
@@ -176,7 +178,7 @@
     import moment from 'moment';
 
     export default {
-        props: ['displaymatches','matchtype','favmatches','filtertype','todaydate','tomorrowdate','year','roundpin','roundpin1'],
+        props: ['displaymatches','matchtype','favmatches','filtertype','todaydate','tomorrowdate','year','roundpin','roundpin1','userloggedin'],
         data() {
             return {
                 matches: [],
@@ -220,78 +222,80 @@
         methods:{
             setRecords(server,data){
                 this.server = server;
-                // console.log(data);
-                if(server == 1) {
-                    var records = data;
-                    for (var i = 0; i < records.length; i++) {
-                        if (this.isVisible1(records[i].gameId, records[i].eventName, records[i].inPlay, i)) {
-                            if (this.matches[i] != undefined) {
-                                if (this.matches[i].back1 != records[i].back1) {
-                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
-                                }
-                                if (this.matches[i].lay1 != records[i].lay1) {
-                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
-                                }
-                                if (this.matches[i].back12 != records[i].back12) {
-                                    $(".col2-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
-                                }
-                                if (this.matches[i].lay12 != records[i].lay12) {
-                                    $(".col2-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
-                                }
-                                if (this.matches[i].back11 != records[i].back11) {
-                                    $(".col3-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
-                                }
-                                if (this.matches[i].lay11 != records[i].lay11) {
-                                    $(".col3-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
-                                }
-                            }
-                        }
-                    }
-                }
-                else if(server == 2) {
-                    var records = data;
-                    for (var i = 0; i < records.length; i++) {
-                        if (this.isVisible2(records[i])) {
-                            if (this.matches[i] != undefined) {
-                                if (this.matches[i].back1 != records[i].back1) {
-                                    $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
-                                }
-                                if (this.matches[i].lay1 != records[i].lay1) {
-                                    $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
-                                }
-                                if (this.matches[i].back2 != records[i].back2) {
-                                    $(".col3-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
-                                }
-                                if (this.matches[i].lay2 != records[i].lay2) {
-                                    $(".col3-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
-                                }
-                                if (this.matches[i].back3 != records[i].back3) {
-                                    $(".col2-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
-                                }
-                                if (this.matches[i].lay3 != records[i].lay3) {
-                                    $(".col2-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
-                                }
-                            }
-                        }
-                    }
+                if(this.userloggedin == 0 && this.matches.length > 0){
+                    return false;
                 }else {
-                    var records = data.events;
-                    for (var i = 0; i < records.length; i++) {
-                        if (this.isVisible3(records[i], i)) {
-                            if (this.matches[i] != undefined) {
-                                for (var j = 0; j < records[i].markets[0].selections.length; j++) {
-                                    if (records[i].markets[0].selections.length > 0 && records[i].markets[0].selections[j] != undefined && records[i].markets[0].selections[j].availableToBack != undefined && records[i].markets[0].selections[j].availableToBack[0] != undefined && this.matches[i].markets[0].selections.length > 0 && this.matches[i].markets[0].selections[j] != undefined && this.matches[i].markets[0].selections[j].availableToBack != undefined && this.matches[i].markets[0].selections[j].availableToBack[0] != undefined && this.matches[i].markets[0].selections[j].availableToBack[0].price != records[i].markets[0].selections[j].availableToBack[0].price) {
-                                        $(".col1-back-lay" + records[i].id + " .backbtn").addClass('spark');
+                    // console.log(data);
+                    if (server == 1) {
+                        var records = data;
+                        for (var i = 0; i < records.length; i++) {
+                            if (this.isVisible1(records[i].gameId, records[i].eventName, records[i].inPlay, i)) {
+                                if (this.matches[i] != undefined) {
+                                    if (this.matches[i].back1 != records[i].back1) {
+                                        $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
                                     }
-                                    if (records[i].markets[0].selections.length > 0 && records[i].markets[0].selections[j] != undefined && records[i].markets[0].selections[j].availableToLay != undefined && records[i].markets[0].selections[j].availableToLay[0] != undefined && this.matches[i].markets[0].selections.length > 0 && this.matches[i].markets[0].selections[j] != undefined && this.matches[i].markets[0].selections[j].availableToLay != undefined && this.matches[i].markets[0].selections[j].availableToLay[0] != undefined && this.matches[i].markets[0].selections[j].availableToLay[0].price != records[i].markets[0].selections[j].availableToLay[0].price) {
-                                        $(".col1-back-lay" + records[i].id + " .laybtn").addClass('sparkLay');
+                                    if (this.matches[i].lay1 != records[i].lay1) {
+                                        $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    }
+                                    if (this.matches[i].back12 != records[i].back12) {
+                                        $(".col2-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    }
+                                    if (this.matches[i].lay12 != records[i].lay12) {
+                                        $(".col2-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    }
+                                    if (this.matches[i].back11 != records[i].back11) {
+                                        $(".col3-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    }
+                                    if (this.matches[i].lay11 != records[i].lay11) {
+                                        $(".col3-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    }
+                                }
+                            }
+                        }
+                    } else if (server == 2) {
+                        var records = data;
+                        for (var i = 0; i < records.length; i++) {
+                            if (this.isVisible2(records[i])) {
+                                if (this.matches[i] != undefined) {
+                                    if (this.matches[i].back1 != records[i].back1) {
+                                        $(".col1-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    }
+                                    if (this.matches[i].lay1 != records[i].lay1) {
+                                        $(".col1-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    }
+                                    if (this.matches[i].back2 != records[i].back2) {
+                                        $(".col3-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    }
+                                    if (this.matches[i].lay2 != records[i].lay2) {
+                                        $(".col3-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    }
+                                    if (this.matches[i].back3 != records[i].back3) {
+                                        $(".col2-back-lay" + records[i].gameId + " .backbtn").addClass('spark');
+                                    }
+                                    if (this.matches[i].lay3 != records[i].lay3) {
+                                        $(".col2-back-lay" + records[i].gameId + " .laybtn").addClass('sparkLay');
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        var records = data.events;
+                        for (var i = 0; i < records.length; i++) {
+                            if (this.isVisible3(records[i], i)) {
+                                if (this.matches[i] != undefined) {
+                                    for (var j = 0; j < records[i].markets[0].selections.length; j++) {
+                                        if (records[i].markets[0].selections.length > 0 && records[i].markets[0].selections[j] != undefined && records[i].markets[0].selections[j].availableToBack != undefined && records[i].markets[0].selections[j].availableToBack[0] != undefined && this.matches[i].markets[0].selections.length > 0 && this.matches[i].markets[0].selections[j] != undefined && this.matches[i].markets[0].selections[j].availableToBack != undefined && this.matches[i].markets[0].selections[j].availableToBack[0] != undefined && this.matches[i].markets[0].selections[j].availableToBack[0].price != records[i].markets[0].selections[j].availableToBack[0].price) {
+                                            $(".col1-back-lay" + records[i].id + " .backbtn").addClass('spark');
+                                        }
+                                        if (records[i].markets[0].selections.length > 0 && records[i].markets[0].selections[j] != undefined && records[i].markets[0].selections[j].availableToLay != undefined && records[i].markets[0].selections[j].availableToLay[0] != undefined && this.matches[i].markets[0].selections.length > 0 && this.matches[i].markets[0].selections[j] != undefined && this.matches[i].markets[0].selections[j].availableToLay != undefined && this.matches[i].markets[0].selections[j].availableToLay[0] != undefined && this.matches[i].markets[0].selections[j].availableToLay[0].price != records[i].markets[0].selections[j].availableToLay[0].price) {
+                                            $(".col1-back-lay" + records[i].id + " .laybtn").addClass('sparkLay');
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-
                 this.matches = records;
             },
             makeFav(matchId){
@@ -640,5 +644,28 @@
         list-style: none;
         text-align: center;
         font-size: 11px;
+    }
+
+    .game-sportsbook:after {
+        background-image: url('data:image/svg+xml,<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M8.297 21l1.26-5.635 7.255.026c.876 0 1.642-.256 2.3-.77.656-.512 1.085-1.195 1.286-2.047l1.506-6.757c.2-.852.087-1.534-.342-2.047-.43-.513-1.09-.77-1.985-.77H5.997L2 21h6.297zm5.695-7.878h-3.943l1.752-7.852h3.943l-1.752 7.852z" fill="%23FCEDC0" fill-rule="nonzero"/></svg>');
+    }
+    .game-sportsbook:after{
+        content: "";
+        background-size: cover;
+        width: 12px;
+        height: 12px;
+    }
+
+    .game-sportsbook{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5px;
+        border-radius: 3px;
+        width: 17px;
+        height: 16px;
+        padding: 0 !important;
+        background-color: #E4550F;
+        float: right;
     }
 </style>

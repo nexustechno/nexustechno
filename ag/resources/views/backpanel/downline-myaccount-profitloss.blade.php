@@ -55,7 +55,7 @@
 
     <input type="hidden" name="pid" id="pid" value="{{$id}}">
     <div id="site_bet_loading1" class="betloaderimage1 loader-style1" style="display: none;"></div>
-    <body onload=display_ct();>
+
     <section class="myaccount-section">
         <div class="container">
             <div class="row">

@@ -274,6 +274,7 @@ class AgentController extends Controller
             $data['fancy'] = $getuser->fancy;
             $data['soccer'] = $getuser->soccer;
             $data['tennis'] = $getuser->tennis;
+            $data['premium'] = $getuser->premium;
         }
 
         $lid = User::create($data);

@@ -5647,7 +5647,7 @@ table.dataTable.display tbody tr {
 }
 
 .tv_tabs_block .tab-content .tab-pane iframe {
-    /*height: 200px;*/
+    height: 274px;
     width: 100%;
 }
 select.acc-filter{ height: 25px !important; }
@@ -6413,3 +6413,6 @@ a:not([href]):not([tabindex]) {
 #LiveScoreCard {
     width: 100%;
 }
+.live_score_card_4 iframe{height: 300px !important;}
+.live_score_card_2 iframe{height: 163px !important;}
+.live_score_card_1 iframe{height: 62px !important;}

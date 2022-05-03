@@ -193,12 +193,12 @@
                                         <span>Rolling Delay</span>
 
                                         <span>
-                                    <label class="switch switch-label switch-primary pull-left">
-                                        <input class="switch-input ng-untouched ng-valid ng-dirty" id="dealy_time1"
-                                               name="dealy_time" type="checkbox">
-                                        <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>
-                                    </label>
-                                </span>
+                                            <label class="switch switch-label switch-primary pull-left">
+                                                <input class="switch-input ng-untouched ng-valid ng-dirty" id="dealy_time1"
+                                                       name="dealy_time" type="checkbox">
+                                                <span class="switch-slider" data-checked="✓" data-unchecked="✕"></span>
+                                            </label>
+                                        </span>
 
                                     </div>
 
@@ -241,6 +241,15 @@
                                         <div>
                                             <span>Tennis</span>
                                             <span><input id="tennis" name="tennis" type="text" placeholder="Enter"
+                                                         class="form-control white-bg"
+                                                         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"></span>
+                                        </div>
+
+                                        <span class="text-danger cls-error" id="errdly"></span>
+
+                                        <div>
+                                            <span>Premium</span>
+                                            <span><input id="premium" name="premium" type="text" placeholder="Enter"
                                                          class="form-control white-bg"
                                                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"></span>
                                         </div>
@@ -429,6 +438,15 @@
                                         <div>
                                             <span>Tennis</span>
                                             <span><input id="tennis" name="tennis" type="text" placeholder="Enter"
+                                                         class="form-control white-bg"
+                                                         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"></span>
+                                        </div>
+
+                                        <span class="text-danger cls-error" id="errdly"></span>
+
+                                        <div>
+                                            <span>Premium</span>
+                                            <span><input id="premium" name="premium" type="text" placeholder="Enter"
                                                          class="form-control white-bg"
                                                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"></span>
                                         </div>

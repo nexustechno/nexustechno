@@ -1311,10 +1311,8 @@ if (!$DEVICE) {
             }
         </style>
     </head>
-    <body style="background-image: url(/public/asset/img/maintance-image.jpg)">
-    <div class="txt_maintanence">
-        <h1 style="color: #fff;">{{$msg}}</h1>
-    </div>
+    <body>
+        <img src="{{ asset('/asset/img/maintance-image.jpg') }}" alt="" style="width: 100%;height: 100%;object-fit: none;background-color: #24292f;">
     </body>
     </html>
 @endif

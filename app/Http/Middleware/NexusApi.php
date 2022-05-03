@@ -71,10 +71,22 @@ class NexusApi
                             $baseUrl = $api_base_url2;
                         }
 
+                        if($request->has('debug')) {
+                            $ip = getenv('HTTP_CLIENT_IP') ?:
+                                getenv('HTTP_X_FORWARDED_FOR') ?:
+                                    getenv('HTTP_X_FORWARDED') ?:
+                                        getenv('HTTP_FORWARDED_FOR') ?:
+                                            getenv('HTTP_FORWARDED') ?:
+                                                getenv('REMOTE_ADDR');
+
+                            dd($ip);
+                        }
+
                         $url = $baseUrl.'/websites/match/' . $eventId . "/" . $type . "/" . $broadcast . "/" . $match->match_id;
 
                         $res = $client->request('GET', $url);
                         $response = $res->getBody()->getContents();
+//                        dd($response);
                     }
                 }
             }

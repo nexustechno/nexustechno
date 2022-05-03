@@ -98,7 +98,7 @@ $settings =setting::first();
                                 <span class="fir-col3"></span>
                             </div>
                             <div id="app">
-                                <matches roundpin="{{ asset("asset/front/img/round-pin.png") }}" roundpin1="{{ asset("asset/front/img/round-pin1.png") }}" todaydate="{{ date('d-m-Y') }}" year="{{ date('Y') }}" tomorrowdate="{{ date('d-m-Y', strtotime("+1 day")) }}" :displaymatches="{{ $matches }}" :favmatches="{{ $favMatches }}" :matchtype="{{ $match_type }}"></matches>
+                                <matches :userloggedin="{{ !empty($getUser) ? 1:0 }}" roundpin="{{ asset("asset/front/img/round-pin.png") }}" roundpin1="{{ asset("asset/front/img/round-pin1.png") }}" todaydate="{{ date('d-m-Y') }}" year="{{ date('Y') }}" tomorrowdate="{{ date('d-m-Y', strtotime("+1 day")) }}" :displaymatches="{{ $matches }}" :favmatches="{{ $favMatches }}" :matchtype="{{ $match_type }}"></matches>
                             </div>
 {{--                            {!! $cricket_html !!}--}}
                         </div>

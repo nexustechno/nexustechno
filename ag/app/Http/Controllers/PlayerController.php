@@ -195,6 +195,7 @@ class PlayerController extends Controller
             'fancy' => $request->fancy,
             'soccer' => $request->soccer,
             'tennis' => $request->tennis,
+            'premium' => $request->premium,
             'ip_address' => resAll::ip(),
         ]);
         $last_id = $lid->id;

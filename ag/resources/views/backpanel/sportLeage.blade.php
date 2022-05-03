@@ -99,13 +99,16 @@
             });
         });
 
+
         function checkAll() {
             $('input[type=checkbox]').each(function () {
-                if(this.checked){}else{
-                    $(this).checked = true;
-                    onClickSportsLeage(this);
-                    // $(this).trigger('click');
-                }
+                // if(this.checked){}else{
+                //     onClickSportsLeage(this);
+                setTimeout(()=>{
+                    $(this).trigger('click');
+                },1500);
+                //     $(this).checked = true;
+                // }
             });
         }
 

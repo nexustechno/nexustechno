@@ -41,3 +41,5 @@ ALTER TABLE `my_bets` ADD `market_id` VARCHAR(10) NOT NULL DEFAULT '0' AFTER `ma
 ALTER TABLE `my_bets` ADD `winner` VARCHAR(500) NULL DEFAULT NULL AFTER `result_declare`;
 
 ALTER TABLE `match` ADD `premium` INT NOT NULL DEFAULT '1' AFTER `fancy`;
+ALTER TABLE `users` ADD `premium` INT NOT NULL DEFAULT '0' AFTER `tennis`;
+ALTER TABLE `users` CHANGE `premium` `premium` INT NULL DEFAULT NULL;
