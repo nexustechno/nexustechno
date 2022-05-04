@@ -161,7 +161,7 @@
             <p class="m-0">No data found</p>
         </div>
     </div>
-    <div class="matches-section p-5" v-else>
+    <div class="matches-section p-5" v-else-if="(filtertype == 'inplay' && matchtype==4) || filtertype != 'inplay'">
         <div id="site_bet_loading1" class="betloaderimage1 loader-style1">
             <ul class="loading1">
                 <li>

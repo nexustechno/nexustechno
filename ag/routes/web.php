@@ -244,6 +244,11 @@ Route::group(['middleware' => ['backendnexusapi','auth']], function () {
     Route::post('delete_user_bet', 'SettingController@delete_user_bet')->name('delete_user_bet');
     Route::post('rollback_user_bet', 'SettingController@rollback_user_bet')->name('rollback_user_bet');
 
+    Route::get('dashboard/images', 'HomeController@dashboardImages')->name('dashboard.images');
+    Route::get('dashboard/images/create', 'HomeController@dashboardImagesCreate')->name('dashboard.images.create');
+    Route::get('dashboard/images/{id}/delete', 'HomeController@dashboardImagesDelete')->name('dashboard.images.delete');
+    Route::post('dashboard/images/store', 'HomeController@dashboardImagesStore')->name('dashboard.images.store');
+
     Route::get('casino/all', 'CasinoController@index')->name('casinoAll');
     Route::get('casino/add', 'CasinoController@addCasino')->name('addCasino');
     Route::get('casino/{id}/update', 'CasinoController@addCasino')->name('update.casino');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Dashboard;
 use App\Website;
 use Illuminate\Http\Request;
 use App\User;
@@ -135,5 +136,52 @@ class HomeController extends Controller
             return Redirect::back()->with('error', 'Incorrect password!');
         }
         return redirect()->route($routename)->with('message', 'Data created successfully.');
+    }
+
+    public function dashboardImages(){
+        $images = Dashboard::orderBy('id','asc')->get();
+        return view('backpanel.dashboard-images',compact('images'));
+    }
+
+    public function dashboardImagesCreate(){
+        return view('backpanel.add-dashboard-image');
+    }
+
+    public function dashboardImagesStore(Request $request){
+//        dd($request->all());
+
+        if($request->has('id')){
+            $casino = Dashboard::find($request->id);
+            $casino->title = $request->title;
+            $casino->width_type = $request->width_type;
+            $casino->link = $request->link;
+            if($request->has('file_name')) {
+                $imageName = time() . '.' . $request->file_name->extension();
+                $request->file_name->move(public_path('asset/upload'), $imageName);
+                $casino->file_name = $imageName;
+            }
+            $casino->save();
+            return redirect()->route('dashboard.images')->with('message', 'Data updated successfully.');
+        }else{
+            $imageName = time() . '.' . $request->file_name->extension();
+            $request->file_name->move(public_path('asset/upload'), $imageName);
+            $data = $request->all();
+            $data['file_name'] = $imageName;
+            $data['status'] = 1;
+
+            Dashboard::create($data);
+            return redirect()->route('dashboard.images')->with('message', 'Data created successfully.');
+        }
+    }
+    public function dashboardImagesDelete($id){
+        $casino = Dashboard::find($id);
+
+        if(empty($casino)){
+            return redirect()->route('dashboard.images')->withErrors('message', 'Invalid image id.');
+        }
+
+        Dashboard::where("id",$id)->delete();
+
+        return redirect()->route('dashboard.images')->with('message', 'Data deleted successfully.');
     }
 }

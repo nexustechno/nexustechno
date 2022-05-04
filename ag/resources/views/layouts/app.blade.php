@@ -302,8 +302,10 @@ if ($auth_type == 'COM') {
                                                         Setting</a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{route('themeAll')}}" class="text-color-yellow1">Theme
-                                                        Management</a>
+                                                    <a href="{{route('themeAll')}}" class="text-color-yellow1">Theme Management</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{route('dashboard.images')}}" class="text-color-yellow1">Manage Dashboard Images</a>
                                                 </li>
                                             @endif
 
