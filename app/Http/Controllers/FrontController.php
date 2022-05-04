@@ -199,16 +199,15 @@ class FrontController extends Controller
         $eventId = $match->event_id;
 
         $match_data = [];
-        if($match->match_id > 0) {
+//        if($match->match_id > 0)
+//        {
             $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($eventId, $matchId, $match->sports_id);
-        }
+//        }
 
         $server = 0;
         if(isset($match_data['server'])){
             $server = $match_data['server'];
         }
-
-//        dd($match_data);
 
 //        if (empty($match_data)) {
 //            return redirect()->back()->with('error', 'No data found3!');
@@ -416,6 +415,14 @@ class FrontController extends Controller
             $inplay = isset($match_data[0]) && isset($match_data[0]['inPlay']) && $match_data[0]['inPlay'] == 1 ? 'True' : 'False';
             if(isset($match_data[0]) && isset($match_data[0]['inPlay'])){
                 $match_data_found = true;
+            }
+        }
+
+        $premiumDataFound = false;
+        if($match_data_found == false){
+            $premium_match_data = app('App\Http\Controllers\RestApi')->getSingleMatchPremiumData($eventId, $matchId);
+            if(isset($premium_match_data['t4']) && count($premium_match_data['t4']) > 0){
+                $premiumDataFound = true;
             }
         }
 
@@ -659,7 +666,7 @@ class FrontController extends Controller
             $premium_delay_time = $logindata->premium * 1000;
         }
 
-        return view($page, compact('match','team','match_data_found','premium_delay_time', 'server','premium_enable','fancy_enable','match_data','premium_bet_total', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
+        return view($page, compact('match','team','premiumDataFound','match_data_found','premium_delay_time', 'server','premium_enable','fancy_enable','match_data','premium_bet_total', 'inplay', 'my_placed_bets_all', 'total_todays_bet', 'match_name_bet','match_updated_date', 'stkval', 'placed_bet_match_list','logindata','bet_total','oddsLimit'));
     }
 
     public function fancyUserCalculation(Request $request){

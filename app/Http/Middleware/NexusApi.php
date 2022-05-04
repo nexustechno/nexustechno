@@ -55,7 +55,8 @@ class NexusApi
                 $match = Match::where("event_id",$eventId)->first();
 
                 if(!empty($match)) {
-                    if($eventId > 0 && $match->match_id) {
+//                    if($eventId > 0 && $match->match_id)
+                    {
                         $api_base_url = app('api_base_url');
                         $api_base_url2 = app('api_base_url2');
                         $client = new Client();

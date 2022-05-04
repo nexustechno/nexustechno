@@ -3284,6 +3284,14 @@ class SettingController extends Controller
             }
         }
 
+        $premiumDataFound = false;
+        if($matchDataFound == false){
+            $premium_match_data = app('App\Http\Controllers\RestApi')->getSingleMatchPremiumData($matchList->event_id, $matchList->match_id);
+            if(isset($premium_match_data['t4']) && count($premium_match_data['t4']) > 0){
+                $premiumDataFound = true;
+            }
+        }
+
         $list = User::where('parentid', $loginUser->id)->orderBy('user_name')->get();
         $team1_bet_total = 0;
         $team2_bet_total = 0;
@@ -3594,7 +3602,7 @@ class SettingController extends Controller
 
         $premium_delay_time = 0;
 
-        return view($page, compact('inplay','server','premium_delay_time','fancy_enable','premium_enable','matchDataFound', 'premium_bet_total', 'stkval', 'team','match','matchList','oddsLimit','bet_total', 'managetv', 'list', 'totalBets', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
+        return view($page, compact('inplay','server','premiumDataFound','premium_delay_time','fancy_enable','premium_enable','matchDataFound', 'premium_bet_total', 'stkval', 'team','match','matchList','oddsLimit','bet_total', 'managetv', 'list', 'totalBets', 'adminBookUser', 'adminBookUserBM', 'adminBookUserTeamDrawEnable', 'adminBookBMUserTeamDrawEnable'));
     }
 
     public function risk_management_book_bm_book(Request $request)

@@ -14,11 +14,11 @@
                             </dl>
                         </div>
                     </h4>
-                    <a id="showSportsBookBtn" v-if="match.t3.length > 0" class="other-tab" style=""
+                    <a id="showSportsBookBtn" v-if="match.t3!=undefined && match.t3.length > 0" class="other-tab" style=""
                        @click="fancyType='general'">Fancy Bet</a>
                 </template>
                 <template v-else>
-                    <h4 @click="fancyType='general'" class="fa-in-play">
+                    <h4 @click="fancyType='general'" v-if="match.t3!=undefined && match.t3.length > 0" class="fa-in-play">
                         <span>Fancy Bet</span>
                         <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
                     </h4>
@@ -26,7 +26,7 @@
                        @click="fancyType='premium'"><span class="tag-new">New</span>Premium Cricket</a>
                 </template>
             </div>
-            <div id="fancyBetTabWrap" v-if="t4.length > 0 || match.t3.length > 0" :class="fancyType"
+            <div id="fancyBetTabWrap" v-if="t4.length > 0 || (match.t3!=undefined && match.t3.length > 0)" :class="fancyType"
                  class="fancy_bet_tab-wrap" style="">
                 <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -229,7 +229,7 @@
         <table v-if="t4!=undefined" :class="fancyType=='general' ? 'collapse':'w-100'">
             <tr>
                 <td>
-                    <table class="bets w-100 premium-table" v-for="(match,index) in t4" :key="match.id">
+                    <table class="bets w-100 premium-table" v-for="(match,index) in t4" :key="match.id" v-if="match.status == 'ACTIVE'">
                         <tr class="special_bet">
                             <td colspan="7" @click="showHideTeam('.collapsable_'+match.id)" style="cursor: pointer;">
                                 <h3 class="marketHeader">
@@ -246,8 +246,7 @@
                             </td>
                         </tr>
                         <template v-for="(runner, index2) in match.sub_sb">
-                            <tr :key="runner.sId"
-                                :class="index < 5 ? 'collapsable_'+match.id : 'collapse collapsable_'+match.id">
+                            <tr :key="runner.sId" :class="index < 5 ? 'collapsable_'+match.id : 'collapse collapsable_'+match.id">
                                 <th class="" colspan="3">
                                     <dl class="fancy-th-layout">
                                         <dt>
@@ -313,22 +312,25 @@
             </tr>
         </table>
     </div>
-    <!--    <div class="fancy-section w-100" v-else-if="loading">-->
-    <!--        <table width="100%" class="table custom-table inplay-table-1 w1-table cricket-table1" id="inplay-tableblock-bookmaker">-->
-    <!--            <tr>-->
-    <!--                <td colspan="7">-->
-    <!--                    <p class="text-center font-weight-bold">Loading Fancy Data...</p>-->
-    <!--                </td>-->
-    <!--            </tr>-->
-    <!--        </table>-->
-    <!--    </div>-->
+    <div class="fancy-section w-100" v-else-if="checkloading == 1 && loading">
+        <div class="inplay-tableblock" id="inplay-tableblock" >
+            <div id="site_bet_loading1" class="betloaderimage1 loader-style1">
+                <ul class="loading1">
+                    <li>
+                        <img src="/asset/front/img/loaderajaxbet.gif">
+                    </li>
+                    <li>Loading...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
     import axios from 'axios';
 
     export default {
-        props: ['event_id', 'bar_image', 'clockgreenicon','userloggedin', 'infoicon', 'pinbg', 'pinbg1', 'premium_bet_total', 'min_bet_fancy_limit', 'max_bet_fancy_limit', 'min_premium_limit', 'max_premium_limit', 'pinkbg1_fancy', 'bluebg1_fancy', 'bet_total', 'sports_id', 'status_f', 'stakval', 'fancy_enable', 'premium_enable','premium_delay_time'],
+        props: ['event_id', 'bar_image','checkloading', 'clockgreenicon','userloggedin', 'infoicon', 'pinbg', 'pinbg1', 'premium_bet_total', 'min_bet_fancy_limit', 'max_bet_fancy_limit', 'min_premium_limit', 'max_premium_limit', 'pinkbg1_fancy', 'bluebg1_fancy', 'bet_total', 'sports_id', 'status_f', 'stakval', 'fancy_enable', 'premium_enable','premium_delay_time'],
         data() {
             return {
                 match: [],
@@ -372,7 +374,7 @@
             }
         },
         mounted() {
-            if (this.sports_id == 4) {
+            if (this.sports_id == 4 && this.fancy_enable == true) {
                 this.fancyType = 'general';
             } else {
                 this.fancyType = 'premium';
