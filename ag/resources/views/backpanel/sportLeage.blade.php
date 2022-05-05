@@ -101,14 +101,13 @@
 
 
         function checkAll() {
-            $('input[type=checkbox]').each(function () {
-                // if(this.checked){}else{
-                //     onClickSportsLeage(this);
-                setTimeout(()=>{
-                    $(this).trigger('click');
-                },1500);
-                //     $(this).checked = true;
-                // }
+            $('input[type=checkbox]').each(function (value,i) {
+                if(this.checked){}else{
+                    setTimeout(()=>{
+                        $(this).trigger('click');
+                    },i);
+                    // $(this).checked = true;
+                }
             });
         }
 

@@ -112,7 +112,7 @@
                             </div>
 
                             <a class="text-color-white pl-2 risk-management-refresh-button" title="Refresh" onclick="window.location.reload()">
-                                <i class="fa fa-redo"></i>
+                                <i class="fa fa-redo">&nbsp;Refresh</i>
                             </a>
 
                             <h4 class="text-color-white">{{$matchList->match_name}} [{{ $matchList->match_date }}]</h4>
