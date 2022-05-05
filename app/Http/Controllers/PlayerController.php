@@ -1416,7 +1416,7 @@ class PlayerController extends Controller
             $event_id = $matchList['event_id'];
             $matchtype = $matchList['sports_id'];
             $match_m = $matchList['suspend_m'];
-            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($event_id, $matchId, $matchtype);
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($matchList->event_id, $matchList->match_id, $matchtype);
 
             $team1 = $team2 = $team3 = '';
             if ($match_data != 0) {
@@ -1807,7 +1807,7 @@ class PlayerController extends Controller
             $event_id = $matchList['event_id'];
             $matchtype = $matchList['sports_id'];
             $match_m = $matchList['suspend_b'];
-            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($event_id, $matchid, $matchtype);
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($matchList->event_id, $matchList->match_id, $matchtype);
 
             $team1 = $team2 = $team3 = '';
             if ($match_data != 0) {
@@ -2137,7 +2137,7 @@ class PlayerController extends Controller
             $event_id = $matchList['event_id'];
             $matchtype = $matchList['sports_id'];
             $match_f = $matchList['suspend_f'];
-            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($event_id, $matchid, $matchtype);
+            $match_data = app('App\Http\Controllers\RestApi')->getSingleMatchData($matchList->event_id, $matchList->match_id, $matchtype);
 
             $team1 = $team2 = $team3 = '';
             $nat = array();

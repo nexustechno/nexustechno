@@ -241,6 +241,8 @@ class RestApi extends Controller
             $url=$api_base_url2.'/match/soccer/detail/'.$eventId."/".$matchId;
         }
 
+//        dd($url);
+
 		try {
 			$client = new Client();
 				$alldata=$client->request('GET',$url,[
