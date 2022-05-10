@@ -259,12 +259,12 @@ class BetListController extends Controller
             }
 
             if ($date_from != '' && $date_to != '') {
-                $getresult = MyBets::select('users.user_name', 'my_bets.winner as premium_winner','users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->whereBetween('my_bets.created_at', [$date_from, $date_to])->where('my_bets.result_declare', 1)
+                $getresult = MyBets::select('users.user_name', 'my_bets.winner as premium_winner','users.parentid', 'my_bets.id','my_bets.market_name', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->whereBetween('my_bets.created_at', [$date_from, $date_to])->where('my_bets.result_declare', 1)
                     ->where('my_bets.isDeleted', 0)
                     ->whereIn('user_id', $all_child)
                     ->orderBy('my_bets.id', 'Desc')->paginate(20);
             } else {
-                $getresult = MyBets::select('users.user_name', 'my_bets.winner as premium_winner', 'users.parentid', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->where('my_bets.result_declare', 1)
+                $getresult = MyBets::select('users.user_name', 'my_bets.winner as premium_winner', 'users.parentid', 'my_bets.id', 'my_bets.market_name', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'match.winner', 'my_bets.bet_type', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.exposureAmt', 'my_bets.match_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')->where('my_bets.result_declare', 1)
                     ->where('my_bets.isDeleted', 0)
                     ->whereIn('user_id', $all_child)
                     ->orderBy('my_bets.id', 'Desc')->paginate(20);
@@ -444,11 +444,18 @@ class BetListController extends Controller
 		  ' . $agent_tr . '
           <td class="white-bg">' . ucfirst($value->user_name) . '</td>
           <td class="white-bg"><a class="text-color-blue-light">' . $value->id . '</a></td>
-          <td class="white-bg sm_txt">' . date('Y-m-d', strtotime($value->created_at)) . ' <br> ' . date('H:i:s', strtotime($value->created_at)) . '</td>
-          <td class="white-bg">
+            <td class="white-bg sm_txt">' . date('Y-m-d', strtotime($value->created_at)) . ' <br> ' . date('H:i:s', strtotime($value->created_at)) . '</td>';
+            if ($value->bet_type == 'PREMIUM') {
+                $html .= '<td class="white-bg">
+              ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . ' <i class="fas fa-caret-right text-color-grey"></i>' . $value->market_name . '
+          </td>';
+            }else{
+                if ($value->bet_type == 'SESSION') {
+                    $html .= '<td class="white-bg">
               ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . '
-          </td>
-          <td class="white-bg"><a class="text-color-blue-light">' . $value->team_name . '</a></td>';
+          </td>';
+            }
+            $html .= '<td class="white-bg"><a class="text-color-blue-light">' . $value->team_name . '</a></td>';
             if ($value->bet_type == 'SESSION') {
                 if ($value->bet_side == 'back')
                     $html .= '<td class="white-bg text-color-blue-light bet_type_uppercase">yes</td>';
@@ -524,10 +531,10 @@ class BetListController extends Controller
         $all_child = explode(',', $hirUser->sub_user);
 
         if ($sportId == 'all') {
-            $query = MyBets::select('users.user_name', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'my_bets.bet_type', 'my_bets.exposureAmt', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.user_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')
+            $query = MyBets::select('users.user_name', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'my_bets.bet_type','my_bets.market_name', 'my_bets.exposureAmt', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.user_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')
                 ->where('my_bets.result_declare', 0);
         } else {
-            $query = MyBets::select('users.user_name', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name', 'my_bets.bet_type', 'my_bets.exposureAmt', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.user_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')
+            $query = MyBets::select('users.user_name', 'my_bets.id', 'my_bets.sportID', 'my_bets.created_at', 'match.match_name','my_bets.market_name', 'my_bets.bet_type', 'my_bets.exposureAmt', 'my_bets.bet_side', 'my_bets.bet_odds', 'my_bets.bet_amount', 'my_bets.bet_profit', 'my_bets.team_name', 'my_bets.user_id')->join('users', 'users.id', '=', 'my_bets.user_id')->join('match', 'match.event_id', '=', 'my_bets.match_id')
                 ->where('my_bets.sportID', $sportId)->where('my_bets.result_declare', 0);
         }
 
@@ -648,11 +655,17 @@ class BetListController extends Controller
 
             $html .= '<td class="white-bg">' . $getUser->user_name . '</td>
             <td class="white-bg">' . $value->id . '</td>
-            <td class="white-bg sm_txt">' . date('Y-m-d', strtotime($value->created_at)) . ' <br> ' . date('H:i:s', strtotime($value->created_at)) . '</td>
-            <td class="white-bg">
-                ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . '
-            </td>
-            <td class="white-bg"><a class="text-color-blue-light">' . $value->team_name . '</a></td>';
+            <td class="white-bg sm_txt">' . date('Y-m-d', strtotime($value->created_at)) . ' <br> ' . date('H:i:s', strtotime($value->created_at)) . '</td>';
+            if ($value->bet_type == 'PREMIUM') {
+                $html .= '<td class="white-bg">
+                    ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . '<i class="fas fa-caret-right text-color-grey"></i> '.$value->market_name.'
+                </td>';
+            }else{
+                $html .= '<td class="white-bg">
+                    ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . '
+                </td>';
+            }
+            $html .='<td class="white-bg"><a class="text-color-blue-light">' . $value->team_name . '</a></td>';
             if ($value->bet_type == 'SESSION') {
                 if ($value->bet_side == 'back')
                     $html .= ' <td class="white-bg text-color-blue-light bet_type_uppercase">yes</td>';

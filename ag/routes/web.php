@@ -216,7 +216,8 @@ Route::group(['middleware' => ['backendnexusapi','auth']], function () {
     Route::post('addAgentBanking', 'SettingController@addAgentBanking')->name('addAgentBanking');
     Route::post('addMatchFromAPI', 'SportLeageController@addMatchFromAPI')->name('addMatchFromAPI');
     Route::get('sports-list', 'SettingController@sports_list')->name('backpanel/sports-list');
-//for previlage users
+    //for previlage users
+
     Route::post('storeuser', 'AgentController@storeuser')->name('storeuser');
     Route::post('changeprivilageuser', 'SettingController@changestatusListClient')->name('changeprivilageuser');
     Route::post('saveMatchStatus', 'SettingController@saveMatchStatus')->name('saveMatchStatus');

@@ -5,7 +5,9 @@
                  style="">
                 <template v-if="fancyType=='premium'">
                     <h4 @click="fancyType='premium'" v-if="t4.length > 0" class="fa-in-play">
-                        <span>Premium Cricket</span>
+                        <span v-if="this.sports_id == 4">Premium Cricket</span>
+                        <span v-if="this.sports_id == 2">Premium Tennis</span>
+                        <span v-if="this.sports_id == 1">Premium Soccer</span>
                         <a href="#feeds_premium" data-toggle="collapse" class="btn-head_rules">Rules</a>
                         <div id="feeds_premium" class="collapse premium_minmax_info text-left">
                             <dl>
@@ -23,7 +25,12 @@
                         <a data-toggle="modal" data-target="#rulesFancyBetsModal" class="btn-head_rules">Rules</a>
                     </h4>
                     <a id="showSportsBookBtn" class="other-tab" style="" v-if="t4.length > 0"
-                       @click="fancyType='premium'"><span class="tag-new">New</span>Premium Cricket</a>
+                       @click="fancyType='premium'">
+                        <span class="tag-new">New</span>
+                        <span v-if="this.sports_id == 4">Premium Cricket</span>
+                        <span v-if="this.sports_id == 2">Premium Tennis</span>
+                        <span v-if="this.sports_id == 1">Premium Soccer</span>
+                    </a>
                 </template>
             </div>
             <div id="fancyBetTabWrap" v-if="t4.length > 0 || (match.t3!=undefined && match.t3.length > 0)" :class="fancyType"
@@ -276,11 +283,60 @@
                             <tr class="fancy-quick-tr" v-if="premiumBetForm.selection_sid == runner.sId">
                                 <td colspan="7">
                                     <!-- Quick Bet Wrap -->
-                                    <dl class="quick_bet-wrap slip-book">
+
+                                    <div class="keyboard-wrape" v-if="window.width <= 900">
+                                        <div class="row">
+                                            <div class="col-6 pl-0">
+                                                <div class="qty qty1 mt-3">
+                                                    <input type="text" class="count2" style="width: 100%;" readonly="readonly" v-model="premiumBetForm.bet_odds" name="mobile_odds_display" id="mobile_odds_display" value="" required="required" disabled="">
+                                                </div>
+                                            </div>
+                                            <div class="col-6 pr-0 pl-0">
+                                                <div class="qty mt-3">
+                                                    <span class="minus1 clsplusminus1" @click="minusBetValue()">-</span><input type="text" step="1" v-model="premiumBetForm.bet_amount" class="count1" name="inputStake_mobile" id="inputStake_mobile" value="" maxlength="7" tabindex="1" required="required" disabled=""><span class="plus1 clsplusminus1" @click="plusBetValue()">+</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mbt-10">
+                                            <div v-for="(stack, sIndex) in preDefinedStacks" :key="sIndex" class="col-2 mobileodds_detail" style="color: #fff;line-height: 2.46;background-image: linear-gradient(-180deg, #32617f 20%, #1f4258 91%); text-align:center;border-right: 1px solid rgba(255, 255, 255, 0.15); ">
+                                                <a :data-stake="stack" @click="setDefaultStack(stack)"style="cursor:pointer;">{{stack}}</a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="keyboard" class="keyboard-wrap">
+                                                <ul id="numPad" class="btn-tel">
+                                                    <li><a data-val="1"  @click="setKeyboardEvent(1)" class="dynamicoddsval match_odd_mobile2">1</a></li>
+                                                    <li><a data-val="2"  @click="setKeyboardEvent(2)" class="dynamicoddsval match_odd_mobile2">2</a></li>
+                                                    <li><a data-val="3"  @click="setKeyboardEvent(3)" class="dynamicoddsval match_odd_mobile2">3</a></li>
+                                                    <li><a data-val="4"  @click="setKeyboardEvent(4)" class="dynamicoddsval match_odd_mobile2">4</a></li>
+                                                    <li><a data-val="5"  @click="setKeyboardEvent(5)" class="dynamicoddsval match_odd_mobile2">5</a></li>
+                                                    <li><a data-val="6"  @click="setKeyboardEvent(6)" class="dynamicoddsval match_odd_mobile2">6</a></li>
+                                                    <li><a data-val="7"  @click="setKeyboardEvent(7)" class="dynamicoddsval match_odd_mobile2">7</a></li>
+                                                    <li><a data-val="8"  @click="setKeyboardEvent(8)" class="dynamicoddsval match_odd_mobile2">8</a></li>
+                                                    <li><a data-val="9"  @click="setKeyboardEvent(9)" class="dynamicoddsval match_odd_mobile2">9</a></li>
+                                                    <li><a data-val="0"  @click="setKeyboardEvent(0)" class="dynamicoddsval match_odd_mobile2">0</a></li>
+                                                    <li><a data-val="00" @click="setKeyboardEvent('00')" class="dynamicoddsval match_odd_mobile2">00</a></li>
+                                                    <li><a style="pointer-events: none" class="dynamicoddsval match_odd_mobile2">.</a></li>
+                                                </ul>
+                                                <a id="delete" class="btn-delete" @click="removeElementFromValue()"> <img :src="deletepng"> </a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 text-left">
+                                                <a class="add_player grey-gradient-bg"  @click="cancleBetForm()">Cancel All</a>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <a class="submit-btn text-color-yellow" style="cursor:pointer" v-if="betLoading">Loading...</a>
+                                                <a class="submit-btn text-color-yellow" @click="placeBet()" style="cursor:pointer" v-else>Place Bet</a>
+                                            </div>
+                                        </div>
+                                        <div class="row"></div>
+                                    </div>
+
+                                    <dl v-else class="quick_bet-wrap slip-book">
                                         <dt id="sportsBookBetHeader" class="">
                                         </dt>
-                                        <dd class="col-btn"><a id="cancel" class="btn font-weight-bold"
-                                                               @click="cancleBetForm()">Cancel</a></dd>
+                                        <dd class="col-btn"><a id="cancel" class="btn font-weight-bold" @click="cancleBetForm()">Cancel</a></dd>
                                         <dd id="oddsHeader" class="col-odd">
                                             <ul class="quick-bet-confirm">
                                                 <li id="odds">{{ premiumBetForm.bet_odds }}</li>
@@ -288,8 +344,7 @@
                                             </ul>
                                         </dd>
                                         <dd class="col-stake">
-                                            <input class="inputStake text-center" type="number"
-                                                   v-model="premiumBetForm.bet_amount">
+                                            <input class="inputStake text-center" type="number" v-model="premiumBetForm.bet_amount">
                                         </dd>
                                         <dd class="col-send">
                                             <a id="placeBet" class="btn-black" v-if="betLoading">Loading...</a>
@@ -311,6 +366,7 @@
                 </td>
             </tr>
         </table>
+
     </div>
     <div class="fancy-section w-100" v-else-if="checkloading == 1 && loading">
         <div class="inplay-tableblock" id="inplay-tableblock" >
@@ -330,7 +386,7 @@
     import axios from 'axios';
 
     export default {
-        props: ['event_id', 'bar_image','checkloading', 'clockgreenicon','userloggedin', 'infoicon', 'pinbg', 'pinbg1', 'premium_bet_total', 'min_bet_fancy_limit', 'max_bet_fancy_limit', 'min_premium_limit', 'max_premium_limit', 'pinkbg1_fancy', 'bluebg1_fancy', 'bet_total', 'sports_id', 'status_f', 'stakval', 'fancy_enable', 'premium_enable','premium_delay_time'],
+        props: ['event_id', 'bar_image','checkloading', 'clockgreenicon','userloggedin', 'infoicon', 'pinbg', 'pinbg1', 'premium_bet_total', 'min_bet_fancy_limit', 'max_bet_fancy_limit', 'min_premium_limit', 'max_premium_limit', 'pinkbg1_fancy', 'bluebg1_fancy', 'bet_total', 'sports_id', 'status_f', 'stakval', 'fancy_enable', 'premium_enable','premium_delay_time','deletepng'],
         data() {
             return {
                 match: [],
@@ -340,6 +396,10 @@
                 premiumBetTotal: [],
                 oldPremiumBetTotal: [],
                 betLoading: false,
+                window: {
+                    width: 0,
+                    height: 0
+                },
                 premiumBetForm: {
                     market_id: null,
                     match_id: null,
@@ -353,6 +413,13 @@
                     extra: []
                 },
             };
+        },
+        created() {
+            window.addEventListener('resize', this.handleResize);
+            this.handleResize();
+        },
+        destroyed() {
+            window.removeEventListener('resize', this.handleResize);
         },
         computed: {
             betTotalValue() {
@@ -442,42 +509,62 @@
             }
         },
         methods: {
+            plusBetValue(){
+                this.premiumBetForm.bet_amount++;
+            },
+            minusBetValue(){
+                this.premiumBetForm.bet_amount--;
+            },
+            handleResize() {
+                this.window.width = window.innerWidth;
+                this.window.height = window.innerHeight;
+            },
+            removeElementFromValue(){
+                this.premiumBetForm.bet_amount = this.premiumBetForm.bet_amount.slice(0, -1);
+            },
+            setKeyboardEvent(val){
+                this.premiumBetForm.bet_amount = this.premiumBetForm.bet_amount + val;
+            },
             calculateBetProfitLoss() {
                 var oddval = this.premiumBetForm.bet_odds;
                 oddval = parseFloat(oddval) - parseInt(1);
                 var fval = this.premiumBetForm.bet_amount;
-                var finalValue = parseFloat(fval) * parseFloat(oddval);
 
-                if (this.premiumBetTotal[this.premiumBetForm.market_id] != undefined) {
-                    var oldValues = this.oldPremiumBetTotal[this.premiumBetForm.market_id];
-                    for (var team in this.premiumBetTotal[this.premiumBetForm.market_id]) {
+                if(fval > 0) {
+                    var finalValue = parseFloat(fval) * parseFloat(oddval);
 
-                        var oldProfitLoss = 0;
-                        if(this.oldPremiumBetTotal[this.premiumBetForm.market_id]!=undefined && oldValues[team]!=undefined){
-                            oldProfitLoss = oldValues[team]['PREMIUM_profitLost'];
+                    if (this.premiumBetTotal[this.premiumBetForm.market_id] != undefined) {
+                        var oldValues = this.oldPremiumBetTotal[this.premiumBetForm.market_id];
+                        for (var team in this.premiumBetTotal[this.premiumBetForm.market_id]) {
+
+                            var oldProfitLoss = 0;
+                            if (this.oldPremiumBetTotal[this.premiumBetForm.market_id] != undefined && oldValues[team] != undefined) {
+                                oldProfitLoss = oldValues[team]['PREMIUM_profitLost'];
+                            }
+
+                            if (team == this.premiumBetForm.team_name) {
+                                this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = oldProfitLoss + finalValue;
+                            } else {
+                                this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = oldProfitLoss - fval;
+                            }
                         }
-
-                        if (team == this.premiumBetForm.team_name) {
-                            this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = oldProfitLoss + finalValue;
-                        } else {
-                            this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = oldProfitLoss - fval;
+                    } else {
+                        this.premiumBetTotal[this.premiumBetForm.market_id] = {};
+                        for (var i = 0; i < this.premiumBetForm.extra.length; i++) {
+                            var team = this.premiumBetForm.extra[i];
+                            this.premiumBetTotal[this.premiumBetForm.market_id][team] = {
+                                PREMIUM_profitLost: 0
+                            };
+                            if (team == this.premiumBetForm.team_name) {
+                                this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = finalValue;
+                            } else {
+                                this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = (fval * -1);
+                            }
                         }
                     }
-                } else {
-                    this.premiumBetTotal[this.premiumBetForm.market_id] = {};
-                    for (var i=0;i<this.premiumBetForm.extra.length;i++) {
-                        var team = this.premiumBetForm.extra[i];
-                        this.premiumBetTotal[this.premiumBetForm.market_id][team] = {
-                            PREMIUM_profitLost:0
-                        };
-                        if (team == this.premiumBetForm.team_name) {
-                            this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = finalValue;
-                        } else {
-                            this.premiumBetTotal[this.premiumBetForm.market_id][team]['PREMIUM_profitLost'] = (fval * -1);
-                        }
-                    }
+                }else{
+
                 }
-
             },
             isSectionVisible(target) {
                 if ($(target).is(':visible')) {

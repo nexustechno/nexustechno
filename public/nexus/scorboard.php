@@ -13,7 +13,8 @@ elseif($match_type == 'tennis'){
     $iFrameUrl = "https://shivexch.com/tennis_score3/index.html?eventid=" . $eventId;
 }
 elseif($match_type == 'soccer'){
-    $iFrameUrl = "https://www.shivexch.com/soccer_scoree/index.html?eventid=" . $eventId;
+//    $iFrameUrl = "https://www.shivexch.com/soccer_scoree/index.html?eventid=" . $eventId;
+    $iFrameUrl = "https://www.shivexch.com/soccer_score2/index.html?eventid=31439427" . $eventId;
 }
 //$eventId2 = '';
 //if($match_type == 'cricket' || $match_type == 'tennis' || $match_type == 'soccer') {

@@ -994,38 +994,36 @@ class SettingController extends Controller
 
                     if(isset($oddsBookmakerExposerArr) && isset($oddsBookmakerExposerArr['PREMIUM'][$marketId])){
 
-//                        dd($oddsBookmakerExposerArr);
+                        if($bet->winner == 'Cancel'){
+                            $this->SaveBalance($bet->user_id);
+                        }else {
+                            foreach ($oddsBookmakerExposerArr['PREMIUM'][$marketId] as $teamName => $item) {
+                                if ($teamName == $bet->winner) {
+                                    $totalExposer = $oddsBookmakerExposerArr['exposer'];
 
-                        foreach ($oddsBookmakerExposerArr['PREMIUM'][$marketId] as $teamName => $item){
-                            if($teamName == $bet->winner)
-                            {
-                                $totalExposer = $oddsBookmakerExposerArr['exposer'];
+                                    if ($item['PREMIUM_profitLost'] > 0) {
+                                        $lose = $item['PREMIUM_profitLost'];
+                                        $profit = 0;
+                                    } else {
+                                        $profit = abs($item['PREMIUM_profitLost']);
+                                        $lose = 0;
+                                    }
 
-                                if($item['PREMIUM_profitLost'] > 0){
-                                    $lose = $item['PREMIUM_profitLost'];
-                                    $profit = 0;
-                                }else{
-                                    $profit = abs($item['PREMIUM_profitLost']);
-                                    $lose = 0;
+                                    $upd = CreditReference::where('player_id', $bet->user_id)->first();
+
+                                    if ($profit > 0) {
+                                        $upd->available_balance_for_D_W = $upd->available_balance_for_D_W - $profit;
+                                        $upd->remain_bal = $upd->remain_bal - $profit;
+                                        $admin_profit += $profit;
+                                    } else {
+                                        $upd->remain_bal = $upd->remain_bal + $lose;
+                                        $admin_loss += $lose;
+                                    }
+
+                                    $_update = $upd->update();
+
+                                    $this->SaveBalance($bet->user_id);
                                 }
-
-                                $upd = CreditReference::where('player_id', $bet->user_id)->first();
-//                                $upd->exposure = $upd->exposure + $totalExposer;
-
-                                if($profit > 0){
-                                    $upd->available_balance_for_D_W = $upd->available_balance_for_D_W - $profit;
-                                    $upd->remain_bal  =  $upd->remain_bal - $profit;
-                                    $admin_profit+=$profit;
-                                }
-                                else
-                                {
-                                    $upd->remain_bal  =  $upd->remain_bal + $lose;
-                                    $admin_loss+=$lose;
-                                }
-
-                                $_update = $upd->update();
-
-                                $this->SaveBalance($bet->user_id);
                             }
                         }
                     }
@@ -1068,146 +1066,189 @@ class SettingController extends Controller
 
             $bets = MyBets::where('match_id', $eventId)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->where('result_declare', 0)->groupby('user_id')->get();
             foreach ($bets as $bet) {
-//                echo "<pre>".$bet->user_id."==".$bet->team_name;
                 $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($eventId, $bet->user_id,"PREMIUM",$marketId);
                 if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
-//                    print_r($oddsBookmakerExposerArr);
-
                     if(isset($oddsBookmakerExposerArr) && isset($oddsBookmakerExposerArr['PREMIUM'][$marketId])){
-                        foreach ($oddsBookmakerExposerArr['PREMIUM'][$marketId] as $teamName => $item){
-                            if($teamName == $winner)
-                            {
-                                $totalExposer = $oddsBookmakerExposerArr['exposer'];
+                        if($winner == 'Cancel'){
+                            $profit = 0; $lose=0;
+                            $totalExposer = $oddsBookmakerExposerArr['exposer'];
+                            $betModel = new UserExposureLog();
+                            $betModel->match_id = $match->id;
+                            $betModel->user_id = $bet->user_id;
+                            $betModel->bet_type = "PREMIUM";
+                            $betModel->profit = $profit;
+                            $betModel->fancy_name = $bet->market_name;
+                            $betModel->loss = ($lose);
+                            $betModel->win_type = 'Profit';
+                            $check = $betModel->save();
 
-                                if($item['PREMIUM_profitLost'] > 0){
-                                    $lose = $item['PREMIUM_profitLost'];
-                                    $profit = 0;
-                                    $exposerToBeReturn = 0;
-                                }else{
-                                    $profit = abs($item['PREMIUM_profitLost']);
-                                    $lose = 0;
-                                    $exposerToBeReturn = $totalExposer;
-                                }
+                            $upd = CreditReference::where('player_id', $bet->user_id)->first();
+                            $available_balance = $upd->available_balance_for_D_W;
+                            $upd->exposure = $upd->exposure - $totalExposer;
+                            $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $totalExposer));
 
-                                $betModel = new UserExposureLog();
-                                $betModel->match_id = $match->id;
-                                $betModel->user_id = $bet->user_id;
-                                $betModel->bet_type = "PREMIUM";
-                                $betModel->profit = $profit;
-                                $betModel->fancy_name = $bet->market_name;
-                                $betModel->loss = abs($lose);
-                                if ($profit > 0)
-                                    $betModel->win_type = 'Profit';
-                                else
-                                    $betModel->win_type = 'Loss';
+                            UsersAccount::create([
+                                'user_id' => $bet->user_id,
+                                'from_user_id' => $bet->user_id,
+                                'to_user_id' => $bet->user_id,
+                                'credit_amount' => $profit,
+                                'balance' => $available_balance,
+                                'closing_balance' => $available_balance + $profit,
+                                'remark' => "",
+                                'bet_user_id' => $bet->user_id,
+                                'match_id' => $match->id,
+                                'user_exposure_log_id' => $betModel->id
+                            ]);
 
-                                $check = $betModel->save();
+                            UsersAccount::create([
+                                'user_id' => $masterAdmin->id,
+                                'from_user_id' => $bet->user_id,
+                                'to_user_id' => $masterAdmin->id,
+                                'debit_amount' => $profit,
+                                'balance' => $adm_balance,
+                                'closing_balance' => $adm_balance - $profit,
+                                'remark' => "",
+                                'bet_user_id' => $bet->user_id,
+                                'casino_id' => $match->id,
+                                'user_exposure_log_id' => $betModel->id
+                            ]);
 
-                                $upd = CreditReference::where('player_id', $bet->user_id)->first();
-                                $cExoser = $upd->exposure;
-                                $available_balance = $upd->available_balance_for_D_W;
-                                $upd->exposure = $upd->exposure - $totalExposer;
+                            $update_ = $upd->update();
+                        }
+                        else {
+                            foreach ($oddsBookmakerExposerArr['PREMIUM'][$marketId] as $teamName => $item) {
+                                if ($teamName == $winner) {
+                                    $totalExposer = $oddsBookmakerExposerArr['exposer'];
 
-                                $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposerToBeReturn));
+                                    if ($item['PREMIUM_profitLost'] > 0) {
+                                        $lose = $item['PREMIUM_profitLost'];
+                                        $profit = 0;
+                                        $exposerToBeReturn = 0;
+                                    } else {
+                                        $profit = abs($item['PREMIUM_profitLost']);
+                                        $lose = 0;
+                                        $exposerToBeReturn = $totalExposer;
+                                    }
 
-                                ExposerDeductLog::createLog([
-                                    'user_id' => $bet->user_id,
-                                    'action' => 'Declare Premium Bet Result',
-                                    'current_exposer' => $cExoser,
-                                    'new_exposer' => $upd->exposure,
-                                    'exposer_deduct' => $totalExposer,
-                                    'match_id' => $match->id,
-                                    'bet_type' => 'PREMIUM',
-                                    'bet_amount' => 0,
-                                    'odds_value' => 0,
-                                    'odds_volume' => 0,
-                                    'profit' => $profit,
-                                    'lose' => $lose,
-                                    'available_balance' => $upd->available_balance_for_D_W
-                                ]);
+                                    $betModel = new UserExposureLog();
+                                    $betModel->match_id = $match->id;
+                                    $betModel->user_id = $bet->user_id;
+                                    $betModel->bet_type = "PREMIUM";
+                                    $betModel->profit = $profit;
+                                    $betModel->fancy_name = $bet->market_name;
+                                    $betModel->loss = abs($lose);
+                                    if ($profit > 0)
+                                        $betModel->win_type = 'Profit';
+                                    else
+                                        $betModel->win_type = 'Loss';
 
-                                if($profit > 0){
+                                    $check = $betModel->save();
 
-                                    $upd->remain_bal  =  $upd->remain_bal + $profit;
+                                    $upd = CreditReference::where('player_id', $bet->user_id)->first();
+                                    $cExoser = $upd->exposure;
+                                    $available_balance = $upd->available_balance_for_D_W;
+                                    $upd->exposure = $upd->exposure - $totalExposer;
 
-                                    UsersAccount::create([
+                                    $upd->available_balance_for_D_W = (($upd->available_balance_for_D_W + $profit + $exposerToBeReturn));
+
+                                    ExposerDeductLog::createLog([
                                         'user_id' => $bet->user_id,
-                                        'from_user_id' => $bet->user_id,
-                                        'to_user_id' => $bet->user_id,
-                                        'credit_amount' => $profit,
-                                        'balance' => $available_balance,
-                                        'closing_balance' => $available_balance + $profit,
-                                        'remark' => "",
-                                        'bet_user_id' => $bet->user_id,
+                                        'action' => 'Declare Premium Bet Result',
+                                        'current_exposer' => $cExoser,
+                                        'new_exposer' => $upd->exposure,
+                                        'exposer_deduct' => $totalExposer,
                                         'match_id' => $match->id,
-                                        'user_exposure_log_id' => $betModel->id
+                                        'bet_type' => 'PREMIUM',
+                                        'bet_amount' => 0,
+                                        'odds_value' => 0,
+                                        'odds_volume' => 0,
+                                        'profit' => $profit,
+                                        'lose' => $lose,
+                                        'available_balance' => $upd->available_balance_for_D_W
                                     ]);
 
-                                    UsersAccount::create([
-                                        'user_id' => $masterAdmin->id,
-                                        'from_user_id' => $bet->user_id,
-                                        'to_user_id' => $masterAdmin->id,
-                                        'debit_amount' => $profit,
-                                        'balance' => $adm_balance,
-                                        'closing_balance' => $adm_balance - $profit,
-                                        'remark' => "",
-                                        'bet_user_id' => $bet->user_id,
-                                        'casino_id' => $match->id,
-                                        'user_exposure_log_id' => $betModel->id
-                                    ]);
+                                    if ($profit > 0) {
 
-                                    $admin_loss+=$profit;
+                                        $upd->remain_bal = $upd->remain_bal + $profit;
+
+                                        UsersAccount::create([
+                                            'user_id' => $bet->user_id,
+                                            'from_user_id' => $bet->user_id,
+                                            'to_user_id' => $bet->user_id,
+                                            'credit_amount' => $profit,
+                                            'balance' => $available_balance,
+                                            'closing_balance' => $available_balance + $profit,
+                                            'remark' => "",
+                                            'bet_user_id' => $bet->user_id,
+                                            'match_id' => $match->id,
+                                            'user_exposure_log_id' => $betModel->id
+                                        ]);
+
+                                        UsersAccount::create([
+                                            'user_id' => $masterAdmin->id,
+                                            'from_user_id' => $bet->user_id,
+                                            'to_user_id' => $masterAdmin->id,
+                                            'debit_amount' => $profit,
+                                            'balance' => $adm_balance,
+                                            'closing_balance' => $adm_balance - $profit,
+                                            'remark' => "",
+                                            'bet_user_id' => $bet->user_id,
+                                            'casino_id' => $match->id,
+                                            'user_exposure_log_id' => $betModel->id
+                                        ]);
+
+                                        $admin_loss += $profit;
+                                    } else {
+                                        $upd->remain_bal = $upd->remain_bal - $lose;
+
+                                        UsersAccount::create([
+                                            'user_id' => $bet->user_id,
+                                            'from_user_id' => $bet->user_id,
+                                            'to_user_id' => $bet->user_id,
+                                            'debit_amount' => $lose,
+                                            'balance' => $available_balance,
+                                            'closing_balance' => $available_balance - $lose,
+                                            'remark' => "",
+                                            'bet_user_id' => $bet->user_id,
+                                            'match_id' => $match->id,
+                                            'user_exposure_log_id' => $betModel->id
+                                        ]);
+                                        UsersAccount::create([
+                                            'user_id' => $masterAdmin->id,
+                                            'from_user_id' => $bet->user_id,
+                                            'to_user_id' => $masterAdmin->id,
+                                            'credit_amount' => $lose,
+                                            'balance' => $adm_balance,
+                                            'closing_balance' => $adm_balance + $lose,
+                                            'remark' => "",
+                                            'bet_user_id' => $bet->user_id,
+                                            'match_id' => $match->id,
+                                            'user_exposure_log_id' => $betModel->id
+                                        ]);
+
+                                        $admin_profit += $lose;
+                                    }
+
+                                    $update_ = $upd->update();
                                 }
-                                else
-                                {
-                                    $upd->remain_bal  =  $upd->remain_bal - $lose;
-
-                                    UsersAccount::create([
-                                        'user_id' => $bet->user_id,
-                                        'from_user_id' => $bet->user_id,
-                                        'to_user_id' => $bet->user_id,
-                                        'debit_amount' => $lose,
-                                        'balance' => $available_balance,
-                                        'closing_balance' => $available_balance - $lose,
-                                        'remark' => "",
-                                        'bet_user_id' => $bet->user_id,
-                                        'match_id' => $match->id,
-                                        'user_exposure_log_id' => $betModel->id
-                                    ]);
-                                    UsersAccount::create([
-                                        'user_id' => $masterAdmin->id,
-                                        'from_user_id' => $bet->user_id,
-                                        'to_user_id' => $masterAdmin->id,
-                                        'credit_amount' => $lose,
-                                        'balance' => $adm_balance,
-                                        'closing_balance' => $adm_balance + $lose,
-                                        'remark' => "",
-                                        'bet_user_id' => $bet->user_id,
-                                        'match_id' => $match->id,
-                                        'user_exposure_log_id' => $betModel->id
-                                    ]);
-
-                                    $admin_profit+=$lose;
-                                }
-
-                                $update_ = $upd->update();
                             }
                         }
                     }
                 }
             }
-//            die();
 
-            //calculating admin balance
-            if($admin_loss > 0 || $admin_profit > 0){
-                $settings = setting::latest('id')->first();
-                $adm_balance = $settings->balance;
-                $new_balance = $adm_balance + $admin_profit - $admin_loss;
-                $adminData = setting::find($settings->id);
-                $adminData->balance = $new_balance;
-                $adminData->update();
+            if($winner != 'Cancel') {
+                if ($admin_loss > 0 || $admin_profit > 0) {
+                    $settings = setting::latest('id')->first();
+                    $adm_balance = $settings->balance;
+                    $new_balance = $adm_balance + $admin_profit - $admin_loss;
+                    $adminData = setting::find($settings->id);
+                    $adminData->balance = $new_balance;
+                    $adminData->update();
+                }
             }
-//            //update in my_bet table for bet winner
+
+            //update in my_bet table for bet winner
             MyBets::where("match_id", $match->event_id)->where('bet_type', 'PREMIUM')->where('market_id',$marketId)->update(["result_declare" => 1,'winner'=>$winner]);
 
             return ['status'=>true,'message' => 'Success'];

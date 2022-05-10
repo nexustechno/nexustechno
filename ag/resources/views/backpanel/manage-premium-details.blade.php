@@ -58,6 +58,7 @@
                         @foreach($bets as $bet)
                             <?php
                                 $teams = json_decode($bet->extra,true);
+                                $teams[] = "Cancel";
                             ?>
                             <tr class="white-bg {{ "tr_row_".$count }}">
                                 <td class="text-center">{{ $count }}</td>
