@@ -298,7 +298,7 @@
                                             </div>
                                         </div>
                                         <div class="row mbt-10">
-                                            <div v-for="(stack, sIndex) in preDefinedStacks" :key="sIndex" class="col-2 mobileodds_detail" style="color: #fff;line-height: 2.46;background-image: linear-gradient(-180deg, #32617f 20%, #1f4258 91%); text-align:center;border-right: 1px solid rgba(255, 255, 255, 0.15); ">
+                                            <div v-for="(stack, sIndex) in preDefinedStacks" :key="sIndex" class="col-2 mobileodds_detail5" style="color: #fff;line-height: 2.46;background-image: linear-gradient(-180deg, #32617f 20%, #1f4258 91%); text-align:center;border-right: 1px solid rgba(255, 255, 255, 0.15); ">
                                                 <a :data-stake="stack" @click="setDefaultStack(stack)"style="cursor:pointer;">{{stack}}</a>
                                             </div>
                                         </div>
