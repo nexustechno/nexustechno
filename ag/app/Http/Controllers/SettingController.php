@@ -3902,7 +3902,7 @@ class SettingController extends Controller
         $adminBookUserBM .= '</tr>';
 
 
-        $users_all = User::where('parentid', $loginUser->id)->latest()->get();
+        $users_all = User::where('parentid', $loginUser->id)->whereIn('id', $all_child)->latest()->get();
 
         $i = 0;
 
@@ -3916,13 +3916,18 @@ class SettingController extends Controller
                 $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'ODDS')->where('result_declare', 0)->where('isDeleted', 0)->where('user_id', $value->id)->orderby('id', 'DESC')->get();
                 $recordFound = true;
             } else {
-                $all_childs = UserHirarchy::where('agent_user', $value->id)->first();
-                if (!empty($all_childs)) {
+//                $all_childs = UserHirarchy::where('agent_user', $value->id)->first();
+                $all_childsCount = UserHirarchy::where('agent_user', $value->id)->count();
+                if ($all_childsCount != 0) {
+
+                    $hirUser = UserHirarchy::where('agent_user', $value->id)->first();
+
                     if (!empty($hirUser)) {
                         $all_child = explode(',', $hirUser->sub_user);
                     }else {
-                        $all_child = $this->GetChildofAgent($ag_id);
+                        $all_child = $this->GetChildofAgent($value->id);
                     }
+
                     $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'ODDS')->where('result_declare', 0)->where('isDeleted', 0)->whereIn('user_id', $all_child)->orderby('id', 'DESC')->get();
                     $recordFound = true;
                 } else {
@@ -4066,7 +4071,7 @@ class SettingController extends Controller
                 $my_placed_bets_ods = MyBets::where('match_id', $matchList->event_id)->where('bet_type', 'BOOKMAKER')->where('result_declare', 0)->where('isDeleted', 0)->where('user_id', $value->id)->orderby('id', 'DESC')->get();
                 $recordFound = true;
             } else {
-                $all_childs = UserHirarchy::where('agent_user', $value->id)->first();
+//                $all_childs = UserHirarchy::where('agent_user', $value->id)->first();
                 $all_childsCount = UserHirarchy::where('agent_user', $value->id)->count();
                 if ($all_childsCount != 0) {
 

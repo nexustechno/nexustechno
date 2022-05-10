@@ -247,6 +247,7 @@ Route::group(['middleware' => ['backendnexusapi','auth']], function () {
 
     Route::get('dashboard/images', 'HomeController@dashboardImages')->name('dashboard.images');
     Route::get('dashboard/images/create', 'HomeController@dashboardImagesCreate')->name('dashboard.images.create');
+    Route::get('dashboard/images/{id}/edit', 'HomeController@dashboardImagesEdit')->name('dashboard.images.edit');
     Route::get('dashboard/images/{id}/delete', 'HomeController@dashboardImagesDelete')->name('dashboard.images.delete');
     Route::post('dashboard/images/store', 'HomeController@dashboardImagesStore')->name('dashboard.images.store');
 

@@ -45,7 +45,13 @@
                                             </div>
                                             <div class="profile-main">
                                                 <div class="headlabel">Image</div>
-                                                <div class="headdetail"><input type="file" name="file_name" id="file_name" placeholder="" value="" class="form-control"> </div>
+                                                <div class="headdetail">
+                                                    <input type="file" name="file_name" id="file_name" placeholder="" value="" class="form-control">
+                                                    @if(isset($image) && !empty($image->file_name))
+                                                        <br/>
+                                                        <img style="height: 100px;" src="{{asset('asset/upload')."/".$image->file_name}}" alt="">
+                                                    @endif
+                                                </div>
                                             </div>
                                             <div class="profile-main">
                                                 <div class="headlabel">Link</div>

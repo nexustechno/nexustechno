@@ -147,9 +147,12 @@ class HomeController extends Controller
         return view('backpanel.add-dashboard-image');
     }
 
-    public function dashboardImagesStore(Request $request){
-//        dd($request->all());
+    public function dashboardImagesEdit($id){
+        $image = Dashboard::where("id",$id)->first();
+        return view('backpanel.add-dashboard-image',compact('image'));
+    }
 
+    public function dashboardImagesStore(Request $request){
         if($request->has('id')){
             $casino = Dashboard::find($request->id);
             $casino->title = $request->title;

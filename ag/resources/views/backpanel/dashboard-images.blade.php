@@ -38,7 +38,8 @@
                         <td class="white-bg"><img src="{{ URL::to('public/asset/upload') }}/{{$image->file_name}}" height="100px;"></td>
                         <td class="white-bg">{{$image->link}}</td>
                         <td class="white-bg">
-                            <a href="{{ route('dashboard.images.delete',$image->id) }}" class="btn-list black-bg2 text-color-white">Delete</a>
+                            <a href="{{ route('dashboard.images.edit',$image->id) }}" class="btn-list black-bg2 text-color-white">Edit</a>
+                            <a href="{{ route('dashboard.images.delete',$image->id) }}" class="btn-list red-bg text-color-white">Delete</a>
                         </td>
                     </tr>
                    @endforeach
