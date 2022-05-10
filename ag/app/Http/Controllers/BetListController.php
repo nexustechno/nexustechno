@@ -449,11 +449,13 @@ class BetListController extends Controller
                 $html .= '<td class="white-bg">
               ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . ' <i class="fas fa-caret-right text-color-grey"></i>' . $value->market_name . '
           </td>';
-            }else{
-                if ($value->bet_type == 'SESSION') {
+            }
+            else{
+
                     $html .= '<td class="white-bg">
               ' . $sportName . ' <i class="fas fa-caret-right text-color-grey"></i> <strong>' . $value->match_name . '</strong> <i class="fas fa-caret-right text-color-grey"></i>' . $value->bet_type . '
           </td>';
+
             }
             $html .= '<td class="white-bg"><a class="text-color-blue-light">' . $value->team_name . '</a></td>';
             if ($value->bet_type == 'SESSION') {
