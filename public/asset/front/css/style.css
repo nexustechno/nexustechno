@@ -6726,7 +6726,7 @@ flex-flow: column;
 
 .live_score_card_4 iframe{height: 300px !important;}
 .live_score_card_2 iframe{height: 163px !important;}
-.live_score_card_1 iframe{height: 62px !important;}
+.live_score_card_1 iframe{height: 163px !important;}
 
 @media (min-width: 1200px) {
     .middle-section .middle-wraper .soccerbg iframe, .middle-section .middle-wraper .tennisbg iframe, .middle-section .middle-wraper .cricketbg iframe{
@@ -7341,6 +7341,7 @@ table.dataTable thead > tr > th {
     align-items: center;
     padding: 3px;
     overflow: auto;
+    text-align: center;
 }
 .special_bets-tab li{
     min-width: 60px;
@@ -7368,12 +7369,13 @@ table.dataTable thead > tr > th {
     border-radius: 5px;
     justify-content: center;
     align-items: center;
-    max-width: 450px;
-    min-width: 450px;
+    /*max-width: 450px;*/
+    /*min-width: 450px;*/
     margin: 0 auto;
     padding: 2px;
     line-height: 0;
     overflow-x: auto;
+    display: inline-flex;
 }
 
 .fancyBetSpecialBet{

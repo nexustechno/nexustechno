@@ -33,9 +33,9 @@
                     </a>
                 </template>
             </div>
-            <div id="fancyBetTabWrap" v-if="t4.length > 0 || (match.t3!=undefined && match.t3.length > 0)" :class="fancyType"
-                 class="fancy_bet_tab-wrap" style="">
-                <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist">
+            <div id="fancyBetTabWrap" v-if="t4.length > 0 || (match.t3!=undefined && match.t3.length > 0)" :class="fancyType" class="fancy_bet_tab-wrap" style="">
+
+                <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist" v-if="fancyType=='general' && sports_id == 4">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-all" role="tab"
                            aria-controls="pills-all" aria-selected="true">All</a>
@@ -53,15 +53,47 @@
                            aria-controls="pills-khadda" aria-selected="false">Khadda</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-lottery" role="tab"
-                           aria-controls="pills-lottery" aria-selected="false">Lottery</a>
+                        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-lottery" role="tab" aria-controls="pills-lottery" aria-selected="false">Lottery</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-odd-even" role="tab"
                            aria-controls="pills-odd-even" aria-selected="false">Odd/Even</a>
                     </li>
                 </ul>
+
+                <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist" v-if="fancyType=='premium' && sports_id == 4">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="pills-contact-tab" data-toggle="pill" href="#pills-all" role="tab" aria-controls="pills-lottery" aria-selected="false">All</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-popular" role="tab" aria-controls="pills-lottery" aria-selected="false">Popular</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-match" role="tab" aria-controls="pills-lottery" aria-selected="false">Match</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-innings" role="tab" aria-controls="pills-lottery" aria-selected="false">Innings</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-Over" role="tab" aria-controls="pills-lottery" aria-selected="false">Over</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-More" role="tab" aria-controls="pills-lottery" aria-selected="false">More</a></li>
+                </ul>
+
+                <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist" v-if="fancyType=='premium' && sports_id == 1">
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_All" role="tab" aria-controls="pills-tab_All" aria-selected="false" class="nav-link active" id="tab_All">All</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Popular" role="tab" aria-controls="pills-tab_Popular" aria-selected="false" class="nav-link" id="tab_Popular">Popular</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Half" role="tab" aria-controls="pills-tab_Half" aria-selected="false" class="nav-link" id="tab_Half">Half</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Goals" role="tab" aria-controls="pills-tab_Goals" aria-selected="false" class="nav-link" id="tab_Goals">Goals</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_FastMarkets" role="tab" aria-controls="pills-tab_FastMarkets" aria-selected="false" class="nav-link" id="tab_FastMarkets">Fast Markets</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Specials" role="tab" aria-controls="pills-tab_Specials" aria-selected="false" class="nav-link" id="tab_Specials">Specials</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Corners" role="tab" aria-controls="pills-tab_Corners" aria-selected="false" class="nav-link" id="tab_Corners">Corners</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Cards" role="tab" aria-controls="pills-tab_Cards" aria-selected="false" class="nav-link" id="tab_Cards">Cards</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Players" role="tab" aria-controls="pills-tab_Players" aria-selected="false" class="nav-link" id="tab_Players">Players</a></li>
+                    <li class="nav-item" role="presentation"><a data-toggle="pill" href="#pills-tab_Others" role="tab" aria-controls="pills-tab_Others" aria-selected="false" class="nav-link" id="tab_Others">Others</a></li>
+                </ul>
+
+
+                <ul class="nav nav-pills special_bets-tab" id="pills-tab" role="tablist" v-if="fancyType=='premium' && sports_id == 2">
+                    <li class="nav-item"><a data-toggle="pill" href="#pills-tab_All" role="tab" aria-controls="pills-tab_All" aria-selected="false" class="nav-link active" id="tab_All">All</a></li>
+                    <li class="nav-item"><a data-toggle="pill" href="#pills-tab_Main" role="tab" aria-controls="pills-tab_Main" aria-selected="false" class="nav-link" id="tab_Main">Main</a></li>
+                    <li class="nav-item"><a data-toggle="pill" href="#pills-tab_Total" role="tab" aria-controls="pills-tab_Total" aria-selected="false" class="nav-link" id="tab_Total">Total</a></li>
+                    <li class="nav-item"><a data-toggle="pill" href="#pills-tab_Others" role="tab" aria-controls="pills-tab_Others" aria-selected="false" class="nav-link" id="tab_Others">Others</a></li>
+                </ul>
             </div>
+
+
+
         </div>
 
         <p v-if="fancyType=='general' && match.t3!=undefined && match.t3.length > 0" class="fancyBetSpecialBet p-2">

@@ -1068,6 +1068,7 @@ class SettingController extends Controller
             foreach ($bets as $bet) {
                 $oddsBookmakerExposerArr = self::getOddsAndBookmakerExposer($eventId, $bet->user_id,"PREMIUM",$marketId);
                 if(isset($oddsBookmakerExposerArr['PREMIUM'])) {
+//                    dd($oddsBookmakerExposerArr);
                     if(isset($oddsBookmakerExposerArr) && isset($oddsBookmakerExposerArr['PREMIUM'][$marketId])){
                         if($winner == 'Cancel'){
                             $profit = 0; $lose=0;
@@ -7771,56 +7772,61 @@ class SettingController extends Controller
             }
 
             if (isset($exAmtArr['ODDS'])) {
-                $arr = array();
-                foreach ($exAmtArr['ODDS'] as $key => $profitLos) {
-                    if ($profitLos['ODDS_profitLost'] < 0) {
-                        $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                if((!empty($betType) && $betType == 'ODDS') || empty($betType)) {
+                    $arr = array();
+                    foreach ($exAmtArr['ODDS'] as $key => $profitLos) {
+                        if ($profitLos['ODDS_profitLost'] < 0) {
+                            $arr[abs($profitLos['ODDS_profitLost'])] = abs($profitLos['ODDS_profitLost']);
+                        }
                     }
-                }
-                if (is_array($arr) && count($arr) > 0) {
-                    $exposerArray['exposer'] += max($arr);
-                }
+                    if (is_array($arr) && count($arr) > 0) {
+                        $exposerArray['exposer'] += max($arr);
+                    }
 
-                $exposerArray['ODDS'] = $exAmtArr['ODDS'];
+                    $exposerArray['ODDS'] = $exAmtArr['ODDS'];
+                }
             }
 
             if (isset($exAmtArr['BOOKMAKER'])) {
-                $arrB = array();
-                foreach ($exAmtArr['BOOKMAKER'] as $key => $profitLos) {
-                    if ($profitLos['BOOKMAKER_profitLost'] < 0) {
-                        $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                if((!empty($betType) && $betType == 'BOOKMAKER') || empty($betType)) {
+                    $arrB = array();
+                    foreach ($exAmtArr['BOOKMAKER'] as $key => $profitLos) {
+                        if ($profitLos['BOOKMAKER_profitLost'] < 0) {
+                            $arrB[abs($profitLos['BOOKMAKER_profitLost'])] = abs($profitLos['BOOKMAKER_profitLost']);
+                        }
                     }
-                }
 
-                $exposerArray['BOOKMAKER'] = $exAmtArr['BOOKMAKER'];
+                    $exposerArray['BOOKMAKER'] = $exAmtArr['BOOKMAKER'];
 
-                if (is_array($arrB) && count($arrB) > 0) {
-                    $exposerArray['exposer'] += max($arrB);
+                    if (is_array($arrB) && count($arrB) > 0) {
+                        $exposerArray['exposer'] += max($arrB);
+                    }
                 }
             }
 
             if (isset($exAmtArr['PREMIUM'])) {
-
-                foreach ($exAmtArr['PREMIUM'] as $marketName => $teams) {
-                    $arrB = array();
-                    if(($marketId > 0 && $marketName == $marketId) || $marketId <= 0) {
-                        foreach ($teams as $key => $profitLos) {
-                            if ($profitLos['PREMIUM_profitLost'] < 0) {
-                                $arrB[abs($profitLos['PREMIUM_profitLost'])] = abs($profitLos['PREMIUM_profitLost']);
-                                $exAmtArr['PREMIUM'][$marketName][$key]['PREMIUM_profitLost'] = abs($profitLos['PREMIUM_profitLost']);
-                            } else {
-                                $exAmtArr['PREMIUM'][$marketName][$key]['PREMIUM_profitLost'] = ($profitLos['PREMIUM_profitLost']) * -1;
+                if((!empty($betType) && $betType == 'PREMIUM') || empty($betType)) {
+                    foreach ($exAmtArr['PREMIUM'] as $marketName => $teams) {
+                        $arrB = array();
+                        if (($marketId > 0 && $marketName == $marketId) || $marketId <= 0) {
+                            foreach ($teams as $key => $profitLos) {
+                                if ($profitLos['PREMIUM_profitLost'] < 0) {
+                                    $arrB[abs($profitLos['PREMIUM_profitLost'])] = abs($profitLos['PREMIUM_profitLost']);
+                                    $exAmtArr['PREMIUM'][$marketName][$key]['PREMIUM_profitLost'] = abs($profitLos['PREMIUM_profitLost']);
+                                } else {
+                                    $exAmtArr['PREMIUM'][$marketName][$key]['PREMIUM_profitLost'] = ($profitLos['PREMIUM_profitLost']) * -1;
+                                }
+                            }
+                            if (is_array($arrB) && count($arrB) > 0) {
+                                $exposerArray['exposer'] += max($arrB);
                             }
                         }
-                        if (is_array($arrB) && count($arrB) > 0) {
-                            $exposerArray['exposer'] += max($arrB);
-                        }
                     }
-                }
-                if($marketId > 0){
-                    $exposerArray['PREMIUM'][$marketId] = $exAmtArr['PREMIUM'][$marketId];
-                }else {
-                    $exposerArray['PREMIUM'] = $exAmtArr['PREMIUM'];
+                    if ($marketId > 0) {
+                        $exposerArray['PREMIUM'][$marketId] = $exAmtArr['PREMIUM'][$marketId];
+                    } else {
+                        $exposerArray['PREMIUM'] = $exAmtArr['PREMIUM'];
+                    }
                 }
             }
         }

@@ -6415,7 +6415,7 @@ a:not([href]):not([tabindex]) {
 }
 .live_score_card_4 iframe{height: 300px !important;}
 .live_score_card_2 iframe{height: 163px !important;}
-.live_score_card_1 iframe{height: 62px !important;}
+.live_score_card_1 iframe{height: 163px !important;}
 
 .risk-management-refresh-button i {
     padding: 9px;
